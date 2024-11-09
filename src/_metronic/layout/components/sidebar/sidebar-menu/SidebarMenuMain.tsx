@@ -1,107 +1,117 @@
 import {useIntl} from 'react-intl'
 import {KTIcon} from '../../../../helpers'
 import {SidebarMenuItemWithSub} from './SidebarMenuItemWithSub'
-import {SidebarMenuItem} from './SidebarMenuItem'
 
 const SidebarMenuMain = () => {
   const intl = useIntl()
 
   return (
     <>
-      <SidebarMenuItem
+      <SidebarMenuItemWithSub
         to='/dashboard'
         icon='element-11'
         title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
         fontIcon='bi-app-indicator'
       />
-      <SidebarMenuItem to='/builder' icon='switch' title='Layout Builder' fontIcon='bi-layers' />
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Crafted</span>
-        </div>
-      </div>
+      <SidebarMenuItemWithSub to='/builder' icon='switch' title='Monitoring' fontIcon='bi-layers' />
+      
       <SidebarMenuItemWithSub
         to='/crafted/pages'
-        title='Pages'
+        title='Trips'
         fontIcon='bi-archive'
         icon='element-plus'
       >
-        <SidebarMenuItemWithSub to='/crafted/pages/profile' title='Profile' hasBullet={true}>
-          <SidebarMenuItem to='/crafted/pages/profile/overview' title='Overview' hasBullet={true} />
-          <SidebarMenuItem to='/crafted/pages/profile/projects' title='Projects' hasBullet={true} />
-          <SidebarMenuItem
-            to='/crafted/pages/profile/campaigns'
-            title='Campaigns'
-            hasBullet={true}
-          />
-          <SidebarMenuItem
-            to='/crafted/pages/profile/documents'
-            title='Documents'
-            hasBullet={true}
-          />
-          <SidebarMenuItem
-            to='/crafted/pages/profile/connections'
-            title='Connections'
-            hasBullet={true}
-          />
-        </SidebarMenuItemWithSub>
-
-        <SidebarMenuItemWithSub to='/crafted/pages/wizards' title='Wizards' hasBullet={true}>
-          <SidebarMenuItem
-            to='/crafted/pages/wizards/horizontal'
-            title='Horizontal'
-            hasBullet={true}
-          />
-          <SidebarMenuItem to='/crafted/pages/wizards/vertical' title='Vertical' hasBullet={true} />
-        </SidebarMenuItemWithSub>
       </SidebarMenuItemWithSub>
       <SidebarMenuItemWithSub
-        to='/crafted/accounts'
-        title='Accounts'
+        to='/crafted/geofence'
+        title='Geofence'
         icon='profile-circle'
         fontIcon='bi-person'
       >
-        <SidebarMenuItem to='/crafted/account/overview' title='Overview' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/account/settings' title='Settings' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/geofence/overview' title='Geofence' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/geofence/settings' title='Linked Geofence' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/geofence/settings' title='Add Geofence' hasBullet={true} />
       </SidebarMenuItemWithSub>
-      <SidebarMenuItemWithSub to='/error' title='Errors' fontIcon='bi-sticky' icon='cross-circle'>
-        <SidebarMenuItem to='/error/404' title='Error 404' hasBullet={true} />
-        <SidebarMenuItem to='/error/500' title='Error 500' hasBullet={true} />
-      </SidebarMenuItemWithSub>
+
+
       <SidebarMenuItemWithSub
-        to='/crafted/widgets'
-        title='Widgets'
-        icon='element-7'
-        fontIcon='bi-layers'
+        to='/crafted/reservation'
+        title='Reservation'
+        icon='profile-circle'
+        fontIcon='bi-person'
       >
-        <SidebarMenuItem to='/crafted/widgets/lists' title='Lists' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/widgets/statistics' title='Statistics' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/widgets/charts' title='Charts' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/widgets/mixed' title='Mixed' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/widgets/tables' title='Tables' hasBullet={true} />
-        <SidebarMenuItem to='/crafted/widgets/feeds' title='Feeds' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/reservation/overview' title='Add Reservation' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/reservation/settings' title='reservations' hasBullet={true} />
       </SidebarMenuItemWithSub>
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Apps</span>
-        </div>
-      </div>
+
+
       <SidebarMenuItemWithSub
-        to='/apps/chat'
-        title='Chat'
-        fontIcon='bi-chat-left'
-        icon='message-text-2'
+        to='/crafted/customer'
+        title='Customer'
+        icon='profile-circle'
+        fontIcon='bi-person'
       >
-        <SidebarMenuItem to='/apps/chat/private-chat' title='Private Chat' hasBullet={true} />
-        <SidebarMenuItem to='/apps/chat/group-chat' title='Group Chart' hasBullet={true} />
-        <SidebarMenuItem to='/apps/chat/drawer-chat' title='Drawer Chart' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/customer/overview' title='Customers' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/customer/settings' title='Add Customer' hasBullet={true} />
       </SidebarMenuItemWithSub>
-      <SidebarMenuItem
-        to='/apps/user-management/users'
-        icon='abstract-28'
-        title='User management'
-        fontIcon='bi-layers'
-      />
+
+
+      <SidebarMenuItemWithSub
+        to='/crafted/vehicle'
+        title='Vehicle'
+        icon='profile-circle'
+        fontIcon='bi-person'
+      >
+        <SidebarMenuItemWithSub to='/crafted/vehicle/overview' title='Vehicles' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/vehicle/settings' title='Add Vehicle' hasBullet={true} />
+      </SidebarMenuItemWithSub>
+
+      <SidebarMenuItemWithSub
+        to='/crafted/maintenance'
+        title='Maintenance'
+        icon='profile-circle'
+        fontIcon='bi-person'
+      >
+        <SidebarMenuItemWithSub to='/crafted/maintenance/overview' title='Maintenance' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/maintenance/settings' title='Add Maintenance' hasBullet={true} />
+      </SidebarMenuItemWithSub>
+
+      <SidebarMenuItemWithSub
+        to='/crafted/device'
+        title='device'
+        icon='profile-circle'
+        fontIcon='bi-person'
+      >
+        <SidebarMenuItemWithSub to='/crafted/device/overview' title='devices' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/device/settings' title='Add Device' hasBullet={true} />
+      </SidebarMenuItemWithSub>
+
+
+      <SidebarMenuItemWithSub
+        to='/crafted/user'
+        title='User'
+        icon='profile-circle'
+        fontIcon='bi-person'
+      >
+        <SidebarMenuItemWithSub to='/crafted/user/overview' title='users' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/user/settings' title='Add User' hasBullet={true} />
+      </SidebarMenuItemWithSub>
+
+
+
+
+
+      <SidebarMenuItemWithSub
+        to='/crafted/driver'
+        title='driver'
+        icon='profile-circle'
+        fontIcon='bi-person'
+      >
+        <SidebarMenuItemWithSub to='/crafted/driver/overview' title='drivers' hasBullet={true} />
+        <SidebarMenuItemWithSub to='/crafted/driver/settings' title='Add Driver' hasBullet={true} />
+      </SidebarMenuItemWithSub>
+
+
       <div className='menu-item'>
         <a
           target='_blank'
