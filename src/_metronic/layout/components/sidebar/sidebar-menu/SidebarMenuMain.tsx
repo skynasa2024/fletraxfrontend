@@ -1,5 +1,4 @@
 import {useIntl} from 'react-intl'
-import {KTIcon} from '../../../../helpers'
 import {SidebarMenuItemWithSub} from './SidebarMenuItemWithSub'
 
 const SidebarMenuMain = () => {
@@ -14,6 +13,8 @@ const SidebarMenuMain = () => {
         fontIcon='bi-app-indicator'
       />
       <SidebarMenuItemWithSub to='/builder' icon='switch' title='Monitoring' fontIcon='bi-layers' />
+      
+
       
       <SidebarMenuItemWithSub
         to='/crafted/pages'
@@ -98,9 +99,6 @@ const SidebarMenuMain = () => {
       </SidebarMenuItemWithSub>
 
 
-
-
-
       <SidebarMenuItemWithSub
         to='/crafted/driver'
         title='driver'
@@ -112,18 +110,6 @@ const SidebarMenuMain = () => {
       </SidebarMenuItemWithSub>
 
 
-      <div className='menu-item'>
-        <a
-          target='_blank'
-          className='menu-link'
-          href={import.meta.env.VITE_APP_PREVIEW_DOCS_URL + '/changelog'}
-        >
-          <span className='menu-icon'>
-            <KTIcon iconName='code' className='fs-2' />
-          </span>
-          <span className='menu-title'>Changelog {import.meta.env.VITE_APP_VERSION}</span>
-        </a>
-      </div>
     </>
   )
 }
