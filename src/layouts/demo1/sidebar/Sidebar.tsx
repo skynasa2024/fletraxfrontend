@@ -29,10 +29,7 @@ const Sidebar = () => {
   const desktopMode = useResponsive('up', 'lg');
   const { mobileSidebarOpen, setSidebarMouseLeave, setMobileSidebarOpen } = useDemo1Layout();
   const { layout } = useDemo1Layout();
-  const themeClass: string =
-    layout.options.sidebar.theme === 'dark' || pathname === '/dark-sidebar'
-      ? 'dark [&.dark]:bg-coal-600'
-      : 'dark:bg-coal-600';
+  const themeClass: string = 'dark [&.dark]:bg-coal-600';
 
   const handleMobileSidebarClose = () => {
     setMobileSidebarOpen(false);
