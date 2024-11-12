@@ -2,36 +2,20 @@ import { type TMenuConfig } from '@/components/menu';
 
 export const MENU_SIDEBAR: TMenuConfig = [
   {
-    title: 'Dashboards',
+    title: 'Dashboard',
     icon: 'element-11',
-    children: [
-      {
-        title: 'Light Sidebar',
-        path: '/'
-      },
-      {
-        title: 'Dark Sidebar',
-        path: '/dark-sidebar'
-      }
-    ]
+    path: '/'
   },
   
   {
     title: 'Monitoring',
     icon: 'profile-circle',
-    children: [
-      { },
-
-    ]
-    
+    path: 'monitoring'
   },
   {
     title: 'Trips',
     icon: 'setting-2',
-    children: [
-      { },
-
-    ]
+    path: 'trips'
   },
   {
     title: 'Geofence',
