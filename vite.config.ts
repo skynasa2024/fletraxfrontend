@@ -1,11 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { fileURLToPath, URL } from 'node:url';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import tailwindcss from 'tailwindcss';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/metronic8/react/demo1/",
-  build: {
-    chunkSizeWarningLimit: 3000,
+  css: {
+    postcss: {
+      plugins: [tailwindcss()]
+    }
   },
-})
+  base: '/metronic/tailwind/react',
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  server: {
+    host: "0.0.0.0"
+  },
+  build: {
+    chunkSizeWarningLimit: 3000
+  }
+});
