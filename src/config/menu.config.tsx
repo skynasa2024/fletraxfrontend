@@ -3,23 +3,23 @@ import { type TMenuConfig } from '@/components/menu';
 export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'Dashboard',
-    icon: 'element-11',
+    icon: 'abstract-26',
     path: '/'
   },
   
   {
     title: 'Monitoring',
-    icon: 'profile-circle',
+    icon: ' ki-map',
     path: 'monitoring'
   },
   {
     title: 'Trips',
-    icon: 'setting-2',
+    icon: ' ki-route',
     path: 'trips'
   },
   {
     title: 'Geofence',
-    icon: 'users',
+    icon: ' ki-geolocation',
     children: [
       {
         title: 'Geofence',
@@ -38,7 +38,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Vehicle',
-    icon: 'security-user',
+    icon: ' ki-pill',
     children: [
       {
         title: 'Classic',
@@ -117,7 +117,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
 
   {
     title: 'Reservations',
-    icon: 'users', 
+    icon: ' ki-key', 
     children: [
       {
         title: 'Add reservations',
@@ -134,7 +134,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Customer',
-    icon: 'questionnaire-tablet',
+    icon: '  ki-car',
     children: [
       {
         title: 'Customer',
@@ -151,7 +151,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Maintenance',
-    icon: 'handcart',
+    icon: '  ki-wrench',
     children: [
       {
         title: 'Maintenance',
@@ -167,7 +167,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Device',
-    icon: 'some-files',
+    icon: '  ki-devices',
     children: [
       {
         title: 'Device',
@@ -183,7 +183,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'User',
-    icon: 'note-2',
+    icon: ' ki-users',
     children: [
       {
         title: 'User',
@@ -199,7 +199,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Driver',
-    icon: 'note-2',
+    icon: ' ki-abstract-35',
     children: [
       {
         title: 'driver',
