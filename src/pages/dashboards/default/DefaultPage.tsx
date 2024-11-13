@@ -1,7 +1,7 @@
-import { Demo1LightSidebarPage } from '../';
+import { DashboardPage } from '../';
 
 const DefaultPage = () => {
-  return <Demo1LightSidebarPage />;
+  return <DashboardPage />;
 };
 
 export { DefaultPage };

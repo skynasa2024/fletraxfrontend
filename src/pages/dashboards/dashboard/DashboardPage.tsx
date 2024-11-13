@@ -3,9 +3,9 @@ import { Fragment } from 'react';
 import { Container } from '@/components/container';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 
-import { Demo1LightSidebarContent } from './';
+import { DashboardContent } from '.';
 
-const Demo1LightSidebarPage = () => {
+const DashboardPage = () => {
   return (
     <Fragment>
       <Container>
@@ -15,10 +15,10 @@ const Demo1LightSidebarPage = () => {
       </Container>
 
       <Container>
-        <Demo1LightSidebarContent />
+        <DashboardContent />
       </Container>
     </Fragment>
   );
 };
 
-export { Demo1LightSidebarPage };
+export { DashboardPage };
