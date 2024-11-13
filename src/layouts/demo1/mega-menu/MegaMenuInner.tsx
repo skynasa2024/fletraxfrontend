@@ -14,7 +14,6 @@ import { ModalSearch } from '@/partials/modals/search/ModalSearch';
 import { useDemo1Layout } from '../Demo1LayoutProvider';
 import { MENU_MEGA } from '@/config';
 import { useLanguage } from '@/i18n';
-import { PlusIcon, SearchIcon } from '@heroicons/react/outline';
 
 const MegaMenuInner = () => {
   const desktopMode = useResponsive('up', 'lg');
