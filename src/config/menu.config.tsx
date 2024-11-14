@@ -3,23 +3,24 @@ import { type TMenuConfig } from '@/components/menu';
 export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'Dashboard',
-    icon: 'abstract-26',
+    externalIcon: 'dashboard',
     path: '/'
+  
   },
   
   {
     title: 'Monitoring',
-    icon: ' ki-map',
+    externalIcon: 'monitoring',
     path: 'monitoring'
   },
   {
     title: 'Trips',
-    icon: ' ki-route',
+    externalIcon: 'trips',
     path: 'trips'
   },
   {
     title: 'Geofence',
-    icon: ' ki-geolocation',
+    externalIcon: 'geofence',
     children: [
       {
         title: 'Geofence',
@@ -38,89 +39,23 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Vehicle',
-    icon: ' ki-pill',
-    children: [
-      {
-        title: 'Classic',
-        children: [
-          {
-            title: 'Vehicle',
-            path: '/vehicle/classic/login'
-          },
-          {
-            title: 'Add Vehicle',
-            path: '/vehicle/classic/signup'
-          }
-          
-        ]
-      },
-      {
-        title: 'Branded',
-        children: [
-          {
-            title: 'Sign In',
-            path: '/vehicle/login'
-          },
-          {
-            title: 'Sign Up',
-            path: '/vehicle/signup'
-          },
-          {
-            title: '2FA',
-            path: '/vehicle/2fa'
-          },
-          {
-            title: 'Check Email',
-            path: '/vehicle/check-email'
-          },
-          {
-            title: 'Reset Password',
-            children: [
-              {
-                title: 'Enter Email',
-                path: '/vehicle/reset-password/enter-email'
-              },
-              {
-                title: 'Check Email',
-                path: '/vehicle/reset-password/check-email'
-              },
-              {
-                title: 'Change Password',
-                path: '/vehicle/reset-password/change'
-              },
-              {
-                title: 'Password Changed',
-                path: '/vehicle/reset-password/changed'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        title: 'Welcome Message',
-        path: '/vehicle/welcome-message'
-      },
-      {
-        title: 'Account Deactivated',
-        path: '/vehicle/account-deactivated'
-      },
-      {
-        title: 'Error 404',
-        path: '/error/404'
-      },
-      {
-        title: 'Error 500',
-        path: '/error/500'
-      }
-    ]
+    externalIcon: 'vehicle',
+    children: [{
+      title: 'Add Vehicle',
+      path: '/vehicle/login'
+    },
+    {
+      title: 'Vehicle',
+      path: '/vehicle/signup'
+    }, ]
   },
 
   {
     title: 'Reservations',
-    icon: ' ki-key', 
+    externalIcon: 'reservations', 
     children: [
       {
-        title: 'Add reservations',
+        title: 'Add Reservations',
         path: '/vehicle/login'
       },
       {
@@ -134,7 +69,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Customer',
-    icon: '  ki-car',
+    externalIcon: 'customer',
     children: [
       {
         title: 'Customer',
@@ -151,7 +86,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Maintenance',
-    icon: '  ki-wrench',
+    externalIcon: 'maintenance',
     children: [
       {
         title: 'Maintenance',
@@ -167,7 +102,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Device',
-    icon: '  ki-devices',
+    externalIcon: 'device',
     children: [
       {
         title: 'Device',
@@ -183,7 +118,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'User',
-    icon: ' ki-users',
+    externalIcon: 'user',
     children: [
       {
         title: 'User',
@@ -199,7 +134,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   },
   {
     title: 'Driver',
-    icon: ' ki-abstract-35',
+    externalIcon: 'driver',
     children: [
       {
         title: 'driver',
@@ -230,22 +165,22 @@ export const MENU_MEGA: TMenuConfig = [
             children: [
               {
                 title: 'Default',
-                icon: 'badge',
+                externalIcon: 'badge',
                 path: '/public-profile/profiles/default'
               },
               {
                 title: 'Creator',
-                icon: 'coffee',
+                externalIcon: 'coffee',
                 path: '/public-profile/profiles/creator'
               },
               {
                 title: 'Company',
-                icon: 'abstract-41',
+                externalIcon: 'abstract-41',
                 path: '/public-profile/profiles/company'
               },
               {
                 title: 'NFT',
-                icon: 'bitcoin',
+                externalIcon: 'bitcoin',
                 path: '/public-profile/profiles/nft'
               },
               {

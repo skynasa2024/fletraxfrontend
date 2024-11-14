@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-
 import { KeenIcon } from '@/components/keenicons';
 import {
   IMenuItemConfig,
@@ -17,22 +16,8 @@ import {
   MenuTitle
 } from '@/components/menu';
 
-import DashboardIcon from './icons/dashboard.svg';
-import MonitoringIcon from './icons/monitoring.svg';
-import TripsIcon from './icons/trips.svg';
-import GeofenceIcon from './icons/geofence.svg';
-import VehicleIcon from './icons/vehicle.svg';
-import ReservationsIcon from './icons/reservations.svg';
-import CustomerIcon from './icons/customer.svg';
-import MaintenanceIcon from './icons/maintenance.svg';
-import ViolationsIcon from './icons/violations.svg';
-import DeviceIcon from './icons/device.svg';
-import UserIcon from './icons/user.svg';
-import DriverIcon from './icons/driver.svg';
-
-
-
 import { useMenus } from '@/providers';
+import { toAbsoluteUrl } from '@/utils';
 
 const SidebarMenu = () => {
   const linkPl = 'ps-[10px]';
@@ -80,28 +65,6 @@ const SidebarMenu = () => {
     });
   };
 
-  const iconMap = {
-    dashboard: DashboardIcon,
-    monitoring: MonitoringIcon,
-    trips: TripsIcon,
-    geofence: GeofenceIcon,
-    vehicle: VehicleIcon,
-    reservations: ReservationsIcon,
-    customer: CustomerIcon,
-    maintenance: MaintenanceIcon,
-    violations: ViolationsIcon,
-    device: DeviceIcon,
-    user: UserIcon,
-    driver: DriverIcon,
-  } as const;
-  type IconName = keyof typeof iconMap;
-
-const getIconComponent = (iconName: IconName) => {
-  return iconMap[iconName];
-};
-
-
-  
   const buildMenuItemRoot = (item: IMenuItemConfig, index: number) => {
     if (item.children) {
       return (
@@ -120,7 +83,15 @@ const getIconComponent = (iconName: IconName) => {
             )}
           >
             <MenuIcon className={clsx('items-start text-gray-500 dark:text-gray-400', iconWidth)}>
-              {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
+              <>
+                {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
+                {item.externalIcon && (
+                  <img
+                    src={toAbsoluteUrl(`/media/menu-icons/${item.externalIcon}.svg`)}
+                    className={iconSize}
+                  />
+                )}
+              </>
             </MenuIcon>
             <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
               {item.title}
@@ -159,6 +130,12 @@ const getIconComponent = (iconName: IconName) => {
               )}
             >
               {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
+              {item.externalIcon && (
+                <img
+                  src={toAbsoluteUrl(`/media/menu-icons/${item.externalIcon}.svg`)}
+                  className={iconSize}
+                />
+              )}
             </MenuIcon>
             <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
               {item.title}
