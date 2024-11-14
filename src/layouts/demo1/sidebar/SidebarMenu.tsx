@@ -16,6 +16,22 @@ import {
   MenuSub,
   MenuTitle
 } from '@/components/menu';
+
+import DashboardIcon from './icons/dashboard.svg';
+import MonitoringIcon from './icons/monitoring.svg';
+import TripsIcon from './icons/trips.svg';
+import GeofenceIcon from './icons/geofence.svg';
+import VehicleIcon from './icons/vehicle.svg';
+import ReservationsIcon from './icons/reservations.svg';
+import CustomerIcon from './icons/customer.svg';
+import MaintenanceIcon from './icons/maintenance.svg';
+import ViolationsIcon from './icons/violations.svg';
+import DeviceIcon from './icons/device.svg';
+import UserIcon from './icons/user.svg';
+import DriverIcon from './icons/driver.svg';
+
+
+
 import { useMenus } from '@/providers';
 
 const SidebarMenu = () => {
@@ -64,6 +80,28 @@ const SidebarMenu = () => {
     });
   };
 
+  const iconMap = {
+    dashboard: DashboardIcon,
+    monitoring: MonitoringIcon,
+    trips: TripsIcon,
+    geofence: GeofenceIcon,
+    vehicle: VehicleIcon,
+    reservations: ReservationsIcon,
+    customer: CustomerIcon,
+    maintenance: MaintenanceIcon,
+    violations: ViolationsIcon,
+    device: DeviceIcon,
+    user: UserIcon,
+    driver: DriverIcon,
+  } as const;
+  type IconName = keyof typeof iconMap;
+
+const getIconComponent = (iconName: IconName) => {
+  return iconMap[iconName];
+};
+
+
+  
   const buildMenuItemRoot = (item: IMenuItemConfig, index: number) => {
     if (item.children) {
       return (
