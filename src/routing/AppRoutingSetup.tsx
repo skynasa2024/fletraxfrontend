@@ -89,7 +89,7 @@ const AppRoutingSetup = (): ReactElement => {
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
-          <Route path="/public-profile/profiles/default" element={<ProfileDefaultPage />} />
+          <Route path="/device/device" element={<ProfileDefaultPage />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
