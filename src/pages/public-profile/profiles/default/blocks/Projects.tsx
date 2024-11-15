@@ -105,8 +105,8 @@ const Projects = () => {
   const renderItem = (item: IProjectsItem, index: number) => {
     return (
       <tr key={index}>
-        <td className="text-start grid w-full">
-          <div className="gap-2 flex-1">
+        <td className="text-start flex items-center w-full ">
+          <div className="flex items-center gap-2">
             <svg
               width={46}
               height={46}
@@ -267,8 +267,8 @@ const Projects = () => {
         </td>
 
         <td >
-          <MenuToggle className="flex-1 items-center ">
-            <div className=" justify-center items-center w-12 h-12 rounded-lg">
+          <MenuToggle className="flex items-center">
+            <div className="flex justify-center items-center w-12 h-12 rounded-lg">
               <svg
                 width="46"
                 height="46"
