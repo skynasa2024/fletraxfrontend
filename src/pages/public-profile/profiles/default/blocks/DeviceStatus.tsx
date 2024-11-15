@@ -124,7 +124,7 @@ const DeviceStats: React.FC = () => {
         <i className="ki-filled ki-users"></i>
         Add Devices
       </button>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 w-full">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 p-4 w-full">
         {stats.map((stat, index) => (
           <Card key={index} className={`w-64 ${stat.color} shadow-md`}>
             <div
@@ -146,6 +146,24 @@ const DeviceStats: React.FC = () => {
             </div>
           </Card>
         ))}
+      </div>
+      <div className="flex items-center flex-wrap gap-2.5 justify-end w-full">
+        <button className="btn btn-sm btn-outline btn-primary">
+          <i className="ki-filled ki-setting-4"></i>
+          Filters
+        </button>
+        <select className="select select-sm w-28">
+          <option value={1}>Export</option>
+          <option value={2}>Disabled</option>
+          <option value={2}>Pending</option>
+        </select>
+
+        <div className="flex">
+          <label className="input input-sm">
+            <i className="ki-filled ki-magnifier"></i>
+            <input placeholder="Search" type="text" defaultValue="" />
+          </label>
+        </div>
       </div>
     </>
   );
