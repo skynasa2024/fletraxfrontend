@@ -119,29 +119,35 @@ const DeviceStats: React.FC = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 w-full">
-      {stats.map((stat, index) => (
-        <Card key={index} className={`w-64 ${stat.color} shadow-md`}>
-          <div
-            className={`w-4 h-4 p-4 ${index === 0 ? 'text-white' : stat.iconColor}`}
-            dangerouslySetInnerHTML={{ __html: stat.icon }}
-          />
-          <div className="p-6 relative">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-2xl font-semibold mt-1 ${stat.textColor}`}>
-                  {stat.count.toLocaleString()}
+    <>
+      <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 w-32 ml-auto">
+        <i className="ki-filled ki-users"></i>
+        Add Devices
+      </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 w-full">
+        {stats.map((stat, index) => (
+          <Card key={index} className={`w-64 ${stat.color} shadow-md`}>
+            <div
+              className={`w-4 h-4 p-4 ${index === 0 ? 'text-white' : stat.iconColor}`}
+              dangerouslySetInnerHTML={{ __html: stat.icon }}
+            />
+            <div className="p-6 relative">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className={`text-2xl font-semibold mt-1 ${stat.textColor}`}>
+                    {stat.count.toLocaleString()}
 
-                  <p className={`text-sm ${index === 0 ? 'text-blue-100' : 'text-gray-400'}`}>
-                    {stat.title}
+                    <p className={`text-sm ${index === 0 ? 'text-blue-100' : 'text-gray-400'}`}>
+                      {stat.title}
+                    </p>
                   </p>
-                </p>
+                </div>
               </div>
             </div>
-          </div>
-        </Card>
-      ))}
-    </div>
+          </Card>
+        ))}
+      </div>
+    </>
   );
 };
 
