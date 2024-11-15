@@ -12,7 +12,7 @@ interface StatItem {
   textColor: string;
   iconColor?: string;
   badge?: boolean;
-  icon: string; 
+  icon: string;
 }
 
 const Card: React.FC<CardProps> = ({ children, className = '' }) => (
@@ -20,7 +20,6 @@ const Card: React.FC<CardProps> = ({ children, className = '' }) => (
 );
 
 const DeviceStats: React.FC = () => {
- 
   const stats: StatItem[] = [
     {
       title: 'Total Devices',
@@ -130,11 +129,12 @@ const DeviceStats: React.FC = () => {
           <div className="p-6 relative">
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${index === 0 ? 'text-blue-100' : 'text-gray-400'}`}>
-                  {stat.title}
-                </p>
                 <p className={`text-2xl font-semibold mt-1 ${stat.textColor}`}>
                   {stat.count.toLocaleString()}
+
+                  <p className={`text-sm ${index === 0 ? 'text-blue-100' : 'text-gray-400'}`}>
+                    {stat.title}
+                  </p>
                 </p>
               </div>
             </div>
