@@ -74,7 +74,14 @@ const MovingDeviceChart = () => {
   }
 
   return (
-    <div className="card">
+    <div
+      className="card"
+      style={{
+        backgroundImage: `url(${toAbsoluteUrl('/media/illustrations/abstract-1.svg)')}`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100%'
+      }}
+    >
       <div className="px-7 py-6 flex items-center justify-between">
         <div className="card-title">
           <h3>Moving & Device</h3>
