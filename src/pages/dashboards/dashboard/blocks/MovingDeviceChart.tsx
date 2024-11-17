@@ -30,6 +30,8 @@ const MovingDeviceChart = () => {
     },
     plotOptions: {
       pie: {
+        startAngle: -120,
+        endAngle: 360 - 120,
         donut: {
           size: '80%'
         }
@@ -73,7 +75,7 @@ const MovingDeviceChart = () => {
 
   return (
     <div className="card">
-      <div className="card-header">
+      <div className="px-7 py-6 flex items-center justify-between">
         <div className="card-title">
           <h3>Moving & Device</h3>
           <h4 className="text-sm font-thin text-gray-700">Status</h4>
