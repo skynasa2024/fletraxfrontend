@@ -1,5 +1,8 @@
-import { toAbsoluteUrl } from '@/utils';
 import { faker } from '@faker-js/faker';
+import { fakeCustomer, fakeVehicle } from './faker';
+import { TDataGridRequestParams } from '@/components';
+import { Paginated } from './common';
+import { Customer } from './customer';
 
 export const getMovingCars = async (): Promise<Record<string, number>> => {
   return {
@@ -15,10 +18,14 @@ export const getOnlineCars = async (): Promise<Record<string, number>> => {
   };
 };
 
-export interface CarMileageAndEngine {
+export interface Vehicle {
   brandImage: string;
   plate: string;
   imei: string;
+}
+
+export interface CarMileageAndEngine {
+  vehicle: Vehicle;
   mileage: number;
   engine: number;
 }
@@ -34,11 +41,69 @@ export const getCarsMileageAndEngine = async (cursor?: string): Promise<CarMilea
       largestMileage -= faker.number.float({ max: 1000, fractionDigits: 3 });
       largestEngine -= faker.number.float({ max: 100, fractionDigits: 3 });
       return {
-        brandImage: toAbsoluteUrl('/media/car-brands/toyota.png'),
-        plate: faker.string.alphanumeric({ length: 7, casing: 'upper' }),
-        imei: faker.phone.imei(),
+        vehicle: fakeVehicle(),
         mileage: largestMileage,
         engine: largestEngine
       };
     });
+};
+
+export interface Violation {
+  vehicle: Vehicle;
+  date: Date;
+  customer: Customer;
+  type: string;
+  price: number;
+  status: string;
+}
+
+export const getViolations = async (
+  params: TDataGridRequestParams
+): Promise<Paginated<Violation>> => {
+  const totalCount = faker.number.int({ min: 2, max: 100 });
+  const originalDataset: Violation[] = Array(params.pageSize)
+    .fill(0)
+    .map(() => ({
+      customer: fakeCustomer(),
+      vehicle: fakeVehicle(),
+      date: faker.date.past(),
+      price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
+      status: faker.word.words(2),
+      type: faker.word.words(2)
+    }));
+
+  return {
+    data: originalDataset,
+    totalCount
+  };
+};
+
+export interface Maintenance {
+  date: Date;
+  vehicle: Vehicle;
+  type: string;
+  supplier: string;
+  price: number;
+  status: string;
+}
+
+export const getMaintenance = async (
+  params: TDataGridRequestParams
+): Promise<Paginated<Maintenance>> => {
+  const totalCount = faker.number.int({ min: 2, max: 100 });
+  const originalDataset: Maintenance[] = Array(params.pageSize)
+    .fill(0)
+    .map(() => ({
+      vehicle: fakeVehicle(),
+      date: faker.date.past(),
+      price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
+      status: faker.word.words(2),
+      type: faker.word.words(2),
+      supplier: faker.person.fullName()
+    }));
+
+  return {
+    data: originalDataset,
+    totalCount
+  };
 };

@@ -33,10 +33,10 @@ const MileageEngineGraph = () => {
         {data.map((car) => (
           <>
             <div className="flex gap-4">
-              <img src={car.brandImage} className="size-12 object-cover" />
+              <img src={car.vehicle.brandImage} className="size-12 object-cover" />
               <div className="w-40">
-                <div className="font-medium text-sm text-gray-800">{car.plate}</div>
-                <div className="text-sm text-gray-600">{car.imei}</div>
+                <div className="font-medium text-sm text-gray-800">{car.vehicle.plate}</div>
+                <div className="text-sm text-gray-600">{car.vehicle.imei}</div>
               </div>
               <div className="flex-1 flex flex-col justify-center gap-1">
                 {(selection === 'Mileage' || selection === 'All') && (

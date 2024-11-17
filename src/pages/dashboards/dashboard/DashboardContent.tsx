@@ -1,6 +1,7 @@
-import { TeamMeeting, Teams } from './blocks';
+import { MaintenanceViolationTable } from './blocks/maintenance';
 import { MileageEngineGraph } from './blocks/MileageEngineGraph';
 import { MovingDeviceChart } from './blocks/MovingDeviceChart';
+import { Notifications } from './blocks/Notifications';
 
 const DashboardContent = () => {
   return (
@@ -17,11 +18,11 @@ const DashboardContent = () => {
 
       <div className="grid lg:grid-cols-3 gap-5 lg:gap-7.5 items-stretch">
         <div className="lg:col-span-1">
-          <TeamMeeting />
+          <Notifications />
         </div>
 
         <div className="lg:col-span-2">
-          <Teams />
+          <MaintenanceViolationTable />
         </div>
       </div>
     </div>
