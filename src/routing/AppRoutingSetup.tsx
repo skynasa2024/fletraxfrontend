@@ -11,7 +11,7 @@ import {
   ProfileCompanyPage,
   ProfileCreatorPage,
   ProfileCRMPage,
-  ProfileDefaultPage,
+  Device,
   ProfileEmptyPage,
   ProfileFeedsPage,
   ProfileGamerPage,
@@ -89,7 +89,7 @@ const AppRoutingSetup = (): ReactElement => {
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
-          <Route path="/device/device" element={<ProfileDefaultPage />} />
+          <Route path="/device/device" element={<Device />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
@@ -116,7 +116,7 @@ const AppRoutingSetup = (): ReactElement => {
             path="/account/home/settings-enterprise"
             element={<AccountSettingsEnterprisePage />}
           />
-          <Route path="/account/home/settings-plain" element={<AccountSettingsPlainPage />} />
+          <Route path="/device/add-device" element={<AccountSettingsPlainPage />} />
           <Route path="/account/home/settings-modal" element={<AccountSettingsModalPage />} />
           <Route path="/account/billing/basic" element={<AccountBasicPage />} />
           <Route path="/account/billing/enterprise" element={<AccountEnterprisePage />} />

@@ -10,7 +10,7 @@ import { PageMenu } from '@/pages/public-profile';
 
 import { ProfileDefaultContent } from '.';
 
-const ProfileDefaultPage = () => {
+const Device = () => {
   const image = (
     <img
       src={toAbsoluteUrl('/media/avatars/300-1.png')}
@@ -27,4 +27,4 @@ const ProfileDefaultPage = () => {
   );
 };
 
-export { ProfileDefaultPage };
+export { Device };
