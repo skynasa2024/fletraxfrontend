@@ -31,7 +31,7 @@ export default plugin(({addComponents, theme}) => {
 				},
 			},
 			'thead': {
-				'td, th': {
+				'td': {
 					'border-bottom': 'var(--tw-table-border)'
 				},
 			},

@@ -55,7 +55,6 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
       moreLimit: 5,
       more: false
     },
-    layout: { cellsBorder: true },
     rowSelect: false,
     serverSide: false
   };
