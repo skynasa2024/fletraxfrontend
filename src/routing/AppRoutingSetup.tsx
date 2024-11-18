@@ -22,6 +22,7 @@ import {
   ProfileTeamsPage,
   ProfileWorksPage
 } from '@/pages/public-profile';
+import {User} from '@/pages/public-profile/profiles/user';
 import {
   AccountActivityPage,
   AccountAllowedIPAddressesPage,
@@ -58,6 +59,7 @@ import {
   AccountTeamsStarterPage,
   AccountUserProfilePage
 } from '@/pages/account';
+import {AddUser} from '@/pages/account/home/add-user'
 import {
   NetworkAppRosterPage,
   NetworkMarketAuthorsPage,
@@ -90,6 +92,8 @@ const AppRoutingSetup = (): ReactElement => {
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
           <Route path="/device/device" element={<Device />} />
+          <Route path="/users/user" element={<User />} />
+          <Route path="/users/add-users" element={<AddUser />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
@@ -117,6 +121,7 @@ const AppRoutingSetup = (): ReactElement => {
             element={<AccountSettingsEnterprisePage />}
           />
           <Route path="/device/add-device" element={<AccountSettingsPlainPage />} />
+          <Route path="/users/add-user" element={<AddUser />} />
           <Route path="/account/home/settings-modal" element={<AccountSettingsModalPage />} />
           <Route path="/account/billing/basic" element={<AccountBasicPage />} />
           <Route path="/account/billing/enterprise" element={<AccountEnterprisePage />} />
