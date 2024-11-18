@@ -6,77 +6,87 @@ interface IGeneralSettingsProps {
 
 const BasicSettings = ({ title }: IGeneralSettingsProps) => {
   return (
-    <div className="card pb-2.5">
+    <div className=" card pb-2.5">
       <div className="card-header" id="general_settings">
         <h3 className="card-title">{title}</h3>
-        <div className="flex items-center gap-2">
-          <label className="switch switch-sm">
-            <span className="switch-label">Public Profile</span>
-            <input type="checkbox" value="1" name="check" defaultChecked readOnly />
-          </label>
-        </div>
       </div>
       <div className="card-body grid gap-5">
-        <div className="flex items-center flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Photo</label>
-          <div className="flex items-center justify-between flex-wrap grow gap-2.5">
-            <span className="text-2sm font-medium text-gray-600">150x150px JPEG, PNG Image</span>
-            <CrudAvatarUpload />
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Name</label>
+            <input type="text" className="input" placeholder="Name" />
+          </div>
+
+          <div className="grid gap-2.5">
+            <label className="form-label">Identify Number</label>
+            <input type="text" className="input" placeholder="Identify Number" />
           </div>
         </div>
 
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Name</label>
-          <input type="text" className="input" value="Jason Tatum" readOnly />
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Phone</label>
+            <div className="flex items-center gap-2.5">
+              <select className="select">
+                <option>+90</option>
+                <option>+1</option>
+                <option>+44</option>
+              </select>
+              <input type="text" className="input" placeholder="Phone" />
+            </div>
+          </div>
+
+          <div className="grid gap-2.5">
+            <label className="form-label">Protocol</label>
+            <select className="select">
+              <option>Protocol</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Phone number</label>
-          <input type="text" className="input" placeholder="Phone number" value="" readOnly />
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Device Type</label>
+            <select className="select">
+              <option>Device Type</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+            </select>
+          </div>
+
+          <div className="grid gap-2.5">
+            <label className="form-label">Plate</label>
+            <input type="text" className="input" placeholder="Plate" />
+          </div>
         </div>
 
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Email</label>
-          <input type="text" className="input" value="jason@studio.io" readOnly />
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Subscription Start Date</label>
+            <input type="text" className="input" placeholder="00 / 00 / 0000" />
+          </div>
+
+          <div className="grid gap-2.5">
+            <label className="form-label">Subscription End Date</label>
+            <input type="text" className="input" placeholder="00 / 00 / 0000" />
+          </div>
         </div>
 
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Address</label>
-          <input
-            type="text"
-            className="input"
-            placeholder=""
-            value="Avinguda Imaginària, 789"
-            readOnly
-          />
-        </div>
-
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">Country</label>
-          <select className="select">
-            <option>Spain</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
-          </select>
-        </div>
-
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">State</label>
-          <input type="text" className="input" placeholder="State" value="" readOnly />
-        </div>
-
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-          <label className="form-label max-w-56">City</label>
-          <input type="text" className="input" value="Barcelona" readOnly />
-        </div>
-
-        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5 mb-2.5">
-          <label className="form-label max-w-56">Postcode</label>
-          <input type="text" className="input" value="08012" readOnly />
-        </div>
-
-        <div className="flex justify-end">
-          <button className="btn btn-primary">Save Changes</button>
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Time Zone</label>
+            <select className="select">
+              <option>UTC</option>
+              <option>GMT</option>
+              <option>CET</option>
+              <option>EST</option>
+              <option>PST</option>
+              <option>IST</option>
+              <option>JST</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>

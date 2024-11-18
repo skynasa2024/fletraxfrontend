@@ -27,10 +27,7 @@ const DeleteAccount = () => {
           </label>
         </div>
 
-        <div className="flex justify-end gap-2.5">
-          <button className="btn btn-light">Deactivate Instead</button>
-          <button className="btn btn-danger">Delete Account</button>
-        </div>
+        
       </div>
     </div>
   );
