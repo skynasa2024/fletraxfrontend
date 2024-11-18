@@ -266,8 +266,8 @@ const Projects = () => {
           </div>
         </td>
 
-        <td >
-          <MenuToggle className="flex items-center">
+        <td>
+          <MenuToggle className="flex justify-end gap-2">
             <div className="flex justify-center items-center w-12 h-12 rounded-lg">
               <svg
                 width="46"
