@@ -3,8 +3,6 @@ import { Fragment } from 'react';
 import { toAbsoluteUrl } from '@/utils/Assets';
 import { Container } from '@/components/container';
 
-
-
 import { ProfileDefaultContent } from '.';
 
 const Device = () => {
@@ -18,6 +16,8 @@ const Device = () => {
   return (
     <Fragment>
       <Container>
+        <h3 className="font-bold text-xl text-gray-800 mb-4">Device List</h3>
+
         <ProfileDefaultContent />
       </Container>
     </Fragment>
