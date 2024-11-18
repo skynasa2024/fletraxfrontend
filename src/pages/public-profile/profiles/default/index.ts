@@ -1,3 +1,3 @@
 export * from './ProfileDefaultContent';
-export * from './ProfileDefaultPage';
+export * from './Device';
 export * from './blocks';
