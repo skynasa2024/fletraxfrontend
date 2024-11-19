@@ -127,7 +127,7 @@ const DeviceStatus: React.FC = () => {
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={` ${stat.color} rounded-xl p-5 flex flex-col items-start ${
+            className={` ${stat.color} rounded-xl flex flex-col items-start ${
               index === 0 ? 'shadow-lg' : 'shadow-sm'
             }`}
           >

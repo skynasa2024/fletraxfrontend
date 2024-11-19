@@ -16,7 +16,7 @@ const Device = () => {
   return (
     <Fragment>
       <Container>
-        <h3 className="font-bold text-xl text-gray-800 mb-4">Device List</h3>
+        <h3 className="font-bold text-xl text-gray-800">Device List</h3>
 
         <ProfileDefaultContent />
       </Container>
