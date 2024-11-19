@@ -51,15 +51,21 @@ const Main = () => {
 
       <Sidebar />
 
-      <div className="wrapper flex grow flex-col">
-        <Header />
-
-        <main className="grow content pt-5" role="content">
+      {menuItem?.fullScreen ? (
+        <main className="grow content wrapper !py-0" role="content">
           <Outlet />
         </main>
+      ) : (
+        <div className="wrapper flex grow flex-col">
+          <Header />
 
-        <Footer />
-      </div>
+          <main className="grow content pt-5" role="content">
+            <Outlet />
+          </main>
+
+          <Footer />
+        </div>
+      )}
     </Fragment>
   );
 };

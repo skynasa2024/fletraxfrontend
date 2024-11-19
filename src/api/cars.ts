@@ -137,3 +137,24 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
     totalCount
   };
 };
+
+export interface VehicleLocation {
+  vehicle: Vehicle;
+  long: number;
+  lat: number;
+  angle: number;
+}
+
+export const getVehicleLocations = async (): Promise<VehicleLocation[]> => {
+  return Array(faker.number.int(2000))
+    .fill(0)
+    .map(() => {
+      const location = faker.location.nearbyGPSCoordinate({ origin: [38.9637, 33.2433], radius: 200 });
+      return {
+        vehicle: fakeVehicle(),
+        lat: location[0],
+        long: location[1],
+        angle: faker.number.float(360)
+      };
+    });
+};

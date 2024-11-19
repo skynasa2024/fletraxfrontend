@@ -7,11 +7,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
     path: '/'
   
   },
-  
   {
     title: 'Monitoring',
     externalIcon: 'monitoring',
-    path: 'monitoring'
+    path: '/monitoring',
+    fullScreen: true
   },
   {
     title: 'Trips',
