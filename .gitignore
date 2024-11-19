@@ -25,3 +25,4 @@ dist-ssr
 **/src/*.js
 package-lock.json
 *.json
+*.json
