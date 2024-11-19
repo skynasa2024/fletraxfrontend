@@ -9,7 +9,7 @@ import {
   ToolbarPageTitle
 } from '@/partials/toolbar';
 
-import { DeviceStatus } from '.';
+import { UserMiniCards } from '.';
 import { useLayout } from '@/providers'; 
 
 const NetworkMiniCardsPage = () => {
@@ -37,7 +37,7 @@ const NetworkMiniCardsPage = () => {
       )}
 
       <Container>
-        <DeviceStatus />
+        <UserMiniCards />
       </Container>
     </Fragment>
   );

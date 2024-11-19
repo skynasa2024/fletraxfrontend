@@ -1,2 +1,2 @@
-export * from './DeviceStatus';
+export * from './UserMiniCards';
 export * from './NetworkMiniCardsPage';
