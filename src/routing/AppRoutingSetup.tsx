@@ -84,6 +84,7 @@ import {
   AuthenticationAccountDeactivatedPage,
   AuthenticationGetStartedPage
 } from '@/pages/authentication';
+import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -91,6 +92,7 @@ const AppRoutingSetup = (): ReactElement => {
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
+          <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/device/device" element={<Device />} />
           <Route path="/users/user" element={<User />} />
           <Route path="/users/add-users" element={<AddUser />} />

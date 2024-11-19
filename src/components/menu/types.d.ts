@@ -180,6 +180,7 @@ export interface IMenuItemConfig {
   children?: IMenuItemConfig[];
   childrenIndex?: number;
   externalIcon?: string;
+  fullScreen?: boolean;
 }
 
 export type TMenuConfig = IMenuItemConfig[];
