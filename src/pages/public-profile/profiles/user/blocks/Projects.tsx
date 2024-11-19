@@ -9,6 +9,7 @@ interface IProjectsItem {
   owner: {
     name: string;
     email: string;
+    avatar: string;
   };
   date: string;
   status: {
@@ -34,7 +35,8 @@ const Projects = () => {
       name: 'Acme software development',
       owner: {
         name: 'Karina Clark',
-        email: 'Karina@khljkl.com'
+        email: 'Karina@khljkl.com',
+        avatar: '' 
       },
       date: '26.9.2024',
       status: {
@@ -77,7 +79,8 @@ const Projects = () => {
       name: 'Client Onboarding',
       owner: {
         name: 'Sarah Johnson',
-        email: 'sarah@example.com'
+        email: 'sarah@example.com',
+        avatar: ''
       },
       date: '22.9.2024',
       status: {
@@ -93,7 +96,8 @@ const Projects = () => {
       name: 'Widget Supply Agreement',
       owner: {
         name: 'Robert Brown',
-        email: 'robert@example.com'
+        email: 'robert@example.com',
+        avatar: ''
       },
       date: '20.9.2024',
       status: {
@@ -117,11 +121,27 @@ const Projects = () => {
           <div className="text-start font-bold">{item.id}</div>
         </td>
         <td>
-          <div className="Owner">
-            <div className="text-start font-bold p-3">{item.owner.name}</div>
-            <div className="text-start p-3">{item.owner.email}</div>
+          <div className="flex items-center p-3">
+            <div className="mr-3">
+              {item.owner.avatar ? (
+                <img
+                  src={item.owner.avatar}
+                  alt={item.owner.name}
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                  {item.owner.name.charAt(0)}
+                </div>
+              )}
+            </div>
+            <div className="text-start">
+              <div className="font-bold">{item.owner.name}</div>
+              <div className="text-start">{item.owner.email}</div>
+            </div>
           </div>
         </td>
+
         <td>
           <div className="flex justify-between items-center">
             <div className="text-start font-bold">{item.date}</div>

@@ -125,7 +125,12 @@ const DeviceStatus: React.FC = () => {
       </button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
         {stats.map((stat, index) => (
-          <Card key={index} className={` ${stat.color} rounded-xl p-5 flex flex-col items-start`}>
+          <Card
+            key={index}
+            className={` ${stat.color} rounded-xl p-5 flex flex-col items-start ${
+              index === 0 ? 'shadow-lg' : 'shadow-sm'
+            }`}
+          >
             <div
               className={`w-4 h-4 p-4 ${index === 0 ? 'text-white' : stat.iconColor}`}
               dangerouslySetInnerHTML={{ __html: stat.icon }}
