@@ -119,18 +119,24 @@ const NetworkMiniCardsContent = () => {
 
       <div className="flex items-center justify-between gap-2.5 flex-wrap mb-7.5">
         <div className="flex items-center flex-wrap gap-2.5 ml-auto">
+          <button className="btn btn-sm btn-outline group hover:bg-blue-50">
+            <i className="ki-duotone ki-row-horizontal text-gray-500 group-hover:text-blue-700"></i>
+          </button>
+          <button className="btn btn-sm btn-outline group hover:bg-blue-50">
+            <i className="ki-duotone ki-category text-blue-600 group-hover:text-blue-700"></i>
+          </button>
+
+          <button className="btn btn-sm w-28 btn-outline btn-light">
+            <KeenIcon icon="setting-4" /> Filters
+          </button>
           <select className="select select-sm w-28">
             <option value="1">Export</option>
             <option value="2">Disabled</option>
             <option value="2">Pending</option>
           </select>
 
-          <button className="btn btn-sm btn-outline btn-primary">
-            <KeenIcon icon="setting-4" /> Filters
-          </button>
-
           <div className="flex">
-            <label className="input input-sm">
+            <label className="input input-sm w-60">
               <KeenIcon icon="search-normal-1" /> Search...
             </label>
           </div>
