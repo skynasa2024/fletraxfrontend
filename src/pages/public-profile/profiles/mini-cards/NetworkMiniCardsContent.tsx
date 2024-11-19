@@ -113,7 +113,7 @@ const NetworkMiniCardsContent = () => {
 
   return (
     <Fragment>
-      <div className="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-5 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-5 mb-8">
         {metrics.map((metric, index) => renderMetricCard(metric, index))}
       </div>
 

@@ -390,7 +390,6 @@ const Projects = () => {
             </div>
           </MenuToggle>
         </td>
-        
       </tr>
     );
   };
@@ -427,7 +426,7 @@ const Projects = () => {
       <div className="card-table scrollable-x-auto">
         {' '}
         {/*table headers */}
-        <table className="table text-end">
+        <table className="table-auto border-separate w-full text-end">
           <thead>
             <tr>
               <th className="text-start min-w-52 !font-normal !text-gray-700"></th>
