@@ -3,6 +3,7 @@ import { Paginated } from '@/api/common';
 import { useEffect, useState } from 'react';
 import { CarPlate } from './CarPlate';
 import { toAbsoluteUrl } from '@/utils';
+import { StatusDropdown } from './StatusDropdown';
 
 const VehicleList = () => {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
@@ -32,8 +33,26 @@ const VehicleList = () => {
           {vehicles?.data.map((vehicle) => (
             <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED]">
               <div className="flex flex-col gap-5 px-8 py-6">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <CarPlate plate={vehicle.vehicle.plate} />
+                  <StatusDropdown
+                    selected={vehicle.status}
+                    setSelected={() => {}}
+                    options={{
+                      Unavailable: {
+                        color: '#F1416C',
+                        backgroundColor: '#FFF5F8'
+                      },
+                      Maintenance: {
+                        color: '#FFA800',
+                        backgroundColor: '#FFF8EA'
+                      },
+                      Available: {
+                        color: '#50CD89',
+                        backgroundColor: '#EEFAF4'
+                      }
+                    }}
+                  />
                 </div>
                 <div className="flex gap-9 justify-between">
                   <div className="flex gap-4">
