@@ -30,6 +30,7 @@ export interface VehicleDetails {
   brandName: string;
   type: string;
   mileage: number;
+  status: string;
 }
 
 export interface CarMileageAndEngine {
@@ -76,7 +77,7 @@ export const getViolations = async (
       vehicle: fakeVehicle(),
       date: faker.date.past(),
       price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
-      status: faker.word.words(2),
+      status: faker.helpers.arrayElement(['Unpaid', 'Under Review', 'Recorded', 'Paid']),
       type: faker.word.words(2)
     }));
 
@@ -105,7 +106,7 @@ export const getMaintenance = async (
       vehicle: fakeVehicle(),
       date: faker.date.past(),
       price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
-      status: faker.word.words(2),
+      status: faker.helpers.arrayElement(['Completed', 'In Maintenance']),
       type: faker.word.words(2),
       supplier: faker.person.fullName()
     }));
@@ -127,7 +128,8 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
       customer: fakeCustomer(),
       brandName: faker.vehicle.vehicle(),
       mileage: faker.number.int({ min: 5, max: 1000 }),
-      type: faker.helpers.arrayElement(['Manual', 'Automatic'])
+      type: faker.helpers.arrayElement(['Manual', 'Automatic']),
+      status: faker.helpers.arrayElement(['Unavailable', 'Maintenance', 'Available'])
     }));
 
   return {

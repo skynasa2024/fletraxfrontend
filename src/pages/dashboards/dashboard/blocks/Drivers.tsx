@@ -2,6 +2,7 @@ import { Paginated } from '@/api/common';
 import { useEffect, useState } from 'react';
 import { toAbsoluteUrl } from '@/utils';
 import { CustomerDetails, getCustomers } from '@/api/customer';
+import { StatusDropdown } from './StatusDropdown';
 
 const DriverList = () => {
   const [customers, setCustomers] = useState<Paginated<CustomerDetails>>();
@@ -35,8 +36,22 @@ const DriverList = () => {
                 style={{ backgroundColor: customer.state === 'Active' ? '#50CD89' : '#5E6278' }}
               />
               <div className="flex flex-col gap-3 px-8 py-6">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <img src={customer.customer.avatar} className="size-12 rounded-[4px]" />
+                  <StatusDropdown
+                    selected={customer.state}
+                    setSelected={() => {}}
+                    options={{
+                      'Under Review': {
+                        color: '#FFA800',
+                        backgroundColor: '#FFF8EA'
+                      },
+                      Active: {
+                        color: '#50CD89',
+                        backgroundColor: '#EEFAF4'
+                      }
+                    }}
+                  />
                 </div>
                 <div className="text-[#3F4254] font-bold text-[22px]">{customer.customer.name}</div>
                 <div className="text-[#B5B5C3] font-medium">{customer.nationality}</div>

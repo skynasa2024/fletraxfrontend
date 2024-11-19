@@ -5,6 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
+import { StatusDropdown } from '../StatusDropdown';
 
 interface ViolationTableProps {
   searchQuery: string;
@@ -72,6 +73,31 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
             }).format(info.row.original.price)}
           </span>
         )
+      },
+      {
+        accessorFn: (row) => row.status,
+        id: 'status',
+        header: () => 'Status',
+        enableSorting: true,
+        cell: (info) => (
+          <StatusDropdown
+            selected={info.row.original.status}
+            setSelected={() => {}}
+            options={{
+              'In Maintenance': {
+                color: '#FFA800',
+                backgroundColor: '#FFF8EA'
+              },
+              Completed: {
+                color: '#50CD89',
+                backgroundColor: '#EEFAF4'
+              }
+            }}
+          />
+        ),
+        meta: {
+          className: 'min-w-44'
+        }
       },
       {
         id: 'actions',

@@ -1,7 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { PopperProps } from '@mui/base';
 import { TooltipProps } from '@mui/material/Tooltip';
-import { HTMLAttributes, MouseEvent, ReactNode, RefAttributes, RefObject } from 'react';
+import {
+  HTMLAttributes,
+  MouseEvent,
+  ReactNode,
+  RefAttributes,
+  RefObject,
+  CSSProperties
+} from 'react';
 
 export type TMenuEventHandler = (e: MouseEvent<HTMLElement>) => void;
 
@@ -95,6 +102,7 @@ export interface IMenuLabelProps {
 
 export interface IMenuToggleProps {
   className?: string;
+  style?: CSSProperties;
   tabIndex?: TMenuTabIndex;
   hasItemSub?: boolean;
   menuItemRef?: unknown;
