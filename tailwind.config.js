@@ -196,7 +196,8 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
+        "dm-sans": ['DM Sans', 'system-ui', 'sans-serif']
       },
       colors: {
         gray: {
@@ -384,7 +385,7 @@ module.exports = {
               drawer: 'white',
               dropdown: 'white',
               backdrop: 'rgba(0, 0, 0, 0.80)',
-              tableHead: 'var(--tw-light-active)'
+              tableHead: 'transparent'
             },
             dark: {
               card: theme('colors.coal')['300'],
@@ -400,7 +401,8 @@ module.exports = {
           borders: {
             light: {
               card: '1px solid var(--tw-gray-200)',
-              table: '1px solid var(--tw-gray-200)',
+              tableHead: '0px dashed var(--tw-gray-200)',
+              table: '2px dashed var(--tw-gray-200)',
               dropdown: '1px solid var(--tw-gray-200)',
               popover: '1px solid var(--tw-gray-200)',
               tooltip: '0'

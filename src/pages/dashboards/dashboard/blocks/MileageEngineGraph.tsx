@@ -20,7 +20,7 @@ const MileageEngineGraph = () => {
       <div className="card-header">
         <div className="card-title">
           <h3>Mileage & Engine Hours</h3>
-          <h4 className="text-sm font-thin text-gray-700">All today</h4>
+          <h4 className="text-sm font-thin text-[#B5B5C3]">All today</h4>
         </div>
 
         <ButtonRadioGroup

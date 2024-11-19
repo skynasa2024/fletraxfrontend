@@ -14,6 +14,7 @@ export const fakeVehicle = (): Vehicle => {
 export const fakeCustomer = (): Customer => {
   return {
     name: faker.person.fullName(),
-    avatar: `https://thispersondoesnotexist.com/?seed=${faker.number.int()}`
+    avatar: `https://thispersondoesnotexist.com/`,
+    email: faker.internet.email()
   };
 };

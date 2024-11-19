@@ -85,7 +85,7 @@ const MovingDeviceChart = () => {
       <div className="px-7 py-6 flex items-center justify-between">
         <div className="card-title">
           <h3>Moving & Device</h3>
-          <h4 className="text-sm font-thin text-gray-700">Status</h4>
+          <h4 className="text-sm font-thin text-[#B5B5C3]">Status</h4>
         </div>
 
         <ButtonRadioGroup

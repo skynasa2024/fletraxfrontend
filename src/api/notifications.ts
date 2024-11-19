@@ -12,6 +12,6 @@ export const getNotifications = async (): Promise<Notification[]> => {
     .map(() => ({
       title: faker.word.words({ count: { min: 2, max: 4 } }),
       details: faker.lorem.paragraph(),
-      image: faker.datatype.boolean() ? undefined : faker.image.avatarGitHub()
+      image: faker.helpers.maybe(faker.image.avatarGitHub)
     }));
 };

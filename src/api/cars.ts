@@ -24,6 +24,14 @@ export interface Vehicle {
   imei: string;
 }
 
+export interface VehicleDetails {
+  vehicle: Vehicle;
+  customer: Customer;
+  brandName: string;
+  type: string;
+  mileage: number;
+}
+
 export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
@@ -100,6 +108,26 @@ export const getMaintenance = async (
       status: faker.word.words(2),
       type: faker.word.words(2),
       supplier: faker.person.fullName()
+    }));
+
+  return {
+    data: originalDataset,
+    totalCount
+  };
+};
+
+export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDetails>> => {
+  const limit = 5;
+  const totalCount = faker.number.int({ min: 6, max: 500 });
+
+  const originalDataset: VehicleDetails[] = Array(limit)
+    .fill(0)
+    .map(() => ({
+      vehicle: fakeVehicle(),
+      customer: fakeCustomer(),
+      brandName: faker.vehicle.vehicle(),
+      mileage: faker.number.int({ min: 5, max: 1000 }),
+      type: faker.helpers.arrayElement(['Manual', 'Automatic'])
     }));
 
   return {
