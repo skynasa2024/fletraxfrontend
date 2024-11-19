@@ -56,7 +56,8 @@ const Projects = () => {
       name: 'Strategic Partnership Deal',
       owner: {
         name: 'Paul Wilson',
-        email: 'paul@example.com'
+        email: 'paul@example.com',
+        avatar:''
       },
       date: '24.9.2024',
       status: {
