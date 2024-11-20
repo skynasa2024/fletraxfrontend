@@ -3,6 +3,7 @@ import { fakeCustomer, fakeVehicle } from './faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Customer } from './customer';
+import { Client } from './client';
 
 export const getMovingCars = async (): Promise<Record<string, number>> => {
   return {
@@ -145,7 +146,7 @@ export interface VehicleLocation {
   angle: number;
 }
 
-export const getVehicleLocations = async (): Promise<VehicleLocation[]> => {
+export const getVehicleLocations = async (client: Client): Promise<VehicleLocation[]> => {
   return Array(faker.number.int(2000))
     .fill(0)
     .map(() => {
