@@ -1,3 +1,3 @@
-export * from './ProfileDefaultContent';
+export * from './DriverPage';
 export * from './Driver';
 export * from './blocks';

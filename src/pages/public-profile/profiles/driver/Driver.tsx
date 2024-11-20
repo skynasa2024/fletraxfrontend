@@ -5,7 +5,7 @@ import { Container } from '@/components/container';
 
 
 
-import { ProfileDefaultContent } from '.';
+import { DriverPage } from '.';
 
 const Driver = () => {
   const image = (
@@ -18,7 +18,7 @@ const Driver = () => {
   return (
     <Fragment>
       <Container>
-        <ProfileDefaultContent />
+        <DriverPage />
       </Container>
     </Fragment>
   );
