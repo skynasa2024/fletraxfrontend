@@ -22,7 +22,9 @@ import {
   ProfileTeamsPage,
   ProfileWorksPage
 } from '@/pages/public-profile';
-import {User} from '@/pages/public-profile/profiles/user';
+import { User } from '@/pages/public-profile/profiles/user';
+import { Driver } from '@/pages/public-profile/profiles/driver';
+
 import {
   AccountActivityPage,
   AccountAllowedIPAddressesPage,
@@ -59,7 +61,9 @@ import {
   AccountTeamsStarterPage,
   AccountUserProfilePage
 } from '@/pages/account';
-import {AddUser} from '@/pages/account/home/add-user'
+import { AddUser } from '@/pages/account/home/add-user';
+import { AddDriver } from '@/pages/account/home/add-driver';
+
 import {
   NetworkAppRosterPage,
   NetworkMarketAuthorsPage,
@@ -93,9 +97,11 @@ const AppRoutingSetup = (): ReactElement => {
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
-          <Route path="/device/device" element={<Device />} />
+          <Route path="/devices/device" element={<Device />} />
           <Route path="/users/user" element={<User />} />
+          <Route path="/drivers/driver" element={<Driver />} />
           <Route path="/users/add-users" element={<AddUser />} />
+          <Route path="/drivers/add-driver" element={<AddDriver />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
@@ -122,7 +128,7 @@ const AppRoutingSetup = (): ReactElement => {
             path="/account/home/settings-enterprise"
             element={<AccountSettingsEnterprisePage />}
           />
-          <Route path="/device/add-device" element={<AccountSettingsPlainPage />} />
+          <Route path="/devices/add-device" element={<AccountSettingsPlainPage />} />
           <Route path="/users/add-user" element={<AddUser />} />
           <Route path="/account/home/settings-modal" element={<AccountSettingsModalPage />} />
           <Route path="/account/billing/basic" element={<AccountBasicPage />} />

@@ -3,7 +3,7 @@ import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
 
 import { DropdownCrud1, DropdownCrudItem1 } from '@/partials/dropdowns/general';
 
-interface IProjectsItem {
+interface UserItem {
   name: string;
   id: string;
   owner: {
@@ -24,12 +24,12 @@ interface IProjectsItem {
     };
   };
 }
-interface IProjectsItems extends Array<IProjectsItem> {}
+interface UserItems extends Array<UserItem> {}
 
-const Projects = () => {
+const UserList = () => {
   const { isRTL } = useLanguage();
 
-  const items: IProjectsItems = [
+  const items: UserItems = [
     {
       id: '7586566',
       name: 'Acme software development',
@@ -115,7 +115,7 @@ const Projects = () => {
     }
   ];
 
-  const renderItem = (item: IProjectsItem, index: number) => {
+  const renderItem = (item: UserItem, index: number) => {
     return (
       <tr key={index}>
         <td className="text-start flex items-center w-full p-3">
@@ -144,9 +144,9 @@ const Projects = () => {
         </td>
 
         <td>
-          <div className="flex justify-between items-center">
-            <div className="text-start font-bold">{item.date}</div>
-          </div>
+ 
+            <div className="text-gray-700 font-bold">{item.date}</div>
+      
         </td>
         <td className="text-start">
           {' '}
@@ -246,7 +246,7 @@ const Projects = () => {
               <th className="text-left py-2 px-4 w-1/6">Date</th>
               <th className="text-left py-2 px-4 w-1/6">Status</th>
               <th className="text-left py-2 px-0 w-1/6">Role</th>
-              <th className="text-left py-2 px-1 w-1/6">Actions</th>
+              <th className="text-left py-2 px-1 w-1/6">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -260,4 +260,4 @@ const Projects = () => {
   );
 };
 
-export { Projects, type IProjectsItem, type IProjectsItems };
+export { UserList, type UserItem, type UserItems };

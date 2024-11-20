@@ -4,7 +4,7 @@ export * from './Connections';
 export * from './Contributions';
 export * from './Contributors';
 export * from './MediaUploads';
-export * from './UserList';
+export * from './CarList';
 export * from './RecentUploads';
 export * from './SalesOverview';
 export * from './Tags';

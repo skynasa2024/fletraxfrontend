@@ -106,11 +106,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       {
         title: 'Device',
-        path: '/device/device'
+        path: '/devices/device'
       },
       {
         title: 'Add device',
-        path: '/device/add-device'
+        path: '/devices/add-device'
       },
 
      
@@ -137,12 +137,12 @@ export const MENU_SIDEBAR: TMenuConfig = [
     externalIcon: 'driver',
     children: [
       {
-        title: 'driver',
-        path: '/driver/driver'
+        title: 'Driver',
+        path: '/drivers/driver'
       },
       {
         title: 'Add Driver',
-        path: '/driver/add-driver'
+        path: '/drivers/add-driver'
       },
 
      
