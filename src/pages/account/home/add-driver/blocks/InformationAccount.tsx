@@ -1,4 +1,4 @@
-const Password = () => {
+const InformationAccount = () => {
   return (
     <div className="card pb-2.5">
       
@@ -30,4 +30,4 @@ const Password = () => {
   );
 };
 
-export { Password };
+export { InformationAccount };

@@ -1,3 +1,4 @@
-export * from './BasicSettings';
-export * from './Password';
+export * from './Information';
+export * from './InformationAccount';
 export * from './Contact';
+export * from './Documents';

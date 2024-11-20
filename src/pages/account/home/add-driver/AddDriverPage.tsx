@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
-import { BasicSettings, Password, Contact } from './blocks';
+import { Information, InformationAccount, Contact, Documents } from './blocks';
+
+
 
 const AddDriverPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -13,16 +15,20 @@ const AddDriverPage = () => {
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
       <Tabs value={activeTab} onChange={handleTabChange}>
         <Tab label="Information" />
-        <Tab label="Account" />
+        <Tab label="Information Account" />
+        <Tab label="Documents" />
         <Tab label="Contact" />
       </Tabs>
       <Box hidden={activeTab !== 0}>
-        <BasicSettings title="Information" />
+        <Information title="Information" />
       </Box>
       <Box hidden={activeTab !== 1}>
-        <Password />
+        <InformationAccount />
       </Box>
       <Box hidden={activeTab !== 2}>
+        <Documents title="documents" />
+      </Box>
+      <Box hidden={activeTab !== 3}>
         <Contact />
       </Box>
     </div>

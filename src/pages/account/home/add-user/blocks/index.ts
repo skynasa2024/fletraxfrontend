@@ -1,3 +1,3 @@
-export * from './BasicSettings';
+export * from './Information';
 export * from './Password';
 export * from './Contact';

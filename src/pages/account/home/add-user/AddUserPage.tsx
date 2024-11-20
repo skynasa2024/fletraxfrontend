@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
-import { BasicSettings, Password, Contact } from './blocks';
+import { Information, Password, Contact } from './blocks';
 
 const AddUserPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -17,7 +17,7 @@ const AddUserPage = () => {
         <Tab label="Contact" />
       </Tabs>
       <Box hidden={activeTab !== 0}>
-        <BasicSettings title="Information" />
+        <Information title="Information" />
       </Box>
       <Box hidden={activeTab !== 1}>
         <Password />
