@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import { BasicSettings, Password, Contact } from './blocks';
 
-const AccountSettingsPlainContent = () => {
+const AddUserPage = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (_event: any, newValue: React.SetStateAction<number>) => {
@@ -29,4 +29,4 @@ const AccountSettingsPlainContent = () => {
   );
 };
 
-export { AccountSettingsPlainContent };
+export { AddUserPage };

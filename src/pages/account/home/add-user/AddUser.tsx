@@ -10,7 +10,7 @@ import {
 } from '@/partials/toolbar';
 import { PageNavbar } from '@/pages/account';
 
-import { AccountSettingsPlainContent } from '.';
+import { AddUserPage } from '.';
 import { useLayout } from '@/providers';
 
 const AddUser = () => {
@@ -51,7 +51,7 @@ const AddUser = () => {
       )}
 
       <Container>
-        <AccountSettingsPlainContent />
+        <AddUserPage />
       </Container>
     </Fragment>
   );

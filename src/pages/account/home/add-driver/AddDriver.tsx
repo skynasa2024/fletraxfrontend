@@ -10,7 +10,7 @@ import {
 } from '@/partials/toolbar';
 import { PageNavbar } from '@/pages/account';
 
-import { AccountSettingsPlainContent } from '.';
+import { AddDriverPage } from '.';
 import { useLayout } from '@/providers';
 
 const AddDriver = () => {
@@ -51,7 +51,7 @@ const AddDriver = () => {
       )}
 
       <Container>
-        <AccountSettingsPlainContent />
+        <AddDriverPage />
       </Container>
     </Fragment>
   );
