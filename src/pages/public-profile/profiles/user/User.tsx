@@ -5,7 +5,7 @@ import { Container } from '@/components/container';
 
 
 
-import { ProfileDefaultContent } from '.';
+import { UserPage } from '.';
 
 const User = () => {
   const image = (
@@ -18,7 +18,7 @@ const User = () => {
   return (
     <Fragment>
       <Container>
-        <ProfileDefaultContent />
+        <UserPage />
       </Container>
     </Fragment>
   );
