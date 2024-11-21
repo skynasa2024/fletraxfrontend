@@ -1,31 +1,20 @@
-import { getVehicleLocations, VehicleLocation } from '@/api/cars';
-import { useEffect, useState } from 'react';
 import { Marker } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
+import { useMonitoringProvider } from '../providers/MonitoringProvider';
 
 export const CarsLayer = () => {
-  const [locations, setLocations] = useState<VehicleLocation[]>();
+  const { locations } = useMonitoringProvider();
   const icon = L.icon({
     iconUrl: toAbsoluteUrl('/media/icons/car-marker.png'),
     iconSize: [30, 60]
   });
 
-  useEffect(() => {
-    getVehicleLocations().then(setLocations);
-
-    const interval = setInterval(async () => {
-      setLocations(await getVehicleLocations());
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     // @ts-ignore
-    <MarkerClusterGroup>
+    <MarkerClusterGroup chunkedLoading removeOutsideVisibleBounds>
       {locations?.map((location) => (
         <Marker
           key={location.vehicle.imei}
