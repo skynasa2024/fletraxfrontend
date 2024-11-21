@@ -1,2 +1,2 @@
-export * from './BasicSettings';
-export * from './Password';
+export * from './Information';
+export * from './Company';

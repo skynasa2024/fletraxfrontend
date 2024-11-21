@@ -4,13 +4,12 @@ import { Container } from '@/components/container';
 import {
   Toolbar,
   ToolbarActions,
-  ToolbarDescription,
   ToolbarHeading,
   ToolbarPageTitle
 } from '@/partials/toolbar';
 import { PageNavbar } from '@/pages/account';
 
-import { AccountSettingsPlainContent } from '.';
+import { AddDevice } from '.';
 import { useLayout } from '@/providers';
 
 const AccountSettingsPlainPage = () => {
@@ -51,7 +50,7 @@ const AccountSettingsPlainPage = () => {
       )}
 
       <Container>
-        <AccountSettingsPlainContent />
+        <AddDevice />
       </Container>
     </Fragment>
   );

@@ -4,7 +4,7 @@ interface IGeneralSettingsProps {
   title: string;
 }
 
-const BasicSettings = ({ title }: IGeneralSettingsProps) => {
+const Information = ({ title }: IGeneralSettingsProps) => {
   return (
     <div className=" card pb-2.5">
       <div className="card-header" id="general_settings">
@@ -93,4 +93,4 @@ const BasicSettings = ({ title }: IGeneralSettingsProps) => {
   );
 };
 
-export { BasicSettings, type IGeneralSettingsProps };
+export { Information, type IGeneralSettingsProps };

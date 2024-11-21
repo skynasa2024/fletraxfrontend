@@ -1,4 +1,4 @@
-const Password = () => {
+const Company = () => {
   return (
     <div className="card pb-2.5">
      
@@ -31,4 +31,4 @@ const Password = () => {
   );
 };
 
-export { Password };
+export { Company };
