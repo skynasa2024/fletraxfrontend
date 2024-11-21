@@ -16,7 +16,7 @@ const AddUserPage = () => {
 
     ref.current?.scrollIntoView({
       behavior: 'smooth',
-      block: 'start'
+      block: 'center'
     });
 
     const header = ref.current?.querySelector('h2');
