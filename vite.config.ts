@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import tailwindcss from 'tailwindcss';
+import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
 
 export default defineConfig({
   plugins: [react()],
@@ -17,9 +18,14 @@ export default defineConfig({
     }
   },
   server: {
-    host: "0.0.0.0"
+    host: '0.0.0.0'
   },
   build: {
     chunkSizeWarningLimit: 3000
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [fixReactVirtualized]
+    }
   }
 });

@@ -6,9 +6,17 @@ export const MainControl = ({ children }: { children: ReactElement[] | ReactElem
 
   return (
     <div
-      className="leaflet-top leaflet-left"
-      onMouseOver={() => map.doubleClickZoom.disable()}
-      onMouseOut={() => map.doubleClickZoom.enable()}
+      className="leaflet-top leaflet-left h-screen flex items-stretch"
+      onMouseOver={() => {
+        map.doubleClickZoom.disable();
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+      }}
+      onMouseOut={() => {
+        map.doubleClickZoom.enable();
+        map.dragging.enable();
+        map.scrollWheelZoom.enable();
+      }}
     >
       <div className="leaflet-control flex flex-col gap-[10px] !mt-16 !ml-7 !mb-24 font-sans">
         {children}

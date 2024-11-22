@@ -197,7 +197,8 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Poppins', 'system-ui', 'sans-serif'],
-        "dm-sans": ['DM Sans', 'system-ui', 'sans-serif']
+        "dm-sans": ['DM Sans', 'system-ui', 'sans-serif'],
+        "roboto": ['Roboto', 'system-ui', 'sans-serif']
       },
       colors: {
         gray: {
