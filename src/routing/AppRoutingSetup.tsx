@@ -89,6 +89,7 @@ import {
   AuthenticationGetStartedPage
 } from '@/pages/authentication';
 import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
+import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDetailsPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -98,7 +99,8 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DefaultPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/devices/device" element={<Device />} />
-          <Route path="/users/user" element={<User />} />
+          <Route path="/users/user/*" element={<User />} />
+          <Route path="/users/user/view-user" element={<UserDetailsPage />} />
           <Route path="/drivers/driver" element={<Driver />} />
           <Route path="/users/add-users" element={<AddUser />} />
           <Route path="/drivers/add-driver" element={<AddDriver />} />

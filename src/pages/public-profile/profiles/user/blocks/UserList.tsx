@@ -2,7 +2,7 @@ import { useLanguage } from '@/i18n';
 import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
 
 import { DropdownCrud1, DropdownCrudItem1 } from '@/partials/dropdowns/general';
-
+import { useNavigate } from 'react-router-dom';
 interface UserItem {
   name: string;
   id: string;
@@ -36,7 +36,7 @@ const UserList = () => {
       owner: {
         name: 'Karina Clark',
         email: 'Karina@khljkl.com',
-        avatar: '' 
+        avatar: ''
       },
       date: '26.9.2024',
       status: {
@@ -57,7 +57,7 @@ const UserList = () => {
       owner: {
         name: 'Paul Wilson',
         email: 'paul@example.com',
-        avatar:''
+        avatar: ''
       },
       date: '24.9.2024',
       status: {
@@ -114,6 +114,10 @@ const UserList = () => {
       }
     }
   ];
+  const navigate = useNavigate();
+  const handleViewUserClick = () => {
+    navigate('view-user');
+  };
 
   const renderItem = (item: UserItem, index: number) => {
     return (
@@ -144,9 +148,7 @@ const UserList = () => {
         </td>
 
         <td>
- 
-            <div className="text-gray-700 font-bold">{item.date}</div>
-      
+          <div className="text-gray-700 font-bold">{item.date}</div>
         </td>
         <td className="text-start">
           {' '}
@@ -167,7 +169,10 @@ const UserList = () => {
         </td>
         <td>
           <MenuToggle className="flex justify-end gap-2">
-            <div className="flex justify-center items-center w-12 h-12 rounded-lg">
+            <div
+              className=" view-user flex justify-center items-center w-12 h-12 rounded-lg"
+              onClick={handleViewUserClick}
+            >
               <svg
                 width="31"
                 height="31"
@@ -186,7 +191,7 @@ const UserList = () => {
                 />
               </svg>
             </div>
-            <div className="flex justify-center items-center w-12 h-12 rounded-lg">
+            <div className=" edite-user flex justify-center items-center w-12 h-12 rounded-lg">
               <svg
                 width="31"
                 height="31"
