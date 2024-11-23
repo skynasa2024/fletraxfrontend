@@ -1,4 +1,4 @@
-import { CarList } from './blocks';
+import { DriverList } from './blocks';
 import { UserMiniCards } from './mini-cards/UserMiniCards';
 
 const DriverPage = () => {
@@ -7,7 +7,7 @@ const DriverPage = () => {
       <h3 className="font-bold text-xl text-gray-800">Driver List</h3>
 
       <UserMiniCards />
-      <CarList />
+      <DriverList />
     </div>
   );
 };
