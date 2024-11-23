@@ -21,33 +21,43 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
       {
         accessorKey: 'id',
         header: 'ID',
+        enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.id}</span>
       },
       {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: 'owner',
+        header: 'Owner',
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-              {row.original.name.charAt(0)}
+              {row.original.owner.charAt(0)}
             </div>
             <div>
-              <div className="font-bold">{row.original.name}</div>
+              <div className="font-bold">{row.original.owner}</div>
               <div className="text-gray-500">{row.original.email}</div>
             </div>
           </div>
         )
       },
       {
+        accessorKey: '',
+        header: 'Date',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <span className="text-gray-800">{format(row.original.date, 'MMM d, yyyy')}</span>
+        )
+      },
+      {
         accessorKey: 'role',
         header: 'Role',
+        enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.role}</span>
       },
       {
         accessorFn: (row) => row.status,
         id: 'status',
         header: () => 'Status',
-        enableSorting: true,
+       
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
@@ -77,6 +87,7 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
           className: 'min-w-44'
         }
       },
+      
      
       {
         id: 'actions',

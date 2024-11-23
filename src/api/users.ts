@@ -5,10 +5,11 @@ import { Paginated } from './common';
 
 export interface User {
   id: string;
-  name: string;
+  owner: string;
   email: string;
   role: string;
   status: string;
+  date: string;
   
 }
 
@@ -20,11 +21,11 @@ export const getUsers = async (
     .fill(0)
     .map(() => ({
       id: faker.string.uuid(),
-      name: faker.person.fullName(),
+      owner: faker.person.fullName(),
       email: faker.internet.email(),
       role: faker.helpers.arrayElement(['Admin', 'User', 'Manager', 'Viewer']),
       status: faker.helpers.arrayElement(['Active', 'Suspended', 'Pending Activation', 'Deactivated']),
-   
+      date: faker.date.past().toISOString()
     }));
 
   return {
