@@ -42,11 +42,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
     externalIcon: 'vehicle',
     children: [{
       title: 'Add Vehicle',
-      path: '/vehicle/login'
+      path: '/vehicles/add-vehicle'
     },
     {
       title: 'Vehicle',
-      path: '/vehicle/signup'
+      path: '/vehicles/vehicle'
     }, ]
   },
 
