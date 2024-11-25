@@ -5,7 +5,7 @@ import { Container } from '@/components/container';
 
 
 
-import { UserPage } from '.';
+import { VehiclePage } from '.';
 
 const Vehicles = () => {
   const image = (
@@ -18,7 +18,7 @@ const Vehicles = () => {
   return (
     <Fragment>
       <Container>
-        <UserPage />
+        <VehiclePage />
       </Container>
     </Fragment>
   );

@@ -3,22 +3,22 @@ import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 
 export interface Vehicle {
-  vehicle: unknown;
   id: string;
   owner: string;
   email: string;
   brand: string;
   plate: string;
-  gear: 'Manual' | 'Automatic';
+  gear: string;
   deviceName: string;
   currentMileage: string;
-  status: 'Available' | 'Unavailable' | 'Maintenance' | 'Rented';
+  status: string;
+  date: string;
 }
 
 export const getVehicles = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Vehicle>> => {
-  const totalCount = faker.number.int({ min: 10, max: 100 });
+  const totalCount = faker.number.int({ min: 20, max: 200 });
   const originalDataset: Vehicle[] = Array(params.pageSize)
     .fill(0)
     .map(() => ({
@@ -27,10 +27,11 @@ export const getVehicles = async (
       email: faker.internet.email(),
       brand: faker.vehicle.manufacturer(),
       plate: faker.vehicle.vrm(),
-      gear: faker.helpers.arrayElement(['Manual', 'Automatic']),
-      deviceName: faker.vehicle.model(),
-      currentMileage: `${faker.number.int({ min: 1, max: 150 })} KM`,
-      status: faker.helpers.arrayElement(['Available', 'Unavailable', 'Maintenance', 'Rented'])
+      gear: faker.helpers.arrayElement(['Automatic', 'Manual']),
+      deviceName: faker.helpers.arrayElement(['GPS Tracker', 'OBD-II Scanner']),
+      currentMileage: faker.number.int({ min: 0, max: 200000 }).toLocaleString(),
+      status: faker.helpers.arrayElement(['Available', 'Unavailable', 'Maintenance', 'Rented']),
+      date: faker.date.past().toISOString()
     }));
 
   return {
@@ -38,12 +39,3 @@ export const getVehicles = async (
     totalCount
   };
 };
-
-export type VehicleStatusType = 'Available' | 'Unavailable' | 'Maintenance' | 'Rented';
-
-export const STATUS_COLORS = {
-  Available: 'success',
-  Unavailable: 'error',
-  Maintenance: 'warning',
-  Rented: 'info'
-} as const;

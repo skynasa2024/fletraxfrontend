@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { DataGrid } from '@/components';
-import { getVehicles, Vehicle, STATUS_COLORS } from '@/api/vehicles';
+import { getVehicles, Vehicle } from '@/api/vehicles';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
@@ -36,23 +36,28 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
-        accessorFn: (row) => row.vehicle,
-        id: 'vehicle',
-        header: () => 'Car',
-        cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
+        accessorKey: 'brand', 
+        header: 'Brand',
+        cell: ({ row }) => <span className="text-gray-800">{row.original.brand}</span>,
         meta: {
-          className: 'min-w-60'
+          className: 'min-w-40'
         }
       },
-     
+
       {
-        accessorKey: 'vehicle.brand',
-        header: 'Brand',
-        cell: ({ row }) => (
-          <span className="text-gray-800">{row.original.vehicle?.brand || 'N/A'}</span>
+        accessorFn: (row) => `${row.brand} - ${row.plate}`,
+        id: 'plate',
+        header: 'Plate',
+        cell: (info) => (
+          <CarView
+            vehicle={{
+              brand: info.row.original.brand,
+              plate: info.row.original.plate
+            }}
+          />
         ),
         meta: {
-          className: 'min-w-36'
+          className: 'min-w-60'
         }
       },
       {
@@ -81,10 +86,22 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             selected={row.original.status}
             setSelected={() => {}}
             options={{
-              Available: { color: '#50CD89', backgroundColor: '#EEFAF4' },
-              Unavailable: { color: '#F1416C', backgroundColor: '#FFF5F8' },
-              Maintenance: { color: '#FFA800', backgroundColor: '#FFF8EA' },
-              Rented: { color: '#5271FF', backgroundColor: '#EEFAFF' }
+              Available: {
+                color: '#50CD89',
+                backgroundColor: '#EEFAF4'
+              },
+              Unavailable: {
+                color: '#F1416C',
+                backgroundColor: '#FFF5F8'
+              },
+              Maintenance: {
+                color: '#FFA800',
+                backgroundColor: '#FFF8EA'
+              },
+              Rented: {
+                color: '#5271FF',
+                backgroundColor: '#EEFAFF'
+              }
             }}
           />
         ),
