@@ -10,3 +10,5 @@ export * from './SalesOverview';
 export * from './Tags';
 export * from './UnlockPartnerships';
 export * from './WorkExperience';
+export * from './StatusDropdown';
+export * from './CarPlate'

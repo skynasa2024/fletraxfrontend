@@ -122,7 +122,7 @@ export const getMaintenance = async (
 };
 
 export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDetails>> => {
-  const limit = 5;
+  const limit = 10;
   const totalCount = faker.number.int({ min: 6, max: 500 });
 
   const originalDataset: VehicleDetails[] = Array(limit)
