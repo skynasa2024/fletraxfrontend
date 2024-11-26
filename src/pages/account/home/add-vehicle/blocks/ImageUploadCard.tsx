@@ -1,10 +1,7 @@
-import React from 'react';
-import { FaCloudUploadAlt } from 'react-icons/fa';
-
 const ImageUploadCard = () => {
   return (
     <div className="grid grid-cols-1 gap-5 p-3">
-      {/* First Card */}
+      
 
       <div className="p-4 card grid gap-2.5">
         <label className="form-label card-title">Vehicle Image</label>
@@ -40,7 +37,7 @@ const ImageUploadCard = () => {
           </div>
         </div>
       </div>
-      {/* Additional Cards */}
+      
 
       <div className="card p-4">
         <h3 className="card-title">Status</h3>
