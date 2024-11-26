@@ -120,9 +120,6 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             <button className="p-2">
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </button>
-            <button className="p-2">
-              <img src={toAbsoluteUrl('/media/icons/more.svg')} alt="More" />
-            </button>
           </div>
         ),
         meta: {
