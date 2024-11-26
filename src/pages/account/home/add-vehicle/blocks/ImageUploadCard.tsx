@@ -1,9 +1,7 @@
 const ImageUploadCard = () => {
   return (
     <div className="grid grid-cols-1 gap-5 p-3">
-      
-
-      <div className="p-4 card grid gap-2.5">
+      <div className="p-4 card grid gap-2.5 overflow-auto p-6">
         <label className="form-label card-title">Vehicle Image</label>
         <div className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center">
           <div className="flex flex-col items-center justify-center">
@@ -37,7 +35,6 @@ const ImageUploadCard = () => {
           </div>
         </div>
       </div>
-      
 
       <div className="card p-4">
         <h3 className="card-title">Status</h3>
@@ -77,7 +74,7 @@ const ImageUploadCard = () => {
         </div>
       </div>
 
-      <div className="card p-4 grid gap-2.5">
+      <div className="card p-4 grid gap-2.5 overflow-auto p-6">
         <label className="form-label card-title">Documents</label>
         <div className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center">
           <div className="flex flex-col items-center justify-center">

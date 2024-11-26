@@ -68,7 +68,7 @@ const AddVehiclePage = () => {
   };
 
   return (
-    <div className="grid gap-5 lg:gap-7.5 xl:w-[80rem] mx-auto">
+    <div className="grid gap-4 lg:gap-7.5 xl:w-[85rem] mx-auto">
       <div className="flex">
         {/* Image Upload Card */}
         <ImageUploadCard />
