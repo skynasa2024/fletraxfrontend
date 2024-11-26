@@ -123,9 +123,9 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
   const renderVehicleCard = (vehicle: VehicleDetails) => (
     <div
       key={vehicle.vehicle.plate}
-      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED]"
+      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full hover:shadow-lg transition-shadow duration-200"
     >
-      <div className="flex flex-col gap-5 px-8 py-6">
+      <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
           <StatusDropdown
@@ -147,11 +147,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             }}
           />
         </div>
-        <div className="flex gap-[38px] justify-between">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-[38px] sm:justify-between">
           <div className="flex gap-4">
             <div className="flex gap-2 items-center">
               <img src={vehicle.customer.avatar} className="size-9 rounded-full aspect-square" />
-              <div className="w-48 text-nowrap">
+              <div className="w-full sm:w-48 text-nowrap">
                 <div className="text-[#3F4254] font-bold text-[15px] text-ellipsis overflow-hidden">
                   {vehicle.customer.name}
                 </div>
@@ -166,8 +166,8 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             className="size-9 aspect-square object-cover mr-0.5"
           />
         </div>
-        <div className="flex justify-between items-end gap-4">
-          <div className="flex gap-[18px] text-[#72767C] font-dm-sans">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+          <div className="flex flex-wrap gap-4 sm:gap-[18px] text-[#72767C] font-dm-sans">
             <div className="flex gap-1">
               <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
               <span>{vehicle.mileage} KM</span>
@@ -177,17 +177,17 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
               <span>{vehicle.type}</span>
             </div>
           </div>
-          <div className="text-xs font-semibold text-[#3F4254] max-w-[92px] text-ellipsis overflow-hidden text-nowrap">
+          <div className="text-xs font-semibold text-[#3F4254] max-w-full sm:max-w-[92px] text-ellipsis overflow-hidden text-nowrap">
             {vehicle.brandName}
           </div>
         </div>
       </div>
       <div className="text-xs border-t flex justify-center">
-        <a href="#" className="px-5 py-2 flex gap-2">
+        <a href="#" className="px-5 py-2 flex gap-2 hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
-        <a href="#" className="px-5 py-2 border-x flex gap-2">
+        <a href="#" className="px-5 py-2 border-x flex gap-2 hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
         </a>
@@ -197,7 +197,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
 
   return (
     <div className="card">
-      <div className="px-7 pt-6 flex items-center justify-between">
+      <div className="px-4 sm:px-7 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="card-title">
           <h3>Vehicle</h3>
           <h4 className="text-sm font-thin text-[#B5B5C3]">
@@ -209,7 +209,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
           <div className="flex gap-1 border rounded-lg p-1">
             <button
               className={`p-2 rounded transition-colors ${
-                viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'
+                viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-50'
               }`}
               onClick={() => setViewMode('grid')}
               title="Grid View"
@@ -218,7 +218,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             </button>
             <button
               className={`p-2 rounded transition-colors ${
-                viewMode === 'card' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'
+                viewMode === 'card' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-50'
               }`}
               onClick={() => setViewMode('card')}
               title="Card View"
@@ -229,7 +229,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         </div>
       </div>
       <div className="gap-cols responsive-card">
-        <div className="card-body pt-2 px-6 pb-7">
+        <div className="card-body pt-2 px-2 sm:px-6 pb-7">
           {viewMode === 'grid' ? (
             <DataGrid
               columns={columns}
@@ -238,13 +238,8 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
               filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
             />
           ) : (
-            <div className="">
-              <div
-                className=" card-body scrollable-x pt-2 px-6 pb-7
-        grid 
-        gap-4 
-        grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4"
-              >
+            <div className="w-full">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
                 {vehicles?.data.map(renderVehicleCard)}
               </div>
             </div>
