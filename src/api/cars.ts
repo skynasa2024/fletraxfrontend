@@ -4,6 +4,8 @@ import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Customer } from './customer';
 import { Client } from './client';
+import { VehicleStatusType } from './vehicles';
+import { boolean } from 'yup';
 
 export const getMovingCars = async (): Promise<Record<string, number>> => {
   return {
@@ -23,6 +25,7 @@ export interface Vehicle {
   brandImage: string;
   plate: string;
   imei: string;
+  name: string;
 }
 
 export interface VehicleDetails {
@@ -139,23 +142,54 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
   };
 };
 
+export interface VehicleStatus {
+  engineStatus: boolean;
+  parkingTimeInMinutes: number;
+  timestamp: Date;
+  speed: number;
+  satellietes: number;
+  batteryLevel: number;
+  engineBlocked: boolean;
+  defenseStatus: boolean;
+  signalLevel: number;
+  existingKilometer: number;
+}
+
 export interface VehicleLocation {
   vehicle: Vehicle;
+  online: boolean;
   long: number;
   lat: number;
   angle: number;
+  status: VehicleStatus;
 }
 
 export const getVehicleLocations = async (client: Client): Promise<VehicleLocation[]> => {
   return Array(faker.number.int(2000))
     .fill(0)
     .map(() => {
-      const location = faker.location.nearbyGPSCoordinate({ origin: [38.9637, 33.2433], radius: 200 });
+      const location = faker.location.nearbyGPSCoordinate({
+        origin: [38.9637, 33.2433],
+        radius: 200
+      });
       return {
         vehicle: fakeVehicle(),
         lat: location[0],
         long: location[1],
-        angle: faker.number.float(360)
+        angle: faker.number.float(360),
+        online: faker.datatype.boolean(),
+        status: {
+          batteryLevel: faker.number.int(100),
+          defenseStatus: faker.datatype.boolean(),
+          engineBlocked: faker.datatype.boolean(),
+          engineStatus: faker.datatype.boolean(),
+          existingKilometer: faker.number.int(100000),
+          parkingTimeInMinutes: faker.number.int(10 * 60),
+          satellietes: faker.number.int(7),
+          signalLevel: faker.number.int(100),
+          speed: faker.number.int(160),
+          timestamp: faker.date.recent({ days: 0.1 })
+        }
       };
     });
 };
