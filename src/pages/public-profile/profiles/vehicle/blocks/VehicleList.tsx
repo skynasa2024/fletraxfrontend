@@ -6,6 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
 import { CarPlate } from '../blocks/CarPlate';
+import { useNavigate } from 'react-router';
 
 interface VehicleListProps {
   searchQuery?: string;
@@ -104,14 +105,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         header: 'Actions',
         cell: () => (
           <div className="flex gap-3">
-            <a href="#" className="p-2">
+            <a href="#" onClick={handleViewVehicleClick} className="p-2">
               <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
             </a>
             <a href="#" className="p-2">
               <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
-            </a>
-            <a href="#" className="p-2">
-              <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} alt="Delete" />
             </a>
           </div>
         )
@@ -119,6 +117,10 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
     ],
     []
   );
+  const navigate = useNavigate();
+  const handleViewVehicleClick = () => {
+    navigate('view-vehicle');
+  };
 
   const renderVehicleCard = (vehicle: VehicleDetails) => (
     <div
@@ -183,7 +185,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         </div>
       </div>
       <div className="text-xs border-t flex justify-center">
-        <a href="#" className="px-5 py-2 flex gap-2 hover:bg-gray-50">
+        <a
+          href="#"
+          onClick={handleViewVehicleClick}
+          className="px-5 py-2 flex gap-2 hover:bg-gray-50"
+        >
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
