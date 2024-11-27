@@ -1,4 +1,4 @@
-import { getVehicleLocations, VehicleLocation } from '@/api/cars';
+import { VehicleLocation } from '@/api/cars';
 import { Client, getClients } from '@/api/client';
 import {
   createContext,
@@ -9,9 +9,29 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useReducer,
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import mqtt from 'mqtt';
+
+interface MqttResponse {
+  device_id: number;
+  device_name: string;
+  engine_ignition_status: string;
+  existing_kilometers: string;
+  fuel_level: number;
+  ident: string;
+  parking_time: string;
+  position_altitude: number;
+  position_latitude: number;
+  position_longitude: number;
+  position_speed: number;
+  position_valid: boolean;
+  protocol: string;
+  server_timestamp: string;
+  timestamp: string;
+}
 
 interface MonitoringContextProps {
   searchQuery: string;
@@ -26,6 +46,8 @@ interface MonitoringContextProps {
   setSelectedLocation: (v: VehicleLocation | undefined) => void;
 }
 
+let memoryMaplocations: Record<string, VehicleLocation> = {};
+
 const MonitoringContext = createContext<MonitoringContextProps>({
   searchQuery: '',
   clients: [],
@@ -39,7 +61,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [clients, setClients] = useState<Client[]>([]);
-  const [locations, setLocations] = useState<VehicleLocation[]>([]);
+  const [mapLocations, setMapLocations] = useState<Record<string, VehicleLocation>>({});
+  const locations = useMemo(() => Object.values(mapLocations), [mapLocations]);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
     [clients, searchParams]
@@ -47,6 +70,17 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const selectedLocation = useMemo(
     () => locations.find((v) => v.vehicle.imei === searchParams.get('location')),
     [locations, searchParams]
+  );
+  const mqttClient = useMemo(
+    () =>
+      mqtt.connect('wss://test.fletrax.com:8084/mqtt', {
+        username: 'super_admin',
+        password: 'fletrax159',
+        clean: true,
+        keepalive: 60,
+        protocolVersion: 5
+      }),
+    []
   );
 
   const setSelectedClient = useCallback(
@@ -69,15 +103,47 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
+    mqttClient.on('connect', () => {
+      mqttClient.subscribeAsync('device/monitoring/+');
+    });
+    mqttClient.on('message', (topic, payload) => {
+      const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
+      memoryMaplocations[device.ident] = {
+        online: true,
+        lat: device.position_latitude,
+        long: device.position_longitude,
+        angle: 0,
+        status: {
+          parkingTime: device.parking_time,
+          engineStatus: device.engine_ignition_status === 'true',
+          timestamp: new Date(+device.timestamp * 1000),
+          batteryLevel: 100,
+          defenseStatus: false,
+          engineBlocked: false,
+          existingKilometer: device.existing_kilometers,
+          satellietes: 0,
+          signalLevel: 0,
+          speed: device.position_speed
+        },
+        vehicle: {
+          imei: device.ident,
+          name: device.device_name,
+          brandImage: '',
+          plate: ''
+        }
+      };
+    });
+  }, [mqttClient]);
+
+  useEffect(() => {
     getClients(searchQuery).then(setClients);
   }, [searchQuery]);
 
   useEffect(() => {
-    selectedClient && getVehicleLocations(selectedClient).then(setLocations);
-
+    memoryMaplocations = {};
     const interval = setInterval(async () => {
-      selectedClient && setLocations(await getVehicleLocations(selectedClient));
-    }, 50000);
+      setMapLocations({ ...memoryMaplocations });
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [selectedClient]);

@@ -4,8 +4,6 @@ import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Customer } from './customer';
 import { Client } from './client';
-import { VehicleStatusType } from './vehicles';
-import { boolean } from 'yup';
 
 export const getMovingCars = async (): Promise<Record<string, number>> => {
   return {
@@ -144,7 +142,7 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
 
 export interface VehicleStatus {
   engineStatus: boolean;
-  parkingTimeInMinutes: number;
+  parkingTime: string;
   timestamp: Date;
   speed: number;
   satellietes: number;
@@ -152,7 +150,7 @@ export interface VehicleStatus {
   engineBlocked: boolean;
   defenseStatus: boolean;
   signalLevel: number;
-  existingKilometer: number;
+  existingKilometer: string;
 }
 
 export interface VehicleLocation {
@@ -183,8 +181,8 @@ export const getVehicleLocations = async (client: Client): Promise<VehicleLocati
           defenseStatus: faker.datatype.boolean(),
           engineBlocked: faker.datatype.boolean(),
           engineStatus: faker.datatype.boolean(),
-          existingKilometer: faker.number.int(100000),
-          parkingTimeInMinutes: faker.number.int(10 * 60),
+          existingKilometer: `${faker.number.float({ max: 1000, fractionDigits: 2 })} Km`,
+          parkingTime: `${faker.number.int(12)} h, ${faker.number.int(59)} min}`,
           satellietes: faker.number.int(7),
           signalLevel: faker.number.int(100),
           speed: faker.number.int(160),

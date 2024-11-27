@@ -15,14 +15,18 @@ export const CarsLayer = () => {
   return (
     // @ts-ignore
     <MarkerClusterGroup chunkedLoading removeOutsideVisibleBounds>
-      {locations?.map((location) => (
-        <Marker
-          key={location.vehicle.imei}
-          position={[location.lat, location.long]}
-          rotationAngle={location.angle}
-          icon={icon}
-        />
-      ))}
+      {locations?.map(
+        (location) =>
+          location.lat &&
+          location.long && (
+            <Marker
+              key={location.vehicle.imei}
+              position={[location.lat, location.long]}
+              rotationAngle={location.angle}
+              icon={icon}
+            />
+          )
+      )}
     </MarkerClusterGroup>
   );
 };
