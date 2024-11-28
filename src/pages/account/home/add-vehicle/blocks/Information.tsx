@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { ImageUploadCard } from './ImageUploadCard';
 
 interface IGeneralSettingsProps {
   title: string;
@@ -179,6 +180,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
             </select>
           </div>
         </div>
+        {/* Image Upload Card */}
+        <ImageUploadCard />
       </div>
     </div>
   );

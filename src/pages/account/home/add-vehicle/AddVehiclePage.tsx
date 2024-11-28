@@ -68,13 +68,12 @@ const AddVehiclePage = () => {
   };
 
   return (
-    <div className="grid gap-4 lg:gap-7.5 xl:w-[85rem] mx-auto">
+    <div className="grid gap-5 lg:gap-7.5 xl:w-[85rem] mx-auto">
       <div className="flex">
-        {/* Image Upload Card */}
-        <ImageUploadCard />
+       
 
         {/* Main Content */}
-        <div className="w-3/4">
+        <div className="w-full align-center">
           {/* Tabs Navigation */}
           <div className="tabs mb-5 flex flex-wrap border-b" data-tabs="true">
             {tabConfig.map(({ id, label }) => (

@@ -112,9 +112,8 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/users/add-users" element={<AddUser />} />
           <Route path="/drivers/add-driver" element={<AddDriver />} />
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
-
-
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
+          
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
