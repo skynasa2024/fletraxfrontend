@@ -6,3 +6,10 @@ export { default as RentIcon } from './RentIcon';
 export { default as ViolationsIcon } from './ViolationsIcon';
 export { default as Model } from './Model';
 export { default as ModelSeries } from './ModelSeries';
+export { default as ModelYear } from './ModelYear';
+export { default as Power } from './Power';
+export { default as Tayp } from './Tayp';
+export { default as FuelType } from './FuelType';
+export { default as Gear } from './Gear';
+export { default as Volume } from './Volume'
+export { default as Color } from './color';
