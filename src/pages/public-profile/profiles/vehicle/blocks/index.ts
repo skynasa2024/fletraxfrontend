@@ -12,5 +12,5 @@ export * from './UnlockPartnerships';
 export * from './WorkExperience';
 export * from './StatusDropdown';
 export * from './CarPlate'
-export * from './ToolBar';
+export * from './Toolbar';
 
