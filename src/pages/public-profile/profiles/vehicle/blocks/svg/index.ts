@@ -13,3 +13,7 @@ export { default as FuelType } from './FuelType';
 export { default as Gear } from './Gear';
 export { default as Volume } from './Volume'
 export { default as Color } from './Color';
+export { default as EngineHours } from './EngineHours';
+export { default as Mileage } from './Mileage';
+export { default as RentedTimes } from './RentedTimes';
+export { default as FuelConsumption } from './FuelConsumption'; 
