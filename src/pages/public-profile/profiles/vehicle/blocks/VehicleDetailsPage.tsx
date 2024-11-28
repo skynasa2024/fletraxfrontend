@@ -1,25 +1,18 @@
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import Toolbar from './ToolBar';
+import Modal from './svg/Model'
 
 const VehicleDetailsPage = () => {
-  const { vehicleId } = useParams();
-
-  // Fetch and display vehicle details based on the ID
-  // Example:
-  // const [vehicle, setVehicle] = useState<VehicleDetails | null>(null);
-  // useEffect(() => {
-  //   fetchVehicle(vehicleId).then(setVehicle);
-  // }, [vehicleId]);
-
   return (
-    <div>
-      <div className="card max-w-4xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-      <div className="card-body p-8">
-       
+    <div className="p-4 space-y-4">
 
-          
-          
+      <Toolbar />
+
+      
+      <div className="border-2 border-gray-300 rounded-md shadow-sm p-4">
+        <p className="text-gray-500 text-center"> Add content here.</p>
+        <Modal />
       </div>
-    </div>
     </div>
   );
 };
