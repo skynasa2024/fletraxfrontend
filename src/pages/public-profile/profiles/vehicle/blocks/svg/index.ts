@@ -11,5 +11,5 @@ export { default as Power } from './Power';
 export { default as Tayp } from './Tayp';
 export { default as FuelType } from './FuelType';
 export { default as Gear } from './Gear';
-export { default as Volume } from './Volume'
-export { default as Color } from './color';
+export { default as Volume } from './Volume';
+export { default as Color } from './Color';
