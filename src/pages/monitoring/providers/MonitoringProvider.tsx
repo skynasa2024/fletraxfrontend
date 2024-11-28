@@ -19,13 +19,17 @@ interface MqttResponse {
   device_name: string;
   engine_ignition_status: string;
   existing_kilometers: string;
-  fuel_level: number;
+  external_battery_voltage?: number;
+  fuel_level?: number;
+  gsm_signal_level?: number;
   ident: string;
+  movement_status?: boolean;
   parking_time: string;
   position_altitude: number;
   position_latitude: number;
   position_longitude: number;
-  position_speed: number;
+  position_satellites?: number;
+  position_speed?: number;
   position_valid: boolean;
   position_direction?: number;
   protocol: string;
@@ -107,7 +111,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
-      memoryMaplocations[device.ident] = {
+      memoryMaplocations[topic] = {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
@@ -116,19 +120,19 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
           parkingTime: device.parking_time,
           engineStatus: device.engine_ignition_status === 'true',
           timestamp: new Date(+device.timestamp * 1000),
-          batteryLevel: 100,
+          batteryLevel: device.external_battery_voltage || 0,
           defenseStatus: false,
           engineBlocked: false,
           existingKilometer: device.existing_kilometers,
-          satellietes: 0,
-          signalLevel: 0,
-          speed: device.position_speed
+          satellietes: device.position_satellites || 0,
+          signalLevel: device.gsm_signal_level || -1,
+          speed: device.position_speed || 0
         },
         vehicle: {
           imei: device.ident,
           name: device.device_name,
           brandImage: '',
-          plate: ''
+          plate: 'AAAAAA'
         }
       };
     });

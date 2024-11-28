@@ -1,12 +1,13 @@
 import { KeenIcon } from '@/components';
 import { Collapse } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import { ButtonRadioGroup } from '@/pages/dashboards/dashboard/blocks/ButtonRadioGroup';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { AutoSizer, List } from 'react-virtualized';
+import { toAbsoluteUrl } from '@/utils';
 
 export const MainCard = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -14,6 +15,13 @@ export const MainCard = () => {
     useMonitoringProvider();
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
+  const onlineLocations = useMemo(() => locations.filter((loc) => loc.online), [locations]);
+  const offlineLocations = useMemo(() => locations.filter((loc) => !loc.online), [locations]);
+  const activeLocations = useMemo(
+    () =>
+      selection === 'All' ? locations : selection === 'Online' ? onlineLocations : offlineLocations,
+    [locations, offlineLocations, onlineLocations, selection]
+  );
 
   return (
     <div className="card w-[380px] data-[open=true]:h-full group" data-open={isOpen}>
@@ -107,11 +115,9 @@ export const MainCard = () => {
                       selection={selection}
                       selections={['All', 'Online', 'Offline']}
                       suffix={{
-                        All: selectedClient
-                          ? ` (${selectedClient?.onlineDevices + selectedClient?.offlineDevices})`
-                          : '',
-                        Online: selectedClient ? ` (${selectedClient?.onlineDevices})` : '',
-                        Offline: selectedClient ? ` (${selectedClient?.offlineDevices})` : ''
+                        All: selectedClient ? ` (${locations.length})` : '',
+                        Online: selectedClient ? ` (${onlineLocations.length})` : '',
+                        Offline: selectedClient ? ` (${offlineLocations.length})` : ''
                       }}
                       setSelection={setSelection}
                       className="btn btn-light data-[selected=false]:btn-clear uppercase border-0"
@@ -119,38 +125,80 @@ export const MainCard = () => {
                   </div>
                   <List
                     rowRenderer={({ index, key, style }) => {
-                      const location = locations.filter((loc) => {
-                        if (selection === 'All') return true;
-
-                        if (selection === 'Online') return loc.online;
-                        if (selection === 'Offline') return !loc.online;
-                      })[index];
+                      const location = activeLocations[index];
                       return (
                         <div key={key} style={style} className="pb-2">
                           <div className="flex flex-col p-[15px] border border-[#E7E8ED] rounded-[10px] gap-[10px]">
-                            <CarPlate plate={location.vehicle.plate} />
+                            <div className="flex justify-between">
+                              <CarPlate plate={location.vehicle.plate} />
+                              <div
+                                data-online={location.online}
+                                className="rounded-md font-medium text-xs bg-[#F1416C]/10 text-[#F1416C] data-[online=true]:bg-[#50CD89]/10 data-[online=true]:text-[#50CD89] px-[10px] py-[6px] self-center"
+                              >
+                                {location.online ? 'Online' : 'Offline'}
+                              </div>
+                            </div>
                             <div className="border-b-2 border-[#E4E6EF] border-dashed" />
                             <div className="flex justify-between font-semibold text-xs">
                               <div>
                                 <div>{location.vehicle.name}</div>
                                 <div>{location.vehicle.imei}</div>
                               </div>
+                              <img src={toAbsoluteUrl('/media/icons/battery-5.svg')} />
                             </div>
                             <div className="border-b-2 border-[#E4E6EF] border-dashed" />
                             <div className="flex gap-[10px] text-[10px] font-semibold justify-evenly">
-                              <div>{location.status.engineStatus ? 'ON' : 'OFF'}</div>
-                              <div>{`${location.status.speed}kmh`}</div>
-                              <div>{location.status.satellietes}</div>
-                              <div>{`${location.status.signalLevel}%`}</div>
-                              <div>{location.status.engineBlocked ? 'Active' : 'Inactive'}</div>
-                              <div>{location.status.defenseStatus ? 'Active' : 'Inactive'}</div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img
+                                  src={toAbsoluteUrl(
+                                    `/media/icons/${location.status.engineStatus ? 'on' : 'off'}.svg`
+                                  )}
+                                />
+                                <div>{location.status.engineStatus ? 'ON' : 'OFF'}</div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img
+                                  src={toAbsoluteUrl(
+                                    `/media/icons/${location.status.speed > 1 ? 'speed-moving' : 'speed-stop'}.svg`
+                                  )}
+                                />
+                                <div>{`${location.status.speed.toFixed(1)}kmh`}</div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img src={toAbsoluteUrl('/media/icons/satellites.svg')} />
+                                <div>{location.status.satellietes}</div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img
+                                  src={toAbsoluteUrl(
+                                    `/media/icons/${location.status.signalLevel >= 50 ? 'signal-good' : 'signal-medium'}.svg`
+                                  )}
+                                />
+                                <div>{`${location.status.signalLevel}%`}</div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img
+                                  src={toAbsoluteUrl(
+                                    `/media/icons/${location.status.defenseStatus ? 'defense-active' : 'defense-inactive'}.svg`
+                                  )}
+                                />
+                                <div>{location.status.defenseStatus ? 'Active' : 'Inactive'}</div>
+                              </div>
+                              <div className="flex flex-col gap-0.5 items-start">
+                                <img
+                                  src={toAbsoluteUrl(
+                                    `/media/icons/${location.status.engineBlocked ? 'engine-block-active' : 'engine-block-inactive'}.svg`
+                                  )}
+                                />
+                                <div>{location.status.engineBlocked ? 'Active' : 'Inactive'}</div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       );
                     }}
-                    rowCount={locations.length}
-                    rowHeight={167}
+                    rowCount={activeLocations.length}
+                    rowHeight={192}
                     height={height - resizableHeight - 50}
                     width={width}
                     className="scrollable"
