@@ -9,7 +9,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useReducer,
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -28,6 +27,7 @@ interface MqttResponse {
   position_longitude: number;
   position_speed: number;
   position_valid: boolean;
+  position_direction?: number;
   protocol: string;
   server_timestamp: string;
   timestamp: string;
@@ -61,8 +61,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [clients, setClients] = useState<Client[]>([]);
-  const [mapLocations, setMapLocations] = useState<Record<string, VehicleLocation>>({});
-  const locations = useMemo(() => Object.values(mapLocations), [mapLocations]);
+  const [locations, setLocations] = useState<VehicleLocation[]>([]);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
     [clients, searchParams]
@@ -112,7 +111,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
-        angle: 0,
+        angle: -(device.position_direction || 0),
         status: {
           parkingTime: device.parking_time,
           engineStatus: device.engine_ignition_status === 'true',
@@ -142,8 +141,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     memoryMaplocations = {};
     const interval = setInterval(async () => {
-      setMapLocations({ ...memoryMaplocations });
-    }, 2000);
+      setLocations(Object.values(memoryMaplocations));
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [selectedClient]);

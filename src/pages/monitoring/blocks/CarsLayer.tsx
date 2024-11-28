@@ -1,9 +1,9 @@
 import { Marker } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 
 export const CarsLayer = () => {
   const { locations } = useMonitoringProvider();
@@ -13,7 +13,6 @@ export const CarsLayer = () => {
   });
 
   return (
-    // @ts-ignore
     <MarkerClusterGroup chunkedLoading removeOutsideVisibleBounds>
       {locations?.map(
         (location) =>

@@ -51,7 +51,7 @@
     "react-inlinesvg": "^4.1.4",
     "react-intl": "^6.8.4",
     "react-leaflet": "^4.2.1",
-    "react-leaflet-markercluster": "^4.1.1",
+    "react-leaflet-cluster": "^2.1.0",
     "react-query": "^3.39.3",
     "react-resizable": "^3.0.5",
     "react-router": "^6.27.0",
