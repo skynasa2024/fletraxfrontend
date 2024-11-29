@@ -1,5 +1,4 @@
 import React from 'react';
-import { MapPin } from 'lucide-react';
 
 interface Trip {
   distance: string;
@@ -23,7 +22,7 @@ const TripList: React.FC<TripListProps> = ({
   title = 'Trips'
 }) => {
   return (
-    <div className={`p-4 card w-1/3 ${className}`}>
+    <div className={`p-4 card lg:w-1/3 ${className}`}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">{title}</h2>
         <span className="text-gray-500 text-sm">
@@ -39,7 +38,7 @@ const TripList: React.FC<TripListProps> = ({
           >
             <div className="flex items-center gap-4">
               <div className="text-xl font-semibold">{trip.distance}</div>
-              <MapPin className="w-5 h-5 text-blue-500" />
+             
               <div className="text-gray-500">
                 {trip.date}
                 <div className="text-sm">{trip.startTime}</div>

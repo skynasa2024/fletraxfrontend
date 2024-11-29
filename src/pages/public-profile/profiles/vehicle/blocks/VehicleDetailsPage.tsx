@@ -11,17 +11,14 @@ import {
   Power,
   Color,
   Tayp,
-  EngineHours,
-  Mileage,
-  FuelConsumption,
-  RentedTimes
+
 } from './svg';
 
-import { Clock, MapPin, Shield } from 'lucide-react';
 import VehicleMetrics from './details-components/VehicleMetrics';
 import FileList from './details-components/FileList';
 import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
+import { CarView } from '@/pages/dashboards/dashboard/blocks/CarView';
 
 interface TripData {
   distance: string;
@@ -69,6 +66,7 @@ const files = [
     type: 'jpg'
   }
 ];
+
 const VehicleInfoCards = () => {
   const vehicleInfo = [
     { label: 'Model', value: 'Corolla', Icon: Model },
@@ -102,11 +100,11 @@ const VehicleInfoCards = () => {
   return (
     <>
       <Toolbar />
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4">
         {' '}
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="card-body w-full lg:w-1/3 bg-white shadow-md rounded-lg p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex flex-col lg:flex-row">
+          <div className="card-body w-full lg:w-1/2 bg-white shadow-md rounded-lg ms-2 mt-4 mb-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {/* Car Plate */}
               <div className="flex items-center justify-center">
                 <CarPlate plate="5484555" />
@@ -123,15 +121,11 @@ const VehicleInfoCards = () => {
                   />
                 </svg>
               </div>
+
               {/* Device Section */}
               <div className="flex items-center space-x-4">
                 <div className="bg-blue-100 p-2 rounded-full">
-                  <svg className="w-5 h-5 text-blue-600" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
-                    />
-                  </svg>
+                  
                 </div>
                 <div>
                   <span className="text-lg font-medium">41643739</span>
@@ -149,26 +143,26 @@ const VehicleInfoCards = () => {
             </div>
           </div>
 
-          <div className="container mx-auto p-4">
-            <div className="container mx-auto p-4">
-              <div className="flex flex-row gap-4 h-full">
+          <div className="container mx-auto p-5">
+            <div className="container mx-auto">
+              <div className="flex flex-row h-full mb-4">
                 {/* Vehicle Info */}
-                <div className="flex-grow bg-white shadow-md rounded-lg p-6">
+                <div className="flex-grow bg-white mr-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {vehicleInfo.map(({ label, value, Icon }, index) => (
                       <div
                         key={index}
-                        className="bg-gray-50 p-4 rounded-lg shadow-sm border hover:shadow-md flex flex-col items-center text-center"
+                        className=" p-4 rounded-lg shadow-sm border hover:shadow-md flex flex-col h-40"
                       >
-                        <Icon className="w-6 h-6 text-gray-400 mb-2" />
-                        <span className="text-sm text-gray-500 font-medium">{label}</span>
+                        <Icon className="w-6 h-6 text-gray-400" />
+                        <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
                         <span className="text-lg font-semibold text-gray-900">{value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex-grow h-full w-1/3 bg-white shadow-md rounded-lg overflow-hidden">
+                <div className="flex-grow h-full w-1/6 bg-white shadow-md rounded-lg overflow-hidden ">
                   <div className="p-6 h-full flex flex-col">
                     <img
                       className="w-full rounded-lg object-cover h-48 w-1/3 mb-4"
@@ -185,19 +179,19 @@ const VehicleInfoCards = () => {
                     </div>
                   </div>
                 </div>
+                
               </div>
-            </div>
-            <div className="bg-white shadow-md rounded-lg p-6 w-full">
-              <h2 className="text-xl font-semibold mb-4">Vehicle Inspection and Insurance</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-6 w-auto bg-white rounded-lg shadow">
+              <h2 className="text-xl font-semibold mb-4">Vehicle inspection and insurance</h2>
+              <div className="grid grid-cols-2 gap-4">
                 {items.map((item) => (
                   <div
                     key={item.title}
-                    className="p-4 bg-gray-50 rounded-lg flex items-start space-x-4"
+                    className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg"
                   >
                     <svg
-                      width="32"
-                      height="32"
+                      width={32}
+                      height={32}
                       viewBox="0 0 32 32"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +208,7 @@ const VehicleInfoCards = () => {
 
                     <div>
                       <h3 className="font-medium">{item.title}</h3>
-                      <div className="text-sm text-gray-600 space-y-1">
+                      <div className="mt-2 text-sm text-gray-600 space-y-1">
                         <div>Start: {item.startDate}</div>
                         <div>End: {item.endDate}</div>
                       </div>
@@ -223,10 +217,12 @@ const VehicleInfoCards = () => {
                 ))}
               </div>
             </div>
+            </div>
+            
           </div>
         </div>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full h-full">
-          <TripList trips={trips} totalTrips={450} className="my-4" title="Recent Trips" />
+        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 w-full h-full m-2 mb-6 ">
+          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Recent Trips" />
           <div className="p-4 card w-full">map</div>
         </div>
         <div className="flex w-full mb-4">
@@ -246,7 +242,7 @@ const VehicleInfoCards = () => {
           <GeofenceList
             items={geofences}
             title="Geofences"
-            className="my-4 "
+            className="mx-2"
             onItemClick={(item) => console.log(`Selected: ${item}`)}
             searchPlaceholder="Search..."
           />
