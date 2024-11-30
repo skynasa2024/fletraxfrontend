@@ -18,13 +18,14 @@ interface TripData {
   speed: number;
 }
 
-const trips: TripData[] = Array(10).fill({
-  distance: '4.92 KM',
-  date: '2024-04-29',
-  startTime: '12:35:35',
-  endTime: '12:35:35',
-  speed: 75
-});
+const trips: TripData[] = Array(10).fill(null).map(() => ({
+  distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`, // Random distance between 1 and 10 km
+  date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0], // Random date in 2024
+  startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, // Random start time
+  endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, // Random end time
+  speed: Math.floor(Math.random() * 101) + 50, // Random speed between 50 and 150 km/h
+  maxSpeed: Math.floor(Math.random() * 81) + 100, // Random maxSpeed between 100 and 180 km/h
+}));
 const geofences = [
   'ISTANBUL',
   'ANKARA',
@@ -244,19 +245,18 @@ const VehicleInfoCards = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 w-full h-full m-2 mb-6 ">
+        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-2 mb-6 ">
           <TripList
             trips={trips}
             totalTrips={450}
             className="sm:w-full mt-4"
-            title="Recent Trips"
+            title="Trips"
           />
           <div className="p-4 card w-full">
             map
-            <CardsCharts cardsData={cardsData} />
           </div>
         </div>
-        <div className="flex w-full flex-grow mb-4">
+        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
             <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
             <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />

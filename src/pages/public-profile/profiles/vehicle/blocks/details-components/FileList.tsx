@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import React from 'react';
 
 interface FileInfo {
@@ -21,8 +22,8 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
   const getIconSrc = (type: string) => `/api/placeholder/24/24`;  // Placeholder for demo
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mb-4 last:mb-0">
-      <div className="flex items-center">
+    <div className="bg-white p-4 rounded-lg shadow-md mb-4 last:mb-0 w-full">
+      <div className="flex items-center sm:flex-row flex-col">
         <img 
           src={getIconSrc(file.type)} 
           alt={`${file.type.toUpperCase()} Icon`} 
@@ -34,10 +35,13 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
         </div>
         <button 
           onClick={onView}
-          className="ml-auto bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+          className="m-4 text-blue-500 px-3 py-1 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
         >
           View
         </button>
+        <div className="flex items-center justify-center w-5 h-5 bg-green-500 rounded-full">
+          <Check className="w-4 h-4 text-white" />
+      </div>
       </div>
     </div>
   );
