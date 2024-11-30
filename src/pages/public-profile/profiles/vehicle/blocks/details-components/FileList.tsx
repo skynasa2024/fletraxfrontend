@@ -45,8 +45,8 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
 
 const FileList: React.FC<FileListProps> = ({ files, onView }) => {
   return (
-    <div className="flex space-x-4 p-4">
-      <div className="w-full">
+    <div className="flex space-x-4 p-4 ">
+      <div className="w-full ">
         {files.map((file, index) => (
           <FileCard
             key={`${file.name}-${index}`}

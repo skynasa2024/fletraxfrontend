@@ -2,7 +2,7 @@ import React from 'react';
 import { EngineHours, Mileage, FuelConsumption, RentedTimes } from '../svg/';
 
 interface MetricCardProps {
-  icon: React.ComponentType; 
+  icon: React.ComponentType;  
   label: string;
   value: string | number;
 }

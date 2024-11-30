@@ -1,24 +1,14 @@
-import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/maintenance';
+import { MaintenanceViolationTable } from '../blocks/maintenance/MaintenanceViolation';
+
 import { CarPlate } from './CarPlate';
 import Toolbar from './Toolbar';
-import {
-  Model,
-  ModelSeries,
-  ModelYear,
-  FuelType,
-  Gear,
-  Volume,
-  Power,
-  Color,
-  Tayp,
-
-} from './svg';
+import { Model, ModelSeries, ModelYear, FuelType, Gear, Volume, Power, Color, Tayp } from './svg';
 
 import VehicleMetrics from './details-components/VehicleMetrics';
 import FileList from './details-components/FileList';
 import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
-import { CarView } from '@/pages/dashboards/dashboard/blocks/CarView';
+import { CardsCharts } from './CardsCharts';
 
 interface TripData {
   distance: string;
@@ -97,6 +87,41 @@ const VehicleInfoCards = () => {
     { title: 'Exhaust', startDate: '2024-04-29', endDate: '2024-05-27' }
   ];
 
+  const cardsData = [
+    {
+      title: 'Engine Hours',
+      value: '250',
+      unit: 'Hr',
+      percentage: 70,
+      color: '#F87171',
+      icon: '/path/to/engine-icon.svg'
+    },
+    {
+      title: 'Maelg',
+      value: '157K',
+      unit: 'Km',
+      percentage: 80,
+      color: '#60A5FA',
+      icon: '/path/to/maelg-icon.svg'
+    },
+    {
+      title: 'Fuel Consumption',
+      value: '9',
+      unit: '%',
+      percentage: 25,
+      color: '#A78BFA',
+      icon: '/path/to/fuel-icon.svg'
+    },
+    {
+      title: 'Rented Times',
+      value: '25',
+      unit: 'Hr',
+      percentage: 50,
+      color: '#FBBF24',
+      icon: '/path/to/rented-icon.svg'
+    }
+  ];
+
   return (
     <>
       <Toolbar />
@@ -124,9 +149,7 @@ const VehicleInfoCards = () => {
 
               {/* Device Section */}
               <div className="flex items-center space-x-4">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  
-                </div>
+                <div className="bg-blue-100 p-2 rounded-full"></div>
                 <div>
                   <span className="text-lg font-medium">41643739</span>
                   <p className="text-sm text-gray-500">Device</p>
@@ -143,47 +166,49 @@ const VehicleInfoCards = () => {
             </div>
           </div>
 
-          <div className="container mx-auto p-5">
-            <div className="container mx-auto">
-              <div className="flex flex-row h-full mb-4">
-                {/* Vehicle Info */}
-                <div className="flex-grow bg-white mr-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {vehicleInfo.map(({ label, value, Icon }, index) => (
-                      <div
-                        key={index}
-                        className=" p-4 rounded-lg shadow-sm border hover:shadow-md flex flex-col h-40"
-                      >
-                        <Icon className="w-6 h-6 text-gray-400" />
-                        <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
-                        <span className="text-lg font-semibold text-gray-900">{value}</span>
+          <div className="container mx-auto p-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+            {/* Vehicle Info Section */}
+            <div className="flex flex-col lg:flex-row h-full">
+              {/* Vehicle Info Cards */}
+              <div className="flex-grow bg-white mr-0 lg:mr-4 mb-4 lg:mb-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {vehicleInfo.map(({ label, value, Icon }, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-lg shadow-sm border hover:shadow-md flex flex-col h-40"
+                    >
+                      <Icon className="w-6 h-6 text-gray-400" />
+                      <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
+                      <span className="text-lg font-semibold text-gray-900">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Map and Details */}
+              <div className="flex-grow h-full lg:w-1/3 bg-white shadow-md rounded-lg overflow-hidden">
+                <div className="p-4 h-full flex flex-col">
+                  <img
+                    className="w-full rounded-lg object-cover h-48 mb-4"
+                    src="https://via.placeholder.com/150"
+                    alt="Map"
+                  />
+                  <div className="flex-grow">
+                    {details.map(({ label, value }, index) => (
+                      <div key={index} className="flex items-start mb-2">
+                        <span className="text-gray-400 mr-1">{label}:</span>
+                        <span className="text-gray-800">{value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-
-                <div className="flex-grow h-full w-1/6 bg-white shadow-md rounded-lg overflow-hidden ">
-                  <div className="p-6 h-full flex flex-col">
-                    <img
-                      className="w-full rounded-lg object-cover h-48 w-1/3 mb-4"
-                      src="https://via.placeholder.com/150"
-                      alt="Map"
-                    />
-                    <div className="flex-grow">
-                      {details.map(({ label, value }, index) => (
-                        <div key={index} className="flex items-start mb-1">
-                          <span className="text-gray-400 ml-1">{label}:</span>
-                          <span className="text-gray-800">{value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
               </div>
-              <div className="p-6 w-auto bg-white rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Vehicle inspection and insurance</h2>
-              <div className="grid grid-cols-2 gap-4">
+            </div>
+
+            {/* Inspection and Insurance Section */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Vehicle Inspection and Insurance</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {items.map((item) => (
                   <div
                     key={item.title}
@@ -217,16 +242,23 @@ const VehicleInfoCards = () => {
                 ))}
               </div>
             </div>
-            </div>
-            
           </div>
         </div>
         <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 w-full h-full m-2 mb-6 ">
-          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Recent Trips" />
-          <div className="p-4 card w-full">map</div>
+          <TripList
+            trips={trips}
+            totalTrips={450}
+            className="sm:w-full mt-4"
+            title="Recent Trips"
+          />
+          <div className="p-4 card w-full">
+            map
+            <CardsCharts cardsData={cardsData} />
+          </div>
         </div>
-        <div className="flex w-full mb-4">
+        <div className="flex w-full flex-grow mb-4">
           <div className="w-1/3">
+            <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
             <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
           </div>
           <VehicleMetrics
