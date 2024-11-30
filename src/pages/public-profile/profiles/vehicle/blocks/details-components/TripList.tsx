@@ -24,8 +24,8 @@ interface TripListProps {
   onPageChange?: (page: number) => void;
 }
 
-const SpeedIndicator = ({ speed, maxSpeed = 100 }: { speed: number; maxSpeed?: number }) => (
-  <div className="w-12 h-12">
+const SpeedIndicator = ({ speed, maxSpeed = 280 }: { speed: number; maxSpeed?: number }) => (
+  <div className="w-20 h-20">
     <CircularProgressbar
       value={speed}
       maxValue={maxSpeed}

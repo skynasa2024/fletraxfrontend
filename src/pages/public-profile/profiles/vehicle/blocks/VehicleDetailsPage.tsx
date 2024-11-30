@@ -8,7 +8,7 @@ import VehicleMetrics from './details-components/VehicleMetrics';
 import FileList from './details-components/FileList';
 import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
-import { CardsCharts } from './CardsCharts';
+
 
 interface TripData {
   distance: string;
@@ -19,12 +19,12 @@ interface TripData {
 }
 
 const trips: TripData[] = Array(10).fill(null).map(() => ({
-  distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`, // Random distance between 1 and 10 km
-  date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0], // Random date in 2024
-  startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, // Random start time
-  endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, // Random end time
-  speed: Math.floor(Math.random() * 101) + 50, // Random speed between 50 and 150 km/h
-  maxSpeed: Math.floor(Math.random() * 81) + 100, // Random maxSpeed between 100 and 180 km/h
+  distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`, 
+  date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0], 
+  startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, 
+  endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+  speed: Math.floor(Math.random() * 101) + 50, 
+  maxSpeed: Math.floor(Math.random() * 81) + 100, 
 }));
 const geofences = [
   'ISTANBUL',
@@ -88,40 +88,7 @@ const VehicleInfoCards = () => {
     { title: 'Exhaust', startDate: '2024-04-29', endDate: '2024-05-27' }
   ];
 
-  const cardsData = [
-    {
-      title: 'Engine Hours',
-      value: '250',
-      unit: 'Hr',
-      percentage: 70,
-      color: '#F87171',
-      icon: '/path/to/engine-icon.svg'
-    },
-    {
-      title: 'Maelg',
-      value: '157K',
-      unit: 'Km',
-      percentage: 80,
-      color: '#60A5FA',
-      icon: '/path/to/maelg-icon.svg'
-    },
-    {
-      title: 'Fuel Consumption',
-      value: '9',
-      unit: '%',
-      percentage: 25,
-      color: '#A78BFA',
-      icon: '/path/to/fuel-icon.svg'
-    },
-    {
-      title: 'Rented Times',
-      value: '25',
-      unit: 'Hr',
-      percentage: 50,
-      color: '#FBBF24',
-      icon: '/path/to/rented-icon.svg'
-    }
-  ];
+  
 
   return (
     <>
@@ -207,7 +174,7 @@ const VehicleInfoCards = () => {
             </div>
 
             {/* Inspection and Insurance Section */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">Vehicle Inspection and Insurance</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {items.map((item) => (
@@ -256,7 +223,7 @@ const VehicleInfoCards = () => {
             map
           </div>
         </div>
-        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
           <div className="w-1/3">
             <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
             <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
