@@ -97,12 +97,13 @@ const VehicleInfoCards = () => {
       <Toolbar />
       <div className="w-full mx-auto px-4">
         <div className="flex flex-col lg:flex-row">
-          <div className="card-body w-full lg:w-1/2 bg-white shadow-md rounded-lg ms-2 mt-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="card-body w-full lg:w-1/2 bg-white shadow-md rounded-lg mx-2 my-4 px-5 grid grid-cols-1">
+            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
                 <CarPlate plate="5484555" />
               </div>
+
               {/* SVG Section */}
               <div className="flex items-center justify-center">
                 <svg width={45} height={44} viewBox="0 0 45 44" xmlns="http://www.w3.org/2000/svg">
@@ -124,10 +125,11 @@ const VehicleInfoCards = () => {
                   <p className="text-sm text-gray-500">Device</p>
                 </div>
               </div>
+
               {/* Image Section */}
-              <div className="relative flex justify-center items-center col-span-full sm:col-span-2 lg:col-span-10 bg-gray-100 rounded-lg p-4">
+              <div className="relative flex justify-center items-center col-span-full rounded-lg p-4 mb-8">
                 <img
-                  className="rounded-lg object-cover max-w-full max-h-full "
+                  className="rounded-lg object-cover max-w-full max-h-full"
                   src={toAbsoluteUrl('/media/images/car.png')}
                   alt="Car"
                 />
@@ -139,13 +141,13 @@ const VehicleInfoCards = () => {
                   +
                 </button>
                 <button
-                  className="absolute top-2 right-2 border bg-white  text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  className="absolute top-2 right-2 border bg-white text-gray rounded-full w-8 h-8 flex items-center justify-center"
                   onClick={() => alert('Add input here')}
                 >
                   +
                 </button>
                 <button
-                  className="absolute bottom-2 left-2 border bg-white  text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  className="absolute bottom-2 left-2 border bg-white text-gray rounded-full w-8 h-8 flex items-center justify-center"
                   onClick={() => alert('Add input here')}
                 >
                   +
@@ -180,10 +182,10 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Map and Details */}
-              <div className="flex-grow h-full lg:w-1/3 bg-white shadow-md rounded-lg overflow-hidden">
+              <div className="flex-grow lg:w-1/3 bg-white shadow-md rounded-lg overflow-hidden">
                 <div className="p-4 h-full flex flex-col">
                   <img
-                    className="w-full rounded-lg object-cover h-48 mb-4"
+                    className="w-full rounded-lg object-cover h-40 mb-4"
                     src="https://via.placeholder.com/150"
                     alt="Map"
                   />
