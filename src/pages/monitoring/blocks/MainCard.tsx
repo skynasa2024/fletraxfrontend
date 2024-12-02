@@ -11,8 +11,16 @@ import { toAbsoluteUrl } from '@/utils';
 
 export const MainCard = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const { searchQuery, setSearchQuery, clients, setSelectedClient, selectedClient, locations } =
-    useMonitoringProvider();
+  const {
+    searchQuery,
+    setSearchQuery,
+    clients,
+    setSelectedClient,
+    selectedClient,
+    locations,
+    selectedLocation,
+    setSelectedLocation
+  } = useMonitoringProvider();
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
   const onlineLocations = useMemo(() => locations.filter((loc) => loc.online), [locations]);
@@ -128,7 +136,17 @@ export const MainCard = () => {
                       const location = activeLocations[index];
                       return (
                         <div key={key} style={style} className="pb-2">
-                          <div className="flex flex-col p-[15px] border border-[#E7E8ED] rounded-[10px] gap-[10px]">
+                          <div
+                            data-selected={selectedLocation?.vehicle.imei === location.vehicle.imei}
+                            className="flex flex-col p-[15px] border data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F9]/5 border-[#E7E8ED] rounded-[10px] gap-[10px] cursor-pointer"
+                            onClick={() => {
+                              if (selectedLocation?.vehicle.imei === location.vehicle.imei) {
+                                setSelectedLocation(undefined);
+                                return;
+                              }
+                              setSelectedLocation(location);
+                            }}
+                          >
                             <div className="flex justify-between">
                               <CarPlate plate={location.vehicle.plate} />
                               <div

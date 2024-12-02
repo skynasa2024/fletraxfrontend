@@ -6,7 +6,7 @@ import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 
 export const CarsLayer = () => {
-  const { locations } = useMonitoringProvider();
+  const { locations, selectedLocation } = useMonitoringProvider();
   const icon = L.icon({
     iconUrl: toAbsoluteUrl('/media/icons/car-marker.png'),
     iconSize: [30, 60]
@@ -14,18 +14,27 @@ export const CarsLayer = () => {
 
   return (
     <MarkerClusterGroup chunkedLoading removeOutsideVisibleBounds>
-      {locations?.map(
-        (location) =>
-          location.lat &&
-          location.long && (
+      {selectedLocation
+        ? selectedLocation.lat &&
+          selectedLocation.long && (
             <Marker
-              key={location.vehicle.imei}
-              position={[location.lat, location.long]}
-              rotationAngle={location.angle}
+              position={[selectedLocation.lat, selectedLocation.long]}
+              rotationAngle={selectedLocation.angle}
               icon={icon}
             />
           )
-      )}
+        : locations?.map(
+            (location) =>
+              location.lat &&
+              location.long && (
+                <Marker
+                  key={location.vehicle.imei}
+                  position={[location.lat, location.long]}
+                  rotationAngle={location.angle}
+                  icon={icon}
+                />
+              )
+          )}
     </MarkerClusterGroup>
   );
 };
