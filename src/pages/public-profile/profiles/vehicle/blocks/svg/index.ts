@@ -16,4 +16,5 @@ export { default as Color } from './Color';
 export { default as EngineHours } from './EngineHours';
 export { default as Mileage } from './Mileage';
 export { default as RentedTimes } from './RentedTimes';
-export { default as FuelConsumption } from './FuelConsumption'; 
+export { default as FuelConsumption } from './FuelConsumption';
+export { default as MapPin } from './MapPin'
