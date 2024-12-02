@@ -5,8 +5,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { CarView } from '../../../../../pages/dashboards/dashboard/blocks/CarView';
 
-import { StatusDropdown } from '../StatusDropdown';
+import { StatusDropdown } from './maintenance/StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
+import { useNavigate } from 'react-router';
 
 interface DriverListProps {
   searchQuery?: string;
@@ -15,7 +16,6 @@ interface DriverListProps {
 const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
   const columns = useMemo<ColumnDef<Driver>[]>(
     () => [
-     
       {
         accessorKey: 'owner',
         header: 'Owner',
@@ -73,7 +73,7 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         header: 'Actions',
         cell: () => (
           <div className="flex gap-3">
-            <a href="#" >
+            <a href="#" onClick={handleViewDriverClick}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
             </a>
             <a href="#">
@@ -85,11 +85,15 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
     ],
     []
   );
+  const navigate = useNavigate();
+  const handleViewDriverClick = () => {
+    navigate('view-driver');
+  };
 
   return (
     <DataGrid
       columns={columns}
-      data={[]} 
+      data={[]}
       serverSide={true}
       onFetchData={getDrivers}
       filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
