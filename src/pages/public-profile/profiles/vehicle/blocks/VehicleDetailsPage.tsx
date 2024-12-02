@@ -8,7 +8,7 @@ import VehicleMetrics from './details-components/VehicleMetrics';
 import FileList from './details-components/FileList';
 import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
-
+import { toAbsoluteUrl } from '@/utils';
 
 interface TripData {
   distance: string;
@@ -18,14 +18,18 @@ interface TripData {
   speed: number;
 }
 
-const trips: TripData[] = Array(10).fill(null).map(() => ({
-  distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`, 
-  date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString().split('T')[0], 
-  startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`, 
-  endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-  speed: Math.floor(Math.random() * 101) + 50, 
-  maxSpeed: Math.floor(Math.random() * 81) + 100, 
-}));
+const trips: TripData[] = Array(10)
+  .fill(null)
+  .map(() => ({
+    distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`,
+    date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
+      .toISOString()
+      .split('T')[0],
+    startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+    endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
+    speed: Math.floor(Math.random() * 101) + 50,
+    maxSpeed: Math.floor(Math.random() * 81) + 100
+  }));
 const geofences = [
   'ISTANBUL',
   'ANKARA',
@@ -88,18 +92,15 @@ const VehicleInfoCards = () => {
     { title: 'Exhaust', startDate: '2024-04-29', endDate: '2024-05-27' }
   ];
 
-  
-
   return (
     <>
       <Toolbar />
       <div className="w-full mx-auto px-4">
-        {' '}
         <div className="flex flex-col lg:flex-row">
-          <div className="card-body w-full lg:w-1/2 bg-white shadow-md rounded-lg ms-2 mt-4 mb-5">
+          <div className="card-body w-full lg:w-1/2 bg-white shadow-md rounded-lg ms-2 mt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {/* Car Plate */}
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center mb-4">
                 <CarPlate plate="5484555" />
               </div>
               {/* SVG Section */}
@@ -116,7 +117,7 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Device Section */}
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4 mb-4">
                 <div className="bg-blue-100 p-2 rounded-full"></div>
                 <div>
                   <span className="text-lg font-medium">41643739</span>
@@ -124,22 +125,47 @@ const VehicleInfoCards = () => {
                 </div>
               </div>
               {/* Image Section */}
-              <div className="col-span-full sm:col-span-2 lg:col-span-1">
+              <div className="relative flex justify-center items-center col-span-full sm:col-span-2 lg:col-span-10 bg-gray-100 rounded-lg p-4">
                 <img
-                  className="w-full rounded-lg object-cover h-48"
-                  src="./svg/car.png"
+                  className="rounded-lg object-cover max-w-full max-h-full "
+                  src={toAbsoluteUrl('/media/images/car.png')}
                   alt="Car"
                 />
+                {/* Plus buttons */}
+                <button
+                  className="absolute top-2 left-2 border bg-white text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  onClick={() => alert('Add input here')}
+                >
+                  +
+                </button>
+                <button
+                  className="absolute top-2 right-2 border bg-white  text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  onClick={() => alert('Add input here')}
+                >
+                  +
+                </button>
+                <button
+                  className="absolute bottom-2 left-2 border bg-white  text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  onClick={() => alert('Add input here')}
+                >
+                  +
+                </button>
+                <button
+                  className="absolute bottom-2 right-2 border bg-white text-gray rounded-full w-8 h-8 flex items-center justify-center"
+                  onClick={() => alert('Add input here')}
+                >
+                  +
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="container mx-auto p-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="container mx-auto p-5 grid gap-5 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}
             <div className="flex flex-col lg:flex-row h-full">
               {/* Vehicle Info Cards */}
               <div className="flex-grow bg-white mr-0 lg:mr-4 mb-4 lg:mb-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-4">
                   {vehicleInfo.map(({ label, value, Icon }, index) => (
                     <div
                       key={index}
@@ -174,7 +200,7 @@ const VehicleInfoCards = () => {
             </div>
 
             {/* Inspection and Insurance Section */}
-            <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Vehicle Inspection and Insurance</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {items.map((item) => (
@@ -213,15 +239,8 @@ const VehicleInfoCards = () => {
           </div>
         </div>
         <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-2 mb-6 ">
-          <TripList
-            trips={trips}
-            totalTrips={450}
-            className="sm:w-full mt-4"
-            title="Trips"
-          />
-          <div className="p-4 card w-full">
-            map
-          </div>
+          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
+          <div className="p-4 card w-full">map</div>
         </div>
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
           <div className="w-1/3">
