@@ -2,7 +2,6 @@ import { DataGrid } from '@/components';
 import { getViolations, Violation } from '@/api/cars';
 import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from './StatusDropdown';

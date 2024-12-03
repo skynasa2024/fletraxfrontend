@@ -49,12 +49,6 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
 
   const [data, setData] = useState<Billing[]>(fakeData);
 
-  const handleStatusUpdate = (id: string, newStatus: 'Paid' | 'Unpaid') => {
-    setData((prevData) =>
-      prevData.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
-    );
-  };
-
   const columns = useMemo<ColumnDef<Billing>[]>(
     () => [
       {
@@ -106,11 +100,11 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
-            setSelected={(newStatus) => handleStatusUpdate(info.row.original.id, newStatus)}
+            setSelected={() => {}}
             options={{
               Unpaid: {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
+                color: '#F1416C',
+                backgroundColor: '#FFF5F8'
               },
               Paid: {
                 color: '#50CD89',
@@ -140,11 +134,11 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
 
   return (
     <div className="flex flex-col items-start w-full p-4">
-    <h1 className="text-xl font-semibold mb-4 ps-4">Billing History</h1>
-    <div className="w-full overflow-x-auto">
-      <DataGrid columns={columns} data={data} />
+      <h1 className="text-xl font-semibold mb-4 ps-4">Billing History</h1>
+      <div className="w-full overflow-x-auto">
+        <DataGrid columns={columns} data={data} />
+      </div>
     </div>
-  </div>
   );
 };
 

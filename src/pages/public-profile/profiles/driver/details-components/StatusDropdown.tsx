@@ -1,6 +1,8 @@
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { Dispatch, SetStateAction } from 'react';
 
+
+
 export interface StatusDropdownProps {
   selected: string;
   setSelected: Dispatch<SetStateAction<string>>;
@@ -25,7 +27,7 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
             {
               name: 'offset',
               options: {
-                offset: [0, 10] // [skid, distance]
+                offset: [0, 10] 
               }
             }
           ]
