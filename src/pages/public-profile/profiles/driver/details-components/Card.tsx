@@ -111,31 +111,34 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date, unpa
   );
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm card w-1/4 mt-8">
-      <div className="flex space-x-2 mb-4 ">
-        <div>{type === 'maintenance' ? <MaintenanceIcon /> : <ViolationsIcon />}</div>
-        <div className="flex-grow">
-          <h2 className="text-gray-800 font-semibold text-base">
-            {type === 'maintenance' ? 'Maintenance' : 'Violations'}
-          </h2>
-          <p className="text-gray-400 text-sm">{date}</p>
+    <div className="bg-white rounded-xl p-4 shadow-sm w-full md:w-1/3 mt-8">
+      <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex items-start space-x-2 flex-grow">
+          <div>{type === 'maintenance' ? <MaintenanceIcon /> : <ViolationsIcon />}</div>
+          <div className="flex-grow min-w-0">
+            <h2 className="text-gray-800 font-semibold text-base truncate">
+              {type === 'maintenance' ? 'Maintenance' : 'Violations'}
+            </h2>
+            <p className="text-gray-400 text-sm">{date}</p>
+          </div>
         </div>
-        <div className="flex flex-col items-center">
+        
+        <div className="flex items-center space-x-2 sm:flex-col sm:items-center ml-auto">
           <div className="bg-gray-100 px-3 py-1 rounded-full">
             <span className="text-gray-600">{count}</span>
           </div>
-          <span className="text-gray-500 text-sm mt-1">
+          <span className="text-gray-500 text-sm sm:mt-1">
             {type === 'maintenance' ? 'Maintenance' : 'Violations'}
           </span>
         </div>
       </div>
 
       <div className="flex justify-between pt-4 border-t border-gray-100">
-        <div>
+        <div className="flex-1">
           <p className="text-red-500 text-sm mb-1">Unpaid</p>
           <div className="flex items-center text-red-500">
             <svg
-              className="w-4 h-4 rotate-45"
+              className="w-4 h-4 rotate-45 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -143,15 +146,15 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date, unpa
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold text-gray-900">+${unpaidAmount}</span>
+            <span className="font-semibold text-gray-900 ml-1">+${unpaidAmount}</span>
           </div>
         </div>
 
-        <div>
+        <div className="flex-1 text-right">
           <p className="text-green-500 text-sm mb-1">Paid</p>
-          <div className="flex items-center text-green-500">
+          <div className="flex items-center justify-end text-green-500">
             <svg
-              className="w-4 h-4 -rotate-45"
+              className="w-4 h-4 -rotate-45 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -159,7 +162,7 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date, unpa
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold text-gray-900">+${paidAmount}</span>
+            <span className="font-semibold text-gray-900 ml-1">+${paidAmount}</span>
           </div>
         </div>
       </div>
