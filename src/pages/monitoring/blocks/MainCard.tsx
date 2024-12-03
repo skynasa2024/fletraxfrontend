@@ -1,6 +1,6 @@
 import { KeenIcon } from '@/components';
 import { Collapse } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
@@ -30,6 +30,16 @@ export const MainCard = () => {
       selection === 'All' ? locations : selection === 'Online' ? onlineLocations : offlineLocations,
     [locations, offlineLocations, onlineLocations, selection]
   );
+  const locationsListRef = useRef<List>(null);
+
+  useEffect(() => {
+    if (!selectedLocation) return;
+
+    locationsListRef.current?.scrollToRow(
+      locations.findIndex((v) => v.vehicle.imei === selectedLocation?.vehicle.imei)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLocation]);
 
   return (
     <div className="card w-[380px] data-[open=true]:h-full group" data-open={isOpen}>
@@ -132,6 +142,7 @@ export const MainCard = () => {
                     />
                   </div>
                   <List
+                    ref={locationsListRef}
                     rowRenderer={({ index, key, style }) => {
                       const location = activeLocations[index];
                       return (

@@ -115,7 +115,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
-        angle: -(device.position_direction || 0),
+        angle: (device.position_direction || 0) + 180,
         status: {
           parkingTime: device.parking_time,
           engineStatus: device.engine_ignition_status === 'true',
