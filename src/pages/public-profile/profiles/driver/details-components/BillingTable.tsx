@@ -1,26 +1,59 @@
 import { DataGrid } from '@/components';
-import { getBillingHistory, Billing } from '@/api/billing';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from './StatusDropdown';
+
+interface Billing {
+  id: string;
+  date: string;
+  type: string;
+  description: string;
+  amount: number;
+  status: 'Paid' | 'Unpaid';
+}
 
 interface BillingTableProps {
   searchQuery: string;
 }
 
 const BillingTable = ({ searchQuery }: BillingTableProps) => {
-  const [data, setData] = useState<Billing[]>([]);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedData = await getBillingHistory(searchQuery);
-      setData(fetchedData);
-    };
+  // Static fake data
+  const fakeData: Billing[] = [
+    {
+      id: '1',
+      date: '2023-12-01',
+      type: 'Invoice',
+      description: 'Website Development',
+      amount: 1500,
+      status: 'Paid'
+    },
+    {
+      id: '2',
+      date: '2023-11-25',
+      type: 'Receipt',
+      description: 'Hosting Renewal',
+      amount: 200,
+      status: 'Unpaid'
+    },
+    {
+      id: '3',
+      date: '2023-11-20',
+      type: 'Invoice',
+      description: 'Domain Purchase',
+      amount: 20,
+      status: 'Paid'
+    }
+  ];
 
-    fetchData();
-  }, [searchQuery]);
+  const [data, setData] = useState<Billing[]>(fakeData);
+
+  const handleStatusUpdate = (id: string, newStatus: 'Paid' | 'Unpaid') => {
+    setData((prevData) =>
+      prevData.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
+    );
+  };
 
   const columns = useMemo<ColumnDef<Billing>[]>(
     () => [
@@ -33,20 +66,14 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
           <span className="text-gray-800 font-bold">
             {format('MMM d, yyyy', info.row.original.date)}
           </span>
-        ),
-        meta: {
-          className: 'min-w-36'
-        }
+        )
       },
       {
         accessorFn: (row) => row.type,
         id: 'type',
         header: () => 'Type',
         enableSorting: true,
-        cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>,
-        meta: {
-          className: 'min-w-36'
-        }
+        cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>
       },
       {
         accessorFn: (row) => row.description,
@@ -55,10 +82,7 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">{info.row.original.description}</span>
-        ),
-        meta: {
-          className: 'min-w-36'
-        }
+        )
       },
       {
         accessorFn: (row) => row.amount,
@@ -82,7 +106,7 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
-            setSelected={() => {}}
+            setSelected={(newStatus) => handleStatusUpdate(info.row.original.id, newStatus)}
             options={{
               Unpaid: {
                 color: '#FFA800',
@@ -94,10 +118,7 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
               }
             }}
           />
-        ),
-        meta: {
-          className: 'min-w-44'
-        }
+        )
       },
       {
         id: 'actions',
@@ -105,27 +126,25 @@ const BillingTable = ({ searchQuery }: BillingTableProps) => {
         cell: (info) => (
           <div className="flex gap-3">
             <a href="#">
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} />
+              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
             <a href="#">
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
+              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </a>
           </div>
-        ),
-        meta: {
-          className: 'min-w-36'
-        }
+        )
       }
     ],
     []
   );
 
   return (
-    <DataGrid
-      columns={columns}
-      data={data} 
-      
-    />
+    <div className="flex flex-col items-start w-full p-4">
+    <h1 className="text-xl font-semibold mb-4 ps-4">Billing History</h1>
+    <div className="w-full overflow-x-auto">
+      <DataGrid columns={columns} data={data} />
+    </div>
+  </div>
   );
 };
 

@@ -1,6 +1,5 @@
 import { MaintenanceViolationTable } from './blocks/maintenance/MaintenanceViolation';
 
-
 import Toolbar from './Toolbar';
 import FileList from './details-components/FileList';
 import TripList from './details-components/TripList';
@@ -29,7 +28,6 @@ const trips: TripData[] = Array(10)
     maxSpeed: Math.floor(Math.random() * 81) + 100
   }));
 
-
 const files = [
   {
     name: 'file-name1.pdf',
@@ -52,13 +50,11 @@ const files = [
 ];
 
 const VehicleInfoCards = () => {
-
-
   return (
     <>
       <Toolbar />
-      <div className="w-full mx-auto px-4">
-        <div className="w-full bg-white p-6 rounded-lg shadow-sm">
+      <div className="w-full mx-auto px-4 ">
+        <div className="w-full bg-white m-5 p-5 rounded-lg shadow-sm">
           <ProfileCard
             profileImage="/path/to/image.jpg"
             name="Brad Dennis"
@@ -73,40 +69,45 @@ const VehicleInfoCards = () => {
             address="Some address"
           />
 
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-            <Card
-              type="maintenance"
-              title="Maintenance"
-              description="Maintenance"
-              count={25}
-              date="For today"
-            />
-            <Card
-              type="violations"
-              title="Violations"
-              description="Violations"
-              count={1}
-              date="For today"
-            />
-          </div>
+<div className="flex justify-between items-start space-x-4">
+  {/* Maintenance Card */}
+  <Card
+    type="maintenance"
+    date="2024-12-01"
+    count={5}
+    unpaidAmount={2000}
+    paidAmount={1500}
+    title={''}
+    description={''}
+  />
+
+  {/* Violations Card */}
+  <Card
+    type="violations"
+    date="2024-12-02"
+    count={3}
+    unpaidAmount={1000}
+    paidAmount={800}
+    title={''}
+    description={''}
+  />
+</div>
+
         </div>
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-2 mb-6 ">
+        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-5 mb-6 ">
           <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
           <div className="p-4 card w-full">map</div>
         </div>
-        <div className="mb-5">
+        <div className="m-5">
           <MaintenanceViolationTable />
         </div>
-        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
-          <div className="w-1/3">
+        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8 m-5">
+          <div className="p-4 card w-1/2">
             <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
             <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
           </div>
           <BillingTable searchQuery={''} />
         </div>
-
-       
       </div>
     </>
   );

@@ -6,9 +6,11 @@ type CardProps = {
   description: string;
   count: number;
   date: string;
+  unpaidAmount: number;
+  paidAmount: number;
 };
 
-const Card: React.FC<CardProps> = ({ type, title, description, count, date }) => {
+const Card: React.FC<CardProps> = ({ type, title, description, count, date, unpaidAmount, paidAmount }) => {
   const MaintenanceIcon = () => (
     <svg width="76" height="75" viewBox="0 0 76 75" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_d_709_11735)">
@@ -109,8 +111,8 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date }) =>
   );
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm w-1/2 ">
-      <div className="flex items-center space-x-3 mb-4">
+    <div className="bg-white rounded-xl p-4 shadow-sm card w-1/4 mt-8">
+      <div className="flex space-x-2 mb-4 ">
         <div>{type === 'maintenance' ? <MaintenanceIcon /> : <ViolationsIcon />}</div>
         <div className="flex-grow">
           <h2 className="text-gray-800 font-semibold text-base">
@@ -141,7 +143,7 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date }) =>
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold">+$2000</span>
+            <span className="font-semibold text-gray-900">+${unpaidAmount}</span>
           </div>
         </div>
 
@@ -157,7 +159,7 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date }) =>
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold">+$2000</span>
+            <span className="font-semibold text-gray-900">+${paidAmount}</span>
           </div>
         </div>
       </div>
