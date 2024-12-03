@@ -95,6 +95,7 @@ import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
 import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDetailsPage';
 import VehicleDetailsPage from '@/pages/public-profile/profiles/vehicle/blocks/VehicleDetailsPage';
 import DriverDetailsPage from '@/pages/public-profile/profiles/driver/DriverDetailsPage';
+import { TripsPage } from '@/pages/trips/TripsPage';
 
 
 const AppRoutingSetup = (): ReactElement => {
@@ -104,6 +105,7 @@ const AppRoutingSetup = (): ReactElement => {
         <Route element={<Demo1Layout />}>
           <Route path="/" element={<DefaultPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
+          <Route path="/trips" element={<TripsPage />} />
           <Route path="/devices/device" element={<Device />} />
           <Route path="/users/user/*" element={<User />} />
           <Route path="/users/user/view-user" element={<UserDetailsPage />} />

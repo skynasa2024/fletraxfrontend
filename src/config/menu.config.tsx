@@ -16,7 +16,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'Trips',
     externalIcon: 'trips',
-    path: 'trips'
+    path: '/trips',
+    fullScreen: true
   },
   {
     title: 'Geofence',
