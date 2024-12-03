@@ -107,7 +107,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     mqttClient.on('connect', () => {
-      mqttClient.subscribeAsync('device/monitoring/+');
+      mqttClient.subscribeAsync('device/monitoring/+', {
+        qos: 2
+      });
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
@@ -115,7 +117,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
-        angle: (device.position_direction || 0) + 180,
+        angle: device.position_direction || 0,
         status: {
           parkingTime: device.parking_time,
           engineStatus: device.engine_ignition_status === 'true',
@@ -143,7 +145,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [searchQuery]);
 
   useEffect(() => {
-    memoryMaplocations = {};
+    // TODO: Need to activate this when changing subscriptions
+    // memoryMaplocations = {};
+    // setLocations([]);
     const interval = setInterval(async () => {
       setLocations(Object.values(memoryMaplocations));
     }, 10000);

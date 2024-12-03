@@ -191,7 +191,7 @@ export const MainCard = () => {
                                     `/media/icons/${location.status.speed > 1 ? 'speed-moving' : 'speed-stop'}.svg`
                                   )}
                                 />
-                                <div>{`${location.status.speed}kmh`}</div>
+                                <div>{`${location.status.speed.toFixed(0)}kmh`}</div>
                               </div>
                               <div className="flex flex-col gap-0.5 items-start">
                                 <img src={toAbsoluteUrl('/media/icons/satellites.svg')} />

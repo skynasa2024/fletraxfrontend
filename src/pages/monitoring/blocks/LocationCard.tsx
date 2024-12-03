@@ -78,7 +78,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Speed</div>
-            <div className="text-[#2D3748] text-xs">{`${location.status.speed} kmh`}</div>
+            <div className="text-[#2D3748] text-xs">{`${location.status.speed.toFixed(0)} kmh`}</div>
           </div>
         </div>
 
