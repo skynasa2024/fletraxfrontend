@@ -51,7 +51,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
     }, ]
   },
 
-  {
+/*   {
     title: 'Reservations',
     externalIcon: 'reservations', 
     children: [
@@ -67,8 +67,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
 
     ]
     
-  },
-  {
+  }, */
+  /* {
     title: 'Customer',
     externalIcon: 'customer',
     children: [
@@ -84,7 +84,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
      
     ]
 
-  },
+  }, */
   {
     title: 'Maintenance',
     externalIcon: 'maintenance',
