@@ -1,4 +1,4 @@
-import { KeenIcon } from '@/components';
+import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { Collapse } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
@@ -12,15 +12,16 @@ import { toAbsoluteUrl } from '@/utils';
 export const MainCard = () => {
   const [isOpen, setIsOpen] = useState(true);
   const {
-    searchQuery,
-    setSearchQuery,
     clients,
     setSelectedClient,
     selectedClient,
     locations,
     selectedLocation,
-    setSelectedLocation
+    setSelectedLocation,
+    search
   } = useMonitoringProvider();
+  const [searchTarget, setSearchTarget] = useState('Customer');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
   const onlineLocations = useMemo(() => locations.filter((loc) => loc.online), [locations]);
@@ -55,15 +56,62 @@ export const MainCard = () => {
 
       <Collapse in={isOpen} className="flex-grow" classes={{ wrapper: 'h-full' }}>
         <div className="card-body flex flex-col gap-4 px-3 py-3 h-full">
-          <div className="input input-sm h-[34px] shrink-0">
-            <KeenIcon icon="magnifier" />
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          <form
+            className="flex gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              search(searchTarget, searchQuery);
+            }}
+          >
+            <div className="input input-sm h-[34px] ps-0">
+              <Menu>
+                <MenuItem
+                  toggle="dropdown"
+                  trigger="click"
+                  dropdownProps={{
+                    placement: 'bottom-start',
+                    modifiers: [
+                      {
+                        name: 'offset',
+                        options: {
+                          offset: [0, 0] // [skid, distance]
+                        }
+                      }
+                    ]
+                  }}
+                >
+                  <MenuToggle className="btn btn-clear font-semibold text-xs h-fit px-3 py-[6px] border-0 rounded-none border-e-2 border-dashed border-[#E4E6EF]">
+                    {searchTarget}
+                    <KeenIcon icon="down" className="!text-inherit !text-xs" />
+                  </MenuToggle>
+                  <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
+                    {['Customer', 'Vehicle'].map((target) => (
+                      <MenuItem
+                        key={target}
+                        onClick={() => {
+                          console.log(target);
+                          setSearchTarget(target);
+                        }}
+                      >
+                        <MenuLink>
+                          <MenuTitle>{target}</MenuTitle>
+                        </MenuLink>
+                      </MenuItem>
+                    ))}
+                  </MenuSub>
+                </MenuItem>
+              </Menu>
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-info btn-icon size-[34px]" type="submit">
+              <img src={toAbsoluteUrl('/media/icons/search.svg')} />
+            </button>
+          </form>
           <div className="flex-1">
             <AutoSizer>
               {({ width, height }) => (

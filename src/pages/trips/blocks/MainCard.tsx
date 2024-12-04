@@ -135,10 +135,10 @@ export const MainCard = () => {
               </div>
             </div>
           </div>
-                  <button className="btn btn-info justify-center text-xs font-medium">
-          <img src={toAbsoluteUrl('/media/icons/search.svg')} />
-          Search
-        </button>
+          <button className="btn btn-info justify-center text-xs font-medium">
+            <img src={toAbsoluteUrl('/media/icons/search.svg')} />
+            Search
+          </button>
         </div>
       </Collapse>
     </div>

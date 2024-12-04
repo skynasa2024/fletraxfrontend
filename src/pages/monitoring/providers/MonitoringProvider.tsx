@@ -2,9 +2,7 @@ import { VehicleLocation } from '@/api/cars';
 import { Client, getClients } from '@/api/client';
 import {
   createContext,
-  Dispatch,
   PropsWithChildren,
-  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -38,8 +36,6 @@ interface MqttResponse {
 }
 
 interface MonitoringContextProps {
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
   clients: Client[];
   selectedClient?: Client;
   // eslint-disable-next-line no-unused-vars
@@ -48,24 +44,25 @@ interface MonitoringContextProps {
   selectedLocation?: VehicleLocation;
   // eslint-disable-next-line no-unused-vars
   setSelectedLocation: (v: VehicleLocation | undefined) => void;
+  // eslint-disable-next-line no-unused-vars
+  search: (target: string, query: string) => void;
 }
 
 let memoryMaplocations: Record<string, VehicleLocation> = {};
 
 const MonitoringContext = createContext<MonitoringContextProps>({
-  searchQuery: '',
   clients: [],
   locations: [],
-  setSearchQuery: () => {},
   setSelectedClient: () => {},
-  setSelectedLocation: () => {}
+  setSelectedLocation: () => {},
+  search: () => {}
 });
 
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState('');
   const [clients, setClients] = useState<Client[]>([]);
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
+  const [filteredLocations, setFilteredLocations] = useState<VehicleLocation[]>([]);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
     [clients, searchParams]
@@ -141,8 +138,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [mqttClient]);
 
   useEffect(() => {
-    getClients(searchQuery).then(setClients);
-  }, [searchQuery]);
+    getClients('').then(setClients);
+  }, []);
 
   useEffect(() => {
     // TODO: Need to activate this when changing subscriptions
@@ -155,17 +152,32 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     return () => clearInterval(interval);
   }, [selectedClient]);
 
+  const search = async (target: string, query: string) => {
+    if (query === '') {
+      setFilteredLocations([]);
+      setClients(await getClients(''));
+      return;
+    }
+
+    if (target === 'Vehicle') {
+      setFilteredLocations(
+        locations.filter((l) => l.vehicle.name.toLowerCase().includes(query.toLowerCase()))
+      );
+    } else {
+      setClients(await getClients(query));
+    }
+  };
+
   return (
     <MonitoringContext.Provider
       value={{
-        locations,
-        searchQuery,
-        setSearchQuery,
+        locations: filteredLocations.length ? filteredLocations : locations,
         clients,
         selectedClient,
         setSelectedClient,
         selectedLocation,
-        setSelectedLocation
+        setSelectedLocation,
+        search
       }}
     >
       {children}
@@ -173,6 +185,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useMonitoringProvider = () => {
   return useContext(MonitoringContext);
 };

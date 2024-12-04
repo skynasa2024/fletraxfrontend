@@ -43,12 +43,13 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
         </MenuToggle>
         <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
           {Object.entries(options).map(([key, options]) => (
-            <MenuItem key={key}>
-              <MenuLink
-                handleClick={() => {
-                  setSelected(key);
-                }}
-              >
+            <MenuItem
+              key={key}
+              handleClick={() => {
+                setSelected(key);
+              }}
+            >
+              <MenuLink>
                 <MenuTitle>
                   <div
                     style={{
