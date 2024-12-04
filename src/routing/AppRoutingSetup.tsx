@@ -26,6 +26,7 @@ import { User } from '@/pages/public-profile/profiles/user';
 import { Vehicles } from '@/pages/public-profile/profiles/vehicle';
 
 import { Driver } from '@/pages/public-profile/profiles/driver';
+import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
 import {
   AccountActivityPage,
@@ -96,7 +97,8 @@ import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDet
 import VehicleDetailsPage from '@/pages/public-profile/profiles/vehicle/blocks/VehicleDetailsPage';
 import DriverDetailsPage from '@/pages/public-profile/profiles/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
-
+import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
+import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintenance';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -106,17 +108,31 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DefaultPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
-          <Route path="/devices/device" element={<Device />} />
+
           <Route path="/users/user/*" element={<User />} />
-          <Route path="/users/user/view-user" element={<UserDetailsPage />} />
-          <Route path="/drivers/driver/view-driver" element={<DriverDetailsPage />} />
-          <Route path="/vehicles/vehicle/view-vehicle" element={<VehicleDetailsPage />} />
-          <Route path="/drivers/driver" element={<Driver />} />
           <Route path="/users/add-users" element={<AddUser />} />
+          <Route path="/users/user/view-user" element={<UserDetailsPage />} />
+
+          <Route path="/users/add-user" element={<AddUser />} />
+          <Route path="/drivers/driver" element={<Driver />} />
+          <Route path="/drivers/driver/view-driver" element={<DriverDetailsPage />} />
           <Route path="/drivers/add-driver" element={<AddDriver />} />
+
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
+          <Route path="/vehicles/vehicle/view-vehicle" element={<VehicleDetailsPage />} />
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
+
+          <Route path="/devices/device" element={<Device />} />
           <Route path="/devices/device/view-device" element={<DeviceDetailsPage />} />
+          <Route path="/devices/add-device" element={<AccountSettingsPlainPage />} />
+
+          <Route path="/maintenance/maintenance" element={<Maintenance />} />
+          <Route
+            path="/maintenance/maintenance/view-maintenance"
+            element={<MaintenanceDetailsPage />}
+          />
+               <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
+
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
@@ -143,8 +159,7 @@ const AppRoutingSetup = (): ReactElement => {
             path="/account/home/settings-enterprise"
             element={<AccountSettingsEnterprisePage />}
           />
-          <Route path="/devices/add-device" element={<AccountSettingsPlainPage />} />
-          <Route path="/users/add-user" element={<AddUser />} />
+
           <Route path="/account/home/settings-modal" element={<AccountSettingsModalPage />} />
           <Route path="/account/billing/basic" element={<AccountBasicPage />} />
           <Route path="/account/billing/enterprise" element={<AccountEnterprisePage />} />
