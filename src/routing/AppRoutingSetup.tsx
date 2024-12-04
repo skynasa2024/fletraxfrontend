@@ -131,7 +131,7 @@ const AppRoutingSetup = (): ReactElement => {
             path="/maintenance/maintenance/view-maintenance"
             element={<MaintenanceDetailsPage />}
           />
-               <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
+          <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
 
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />

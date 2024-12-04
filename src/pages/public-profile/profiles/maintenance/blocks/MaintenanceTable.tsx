@@ -6,12 +6,14 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
+import { useNavigate } from 'react-router-dom';
 
 interface ViolationTableProps {
   searchQuery: string;
 }
 
 const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
+  const navigate = useNavigate();
   const columns = useMemo<ColumnDef<Maintenance>[]>(
     () => [
       {
@@ -97,7 +99,8 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           info // TODO: Add links
         ) => (
           <div className="flex gap-3">
-            <a href="#">
+            <a href="#"
+            onClick={() => navigate('/maintenance/maintenance/view-maintenance')}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
             </a>
             <a href="#">

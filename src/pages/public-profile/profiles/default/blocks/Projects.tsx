@@ -1,10 +1,6 @@
 import { useLanguage } from '@/i18n';
-import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
+import { Menu, MenuItem, MenuToggle } from '@/components';
 
-import Icon1 from './icons/Icon1';
-import Icon2 from './icons/Icon2';
-import Icon3 from './icons/Icon3';
-import Icon4 from './icons/Icon4';
 import ViewIcon from './icons/viewIcon';
 import ConnectIcon from './icons/ConnectIcon';
 import OnOffIcon from './icons/OnOffIcon';

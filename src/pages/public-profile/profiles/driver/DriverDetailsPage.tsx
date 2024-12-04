@@ -69,30 +69,29 @@ const VehicleInfoCards = () => {
             address="Some address"
           />
 
-<div className="flex justify-between items-start space-x-4">
-  {/* Maintenance Card */}
-  <Card
-    type="maintenance"
-    date="2024-12-01"
-    count={5}
-    unpaidAmount={2000}
-    paidAmount={1500}
-    title={''}
-    description={''}
-  />
+          <div className="flex justify-between items-start space-x-4">
+            {/* Maintenance Card */}
+            <Card
+              type="maintenance"
+              date="2024-12-01"
+              count={5}
+              unpaidAmount={2000}
+              paidAmount={1500}
+              title={''}
+              description={''}
+            />
 
-  {/* Violations Card */}
-  <Card
-    type="violations"
-    date="2024-12-02"
-    count={3}
-    unpaidAmount={1000}
-    paidAmount={800}
-    title={''}
-    description={''}
-  />
-</div>
-
+            {/* Violations Card */}
+            <Card
+              type="violations"
+              date="2024-12-02"
+              count={3}
+              unpaidAmount={1000}
+              paidAmount={800}
+              title={''}
+              description={''}
+            />
+          </div>
         </div>
         <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-5 mb-6 ">
           <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
