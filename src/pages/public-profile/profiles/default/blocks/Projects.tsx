@@ -6,8 +6,8 @@ import Icon2 from './icons/Icon2';
 import Icon3 from './icons/Icon3';
 import Icon4 from './icons/Icon4';
 import ViewIcon from './icons/viewIcon';
-import ConnectIcon from './icons/connectIcon';
-import OnOffIcon from './icons/onOffIcon';
+import ConnectIcon from './icons/ConnectIcon';
+import OnOffIcon from './icons/OnOffIcon';
 import { useNavigate } from 'react-router-dom';
 import DeviceCard from './DeviceCard';
 
