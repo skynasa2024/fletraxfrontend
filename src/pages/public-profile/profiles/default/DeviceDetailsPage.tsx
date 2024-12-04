@@ -117,26 +117,24 @@ const DeviceDetailsPage = () => {
         </div>
         <div>
           <DeviceNavigation />
-      <div className="grid grid-cols-3">
-        {/* Speed Gauge */}
-        <div className="flex">
-          <SpeedGauge />
-        </div>
+          <div className="grid grid-cols-3">
+            {/* Speed Gauge */}
+            <div className="flex">
+              <SpeedGauge />
+            </div>
 
-        {/* Map */}
-        <div className="flex items-center justify-center">
-          <Map />
-        </div>
+            {/* Map */}
+            <div className="flex items-center justify-center">
+              <Map />
+            </div>
 
-        {/* Car */}
-        <div className="flex items-center justify-center">
-          <Car />
-        </div>
-    
-    </div>
+            {/* Car */}
+            <div className="flex items-center justify-center">
+              <Car />
+            </div>
+          </div>
 
-    <MaintenanceList />
-          
+          <MaintenanceList />
         </div>
       </div>
     </div>
