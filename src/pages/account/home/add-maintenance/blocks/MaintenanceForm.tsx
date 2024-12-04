@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaCalendarAlt, FaClock } from 'react-icons/fa';
 
 interface MaintenanceFormProps {
   onSubmit: (formData: any) => void;
@@ -13,160 +14,145 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 bg-white shadow-md rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-4"
-    >
-      
-      <div className="sm:col-span-2">
-        
-        <label htmlFor="maintenanceType" className="block text-sm font-medium text-gray-700">
-          
-          Types Of Maintenance
-        </label>
-        <input
-          type="text"
-          id="maintenanceType"
-          name="maintenanceType"
-          className="mt-1 p-2 w-1/2 border border-gray-300 rounded-md"
-          placeholder="Oil Change"
-        />
+    <div className="card pb-2.5">
+      <div className="card-header" id="maintenance_settings">
+        <h3 className="card-title">Maintenance Form</h3>
       </div>
-      <div>
-        
-        <label htmlFor="relatedToReservation" className="block text-sm font-medium text-gray-700">
-          
-          Maintenance Related To Reservation
-        </label>
-        <input
-          type="checkbox"
-          id="relatedToReservation"
-          name="relatedToReservation"
-          className="mt-1"
-        />
-      </div>
-      <div>
-        
-        <label htmlFor="carOrAppointment" className="block text-sm font-medium text-gray-700">
-          
-          Car Or Appointment
-        </label>
-        <input
-          type="text"
-          id="carOrAppointment"
-          name="carOrAppointment"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          placeholder="GL96ABR"
-        />
-      </div>
-      <div>
-        
-        <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">
-          
-          Supplier
-        </label>
-        <input
-          type="text"
-          id="supplier"
-          name="supplier"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          placeholder="Supplier"
-        />
-      </div>
-      <div>
-        
-        <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-          
-          Price
-        </label>
-        <input
-          type="number"
-          id="price"
-          name="price"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          placeholder="1 $"
-        />
-      </div>
-      <div>
-        
-        <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
-          
-          Start Date
-        </label>
-        <input
-          type="date"
-          id="startDate"
-          name="startDate"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        
-        <label htmlFor="startTime" className="block text-sm font-medium text-gray-700">
-          
-          Start Time
-        </label>
-        <input
-          type="time"
-          id="startTime"
-          name="startTime"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          placeholder="07:30 AM"
-        />
-      </div>
-      <div className="sm:col-span-2">
-        
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-          
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-          placeholder="Description"
-        ></textarea>
-      </div>
-      <div className="sm:col-span-2">
-        
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-          
-          Status
-        </label>
-        <div className="mt-1 p-2 w-full rounded-md">
-          
-          <label className="inline-flex items-center">
-            
+      <form onSubmit={handleSubmit} className="card-body grid gap-5">
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Types Of Maintenance</label>
             <input
-              type="radio"
-              id="finished"
-              name="status"
-              value="finished"
-              className="form-radio"
+              type="text"
+              id="maintenanceType"
+              name="maintenanceType"
+              className="input"
+              placeholder="Oil Change"
             />
-            <span className="ml-2">Finished</span>
-          </label>
-          <label className="inline-flex items-center ml-6">
-            
+          </div>
+          <div className="grid gap-2.5">
+            <label className="form-label">Car Or Appointment</label>
             <input
-              type="radio"
-              id="ongoing"
-              name="status"
-              value="ongoing"
-              className="form-radio"
+              type="text"
+              id="carOrAppointment"
+              name="carOrAppointment"
+              className="input"
+              placeholder="GL96ABR"
             />
-            <span className="ml-2">Ongoing</span>
-          </label>
+          </div>
         </div>
-      </div>
-      <button
-        type="submit"
-        className="sm:col-span-2 mt-4 p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 w-1/6"
-      >
-        
-        Submit
-      </button>
-    </form>
+
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Supplier</label>
+            <input
+              type="text"
+              id="supplier"
+              name="supplier"
+              className="input"
+              placeholder="Supplier"
+            />
+          </div>
+          <div className="grid gap-2.5">
+            <label className="form-label">Price</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              className="input"
+              placeholder="1 $"
+            />
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">Start Date</label>
+            <div className="relative flex items-center">
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                className="input w-full"
+              />
+              <FaCalendarAlt className="absolute right-3 text-gray-500" />
+            </div>
+          </div>
+          <div className="grid gap-2.5">
+            <label className="form-label">Start Time</label>
+            <div className="relative flex items-center">
+              <input
+                type="time"
+                id="startTime"
+                name="startTime"
+                className="input w-full"
+                placeholder="07:30 AM"
+              />
+              <FaClock className="absolute right-3 text-gray-500" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-2.5">
+          <label className="form-label">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            className="input"
+            placeholder="Description"
+            rows={4}
+          ></textarea>
+        </div>
+
+        <div className="grid gap-2.5">
+          <label className="form-label">Maintenance Related To Reservation</label>
+          <div className="flex items-center">
+            <div className="switch switch-sm">
+              <input
+                type="checkbox"
+                id="relatedToReservation"
+                name="relatedToReservation"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-2.5">
+          <label className="form-label">Status</label>
+          <div className="flex items-center gap-5">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="finished"
+                name="status"
+                value="finished"
+                className="form-radio"
+              />
+              <span>Finished</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="ongoing"
+                name="status"
+                value="ongoing"
+                className="form-radio"
+              />
+              <span>Ongoing</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-5">
+          <button
+            type="submit"
+            className="btn btn-primary"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
