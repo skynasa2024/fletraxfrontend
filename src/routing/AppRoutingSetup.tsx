@@ -66,7 +66,7 @@ import {
 import { AddUser } from '@/pages/account/home/add-user';
 import { AddDriver } from '@/pages/account/home/add-driver';
 import { AddVehicle } from '@/pages/account/home/add-vehicle';
-
+import DeviceDetailsPage from '@/pages/public-profile/profiles/default/DeviceDetailsPage';
 import {
   NetworkAppRosterPage,
   NetworkMarketAuthorsPage,
@@ -116,7 +116,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/drivers/add-driver" element={<AddDriver />} />
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
-          
+          <Route path="/devices/device/view-device" element={<DeviceDetailsPage />} />
           <Route path="/public-profile/profiles/creator" element={<ProfileCreatorPage />} />
           <Route path="/public-profile/profiles/company" element={<ProfileCompanyPage />} />
           <Route path="/public-profile/profiles/nft" element={<ProfileNFTPage />} />
