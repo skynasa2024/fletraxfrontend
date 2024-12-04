@@ -1,16 +1,14 @@
 import React, { useRef, useState } from 'react';
-import { Information, Password, Contact } from './blocks';
+import MaintenanceForm from './blocks/MaintenanceForm';
 
 const AddMaintenancePage = () => {
-  const [activeTab, setActiveTab] = useState<'information' | 'account' | 'contact'>('information');
+  const [activeTab, setActiveTab] = useState<'maintenance'>('maintenance');
 
-  const informationRef = useRef<HTMLDivElement>(null);
-  const accountRef = useRef<HTMLDivElement>(null);
-  const contactRef = useRef<HTMLDivElement>(null);
+  const maintenanceRef = useRef<HTMLDivElement>(null);
 
   const handleTabClick = (
     ref: React.RefObject<HTMLDivElement>,
-    tab: 'information' | 'account' | 'contact'
+    tab: 'maintenance'
   ) => {
     setActiveTab(tab);
 
@@ -28,47 +26,21 @@ const AddMaintenancePage = () => {
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
-      <div className="tabs mb-5 flex " data-tabs="true">
+      <div className="tabs mb-5 flex" data-tabs="true">
         <button
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
-            activeTab === 'information'
+            activeTab === 'maintenance'
               ? 'text-primary border-primary'
               : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
           }`}
-          onClick={() => handleTabClick(informationRef, 'information')}
+          onClick={() => handleTabClick(maintenanceRef, 'maintenance')}
         >
-          Information
-        </button>
-        <button
-          className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
-            activeTab === 'account'
-              ? 'text-primary border-primary'
-              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-          }`}
-          onClick={() => handleTabClick(accountRef, 'account')}
-        >
-          Account
-        </button>
-        <button
-          className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
-            activeTab === 'contact'
-              ? 'text-primary border-primary'
-              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-          }`}
-          onClick={() => handleTabClick(contactRef, 'contact')}
-        >
-          Contact
+          Maintenance
         </button>
       </div>
 
-      <div ref={informationRef}>
-        <Information title="Information" />
-      </div>
-      <div ref={accountRef}>
-        <Password />
-      </div>
-      <div ref={contactRef}>
-        <Contact />
+      <div ref={maintenanceRef}>
+        <MaintenanceForm onSubmit={(formData: any) => console.log(formData)} />
       </div>
     </div>
   );
