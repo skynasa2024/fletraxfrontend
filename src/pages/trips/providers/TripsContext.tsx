@@ -1,4 +1,13 @@
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+import { searchTrips, TripGroup } from '@/api/trips';
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 interface TripsContextProps {
@@ -12,6 +21,7 @@ interface TripsContextProps {
   // eslint-disable-next-line no-unused-vars
   setEndDate: (date: Date | undefined) => void;
   search: () => void;
+  trips: TripGroup[];
 }
 
 const TripsContext = createContext<TripsContextProps>({
@@ -21,7 +31,8 @@ const TripsContext = createContext<TripsContextProps>({
   setStartDate: () => {},
   endDate: new Date(),
   setEndDate: () => {},
-  search: () => {}
+  search: () => {},
+  trips: []
 });
 
 export const TripsProvider = ({ children }: PropsWithChildren) => {
@@ -74,7 +85,20 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     },
     [setSearchParams]
   );
-  const search = useCallback(() => {}, []);
+  const [trips, setTrips] = useState<TripGroup[]>([]);
+  const search = useCallback(async () => {
+    const trips = await searchTrips({
+      query: searchDeviceQuery,
+      startDate,
+      endDate
+    });
+    setTrips(trips);
+  }, [endDate, searchDeviceQuery, startDate]);
+
+  useEffect(() => {
+    search();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <TripsContext.Provider
@@ -85,7 +109,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         setStartDate,
         endDate,
         setEndDate,
-        search
+        search,
+        trips
       }}
     >
       {children}

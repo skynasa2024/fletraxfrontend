@@ -5,14 +5,23 @@ import { useTripsContext } from '../providers/TripsContext';
 import 'react-resizable/css/styles.css';
 import { format } from 'date-fns';
 import { toAbsoluteUrl } from '@/utils';
+import TripCard from './TripCard';
 
 export const MainCard = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const { searchDeviceQuery, setSearchDeviceQuery, startDate, setStartDate, endDate, setEndDate } =
-    useTripsContext();
+  const {
+    searchDeviceQuery,
+    setSearchDeviceQuery,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    search,
+    trips
+  } = useTripsContext();
 
   return (
-    <div className="card w-[380px] data-[open=true]:h-full group" data-open={isOpen}>
+    <div className="card w-[411px] data-[open=true]:h-full group" data-open={isOpen}>
       <div
         className="card-header border-dashed border-0 group-data-[open=true]:border-b-2"
         onClick={() => setIsOpen((open) => !open)}
@@ -33,7 +42,7 @@ export const MainCard = () => {
               onChange={(e) => setSearchDeviceQuery(e.target.value)}
             />
           </div>
-          <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-4 shrink-0">
             <div className="flex flex-col gap-2">
               <div className="text-xs font-medium text-[#3F4254]">Start Date</div>
               <div className="input input-sm h-[34px] shrink-0">
@@ -135,10 +144,18 @@ export const MainCard = () => {
               </div>
             </div>
           </div>
-          <button className="btn btn-info justify-center text-xs font-medium">
+          <button
+            className="btn btn-info justify-center text-xs font-medium shrink-0"
+            onClick={search}
+          >
             <img src={toAbsoluteUrl('/media/icons/search.svg')} />
             Search
           </button>
+          <div className="scrollable pb-2 flex flex-col gap-[10px]">
+            {trips.map((tripGroup) => (
+              <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
+            ))}
+          </div>
         </div>
       </Collapse>
     </div>
