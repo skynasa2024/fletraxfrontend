@@ -1,4 +1,4 @@
-import { VehicleList } from './blocks';
+import { MaintenanceTable } from './blocks';
 import { UserMiniCards } from './mini-cards/UserMiniCards';
 
 const MaintenancePage = () => {
@@ -7,7 +7,7 @@ const MaintenancePage = () => {
       <h3 className="font-bold text-xl text-gray-800">Maintenance List</h3>
 
       <UserMiniCards />
-      <VehicleList />
+      <MaintenanceTable searchQuery={''} />
     </div>
   );
 };
