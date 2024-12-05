@@ -15,17 +15,17 @@ export const CarsLayer = () => {
       green: L.icon({
         iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
         iconSize: [20, 20],
-        iconAnchor: [0.5, 0.5]
+        iconAnchor: [10, 10]
       }),
       red: L.icon({
         iconUrl: toAbsoluteUrl('/media/icons/car-marker-red.png'),
         iconSize: [20, 20],
-        iconAnchor: [0.5, 0.5]
+        iconAnchor: [10, 10]
       }),
       gray: L.icon({
         iconUrl: toAbsoluteUrl('/media/icons/car-marker-gray.png'),
         iconSize: [20, 20],
-        iconAnchor: [0.5, 0.5]
+        iconAnchor: [10, 10]
       })
     }),
     []

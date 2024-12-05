@@ -73,9 +73,10 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
   const mqttClient = useMemo(
     () =>
-      mqtt.connect('wss://test.fletrax.com:8084/mqtt', {
+      mqtt.connect('wss://app.skynasa.com:8084/mqtt', {
         username: 'super_admin',
-        password: 'fletrax159',
+        password: 'skynasa159',
+        clientId: 'monitoring',
         clean: true,
         keepalive: 60,
         protocolVersion: 5
