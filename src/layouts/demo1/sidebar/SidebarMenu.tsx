@@ -72,6 +72,7 @@ const SidebarMenu = () => {
           key={index}
           {...(item.toggle && { toggle: item.toggle })}
           {...(item.trigger && { trigger: item.trigger })}
+          open
         >
           <MenuLink
             className={clsx(
@@ -302,7 +303,7 @@ const SidebarMenu = () => {
   const menuConfig = getMenuConfig('primary');
 
   return (
-    <Menu highlight={true} multipleExpand={false} className={clsx('flex flex-col grow', itemsGap)}>
+    <Menu highlight={false} multipleExpand={true} className={clsx('flex flex-col grow', itemsGap)}>
       {menuConfig && buildMenu(menuConfig)}
     </Menu>
   );

@@ -4,11 +4,12 @@ import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { VehicleLocation } from '@/api/cars';
 
 export const CarsLayer = () => {
   const map = useMap();
+  const [firstLoad, setFirstLoad] = useState(true);
   const { locations, selectedLocation, setSelectedLocation } = useMonitoringProvider();
   const icon = useMemo(
     () => ({
@@ -47,15 +48,35 @@ export const CarsLayer = () => {
   );
 
   useEffect(() => {
-    if (!selectedLocation) return;
+    if (!selectedLocation) {
+      if (firstLoad) {
+        setFirstLoad(false);
+        return;
+      }
+      map.zoomOut(7, { animate: true });
+      return;
+    }
 
     map.flyTo([selectedLocation.lat, selectedLocation.long], 16, {
       animate: true
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, selectedLocation]);
 
   return (
-    <MarkerClusterGroup chunkedLoading removeOutsideVisibleBounds>
+    <MarkerClusterGroup
+      chunkedLoading
+      removeOutsideVisibleBounds
+      disableClusteringAtZoom={12}
+      onMouseOver={(e) => {
+        if (e.layer.getChildCount() < 200) {
+          e.layer.spiderfy();
+        }
+      }}
+      onMouseOut={(e) => {
+        e.layer.unspiderfy();
+      }}
+    >
       {selectedLocation
         ? selectedLocation.lat &&
           selectedLocation.long && (

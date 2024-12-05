@@ -5,7 +5,6 @@ export const MENU_SIDEBAR: TMenuConfig = [
     title: 'Dashboard',
     externalIcon: 'dashboard',
     path: '/'
-  
   },
   {
     title: 'Monitoring',
