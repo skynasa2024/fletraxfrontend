@@ -2,13 +2,7 @@ import { faker } from '@faker-js/faker';
 import { fakeVehicle } from './faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
-
-
-export interface Vehicle {
-    brandImage: string;
-    plate: string;
-    imei: string;
-  }
+import { Vehicle } from './cars';
 
 // Define Driver interface
 export interface Driver {

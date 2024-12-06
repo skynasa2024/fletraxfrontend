@@ -1,7 +1,8 @@
 import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { EngineHours, Mileage, FuelConsumption, RentedTimes } from '../svg/';
+import { Mileage, RentedTimes } from '../svg/';
+import { EngineHours, FuelConsumption } from '../../maintenance/blocks/svg';
 
 interface MetricCardProps {
   icon: React.ComponentType;
