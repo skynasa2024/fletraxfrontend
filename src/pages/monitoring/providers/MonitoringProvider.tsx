@@ -119,7 +119,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
           parkingTime: device.parking_time,
           engineStatus:
             device.engine_ignition_status === 'UNKNOWN'
-              ? memoryMaplocations[topic].status.engineStatus
+              ? memoryMaplocations[topic]?.status?.engineStatus || false
               : device.engine_ignition_status === 'true',
           timestamp: new Date(+device.timestamp * 1000),
           batteryLevel: device.external_battery_voltage || 0,
