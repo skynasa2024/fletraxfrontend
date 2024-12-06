@@ -148,11 +148,20 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     // TODO: Need to activate this when changing subscriptions
     // memoryMaplocations = {};
     // setLocations([]);
+    const timeout = setTimeout(async () => {
+      for (let i = 0; i < 5; i++) {
+        setLocations(Object.values(memoryMaplocations));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    }, 2000);
     const interval = setInterval(async () => {
       setLocations(Object.values(memoryMaplocations));
     }, 10000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [selectedClient]);
 
   const search = async (target: string, query: string) => {

@@ -36,7 +36,7 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl(`/media/icons/device.svg`)} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Device Name</div>
-            <div className="text-[#2D3748] text-xs">{location.vehicle.name}</div>
+            <div className="text-[#2D3748] text-xs">{location.angle}</div>
           </div>
         </div>
 

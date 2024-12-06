@@ -145,7 +145,13 @@ export const MainCard = () => {
                               <div
                                 data-selected={selectedClient?.name === client.name}
                                 className="flex p-[10px] gap-4 justify-between text-[#3F4254] font-roboto data-[selected=true]:border border-[#5151F9] rounded-md cursor-pointer"
-                                onClick={() => setSelectedClient(client)}
+                                onClick={() => {
+                                  if (selectedClient?.name === client.name) {
+                                    setSelectedClient(undefined);
+                                    return;
+                                  }
+                                  setSelectedClient(client);
+                                }}
                               >
                                 <div className="flex gap-2 items-center font-medium">
                                   <img

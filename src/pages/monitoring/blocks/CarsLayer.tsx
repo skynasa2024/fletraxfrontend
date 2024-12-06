@@ -68,13 +68,22 @@ export const CarsLayer = () => {
       chunkedLoading
       removeOutsideVisibleBounds
       disableClusteringAtZoom={12}
+      animate={false}
       onMouseOver={(e) => {
-        if (e.layer.getChildCount() < 200) {
-          e.layer.spiderfy();
+        try {
+          if (e.layer.getChildCount() < 100) {
+            e.layer.spiderfy();
+          }
+        } catch (e) {
+          console.error(e);
         }
       }}
       onMouseOut={(e) => {
-        e.layer.unspiderfy();
+        try {
+          e.layer.unspiderfy();
+        } catch (e) {
+          console.error(e);
+        }
       }}
     >
       {selectedLocation
