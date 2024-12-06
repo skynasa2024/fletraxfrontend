@@ -29,7 +29,7 @@ interface MqttResponse {
   position_satellites?: number;
   position_speed?: number;
   position_valid: boolean;
-  position_direction?: number;
+  position_direction: number;
   protocol: string;
   server_timestamp: string;
   timestamp: string;
@@ -76,7 +76,6 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       mqtt.connect('wss://app.skynasa.com:8084/mqtt', {
         username: 'super_admin',
         password: 'skynasa159',
-        clientId: 'monitoring',
         clean: true,
         keepalive: 60,
         protocolVersion: 5
@@ -115,10 +114,13 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
-        angle: device.position_direction || 0,
+        angle: device.position_direction,
         status: {
           parkingTime: device.parking_time,
-          engineStatus: device.engine_ignition_status === 'true',
+          engineStatus:
+            device.engine_ignition_status === 'UNKNOWN'
+              ? memoryMaplocations[topic].status.engineStatus
+              : device.engine_ignition_status === 'true',
           timestamp: new Date(+device.timestamp * 1000),
           batteryLevel: device.external_battery_voltage || 0,
           defenseStatus: false,
