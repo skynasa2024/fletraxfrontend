@@ -15,9 +15,7 @@ export interface Vehicle {
   date: string;
 }
 
-export const getVehicles = async (
-  params: TDataGridRequestParams
-): Promise<Paginated<Vehicle>> => {
+export const getVehicles = async (params: TDataGridRequestParams): Promise<Paginated<Vehicle>> => {
   const totalCount = faker.number.int({ min: 20, max: 200 });
   const originalDataset: Vehicle[] = Array(params.pageSize)
     .fill(0)

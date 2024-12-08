@@ -1,4 +1,4 @@
-import { searchTrips, TripGroup } from '@/api/trips';
+import { getTripGroupPath, getTripPath, searchTrips, Trip, TripGroup, TripPath } from '@/api/trips';
 import {
   createContext,
   PropsWithChildren,
@@ -22,6 +22,10 @@ interface TripsContextProps {
   setEndDate: (date: Date | undefined) => void;
   search: () => void;
   trips: TripGroup[];
+  selectedTrip?: TripGroup | Trip;
+  // eslint-disable-next-line no-unused-vars
+  setSelectedTrip: (trip?: TripGroup | Trip) => void;
+  path?: TripPath[];
 }
 
 const TripsContext = createContext<TripsContextProps>({
@@ -32,11 +36,14 @@ const TripsContext = createContext<TripsContextProps>({
   endDate: new Date(),
   setEndDate: () => {},
   search: () => {},
-  trips: []
+  trips: [],
+  setSelectedTrip: () => {}
 });
 
 export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
+  const [path, setPath] = useState<TripPath[]>();
   const searchDeviceQuery = searchParams.get('device') || '';
   const setSearchDeviceQuery = useCallback(
     (query: string) => {
@@ -100,6 +107,20 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!selectedTrip) {
+      setPath(undefined);
+      return;
+    }
+
+    if ('trips' in selectedTrip) {
+      getTripGroupPath(selectedTrip).then(setPath);
+      return;
+    }
+
+    getTripPath(selectedTrip.id).then(setPath);
+  }, [selectedTrip]);
+
   return (
     <TripsContext.Provider
       value={{
@@ -110,7 +131,10 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         endDate,
         setEndDate,
         search,
-        trips
+        trips,
+        selectedTrip,
+        setSelectedTrip,
+        path
       }}
     >
       {children}

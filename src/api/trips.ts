@@ -18,6 +18,7 @@ export interface TripPath {
 }
 
 export interface TripGroup {
+  id: string;
   trips: Trip[];
   date: Date;
 }
@@ -40,6 +41,7 @@ export const searchTrips = async ({
       const numberOfTrips = faker.number.int({ min: 1, max: 5 });
       const date = faker.date.recent({ days: 7 });
       return {
+        id: faker.string.uuid(),
         date,
         trips: Array(numberOfTrips)
           .fill(0)
@@ -54,4 +56,36 @@ export const searchTrips = async ({
       };
     })
     .sort((a, b) => b.date.getTime() - a.date.getTime());
+};
+
+export const getTripPath = async (tripId: string): Promise<TripPath[]> => {
+  const numberOfPoints = faker.number.int({ min: 10, max: 50 });
+  const location = faker.location.nearbyGPSCoordinate({
+    origin: [38.9637, 33.2433],
+    radius: 200
+  });
+  return Array(numberOfPoints)
+    .fill(0)
+    .map(() => {
+      const stop = faker.location.nearbyGPSCoordinate({
+        origin: location,
+        radius: 10
+      });
+      return {
+        tripId,
+        latitude: stop[0],
+        longitude: stop[1],
+        speed: faker.number.int({ min: 0, max: 100 }),
+        timestamp: faker.date.recent()
+      };
+    });
+};
+
+export const getTripGroupPath = async (tripGroup: TripGroup): Promise<TripPath[]> => {
+  const tripPaths = await Promise.all(
+    tripGroup.trips.map(async (trip) => {
+      return getTripPath(trip.id);
+    })
+  );
+  return tripPaths.flat();
 };

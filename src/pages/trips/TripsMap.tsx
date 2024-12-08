@@ -4,6 +4,7 @@ import { ZoomControl } from '../monitoring/blocks/ZoomControl';
 import { OtherControls } from '../monitoring/blocks/OtherControls';
 import { MainControl } from '../monitoring/blocks/MainControl';
 import { MapControls } from '../monitoring/blocks/MapControls';
+import { TripsLayer } from './blocks/TripsLayer';
 
 const TripsMap = () => {
   return (
@@ -18,7 +19,7 @@ const TripsMap = () => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {/* <CarsLayer /> */}
+      <TripsLayer />
       <AttributionControl prefix="Leaflet" />
       <MapControls>
         <ZoomControl />
