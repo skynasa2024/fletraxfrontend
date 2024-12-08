@@ -4,47 +4,38 @@ import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { VehicleLocation } from '@/api/cars';
 
 export const CarsLayer = () => {
   const map = useMap();
   const [firstLoad, setFirstLoad] = useState(true);
-  const { locations, selectedLocation, setSelectedLocation } = useMonitoringProvider();
-  const icon = useMemo(
-    () => ({
-      green: L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-      }),
-      red: L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/car-marker-red.png'),
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-      }),
-      gray: L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/car-marker-gray.png'),
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-      })
-    }),
-    []
-  );
+  const { locations, selectedLocation, setSelectedLocation, showImei } = useMonitoringProvider();
 
   const getIcon = useCallback(
     (location: VehicleLocation) => {
-      if (!location.online) {
-        return icon.gray;
-      }
-
-      if (location.status.engineStatus) {
-        return icon.green;
-      }
-
-      return icon.red;
+      const iconColor = location.online ? (location.status.engineStatus ? 'green' : 'red') : 'gray';
+      return L.divIcon({
+        className: 'relative',
+        html: renderToStaticMarkup(
+          <>
+            <img
+              className="size-[20px] leaflet-marker-icon leaflet-zoom-animated leaflet-interactive"
+              src={toAbsoluteUrl(`/media/icons/car-marker-${iconColor}.png`)}
+            />
+            {showImei && (
+              <div className="absolute bottom-[calc(100%+10px)] -translate-x-[calc(50%-10px)] text-xs font-semibold text-[#3F4254] bg-white rounded-lg p-2">
+                {location.vehicle.imei}
+              </div>
+            )}
+          </>
+        ),
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      });
     },
-    [icon.gray, icon.green, icon.red]
+    [showImei]
   );
 
   useEffect(() => {
@@ -69,9 +60,38 @@ export const CarsLayer = () => {
       removeOutsideVisibleBounds
       disableClusteringAtZoom={12}
       animate={false}
+      spiderfyDistanceMultiplier={4}
+      spiderfyShapePositions={(count, centerPt) => {
+        // Draw circles and keep increasing the radius until all markers are inside the circle
+        var distance = 100;
+        var increaseOn = 5;
+        var angleStep = (2 * Math.PI) / increaseOn;
+        var iterations = 0;
+        var currentIteration = 0;
+        const positions = [];
+
+        for (let i = 0; i < count; i++) {
+          const angle = i * angleStep + iterations * (Math.PI / 4);
+          const pos = L.point(
+            centerPt.x + distance * Math.cos(angle),
+            centerPt.y + distance * Math.sin(angle)
+          );
+          positions.push(pos);
+          currentIteration++;
+          if (increaseOn === currentIteration) {
+            currentIteration = 0;
+            distance += 125;
+            increaseOn *= 2;
+            angleStep = (2 * Math.PI) / increaseOn;
+            iterations++;
+          }
+        }
+
+        return positions;
+      }}
       onMouseOver={(e) => {
         try {
-          if (e.layer.getChildCount() < 100) {
+          if (e.layer.getChildCount() < 50) {
             e.layer.spiderfy();
           }
         } catch (e) {

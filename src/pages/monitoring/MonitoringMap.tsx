@@ -8,6 +8,7 @@ import { MainCard } from './blocks/MainCard';
 import { SubControl } from './blocks/SubControl';
 import { useMonitoringProvider } from './providers/MonitoringProvider';
 import { LocationCard } from './blocks/LocationCard';
+import { ShowImeiControl } from './blocks/ShowImeiControl';
 
 const MonitoringMap = () => {
   const { selectedLocation } = useMonitoringProvider();
@@ -29,6 +30,7 @@ const MonitoringMap = () => {
       <MapControls>
         <ZoomControl />
         <OtherControls />
+        <ShowImeiControl />
       </MapControls>
       <MainControl title="MONITORING">
         <MainCard />

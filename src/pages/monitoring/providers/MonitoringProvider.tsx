@@ -46,6 +46,9 @@ interface MonitoringContextProps {
   setSelectedLocation: (v: VehicleLocation | undefined) => void;
   // eslint-disable-next-line no-unused-vars
   search: (target: string, query: string) => void;
+  showImei: boolean;
+  // eslint-disable-next-line no-unused-vars
+  setShowImei: (v: boolean) => void;
 }
 
 let memoryMaplocations: Record<string, VehicleLocation> = {};
@@ -55,7 +58,9 @@ const MonitoringContext = createContext<MonitoringContextProps>({
   locations: [],
   setSelectedClient: () => {},
   setSelectedLocation: () => {},
-  search: () => {}
+  search: () => {},
+  showImei: false,
+  setShowImei: () => {}
 });
 
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
@@ -63,6 +68,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
   const [filteredLocations, setFilteredLocations] = useState<VehicleLocation[]>([]);
+  const [showImei, setShowImei] = useState(true);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
     [clients, searchParams]
@@ -189,7 +195,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         setSelectedClient,
         selectedLocation,
         setSelectedLocation,
-        search
+        search,
+        showImei,
+        setShowImei
       }}
     >
       {children}
