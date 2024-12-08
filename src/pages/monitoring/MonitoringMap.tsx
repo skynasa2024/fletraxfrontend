@@ -30,7 +30,7 @@ const MonitoringMap = () => {
         <ZoomControl />
         <OtherControls />
       </MapControls>
-      <MainControl>
+      <MainControl title="MONITORING">
         <MainCard />
       </MainControl>
       {selectedLocation && (

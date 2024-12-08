@@ -1,10 +1,9 @@
 import { AttributionControl, MapContainer, TileLayer } from 'react-leaflet';
-import { CarsLayer } from './blocks/CarsLayer';
-import { MapControls } from './blocks/MapControls';
 import { MainCard } from './blocks/MainCard';
 import { ZoomControl } from '../monitoring/blocks/ZoomControl';
 import { OtherControls } from '../monitoring/blocks/OtherControls';
 import { MainControl } from '../monitoring/blocks/MainControl';
+import { MapControls } from '../monitoring/blocks/MapControls';
 
 const TripsMap = () => {
   return (
@@ -25,7 +24,7 @@ const TripsMap = () => {
         <ZoomControl />
         <OtherControls />
       </MapControls>
-      <MainControl>
+      <MainControl title="Trips">
         <MainCard />
       </MainControl>
     </MapContainer>

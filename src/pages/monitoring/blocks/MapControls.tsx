@@ -10,7 +10,9 @@ export const MapControls = ({ children }: PropsWithChildren) => {
       onMouseOver={() => map.doubleClickZoom.disable()}
       onMouseOut={() => map.doubleClickZoom.enable()}
     >
-      <div className="leaflet-control flex flex-col gap-[10px] !mt-[67px] !mr-11">{children}</div>
+      <div className="leaflet-control flex flex-col gap-[10px] !mt-20 !mr-4 md:!mt-[67px] md:!mr-11">
+        {children}
+      </div>
     </div>
   );
 };
