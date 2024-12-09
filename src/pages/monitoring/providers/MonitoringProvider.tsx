@@ -33,6 +33,10 @@ interface MqttResponse {
   protocol: string;
   server_timestamp: string;
   timestamp: string;
+  defense_active_status?: boolean;
+  battery_charging_status?: boolean;
+  engine_blocked_status?: boolean;
+  battery_level?: number;
 }
 
 interface MonitoringContextProps {
@@ -52,6 +56,30 @@ interface MonitoringContextProps {
 }
 
 let memoryMaplocations: Record<string, VehicleLocation> = {};
+const defaultLocation: VehicleLocation = {
+  online: false,
+  lat: 0,
+  long: 0,
+  angle: 0,
+  status: {
+    parkingTime: '',
+    engineStatus: false,
+    timestamp: new Date(),
+    batteryLevel: 0,
+    defenseStatus: false,
+    engineBlocked: false,
+    existingKilometer: '',
+    satellietes: 0,
+    signalLevel: 0,
+    speed: 0
+  },
+  vehicle: {
+    imei: '',
+    name: '',
+    brandImage: '',
+    plate: ''
+  }
+};
 
 const MonitoringContext = createContext<MonitoringContextProps>({
   clients: [],
@@ -116,7 +144,13 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
-      memoryMaplocations[topic] = {
+      console.log(device);
+      type RecursivePartial<T> = {
+        [P in keyof T]?: Partial<T[P]>;
+      };
+      const oldVehicle = memoryMaplocations[topic] || defaultLocation;
+
+      const partialVehicle: RecursivePartial<VehicleLocation> = {
         online: true,
         lat: device.position_latitude,
         long: device.position_longitude,
@@ -125,22 +159,56 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
           parkingTime: device.parking_time,
           engineStatus:
             device.engine_ignition_status === 'UNKNOWN'
-              ? memoryMaplocations[topic]?.status?.engineStatus || false
+              ? undefined
               : device.engine_ignition_status === 'true',
           timestamp: new Date(+device.timestamp * 1000),
-          batteryLevel: device.external_battery_voltage || 0,
-          defenseStatus: false,
-          engineBlocked: false,
+          batteryLevel: device.battery_charging_status === true ? 100 : device.battery_level,
+          defenseStatus: device.defense_active_status,
+          engineBlocked: device.engine_blocked_status,
           existingKilometer: device.existing_kilometers,
-          satellietes: device.position_satellites || 0,
-          signalLevel: device.gsm_signal_level || -1,
-          speed: device.position_speed || 0
+          satellietes: device.position_satellites,
+          signalLevel: device.gsm_signal_level,
+          speed: device.position_speed
         },
         vehicle: {
           imei: device.ident,
           name: device.device_name,
           brandImage: '',
           plate: 'AAAAAA'
+        }
+      };
+
+      // Remove undefined values from partialVehicle
+      Object.keys(partialVehicle).forEach((key) => {
+        if ((partialVehicle as any)[key] === undefined) {
+          delete (partialVehicle as any)[key];
+        }
+      });
+      if (partialVehicle.status !== undefined) {
+        Object.keys(partialVehicle.status).forEach((key) => {
+          if ((partialVehicle as any).status[key] === undefined) {
+            delete (partialVehicle as any).status[key];
+          }
+        });
+      }
+      if (partialVehicle.vehicle !== undefined) {
+        Object.keys(partialVehicle.vehicle).forEach((key) => {
+          if ((partialVehicle as any).vehicle[key] === undefined) {
+            delete (partialVehicle as any).vehicle[key];
+          }
+        });
+      }
+
+      memoryMaplocations[topic] = {
+        ...oldVehicle,
+        ...partialVehicle,
+        status: {
+          ...oldVehicle.status,
+          ...partialVehicle.status
+        },
+        vehicle: {
+          ...oldVehicle.vehicle,
+          ...partialVehicle.vehicle
         }
       };
     });
