@@ -1,11 +1,10 @@
-import { Marker, useMap } from 'react-leaflet';
+import { Marker, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { useCallback, useEffect, useState } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { VehicleLocation } from '@/api/cars';
 
 export const CarsLayer = () => {
@@ -13,29 +12,40 @@ export const CarsLayer = () => {
   const [firstLoad, setFirstLoad] = useState(true);
   const { locations, selectedLocation, setSelectedLocation, showImei } = useMonitoringProvider();
 
-  const getIcon = useCallback(
-    (location: VehicleLocation) => {
-      const iconColor = location.online ? (location.status.engineStatus ? 'green' : 'red') : 'gray';
-      return L.divIcon({
-        className: 'relative',
-        html: renderToStaticMarkup(
-          <>
-            <img
-              className="size-[20px] leaflet-marker-icon leaflet-zoom-animated leaflet-interactive"
-              src={toAbsoluteUrl(`/media/icons/car-marker-${iconColor}.png`)}
-            />
-            {showImei && (
-              <div className="absolute bottom-[calc(100%+10px)] -translate-x-[calc(50%-10px)] text-xs font-semibold text-[#3F4254] bg-white rounded-lg p-2">
-                {location.vehicle.imei}
-              </div>
-            )}
-          </>
-        ),
+  const icon = useMemo(
+    () => ({
+      green: L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
         iconSize: [20, 20],
         iconAnchor: [10, 10]
-      });
+      }),
+      red: L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/car-marker-red.png'),
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      }),
+      gray: L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/car-marker-gray.png'),
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      })
+    }),
+    []
+  );
+
+  const getIcon = useCallback(
+    (location: VehicleLocation) => {
+      if (!location.online) {
+        return icon.gray;
+      }
+
+      if (location.status.engineStatus) {
+        return icon.green;
+      }
+
+      return icon.red;
     },
-    [showImei]
+    [icon.gray, icon.green, icon.red]
   );
 
   useEffect(() => {
@@ -110,6 +120,7 @@ export const CarsLayer = () => {
         ? selectedLocation.lat &&
           selectedLocation.long && (
             <Marker
+              key={selectedLocation.vehicle.imei}
               position={[selectedLocation.lat, selectedLocation.long]}
               rotationAngle={selectedLocation.angle}
               icon={getIcon(selectedLocation)}
@@ -118,7 +129,13 @@ export const CarsLayer = () => {
                   setSelectedLocation(undefined);
                 }
               }}
-            />
+            >
+              {showImei && (
+                <Tooltip direction="top" offset={[0, -20]} permanent>
+                  {selectedLocation.vehicle.imei}
+                </Tooltip>
+              )}
+            </Marker>
           )
         : locations?.map(
             (location) =>
@@ -134,7 +151,13 @@ export const CarsLayer = () => {
                       setSelectedLocation(location);
                     }
                   }}
-                />
+                >
+                  {showImei && (
+                    <Tooltip direction="top" offset={[0, -20]} permanent>
+                      {location.vehicle.imei}
+                    </Tooltip>
+                  )}
+                </Marker>
               )
           )}
     </MarkerClusterGroup>
