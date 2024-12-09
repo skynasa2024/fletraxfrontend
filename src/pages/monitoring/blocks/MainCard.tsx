@@ -40,6 +40,14 @@ export const MainCard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
 
+  const getBatteryIcon = (batteryLevel: number) => {
+    // Available options are 5, 3, 1, 0
+    if (batteryLevel >= 70) return 'battery-5';
+    if (batteryLevel >= 30) return 'battery-3';
+    if (batteryLevel > 0) return 'battery-1';
+    return 'battery-0';
+  };
+
   return (
     <div className="card-body md:w-[380px] flex flex-col gap-4 px-3 py-3 h-full">
       <form
@@ -213,7 +221,11 @@ export const MainCard = () => {
                             <div>{location.vehicle.name}</div>
                             <div>{location.vehicle.imei}</div>
                           </div>
-                          <img src={toAbsoluteUrl('/media/icons/battery-5.svg')} />
+                          <img
+                            src={toAbsoluteUrl(
+                              `/media/icons/${getBatteryIcon(location.status.batteryLevel)}.svg`
+                            )}
+                          />
                         </div>
                         <div className="border-b-2 border-[#E4E6EF] border-dashed" />
                         <div className="flex gap-[10px] text-[10px] font-semibold justify-evenly">
