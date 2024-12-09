@@ -1,4 +1,4 @@
-import { Marker, Tooltip, useMap } from 'react-leaflet';
+import { Tooltip, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
@@ -6,6 +6,7 @@ import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { VehicleLocation } from '@/api/cars';
+import { RotatableMarker } from './RotatableMarker';
 
 export const CarsLayer = () => {
   const map = useMap();
@@ -119,7 +120,7 @@ export const CarsLayer = () => {
       {selectedLocation
         ? selectedLocation.lat &&
           selectedLocation.long && (
-            <Marker
+            <RotatableMarker
               key={selectedLocation.vehicle.imei}
               position={[selectedLocation.lat, selectedLocation.long]}
               rotationAngle={selectedLocation.angle}
@@ -135,13 +136,13 @@ export const CarsLayer = () => {
                   {selectedLocation.vehicle.imei}
                 </Tooltip>
               )}
-            </Marker>
+            </RotatableMarker>
           )
         : locations?.map(
             (location) =>
               location.lat &&
               location.long && (
-                <Marker
+                <RotatableMarker
                   key={location.vehicle.imei}
                   position={[location.lat, location.long]}
                   rotationAngle={location.angle}
@@ -157,7 +158,7 @@ export const CarsLayer = () => {
                       {location.vehicle.imei}
                     </Tooltip>
                   )}
-                </Marker>
+                </RotatableMarker>
               )
           )}
     </MarkerClusterGroup>
