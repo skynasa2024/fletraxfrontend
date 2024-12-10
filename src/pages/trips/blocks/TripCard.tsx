@@ -27,7 +27,7 @@ const locale = {
 
 const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { setSelectedTrip, selectedTrip } = useTripsContext();
+  const { setSelectedTrip, selectedTrip, startAnimation, animationStarted } = useTripsContext();
 
   return (
     <div
@@ -48,8 +48,19 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
             <span>{tripGroup.trips.length} </span>
             <span className="font-normal">Trips</span>
           </div>
-          <div className="cursor-pointer ms-auto">
-            <img src={toAbsoluteUrl('/media/icons/start.svg')} />
+          <div
+            className="cursor-pointer ms-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedTrip(tripGroup);
+              startAnimation();
+            }}
+          >
+            <img
+              src={toAbsoluteUrl(
+                `/media/icons/${animationStarted && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
+              )}
+            />
           </div>
         </div>
         <div className="grid grid-cols-3 px-[6px] gap-2">
@@ -96,7 +107,17 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
               >
                 <div className="flex justify-between border-b-2 border-dashed py-1">
                   <div className="text-xs text-[#3F4254] font-semibold">{idx + 1}</div>
-                  <img src={toAbsoluteUrl('/media/icons/start.svg')} className="cursor-pointer" />
+                  <img
+                    src={toAbsoluteUrl(
+                      `/media/icons/${animationStarted && selectedTrip === trip ? 'start-green' : 'start'}.svg`
+                    )}
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedTrip(trip);
+                      startAnimation();
+                    }}
+                  />
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex gap-1 items-center">

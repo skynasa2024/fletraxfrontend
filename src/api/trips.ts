@@ -13,6 +13,7 @@ export interface TripPath {
   tripId: string;
   latitude: number;
   longitude: number;
+  direction: number;
   speed: number;
   timestamp: Date;
 }
@@ -75,6 +76,7 @@ export const getTripPath = async (tripId: string): Promise<TripPath[]> => {
         tripId,
         latitude: stop[0],
         longitude: stop[1],
+        direction: faker.number.int({ min: 0, max: 360 }),
         speed: faker.number.int({ min: 0, max: 100 }),
         timestamp: faker.date.recent()
       };
