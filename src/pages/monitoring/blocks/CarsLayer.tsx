@@ -67,6 +67,7 @@ export const CarsLayer = () => {
 
   return (
     <MarkerClusterGroup
+      key={showImei ? 'show-imei' : 'hide-imei'}
       chunkedLoading
       removeOutsideVisibleBounds
       disableClusteringAtZoom={12}
