@@ -37,6 +37,7 @@ interface MqttResponse {
   battery_charging_status?: boolean;
   engine_blocked_status?: boolean;
   battery_level?: number;
+  status?: string;
 }
 
 interface MonitoringContextProps {
@@ -144,14 +145,14 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
-      console.log(device);
+
       type RecursivePartial<T> = {
         [P in keyof T]?: Partial<T[P]>;
       };
       const oldVehicle = memoryMaplocations[topic] || defaultLocation;
 
       const partialVehicle: RecursivePartial<VehicleLocation> = {
-        online: true,
+        online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
         lat: device.position_latitude,
         long: device.position_longitude,
         angle: device.position_direction,
