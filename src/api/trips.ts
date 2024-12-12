@@ -59,26 +59,29 @@ export const searchTrips = async ({
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
-export const getTripPath = async (tripId: string): Promise<TripPath[]> => {
+export const getTripPath = async (trip: Trip): Promise<TripPath[]> => {
   const numberOfPoints = faker.number.int({ min: 10, max: 50 });
   const location = faker.location.nearbyGPSCoordinate({
     origin: [38.9637, 33.2433],
     radius: 200
   });
+  let timestamp = trip.startDate;
   return Array(numberOfPoints)
     .fill(0)
-    .map(() => {
+    .map((_, _i) => {
       const stop = faker.location.nearbyGPSCoordinate({
         origin: location,
         radius: 10
       });
+      // Add 10 to 60 seconds to the timestamp
+      timestamp = new Date(timestamp.getTime() + faker.number.int({ min: 10, max: 60 }) * 1000);
       return {
-        tripId,
+        tripId: trip.id,
         latitude: stop[0],
         longitude: stop[1],
         direction: faker.number.int({ min: 0, max: 360 }),
         speed: faker.number.int({ min: 0, max: 100 }),
-        timestamp: faker.date.recent()
+        timestamp
       };
     });
 };
@@ -86,7 +89,7 @@ export const getTripPath = async (tripId: string): Promise<TripPath[]> => {
 export const getTripGroupPath = async (tripGroup: TripGroup): Promise<TripPath[]> => {
   const tripPaths = await Promise.all(
     tripGroup.trips.map(async (trip) => {
-      return getTripPath(trip.id);
+      return getTripPath(trip);
     })
   );
   return tripPaths.flat();

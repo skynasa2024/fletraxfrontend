@@ -6,6 +6,7 @@ import { enGB } from 'date-fns/locale/en-GB';
 import { Collapse } from '@mui/material';
 import { KeenIcon } from '@/components';
 import { useTripsContext } from '../providers/TripsContext';
+import { useAnimationContext } from '../providers/AnimationContext';
 
 interface TripCardProps {
   tripGroup: TripGroup;
@@ -27,7 +28,8 @@ const locale = {
 
 const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { setSelectedTrip, selectedTrip, startAnimation, animationStarted } = useTripsContext();
+  const { setSelectedTrip, selectedTrip } = useTripsContext();
+  const { play, playing } = useAnimationContext();
 
   return (
     <div
@@ -53,12 +55,12 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
             onClick={(e) => {
               e.stopPropagation();
               setSelectedTrip(tripGroup);
-              startAnimation();
+              play();
             }}
           >
             <img
               src={toAbsoluteUrl(
-                `/media/icons/${animationStarted && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
+                `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
               )}
             />
           </div>
@@ -109,13 +111,13 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                   <div className="text-xs text-[#3F4254] font-semibold">{idx + 1}</div>
                   <img
                     src={toAbsoluteUrl(
-                      `/media/icons/${animationStarted && selectedTrip === trip ? 'start-green' : 'start'}.svg`
+                      `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
                     )}
                     className="cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedTrip(trip);
-                      startAnimation();
+                      play();
                     }}
                   />
                 </div>

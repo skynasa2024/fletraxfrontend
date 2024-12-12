@@ -5,8 +5,14 @@ import { OtherControls } from '../monitoring/blocks/OtherControls';
 import { MainControl } from '../monitoring/blocks/MainControl';
 import { MapControls } from '../monitoring/blocks/MapControls';
 import { TripsLayer } from './blocks/TripsLayer';
+import { useTripsContext } from './providers/TripsContext';
+import { SubControl } from '../monitoring/blocks/SubControl';
+import { PlaybackCard } from './blocks/PlaybackCard';
+import { AnimationProvider } from './providers/AnimationContext';
 
 const TripsMap = () => {
+  const { path } = useTripsContext();
+
   return (
     <MapContainer
       center={[38.9637, 35.2433]}
@@ -25,9 +31,16 @@ const TripsMap = () => {
         <ZoomControl />
         <OtherControls />
       </MapControls>
-      <MainControl title="Trips">
-        <MainCard />
-      </MainControl>
+      <AnimationProvider>
+        <MainControl title="Trips">
+          <MainCard />
+        </MainControl>
+        {path && (
+          <SubControl>
+            <PlaybackCard />
+          </SubControl>
+        )}
+      </AnimationProvider>
     </MapContainer>
   );
 };

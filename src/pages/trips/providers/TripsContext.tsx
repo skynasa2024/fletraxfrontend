@@ -26,9 +26,6 @@ interface TripsContextProps {
   // eslint-disable-next-line no-unused-vars
   setSelectedTrip: (trip?: TripGroup | Trip) => void;
   path?: TripPath[];
-  animationStarted?: boolean;
-  startAnimation: () => void;
-  stopAnimation: () => void;
 }
 
 const TripsContext = createContext<TripsContextProps>({
@@ -40,17 +37,13 @@ const TripsContext = createContext<TripsContextProps>({
   setEndDate: () => {},
   search: () => {},
   trips: [],
-  setSelectedTrip: () => {},
-  animationStarted: false,
-  startAnimation: () => {},
-  stopAnimation: () => {}
+  setSelectedTrip: () => {}
 });
 
 export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
   const [path, setPath] = useState<TripPath[]>();
-  const [animationStarted, setAnimationStarted] = useState(false);
   const searchDeviceQuery = searchParams.get('device') || '';
   const setSearchDeviceQuery = useCallback(
     (query: string) => {
@@ -125,16 +118,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    getTripPath(selectedTrip.id).then(setPath);
+    getTripPath(selectedTrip).then(setPath);
   }, [selectedTrip]);
-
-  const startAnimation = useCallback(() => {
-    setAnimationStarted(true);
-  }, []);
-
-  const stopAnimation = useCallback(() => {
-    setAnimationStarted(false);
-  }, []);
 
   return (
     <TripsContext.Provider
@@ -149,10 +134,7 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         trips,
         selectedTrip,
         setSelectedTrip,
-        path,
-        animationStarted,
-        startAnimation,
-        stopAnimation
+        path
       }}
     >
       {children}
