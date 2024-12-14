@@ -8,8 +8,8 @@ interface IMetricCard {
   bgColor?: string;
   icon?: React.ReactNode;
 }
-const Card: React.FC<CardProps> = ({ children}) => (
-  <div className="card">{children}</div>
+const Card: React.FC<CardProps> = ({ children, className}) => (
+  <div className={`card ${className}`}>{children}</div>
 );
 
 const UserMiniCards = () => {
