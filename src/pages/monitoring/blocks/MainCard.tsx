@@ -74,7 +74,7 @@ export const MainCard = () => {
                 ]
               }}
             >
-              <MenuToggle className="btn btn-clear font-semibold text-xs h-fit px-3 py-[6px] border-0 rounded-none border-e-2 border-dashed border-[#E4E6EF]">
+              <MenuToggle className="btn btn-clear font-semibold text-xs h-fit px-3 py-[6px] border-0 rounded-none border-e-2 border-dashed border-[#E4E6EF] dark:border-gray-400">
                 {searchTarget}
                 <KeenIcon icon="down" className="!text-inherit !text-xs" />
               </MenuToggle>
@@ -122,11 +122,11 @@ export const MainCard = () => {
                 resizeHandles={['s']}
                 handle={(_, ref) => (
                   <div
-                    className="flex flex-col items-center gap-1 py-1 bg-[#F5F5FC] w-full absolute bottom-0 cursor-ns-resize"
+                    className="flex flex-col items-center gap-1 py-1 bg-[#F5F5FC] dark:bg-gray-300 w-full absolute bottom-0 cursor-ns-resize"
                     ref={ref}
                   >
-                    <div className="h-[1px] bg-[#5E6278] w-12" />
-                    <div className="h-[1px] bg-[#5E6278] w-8" />
+                    <div className="h-[1px] bg-[#5E6278] dark:bg-[#F5F5FC] w-12" />
+                    <div className="h-[1px] bg-[#5E6278] dark:bg-[#F5F5FC] w-8" />
                   </div>
                 )}
               >
@@ -138,7 +138,7 @@ export const MainCard = () => {
                         <div key={key} style={style}>
                           <div
                             data-selected={selectedClient?.name === client.name}
-                            className="flex p-[10px] gap-4 justify-between text-[#3F4254] font-roboto data-[selected=true]:border border-[#5151F9] rounded-md cursor-pointer"
+                            className="flex p-[10px] gap-4 justify-between text-[#3F4254] dark:text-gray-700 font-roboto data-[selected=true]:border border-[#5151F9] rounded-md cursor-pointer"
                             onClick={() => {
                               if (selectedClient?.name === client.name) {
                                 setSelectedClient(undefined);
@@ -176,7 +176,7 @@ export const MainCard = () => {
                   />
                 </div>
               </Resizable>
-              <div className="flex justify-center bg-[#F5F8FA] rounded-lg py-2">
+              <div className="flex justify-center bg-[#F5F8FA] dark:bg-gray-200 rounded-lg py-2">
                 <ButtonRadioGroup
                   selection={selection}
                   selections={['All', 'Online', 'Offline']}
@@ -197,7 +197,7 @@ export const MainCard = () => {
                     <div key={key} style={style} className="pb-2">
                       <div
                         data-selected={selectedLocation?.vehicle.imei === location.vehicle.imei}
-                        className="flex flex-col p-[15px] border data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F9]/5 border-[#E7E8ED] rounded-[10px] gap-[10px] cursor-pointer"
+                        className="flex flex-col p-[15px] border data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F9]/5 border-[#E7E8ED] dark:border-gray-300 rounded-[10px] gap-[10px] cursor-pointer"
                         onClick={() => {
                           if (selectedLocation?.vehicle.imei === location.vehicle.imei) {
                             setSelectedLocation(undefined);
@@ -215,7 +215,7 @@ export const MainCard = () => {
                             {location.online ? 'Online' : 'Offline'}
                           </div>
                         </div>
-                        <div className="border-b-2 border-[#E4E6EF] border-dashed" />
+                        <div className="border-b-2 border-[#E4E6EF] dark:border-gray-400 border-dashed" />
                         <div className="flex justify-between font-semibold text-xs">
                           <div>
                             <div>{location.vehicle.name}</div>
@@ -227,7 +227,7 @@ export const MainCard = () => {
                             )}
                           />
                         </div>
-                        <div className="border-b-2 border-[#E4E6EF] border-dashed" />
+                        <div className="border-b-2 border-[#E4E6EF] dark:border-gray-400 border-dashed" />
                         <div className="flex gap-[10px] text-[10px] font-semibold justify-evenly">
                           <div className="flex flex-col gap-0.5 items-start">
                             <img

@@ -13,7 +13,7 @@ const DashboardContent = () => {
           <MovingDeviceChart />
         </div>
 
-        <div className="lg:col-span-2 max-h-[450px]">
+        <div className="lg:col-span-2 max-h-[500px]">
           <MileageEngineGraph />
         </div>
       </div>

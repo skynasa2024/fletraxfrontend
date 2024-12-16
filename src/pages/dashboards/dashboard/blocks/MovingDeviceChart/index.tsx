@@ -3,8 +3,9 @@ import { ApexOptions } from 'apexcharts';
 import { useEffect, useState } from 'react';
 import { getMovingCars, getOnlineCars } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
-import { ButtonRadioGroup } from './ButtonRadioGroup';
+import { ButtonRadioGroup } from '../ButtonRadioGroup';
 import { toAbsoluteUrl } from '@/utils';
+import './style.css';
 
 const MovingDeviceChart = () => {
   const [selection, setSelection] = useState('Device');
@@ -75,9 +76,8 @@ const MovingDeviceChart = () => {
 
   return (
     <div
-      className="card"
+      className="card bg-[url('/media/illustrations/abstract-1.svg')] dark:bg-[url('/media/illustrations/abstract-1-dark.svg')] bg-no-repeat bg-cover"
       style={{
-        backgroundImage: `url(${toAbsoluteUrl('/media/illustrations/abstract-1.svg)')}`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%'
       }}

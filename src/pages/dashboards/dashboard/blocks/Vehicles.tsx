@@ -31,7 +31,7 @@ const VehicleList = () => {
       <div className="card-body scrollable-x pt-2 px-6 pb-7">
         <div className="flex flex-col lg:flex-row gap-4">
           {vehicles?.data.map((vehicle) => (
-            <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-[386px]">
+            <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 w-[386px]">
               <div className="flex flex-col gap-5 px-8 py-6">
                 <div className="flex justify-between items-center">
                   <CarPlate plate={vehicle.vehicle.plate} />
@@ -62,7 +62,7 @@ const VehicleList = () => {
                         className="size-9 rounded-full aspect-square"
                       />
                       <div className="w-48 text-nowrap">
-                        <div className="text-[#3F4254] font-bold text-[15px] text-ellipsis overflow-hidden">
+                        <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[15px] text-ellipsis overflow-hidden">
                           {vehicle.customer.name}
                         </div>
                         <div className="text-[#B5B5C3] font-medium text-2sm text-ellipsis overflow-hidden">

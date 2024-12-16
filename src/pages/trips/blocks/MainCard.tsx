@@ -28,7 +28,7 @@ export const MainCard = () => {
       </div>
       <div className="grid grid-cols-2 gap-y-2 gap-x-4 shrink-0">
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254]">Start Date</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">Start Date</div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
@@ -53,7 +53,7 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254]">End Date</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">End Date</div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
@@ -78,7 +78,7 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254]">Start Time</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">Start Time</div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"
@@ -103,7 +103,7 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254]">End Time</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">End Time</div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"

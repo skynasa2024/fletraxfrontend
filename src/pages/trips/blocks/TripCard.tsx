@@ -33,7 +33,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
 
   return (
     <div
-      className="flex flex-col gap-2 rounded-[10px] border-2 border-[#E7E8ED] overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
+      className="flex flex-col gap-2 rounded-[10px] border-2 border-[#E7E8ED] dark:border-gray-200 overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
       data-selected={selectedTrip === tripGroup}
     >
       <div
@@ -43,10 +43,10 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
         className="flex flex-col gap-2"
       >
         <div className="grid grid-cols-3 px-[6px] items-center border-b-2 border-dashed py-2">
-          <div className="text-xs font-semibold text-[#3F4254]">
+          <div className="text-xs font-semibold text-[#3F4254] dark:text-gray-50">
             {formatRelative(tripGroup.date, new Date(), { locale })}
           </div>
-          <div className="text-xs font-semibold text-[#3F4254] mx-auto">
+          <div className="text-xs font-semibold text-[#3F4254] dark:text-gray-50 mx-auto">
             <span>{tripGroup.trips.length} </span>
             <span className="font-normal">Trips</span>
           </div>
@@ -62,6 +62,13 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
               src={toAbsoluteUrl(
                 `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
               )}
+              className="dark:hidden"
+            />
+            <img
+              src={toAbsoluteUrl(
+                `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start-dark'}.svg`
+              )}
+              className="light:hidden"
             />
           </div>
         </div>
@@ -69,46 +76,54 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278]">Start Date</span>
+              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                Start Date
+              </span>
             </div>
-            <div className="font-semibold text-sm text-[#2D3748]">
+            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
               {format(tripGroup.trips[0].startDate, 'yyyy/MM/dd')}
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278]">Mileage</span>
+              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                Mileage
+              </span>
             </div>
-            <div className="font-semibold text-sm text-[#2D3748]">
+            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
               {tripGroup.trips.reduce((acc, trip) => acc + trip.mileage, 0).toFixed(2)} KM
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278]">Max Speed</span>
+              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                Max Speed
+              </span>
             </div>
-            <div className="font-semibold text-sm text-[#2D3748]">
+            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
               {tripGroup.trips.reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0)} Km/h
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-[#F5F5FC] px-[6px]">
+      <div className="bg-[#F5F5FC] dark:bg-gray-200 px-[6px]">
         <Collapse in={isOpen}>
-          <div className="flex flex-col gap-1 py-[10px] font-medium text-[10px] text-[#0F0F0F]">
+          <div className="flex flex-col gap-1 py-[10px] font-medium text-[10px] text-[#0F0F0F] dark:text-gray-50">
             {tripGroup.trips.map((trip, idx) => (
               <div
                 key={trip.id}
                 data-selected={selectedTrip === trip}
-                className="rounded-[10px] bg-white border border-[#E7E8ED] py-2 px-1 data-[selected=true]:border-[#5271FF]"
+                className="rounded-[10px] bg-white border border-[#E7E8ED] dark:bg-black dark:border-gray-200 py-2 px-1 data-[selected=true]:border-[#5271FF]"
                 onClick={() => {
                   setSelectedTrip(selectedTrip === trip ? undefined : trip);
                 }}
               >
                 <div className="flex justify-between border-b-2 border-dashed py-1">
-                  <div className="text-xs text-[#3F4254] font-semibold">{idx + 1}</div>
+                  <div className="text-xs text-[#3F4254] dark:text-gray-50 font-semibold">
+                    {idx + 1}
+                  </div>
                   <img
                     src={toAbsoluteUrl(
                       `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
@@ -149,7 +164,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
             setIsOpen(!isOpen);
           }}
         >
-          <KeenIcon icon={isOpen ? 'up' : 'down'} />
+          <KeenIcon icon={isOpen ? 'up' : 'down'} className="dark:text-[#F5F5FC]" />
         </div>
       </div>
     </div>
