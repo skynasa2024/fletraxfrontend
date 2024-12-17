@@ -31,7 +31,7 @@ const DeviceDetailsPage = () => {
   ];
 
   return (
-    <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-full m-5 mb-6">
+    <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full m-5 mb-6">
       <div className="p-4 card w-full">
         <div className="space-y-4">
           <table className="w-full">
