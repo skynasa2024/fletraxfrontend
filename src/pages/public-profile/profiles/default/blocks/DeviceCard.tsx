@@ -19,7 +19,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
   icon4Count,
 }) => {
   return (
-    <div className="device-card p-4  rounded-lg shadow-sm">
+    <div className="device-card p-4">
       {/* Device Info Section */}
       <div className="device-name text-start font-semibold text-xl">{deviceName}</div>
       <div className="device-status text-start text-sm text-gray-500">Last active: {lastActive}</div>
