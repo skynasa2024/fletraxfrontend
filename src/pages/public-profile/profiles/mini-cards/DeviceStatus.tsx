@@ -8,15 +8,15 @@ interface CardProps {
 interface StatItem {
   title: string;
   count: number;
-  color: string;
+  color?: string;
   textColor: string;
   iconColor?: string;
   badge?: boolean;
   icon: string;
 }
 
-const Card: React.FC<CardProps> = ({ children }) => (
-  <div className="card">{children}</div>
+const Card: React.FC<CardProps> = ({ children, className }) => (
+  <div className={`card ${className ?? ''}`}>{children}</div>
 );
 
 const DeviceStatus: React.FC = () => {
@@ -38,7 +38,7 @@ const DeviceStatus: React.FC = () => {
     {
       title: 'Online Devices',
       count: 8345,
-      color: 'bg-white',
+
       textColor: 'text-gray-600',
       iconColor: 'text-teal-500',
       icon: `
@@ -58,7 +58,7 @@ const DeviceStatus: React.FC = () => {
     {
       title: 'Offline Devices',
       count: 8345,
-      color: 'bg-white',
+
       textColor: 'text-gray-600',
       iconColor: 'text-red-500',
       icon: `
@@ -78,7 +78,7 @@ const DeviceStatus: React.FC = () => {
     {
       title: 'Active Devices',
       count: 8345,
-      color: 'bg-white',
+
       textColor: 'text-gray-600',
       iconColor: 'text-orange-500',
       icon: `
@@ -99,7 +99,7 @@ const DeviceStatus: React.FC = () => {
     {
       title: 'Inactive Devices',
       count: 8345,
-      color: 'bg-white',
+
       textColor: 'text-gray-600',
       iconColor: 'text-violet-500',
       icon: `
@@ -127,9 +127,7 @@ const DeviceStatus: React.FC = () => {
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={` ${stat.color} rounded-xl flex flex-col items-start ${
-              index === 0 ? 'shadow-lg' : 'shadow-sm'
-            }`}
+            className={` ${stat.color || ''} rounded-xl flex flex-col items-start hover:shadow-lg`}
           >
             <div
               className={`w-4 h-4 p-4 ${index === 0 ? 'text-white' : stat.iconColor}`}
