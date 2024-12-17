@@ -8,9 +8,10 @@ interface IMetricCard {
   bgColor?: string;
   icon?: React.ReactNode;
 }
-const Card: React.FC<CardProps> = ({ children, className}) => (
-  <div className='card'>{children}</div>
+const Card: React.FC<CardProps> = ({ children, className }) => (
+  <div className={`card ${className ?? ''}`}>{children}</div>
 );
+
 
 const UserMiniCards = () => {
   const metrics: IMetricCard[] = [
@@ -99,7 +100,7 @@ const UserMiniCards = () => {
         {metrics.map((metric, index) => (
           <Card
             key={index}
-            className={`rounded-xl flex flex-col items-start ${metric.bgColor || 'bg-white'} ${
+            className={`rounded-xl flex flex-col items-start ${metric.bgColor || ''} ${
               index === 0 ? 'shadow-lg' : 'shadow-sm'
             }`}
           >
