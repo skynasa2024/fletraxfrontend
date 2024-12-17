@@ -3,7 +3,7 @@ import { Slider } from '@mui/material';
 import { useAnimationContext } from '../providers/AnimationContext';
 
 export const PlaybackCard = () => {
-  const { playing, play, pause, stop, currentValue, setCurrent } = useAnimationContext();
+  const { playing, play, pause, stop, current, setCurrent } = useAnimationContext();
 
   return (
     <div className="card">
@@ -14,7 +14,7 @@ export const PlaybackCard = () => {
       <div className="card-body px-[34px] py-[10px]">
         <div className="w-[700px]">
           <Slider
-            value={currentValue}
+            value={current}
             onChange={(_, v) => {
               if (typeof v === 'number') {
                 pause();
@@ -24,6 +24,7 @@ export const PlaybackCard = () => {
             min={0}
             max={10000}
           />
+          {current / 1000} s
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
 import { Polyline, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
-import L, { LatLngExpression } from 'leaflet';
+import L from 'leaflet';
 import { useTripsContext } from '../providers/TripsContext';
 import { useEffect, useMemo } from 'react';
-import { useMotionValueEvent, useTransform } from 'motion/react';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { useAnimationContext } from '../providers/AnimationContext';
+import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
 
 export const TripsLayer = () => {
   const map = useMap();
@@ -31,22 +31,43 @@ export const TripsLayer = () => {
       }),
     []
   );
-  const latLng = useTransform(
-    time,
-    path?.map((_, i) => (i / path.length) * 10000) ?? [0, 1],
-    path?.map((point) => [point.latitude, point.longitude]) ?? [
-      [0, 0],
-      [0, 0]
-    ],
-    { clamp: true }
-  );
 
-  const rotation = useTransform(
-    time,
-    path?.map((_, i) => (i / path.length) * 10000) ?? [0, 1],
-    path?.map((point) => point.direction) ?? [0, 0],
-    { clamp: true }
-  );
+  const denormailizedTime = useMemo(() => {
+    if (!path) {
+      return 0;
+    }
+
+    const startTime = path[0].timestamp.getTime();
+    const endTime = path[path.length - 1].timestamp.getTime();
+    const duration = endTime - startTime;
+
+    // time is from 0 to 10,000
+    return startTime + (time / 10000) * duration;
+  }, [time, path]);
+
+  const interpolatedState = useMemo(() => {
+    if (!path) {
+      return null;
+    }
+
+    return interpolateKeyframes(path, denormailizedTime);
+  }, [path, denormailizedTime]);
+
+  const latLng = useMemo(() => {
+    if (!interpolatedState) {
+      return null;
+    }
+
+    return L.latLng(interpolatedState.latitute, interpolatedState.longitude);
+  }, [interpolatedState]);
+
+  const rotation = useMemo(() => {
+    if (!interpolatedState) {
+      return null;
+    }
+
+    return interpolatedState.direction;
+  }, [interpolatedState]);
 
   useEffect(() => {
     if (!bounds) {
@@ -54,14 +75,6 @@ export const TripsLayer = () => {
     }
     map.flyToBounds(bounds, { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] });
   }, [bounds, map]);
-
-  useMotionValueEvent(time, 'change', (latest) => {
-    console.log(latest);
-  });
-
-  useMotionValueEvent(latLng, 'change', (latest) => {
-    console.log(latest);
-  });
 
   if (!path) {
     return null;
@@ -73,12 +86,8 @@ export const TripsLayer = () => {
         pathOptions={{ color: '#5271FF' }}
         positions={path?.map((point) => [point.latitude, point.longitude])}
       />
-      {latLng.get() && rotation.get() && (
-        <RotatableMarker
-          position={latLng.get() as LatLngExpression}
-          icon={icon}
-          rotationAngle={rotation.get()}
-        />
+      {latLng && rotation && (
+        <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
       )}
     </>
   );

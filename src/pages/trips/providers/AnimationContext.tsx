@@ -1,10 +1,8 @@
-import { MotionValue, useMotionValue, useMotionValueEvent } from 'motion/react';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 interface AnimationContextProps {
   playing: boolean;
-  current: MotionValue<number>;
-  currentValue: number;
+  current: number;
   // eslint-disable-next-line no-unused-vars
   setCurrent: (current: number) => void;
   play: () => void;
@@ -14,8 +12,7 @@ interface AnimationContextProps {
 
 const AnimationContext = createContext<AnimationContextProps>({
   playing: false,
-  current: new MotionValue(),
-  currentValue: 0,
+  current: 0,
   setCurrent: () => {},
   play: () => {},
   pause: () => {},
@@ -24,8 +21,7 @@ const AnimationContext = createContext<AnimationContextProps>({
 
 export const AnimationProvider = ({ children }: PropsWithChildren) => {
   const [playing, setPlaying] = useState(false);
-  const current = useMotionValue(0);
-  const [currentValue, setCurrentValue] = useState(0);
+  const [current, setCurrent] = useState(0);
   const frameRate = 60;
   const latency = 1000 / frameRate;
 
@@ -39,38 +35,39 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
 
   const stop = () => {
     setPlaying(false);
-    current.jump(0);
+    setCurrent(0);
   };
 
   useEffect(() => {
     if (playing) {
       const interval = setInterval(() => {
-        current.set(current.get() + latency);
+        setCurrent((prev) => {
+          const next = prev + latency;
+          if (next >= 10000) {
+            pause();
+            return 10000;
+          }
+          return next;
+        });
       }, latency);
 
       return () => {
         clearInterval(interval);
       };
     }
-  }, [current, latency, playing]);
+  }, [latency, playing]);
 
-  const setCurrent = (newValue: number) => {
+  const changeCurrent = (newValue: number) => {
     pause();
-    current.jump(newValue);
+    setCurrent(newValue);
   };
-
-  useMotionValueEvent(current, 'change', (latest) => {
-    setCurrentValue(latest);
-    // console.log(latest);
-  });
 
   return (
     <AnimationContext.Provider
       value={{
         playing,
         current,
-        currentValue,
-        setCurrent,
+        setCurrent: changeCurrent,
         play,
         pause,
         stop

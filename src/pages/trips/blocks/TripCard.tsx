@@ -29,7 +29,7 @@ const locale = {
 const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { setSelectedTrip, selectedTrip } = useTripsContext();
-  const { play, playing } = useAnimationContext();
+  const { play, playing, stop } = useAnimationContext();
 
   return (
     <div
@@ -39,6 +39,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
       <div
         onClick={() => {
           setSelectedTrip(selectedTrip === tripGroup ? undefined : tripGroup);
+          stop();
         }}
         className="flex flex-col gap-2"
       >
@@ -54,6 +55,11 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
             className="cursor-pointer ms-auto"
             onClick={(e) => {
               e.stopPropagation();
+              console.log(playing, selectedTrip, tripGroup);
+              stop();
+              if (playing && selectedTrip === tripGroup) {
+                return;
+              }
               setSelectedTrip(tripGroup);
               play();
             }}
@@ -117,6 +123,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                 data-selected={selectedTrip === trip}
                 className="rounded-[10px] bg-white border border-[#E7E8ED] dark:bg-black dark:border-gray-200 py-2 px-1 data-[selected=true]:border-[#5271FF]"
                 onClick={() => {
+                  stop();
                   setSelectedTrip(selectedTrip === trip ? undefined : trip);
                 }}
               >
@@ -131,6 +138,10 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                     className="cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
+                      stop();
+                      if (playing && selectedTrip === trip) {
+                        return;
+                      }
                       setSelectedTrip(trip);
                       play();
                     }}
