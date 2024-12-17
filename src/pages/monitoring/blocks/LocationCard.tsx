@@ -28,7 +28,7 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl(`/media/icons/hash.svg`)} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">IMEI</div>
-            <div className="text-[#2D3748] text-xs">{location.vehicle.imei}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{location.vehicle.imei}</div>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl(`/media/icons/device.svg`)} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Device Name</div>
-            <div className="text-[#2D3748] text-xs">{location.vehicle.name}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{location.vehicle.name}</div>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Engine Status</div>
-            <div className="text-[#2D3748] text-xs">
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {location.status.engineStatus ? 'ON' : 'OFF'}
             </div>
           </div>
@@ -56,7 +56,9 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Parking Time</div>
-            <div className="text-[#2D3748] text-xs">{location.status.parkingTime}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {location.status.parkingTime}
+            </div>
           </div>
         </div>
 
@@ -64,7 +66,7 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl(`/media/icons/calendar.svg`)} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Time</div>
-            <div className="text-[#2D3748] text-xs">
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {format(location.status.timestamp, 'yyyy/MM/dd HH:mm:ss')}
             </div>
           </div>
@@ -78,7 +80,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Speed</div>
-            <div className="text-[#2D3748] text-xs">{`${location.status.speed.toFixed(0)} kmh`}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{`${location.status.speed.toFixed(0)} kmh`}</div>
           </div>
         </div>
 
@@ -86,7 +88,9 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl('/media/icons/satellites.svg')} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Satellites</div>
-            <div className="text-[#2D3748] text-xs">{location.status.satellietes}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {location.status.satellietes}
+            </div>
           </div>
         </div>
 
@@ -94,7 +98,9 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl('/media/icons/battery-icon.svg')} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Battery Level</div>
-            <div className="text-[#2D3748] text-xs">{location.status.batteryLevel}%</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {location.status.batteryLevel}%
+            </div>
           </div>
         </div>
 
@@ -106,7 +112,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Engine Blocked Status</div>
-            <div className="text-[#2D3748] text-xs">
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {location.status.engineBlocked ? 'Active' : 'Inactive'}
             </div>
           </div>
@@ -120,7 +126,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Defense Status</div>
-            <div className="text-[#2D3748] text-xs">
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {location.status.defenseStatus ? 'Active' : 'Inactive'}
             </div>
           </div>
@@ -134,7 +140,7 @@ export const LocationCard = () => {
           />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Siginal Level</div>
-            <div className="text-[#2D3748] text-xs">{`${location.status.signalLevel}%`}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{`${location.status.signalLevel}%`}</div>
           </div>
         </div>
 
@@ -142,7 +148,9 @@ export const LocationCard = () => {
           <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
           <div className="font-semibold">
             <div className="text-[#A1A5B7] text-[10px]">Existing Kilometers</div>
-            <div className="text-[#2D3748] text-xs">{location.status.existingKilometer}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {location.status.existingKilometer}
+            </div>
           </div>
         </div>
       </div>
@@ -153,7 +161,7 @@ export const LocationCard = () => {
           District, Shenzhen, Guangdong (3S)
         </div>
       </div>
-      <div className="card-footer justify-center p-0 text-[#1F242E]">
+      <div className="card-footer justify-center p-0 text-[#1F242E] dark:text-gray-800">
         <a href="#" className="px-5 py-2 flex gap-2 !text-inherit">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Report</span>
