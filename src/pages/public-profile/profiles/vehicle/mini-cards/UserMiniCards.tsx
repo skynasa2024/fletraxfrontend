@@ -95,9 +95,9 @@ const UserMiniCards = () => {
         {metrics.map((metric, index) => (
           <Card
             key={index}
-            className={`rounded-xl flex flex-col items-start hover:shadow-lg  ${metric.bgColor || ''} ${
-              index === 0 ? 'shadow-lg' : 'shadow-sm'
-            }`}
+            className={`rounded-md flex flex-col items-start hover:shadow-lg  ${metric.bgColor || ''}
+      
+  `}
           >
             <div
               className={`w-4 h-4 p-4 ${index === 0 ? 'text-white' : metric.iconColor}`}
