@@ -94,7 +94,7 @@ const Projects = () => {
 
   const renderItem = (item: IProjectsItem, index: number) => {
     return (
-      <div key={index} className="card hover:shadow-lg mb-2 p-6">
+      <div key={index} className="card hover:shadow-lg mb-2 p-2 px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Device Info */}
           <div className="flex items-center gap-4">
@@ -121,7 +121,8 @@ const Projects = () => {
           {/* Messages Progress */}
           <div className="md:col-span-1">
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center p-6
+              ">
                 <div className="font-bold">Messages</div>
                 <span className="text-sm text-gray-500">56.5 MB / 100 MB</span>
               </div>
