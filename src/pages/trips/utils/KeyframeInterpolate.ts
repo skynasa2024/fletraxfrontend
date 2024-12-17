@@ -33,7 +33,8 @@ export function interpolateKeyframes(keyframes: TripPath[], time: number) {
     return {
       latitute: kfStart.latitude + t * (kfEnd.latitude - kfStart.latitude),
       longitude: kfStart.longitude + t * (kfEnd.longitude - kfStart.longitude),
-      direction: kfStart.direction + t * (kfEnd.direction - kfStart.direction)
+      direction: kfStart.direction + t * (kfEnd.direction - kfStart.direction),
+      speed: kfStart.speed + t * (kfEnd.speed - kfStart.speed)
     };
   }
 

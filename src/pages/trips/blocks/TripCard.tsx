@@ -131,10 +131,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                   <div className="text-xs text-[#3F4254] dark:text-gray-50 font-semibold">
                     {idx + 1}
                   </div>
-                  <img
-                    src={toAbsoluteUrl(
-                      `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
-                    )}
+                  <div
                     className="cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -145,7 +142,20 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                       setSelectedTrip(trip);
                       play();
                     }}
-                  />
+                  >
+                    <img
+                      src={toAbsoluteUrl(
+                        `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
+                      )}
+                      className="dark:hidden"
+                    />
+                    <img
+                      src={toAbsoluteUrl(
+                        `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start-dark'}.svg`
+                      )}
+                      className="light:hidden"
+                    />
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex gap-1 items-center">

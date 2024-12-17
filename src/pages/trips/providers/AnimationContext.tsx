@@ -8,6 +8,12 @@ interface AnimationContextProps {
   play: () => void;
   pause: () => void;
   stop: () => void;
+  metaData?: any;
+  // eslint-disable-next-line no-unused-vars
+  setMetaData: (metaData?: any) => void;
+  multiplier: number;
+  // eslint-disable-next-line no-unused-vars
+  setMultiplier: (multiplier: number) => void;
 }
 
 const AnimationContext = createContext<AnimationContextProps>({
@@ -16,16 +22,29 @@ const AnimationContext = createContext<AnimationContextProps>({
   setCurrent: () => {},
   play: () => {},
   pause: () => {},
-  stop: () => {}
+  stop: () => {},
+  setMetaData: () => {},
+  multiplier: 1,
+  setMultiplier: () => {}
 });
 
 export const AnimationProvider = ({ children }: PropsWithChildren) => {
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [multiplier, setMultiplier] = useState(1);
+  const [metaData, setMetaData] = useState<any>();
   const frameRate = 60;
   const latency = 1000 / frameRate;
 
   const play = () => {
+    if (current === 10000) {
+      setCurrent(0);
+      // Wait for 200 ms then play
+      setTimeout(() => {
+        setPlaying(true);
+      }, 200);
+      return;
+    }
     setPlaying(true);
   };
 
@@ -42,7 +61,7 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
     if (playing) {
       const interval = setInterval(() => {
         setCurrent((prev) => {
-          const next = prev + latency;
+          const next = prev + latency * multiplier;
           if (next >= 10000) {
             pause();
             return 10000;
@@ -55,7 +74,7 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
         clearInterval(interval);
       };
     }
-  }, [latency, playing]);
+  }, [latency, multiplier, playing]);
 
   const changeCurrent = (newValue: number) => {
     pause();
@@ -70,7 +89,11 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
         setCurrent: changeCurrent,
         play,
         pause,
-        stop
+        stop,
+        multiplier,
+        setMultiplier,
+        metaData,
+        setMetaData
       }}
     >
       {children}

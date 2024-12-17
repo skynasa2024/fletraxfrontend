@@ -11,7 +11,7 @@ import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
 export const TripsLayer = () => {
   const map = useMap();
   const { path } = useTripsContext();
-  const { current: time } = useAnimationContext();
+  const { current: time, setMetaData } = useAnimationContext();
   const bounds = useMemo(() => {
     if (!path || path.length === 0) {
       return undefined;
@@ -52,6 +52,13 @@ export const TripsLayer = () => {
 
     return interpolateKeyframes(path, denormailizedTime);
   }, [path, denormailizedTime]);
+
+  useEffect(() => {
+    setMetaData({
+      speed: interpolatedState?.speed,
+      timestamp: denormailizedTime
+    });
+  }, [denormailizedTime, interpolatedState, setMetaData]);
 
   const latLng = useMemo(() => {
     if (!interpolatedState) {
