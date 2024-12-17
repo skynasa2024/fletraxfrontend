@@ -76,7 +76,7 @@ const MovingDeviceChart = () => {
 
   return (
     <div
-      className="card bg-[url('/media/illustrations/abstract-1.svg')] dark:bg-[url('/media/illustrations/abstract-1-dark.svg')] bg-no-repeat bg-cover"
+      className="card h-full"
       style={{
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%'
