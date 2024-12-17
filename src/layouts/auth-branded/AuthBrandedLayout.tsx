@@ -16,7 +16,7 @@ const Layout = () => {
             background-image: url('${toAbsoluteUrl('/media/images/2600x1600/1.svg')}');
           }
           .dark .branded-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/1-dark.png')}');
+            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/1.svg')}');
           }
         `}
       </style>
