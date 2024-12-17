@@ -57,8 +57,8 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
-        accessorKey: 'type',
-        header: 'Type',
+        accessorKey: 'gear',
+        header: 'Gear',
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/manual.svg')} />
