@@ -26,19 +26,19 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 
       {/* Icon and Count Section */}
       <div className="flex items-center space-x-3 mt-4">
-        <div className="flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer">
+        <div className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
           <Icon1 className="text-blue-500 m-2" />
           <span>{icon1Count}</span>
         </div>
-        <div className="flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer">
+        <div className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
           <Icon2 className="text-blue-500 m-2" />
           <span>{icon2Count}</span>
         </div>
-        <div className="flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer">
+        <div className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
           <Icon3 className="text-blue-500 m-2" />
           <span>{icon3Count}</span>
         </div>
-        <div className="flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer">
+        <div className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer">
           <Icon4 className="text-blue-500 m-2" />
           <span>{icon4Count}</span>
         </div>
