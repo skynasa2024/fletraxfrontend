@@ -72,6 +72,9 @@ export const CarsLayer = () => {
       removeOutsideVisibleBounds
       disableClusteringAtZoom={12}
       animate={false}
+      spiderfyOnMaxZoom={false}
+      spiderfyOnEveryZoom
+      zoomToBoundsOnClick={false}
       spiderfyDistanceMultiplier={4}
       spiderfyShapePositions={(count, centerPt) => {
         // Draw circles and keep increasing the radius until all markers are inside the circle
@@ -100,22 +103,6 @@ export const CarsLayer = () => {
         }
 
         return positions;
-      }}
-      onMouseOver={(e) => {
-        try {
-          if (e.layer.getChildCount() < 50) {
-            e.layer.spiderfy();
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }}
-      onMouseOut={(e) => {
-        try {
-          e.layer.unspiderfy();
-        } catch (e) {
-          console.error(e);
-        }
       }}
     >
       {selectedLocation
