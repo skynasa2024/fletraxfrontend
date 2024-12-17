@@ -4,7 +4,6 @@ import { getDrivers, Driver } from '@/api/drivers';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { CarView } from '../../../../../pages/dashboards/dashboard/blocks/CarView';
-
 import { StatusDropdown } from './maintenance/StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
@@ -21,7 +20,7 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         header: 'Owner',
         cell: ({ row }) => (
           <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
               {row.original.owner.charAt(0)}
             </div>
             <div>
@@ -34,7 +33,6 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         accessorFn: (row) => row.vehicle,
         id: 'vehicle',
         header: () => 'Car',
-
         cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
         meta: {
           className: 'min-w-60'
@@ -74,10 +72,10 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         cell: () => (
           <div className="flex gap-3">
             <a href="#" onClick={handleViewDriverClick}>
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} />
+              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
             <a href="#">
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
+              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </a>
           </div>
         )
@@ -85,19 +83,28 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
     ],
     []
   );
+
   const navigate = useNavigate();
   const handleViewDriverClick = () => {
     navigate('view-driver');
   };
 
   return (
-    <DataGrid
-      columns={columns}
-      data={[]}
-      serverSide={true}
-      onFetchData={getDrivers}
-      filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
-    />
+    <div className="card">
+ 
+      <div className="flex items-center justify-between p-6 ">
+        <h2 className="text-xl font-semibold text-gray-800">Drivers List</h2>
+      </div>
+      <div className="driver-table">
+        <DataGrid
+          columns={columns}
+          data={[]}
+          serverSide={true}
+          onFetchData={getDrivers}
+          filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
+        />
+      </div>
+    </div>
   );
 };
 
