@@ -57,7 +57,7 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
         accessorFn: (row) => row.status,
         id: 'status',
         header: () => 'Status',
-       
+
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
@@ -79,7 +79,6 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
                 color: '#F1416C',
                 backgroundColor: '#FFF5F8'
               }
-            
             }}
           />
         ),
@@ -87,8 +86,7 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
           className: 'min-w-44'
         }
       },
-      
-     
+
       {
         id: 'actions',
         header: () => 'Actions',
@@ -111,13 +109,20 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
   );
 
   return (
-    <DataGrid
-      columns={columns}
-      data={[]} // Temporary empty array
-      serverSide={true}
-      onFetchData={getUsers}
-      filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
-    />
+    <div className="card">
+      <div className="flex items-center justify-between p-6 ">
+        <h2 className="text-xl font-semibold text-gray-800">Users List</h2>
+      </div>
+      <div className="user-table">
+        <DataGrid
+          columns={columns}
+          data={[]} 
+          serverSide={true}
+          onFetchData={getUsers}
+          filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
+        />
+      </div>
+    </div>
   );
 };
 
