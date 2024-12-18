@@ -117,9 +117,9 @@ const DeviceDetailsPage = () => {
         </div>
         <div>
           <DeviceNavigation />
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-3 p-2">
             {/* Speed Gauge */}
-            <div className="flex">
+            <div className="card flex">
               <SpeedGauge />
             </div>
 

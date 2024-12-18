@@ -1,6 +1,6 @@
 import React from 'react';
 
-// [Previous interfaces and LocationInfo remain the same]
+// [Previous interfaces remain the same]
 interface LocationInfo {
   place: string;
   timestamp: string;
@@ -18,15 +18,16 @@ interface GaugeProps {
 
 const CONSTANTS = {
   RADIUS: 80,
-  STROKE_WIDTH: 40,
-  VIEW_BOX_SIZE: 200,
+  STROKE_WIDTH: 35,
+  VIEW_BOX_SIZE: 250,
   START_ANGLE: -180,
   END_ANGLE: 0,
   WARNING_ZONE_DEGREES: 30,
-  POINTER_LENGTH: 60,
+  POINTER_LENGTH: 90,
+  POINTER_OFFSET: 19.5, 
 } as const;
 
-// Utility functions for arcs remain the same
+// [Previous utility functions remain the same]
 const createArc = (start: number, end: number, center: number, radius: number): string => {
   const startRad = (start * Math.PI) / 180;
   const endRad = (end * Math.PI) / 180;
@@ -41,24 +42,27 @@ const createArc = (start: number, end: number, center: number, radius: number): 
   return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
 };
 
-// Updated pointer calculation with rounded base
 const calculateTaperedPointer = (angle: number, center: number, length: number): string => {
   const rad = (angle * Math.PI) / 180;
   const baseWidth = 4;
   const baseRadius = baseWidth / 2;
   const perpRad = rad + Math.PI / 2;
   
-  // Calculate tip point
+  const baseOffsetX = Math.cos(rad) * CONSTANTS.POINTER_OFFSET;
+  const baseOffsetY = Math.sin(rad) * CONSTANTS.POINTER_OFFSET;
+  const baseCenter = {
+    x: center + baseOffsetX,
+    y: center + baseOffsetY
+  };
+  
   const tipX = center + length * Math.cos(rad);
   const tipY = center + length * Math.sin(rad);
   
-  // Calculate base arc points
-  const leftBaseX = center + baseWidth * Math.cos(perpRad);
-  const leftBaseY = center + baseWidth * Math.sin(perpRad);
-  const rightBaseX = center - baseWidth * Math.cos(perpRad);
-  const rightBaseY = center - baseWidth * Math.sin(perpRad);
+  const leftBaseX = baseCenter.x + baseWidth * Math.cos(perpRad);
+  const leftBaseY = baseCenter.y + baseWidth * Math.sin(perpRad);
+  const rightBaseX = baseCenter.x - baseWidth * Math.cos(perpRad);
+  const rightBaseY = baseCenter.y - baseWidth * Math.sin(perpRad);
   
-  // Create path with rounded base using arc
   return `
     M ${leftBaseX} ${leftBaseY}
     A ${baseWidth} ${baseWidth} 0 0 1 ${rightBaseX} ${rightBaseY}
@@ -66,7 +70,6 @@ const calculateTaperedPointer = (angle: number, center: number, length: number):
     Z
   `;
 };
-
 
 const LocationPoint: React.FC<{ info: LocationInfo }> = ({ info }) => (
   <div className="flex items-center">
@@ -115,8 +118,23 @@ const SpeedGauge: React.FC = () => {
   const valueAngle = CONSTANTS.START_ANGLE + angleRange * (props.value / props.maxValue);
 
   return (
-    <div className="w-75 h-70 relative border m-4">
+    <div className="w-75 h-70 relative m-4">
       <svg viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`} className="w-full">
+        {/* Define filter for pointer shadow */}
+        <defs>
+          <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+            <feOffset dx="2" dy="2" result="offsetblur" />
+            <feComponentTransfer>
+              <feFuncA type="linear" slope="0.4" />
+            </feComponentTransfer>
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
         {/* Background arc */}
         <path
           d={createArc(CONSTANTS.START_ANGLE, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
@@ -141,23 +159,24 @@ const SpeedGauge: React.FC = () => {
           strokeWidth={CONSTANTS.STROKE_WIDTH}
         />
 
-        {/* Pointer with rounded base */}
+        {/* Pointer with shadow */}
         <path
           d={calculateTaperedPointer(valueAngle, center, CONSTANTS.POINTER_LENGTH)}
           fill="#5E6278"
           stroke="none"
+          filter="url(#pointerShadow)"
         />
 
         {/* Center text */}
-        <text x={center} y={center + 35} textAnchor="middle" className="text-4xl font-bold" fill="black">
+        <text x={center} y={center + 15} textAnchor="middle" className="text-4xl font-bold" fill="black">
           {props.value}
         </text>
-        <text x={center} y={center + 60} textAnchor="middle" className="text-sm" fill="#6b7280">
+        <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">
           {props.unit}
         </text>
       </svg>
 
-      <div className="flex items-center bg-gray-50 p-4 rounded-lg shadow-md">
+      <div className="flex items-center bg-gray-50 p-4 rounded-lg">
         <div className="flex flex-col items-center">
           <div className="text-lg font-semibold text-gray-800">{props.distance}</div>
           <SpeedIndicator speed={props.speed} />
