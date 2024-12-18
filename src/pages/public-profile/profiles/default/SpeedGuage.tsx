@@ -1,6 +1,6 @@
 import React from 'react';
 
-// [Previous interfaces remain the same]
+// [Previous interfaces and constants remain the same]
 interface LocationInfo {
   place: string;
   timestamp: string;
@@ -118,9 +118,13 @@ const SpeedGauge: React.FC = () => {
   const valueAngle = CONSTANTS.START_ANGLE + angleRange * (props.value / props.maxValue);
 
   return (
-    <div className="w-75 h-70 relative m-4">
-      <svg viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`} className="w-full">
-        {/* Define filter for pointer shadow */}
+    <div className="card flex flex-col max-w-sm p-8">
+      <svg 
+        viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`} 
+        className="mx-auto"
+        style={{ marginBottom: '-110px' }} 
+      >
+     
         <defs>
           <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
@@ -176,16 +180,18 @@ const SpeedGauge: React.FC = () => {
         </text>
       </svg>
 
-      <div className="flex items-center bg-gray-50 p-4 rounded-lg">
-        <div className="flex flex-col items-center">
-          <div className="text-lg font-semibold text-gray-800">{props.distance}</div>
-          <SpeedIndicator speed={props.speed} />
-        </div>
+      <div className="bg-gray-50 p-8 rounded-lg">
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col">
+            <div className="text-lg font-semibold text-gray-800">{props.distance}</div>
+            <SpeedIndicator speed={props.speed} />
+          </div>
 
-        <div className="ml-4 flex flex-col">
-          <LocationPoint info={props.startLocation} />
-          <div className="ml-1 h-6 border-l border-gray-300" />
-          <LocationPoint info={props.endLocation} />
+          <div className="ml-4 flex flex-col align-items-center">
+            <LocationPoint info={props.startLocation} />
+            <div className="ml-1 h-6 border-l border-gray-300" />
+            <LocationPoint info={props.endLocation} />
+          </div>
         </div>
       </div>
     </div>
