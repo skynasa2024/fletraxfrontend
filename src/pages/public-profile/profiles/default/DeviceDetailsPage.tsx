@@ -32,12 +32,12 @@ const DeviceDetailsPage = () => {
 
   return (
     <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full m-5 mb-6">
-      <div className="p-4 card w-full">
+      <div className="p-4 w-full">
         <div className="space-y-4">
-          <table className="w-full">
+          <table className="card w-full p-2">
             <tbody>
               {deviceData.map((item, index) => (
-                <tr key={index} className="w-full grid grid-cols-4 gap-6 items-center">
+                <tr key={index} className=" w-full grid grid-cols-4 gap-6 items-center">
                   <td className="text-start flex items-center">
                     <div className="flex items-center gap-4">
                       <svg
@@ -112,11 +112,11 @@ const DeviceDetailsPage = () => {
                   </td>
                 </tr>
               ))}
+              <DeviceNavigation />
             </tbody>
           </table>
         </div>
         <div>
-          <DeviceNavigation />
           <div className="grid grid-cols-3 p-2">
             {/* Speed Gauge */}
             <div className="flex items-center justify-start">

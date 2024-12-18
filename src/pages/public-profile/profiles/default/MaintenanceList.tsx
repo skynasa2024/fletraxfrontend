@@ -103,17 +103,17 @@ const sampleData = [
 
 const MaintenanceList = ({ items = sampleData }) => {
   return (
-    <div className="card">
+    <div className="">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center  p-4">
       <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
         <div className="flex gap-4">
           {/* Filters Button */}
-          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border shadow-sm text-sm">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border text-sm">
             Filters <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">2</span>
           </button>
           {/* Export Button */}
-          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border shadow-sm text-sm">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border text-sm">
             Export
           </button>
           {/* Search Bar */}
@@ -121,7 +121,7 @@ const MaintenanceList = ({ items = sampleData }) => {
             <input
               type="search"
               placeholder="Search"
-              className="pl-8 pr-4 py-2 border rounded-md text-sm w-56 shadow-sm"
+              className="pl-8 pr-4 py-2 border rounded-md text-sm w-56"
             />
             <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">
               <svg
@@ -148,14 +148,14 @@ const MaintenanceList = ({ items = sampleData }) => {
         {items.map((item, index) => (
           <div
             key={index}
-            className={`p-4 rounded-lg shadow-sm transition-colors duration-200 ${
+            className={` card p-4 rounded-lg transition-colors duration-200 ${
               item.status === 'selected'
-                ? 'bg-gray-50 border-blue-400'
+                ? 'bg-gray-50 '
                 : item.status === 'success'
-                  ? 'bg-green-50 border-green-400'
+                  ? 'bg-green-50 '
                   : item.status === 'warning'
-                    ? 'bg-yellow-50 border-yellow-400'
-                    : 'bg-white border-gray-300'
+                    ? 'bg-yellow-50 '
+                    : 'bg-white '
             }`}
           >
             {/* Card Header */}
