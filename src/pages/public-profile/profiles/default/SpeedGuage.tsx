@@ -1,122 +1,173 @@
 import React from 'react';
 
-const SpeedGauge = () => {
-  // Constants for arc calculations
-  const value = 46;
-  const maxValue = 100;
-  const radius = 80;
-  const strokeWidth = 12;
-  const viewBoxSize = 200;
-  const center = viewBoxSize / 2;
+// Types for props and calculations
+interface LocationInfo {
+  place: string;
+  timestamp: string;
+}
 
-  // Calculate the arc path
-  const startAngle = -150;
-  const endAngle = -30;
-  const angleRange = endAngle - startAngle;
-  const valueAngle = startAngle + angleRange * (value / maxValue);
+interface GaugeProps {
+  value: number;
+  maxValue: number;
+  unit: string;
+  distance: string;
+  speed: number;
+  startLocation: LocationInfo;
+  endLocation: LocationInfo;
+}
 
-  // Create arc paths with proper typing
-  const createArc = (start: number, end: number): string => {
-    const startRad = (start * Math.PI) / 180;
-    const endRad = (end * Math.PI) / 180;
+// Constants
+const CONSTANTS = {
+  RADIUS: 80,
+  STROKE_WIDTH: 40,
+  VIEW_BOX_SIZE: 200,
+  START_ANGLE: -180,
+  END_ANGLE: 0,
+  WARNING_ZONE_DEGREES: 30,
+  POINTER_LENGTH: 60, // Length of the pointer
+  POINTER_WIDTH: 4,  // Width of the pointer
+} as const;
 
-    const x1 = center + radius * Math.cos(startRad);
-    const y1 = center + radius * Math.sin(startRad);
-    const x2 = center + radius * Math.cos(endRad);
-    const y2 = center + radius * Math.sin(endRad);
+// Utility functions
+const createArc = (start: number, end: number, center: number, radius: number): string => {
+  const startRad = (start * Math.PI) / 180;
+  const endRad = (end * Math.PI) / 180;
 
-    const largeArcFlag = end - start <= 180 ? '0' : '1';
+  const x1 = center + radius * Math.cos(startRad);
+  const y1 = center + radius * Math.sin(startRad);
+  const x2 = center + radius * Math.cos(endRad);
+  const y2 = center + radius * Math.sin(endRad);
 
-    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
+  const largeArcFlag = end - start <= 180 ? '0' : '1';
+
+  return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
+};
+
+// Calculate pointer coordinates
+const calculatePointerCoordinates = (angle: number, center: number, length: number): { x: number; y: number } => {
+  const rad = (angle * Math.PI) / 180;
+  return {
+    x: center + length * Math.cos(rad),
+    y: center + length * Math.sin(rad)
   };
+};
+
+// Subcomponents
+const LocationPoint: React.FC<{ info: LocationInfo }> = ({ info }) => (
+  <div className="flex items-center">
+    <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-600" />
+    <div className="ml-2">
+      <div className="text-sm font-semibold text-gray-800">{info.place}</div>
+      <div className="text-xs text-gray-500">{info.timestamp}</div>
+    </div>
+  </div>
+);
+
+const SpeedIndicator: React.FC<{ speed: number }> = ({ speed }) => (
+  <div className="relative mt-2">
+    <div className="w-20 h-20 rounded-full border-4 border-gray-200" />
+    <div
+      className="absolute inset-0 w-20 h-20 rounded-full border-4 border-yellow-400"
+      style={{
+        clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)'
+      }}
+    />
+    <div className="absolute inset-2 flex items-center justify-center text-sm font-bold text-gray-700">
+      km/h {speed}
+    </div>
+  </div>
+);
+
+const SpeedGauge: React.FC = () => {
+  // Mock props (in real usage, these would be passed as props)
+  const props: GaugeProps = {
+    value: 45,
+    maxValue: 100,
+    unit: 'km',
+    distance: '4.92 KM',
+    speed: 75,
+    startLocation: {
+      place: 'Başakşehir/İstanbul',
+      timestamp: '2024-04-29 12:35:35'
+    },
+    endLocation: {
+      place: 'Fatih/İstanbul',
+      timestamp: '2024-04-29 12:35:35'
+    }
+  };
+
+  const center = CONSTANTS.VIEW_BOX_SIZE / 2;
+  const angleRange = CONSTANTS.END_ANGLE - CONSTANTS.START_ANGLE;
+  const valueAngle = CONSTANTS.START_ANGLE + angleRange * (props.value / props.maxValue);
+  
+  // Calculate pointer end coordinates
+  const pointerEnd = calculatePointerCoordinates(valueAngle, center, CONSTANTS.POINTER_LENGTH);
 
   return (
     <div className="w-75 h-70 relative border m-4">
-      <svg viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`} className="w-full">
+      <svg viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`} className="w-full">
         {/* Background arc */}
         <path
-          d={createArc(startAngle, endAngle)}
+          d={createArc(CONSTANTS.START_ANGLE, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
           fill="none"
           stroke="#e5e7eb"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
+          strokeWidth={CONSTANTS.STROKE_WIDTH}
         />
 
-        {/* Value arc (blue) */}
+        {/* Value arc */}
         <path
-          d={createArc(startAngle, valueAngle)}
+          d={createArc(CONSTANTS.START_ANGLE, valueAngle, center, CONSTANTS.RADIUS)}
           fill="none"
           stroke="#4338ca"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
+          strokeWidth={CONSTANTS.STROKE_WIDTH}
         />
 
-        {/* Red segment */}
+        {/* Warning zone */}
         <path
-          d={createArc(endAngle - 30, endAngle)}
+          d={createArc(CONSTANTS.END_ANGLE - CONSTANTS.WARNING_ZONE_DEGREES, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
           fill="none"
           stroke="#ef4444"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
+          strokeWidth={CONSTANTS.STROKE_WIDTH}
         />
 
-        {/* Center value */}
-        <text x={center} y={center} textAnchor="middle" className="text-4xl font-bold" fill="black">
-          {value}
-        </text>
+        {/* Pointer */}
+        <line
+          x1={center}
+          y1={center}
+          x2={pointerEnd.x}
+          y2={pointerEnd.y}
+          stroke="#1f2937"
+          strokeWidth={CONSTANTS.POINTER_WIDTH}
+          strokeLinecap="round"
+        />
+        
+        {/* Pointer center dot */}
+        <circle
+          cx={center}
+          cy={center}
+          r={CONSTANTS.POINTER_WIDTH}
+          fill="#1f2937"
+        />
 
-        <text x={center} y={center + 25} textAnchor="middle" className="text-sm" fill="#6b7280">
-          km
+        {/* Center text */}
+        <text x={center} y={center + 35} textAnchor="middle" className="text-4xl font-bold" fill="black">
+          {props.value}
+        </text>
+        <text x={center} y={center + 60} textAnchor="middle" className="text-sm" fill="#6b7280">
+          {props.unit}
         </text>
       </svg>
 
-      {/* Location information */}
       <div className="flex items-center bg-gray-50 p-4 rounded-lg shadow-md">
-        {/* Left Section: Distance and Speed */}
         <div className="flex flex-col items-center">
-          {/* Distance */}
-          <div className="text-lg font-semibold text-gray-800">4.92 KM</div>
-          {/* Speed Indicator */}
-          <div className="relative mt-2">
-            {/* Circle Background */}
-            <div className="w-20 h-20 rounded-full border-4 border-gray-200"></div>
-            {/* Yellow Arc */}
-            <div
-              className="absolute inset-0 w-20 h-20 rounded-full border-4 border-yellow-400"
-              style={{
-                clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)'
-              }}
-            ></div>
-            {/* Speed Text */}
-            <div className="absolute inset-2 flex items-center justify-center text-sm font-bold text-gray-700">
-              km/h 75
-            </div>
-          </div>
+          <div className="text-lg font-semibold text-gray-800">{props.distance}</div>
+          <SpeedIndicator speed={props.speed} />
         </div>
 
-        {/* Right Section: Route Details */}
         <div className="ml-4 flex flex-col">
-          {/* Location 1 */}
-          <div className="flex items-center">
-          <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-600"></div>
-
-            <div className="ml-2">
-              <div className="text-sm font-semibold text-gray-800">Başakşehir/İstanbul</div>
-              <div className="text-xs text-gray-500">2024-04-29 12:35:35</div>
-            </div>
-          </div>
-
-          {/* Line Between Locations */}
-          <div className="ml-1 h-6 border-l border-gray-300"></div>
-
-          {/* Location 2 */}
-          <div className="flex items-center">
-          <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-600"></div>
-            <div className="ml-2">
-              <div className="text-sm font-semibold text-gray-800">Fatih/İstanbul</div>
-              <div className="text-xs text-gray-500">2024-04-29 12:35:35</div>
-            </div>
-          </div>
+          <LocationPoint info={props.startLocation} />
+          <div className="ml-1 h-6 border-l border-gray-300" />
+          <LocationPoint info={props.endLocation} />
         </div>
       </div>
     </div>

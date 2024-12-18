@@ -29,8 +29,8 @@ const DeviceNavigation = () => {
   ];
 
   return (
-    <div className="w-full bg-gray-50 px-4 py-2">
-      <div className="flex items-center justify-between space-x-4 overflow-x-auto">
+    <div className="w-full bg-[rgba(245,248,250,1)] px-20 py-2">
+      <div className="flex items-center justify-between overflow-x-auto">
         {navItems.map((item, index) => (
           <div
             key={index}
