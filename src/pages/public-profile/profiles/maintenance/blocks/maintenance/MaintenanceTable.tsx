@@ -28,7 +28,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           className: 'min-w-36'
         }
       },
-      
+
       {
         accessorFn: (row) => row.type,
         id: 'type',
@@ -114,22 +114,29 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
   );
 
   return (
-    <DataGrid
-      columns={columns}
-      filters={
-        searchQuery.trim().length > 2
-          ? [
-              {
-                id: '__any',
-                value: searchQuery
-              }
-            ]
-          : []
-      }
-      serverSide={true}
-      onFetchData={getMaintenance}
-      pagination={{ sizes: [], size: 4 }}
-    />
+    <div className="card">
+      <div className="flex items-center justify-between p-6 ">
+        <h2 className="text-xl font-semibold text-gray-800">Drivers List</h2>
+      </div>
+      <div className="driver-table">
+        <DataGrid
+          columns={columns}
+          filters={
+            searchQuery.trim().length > 2
+              ? [
+                  {
+                    id: '__any',
+                    value: searchQuery
+                  }
+                ]
+              : []
+          }
+          serverSide={true}
+          onFetchData={getMaintenance}
+          pagination={{ sizes: [], size: 4 }}
+        />{' '}
+      </div>
+    </div>
   );
 };
 

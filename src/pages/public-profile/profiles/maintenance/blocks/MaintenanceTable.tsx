@@ -99,8 +99,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           info // TODO: Add links
         ) => (
           <div className="flex gap-3">
-            <a href="#"
-            onClick={() => navigate('/maintenance/maintenance/view-maintenance')}>
+            <a href="#" onClick={() => navigate('/maintenance/maintenance/view-maintenance')}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
             </a>
             <a href="#">
@@ -117,9 +116,11 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
   );
 
   return (
-    <div>
-      
-      <h1 className="text-xl font-bold mb-4">Maintenance List</h1>
+    <div className="card">
+      <div className="flex items-center justify-between p-6 ">
+        <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
+      </div>
+
       <DataGrid
         columns={columns}
         filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}

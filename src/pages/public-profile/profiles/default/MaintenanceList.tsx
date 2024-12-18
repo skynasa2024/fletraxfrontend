@@ -32,7 +32,8 @@ const sampleData = [
     id: '1729066043.478290',
     signal: 95,
     status: 'default'
-  },{
+  },
+  {
     serverTimestamp: '2024-10-16 11:09:46',
     id: '1729066039.718185',
     signal: 165,
@@ -61,7 +62,8 @@ const sampleData = [
     id: '1729066043.478290',
     signal: 95,
     status: 'default'
-  },{
+  },
+  {
     serverTimestamp: '2024-10-16 11:09:46',
     id: '1729066039.718185',
     signal: 165,
@@ -101,10 +103,10 @@ const sampleData = [
 
 const MaintenanceList = ({ items = sampleData }) => {
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
+    <div className="card">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Maintenance List</h1>
+      <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
         <div className="flex gap-4">
           {/* Filters Button */}
           <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border shadow-sm text-sm">
@@ -121,12 +123,22 @@ const MaintenanceList = ({ items = sampleData }) => {
               placeholder="Search"
               className="pl-8 pr-4 py-2 border rounded-md text-sm w-56 shadow-sm"
             />
-          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-</span>
-
+            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35m1.85-5.65a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </span>
           </div>
         </div>
       </div>
