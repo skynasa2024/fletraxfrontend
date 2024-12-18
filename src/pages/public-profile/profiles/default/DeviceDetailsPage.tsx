@@ -119,7 +119,7 @@ const DeviceDetailsPage = () => {
           <DeviceNavigation />
           <div className="grid grid-cols-3 p-2">
             {/* Speed Gauge */}
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-start">
               <SpeedGauge />
             </div>
 
@@ -129,7 +129,7 @@ const DeviceDetailsPage = () => {
             </div>
 
             {/* Car */}
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-end">
               <Car />
             </div>
           </div>
