@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Types for props and calculations
+// [Previous interfaces and LocationInfo remain the same]
 interface LocationInfo {
   place: string;
   timestamp: string;
@@ -16,7 +16,6 @@ interface GaugeProps {
   endLocation: LocationInfo;
 }
 
-// Constants
 const CONSTANTS = {
   RADIUS: 80,
   STROKE_WIDTH: 40,
@@ -24,11 +23,10 @@ const CONSTANTS = {
   START_ANGLE: -180,
   END_ANGLE: 0,
   WARNING_ZONE_DEGREES: 30,
-  POINTER_LENGTH: 60, // Length of the pointer
-  POINTER_WIDTH: 4,  // Width of the pointer
+  POINTER_LENGTH: 60,
 } as const;
 
-// Utility functions
+// Utility functions for arcs remain the same
 const createArc = (start: number, end: number, center: number, radius: number): string => {
   const startRad = (start * Math.PI) / 180;
   const endRad = (end * Math.PI) / 180;
@@ -43,16 +41,33 @@ const createArc = (start: number, end: number, center: number, radius: number): 
   return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
 };
 
-// Calculate pointer coordinates
-const calculatePointerCoordinates = (angle: number, center: number, length: number): { x: number; y: number } => {
+// Updated pointer calculation with rounded base
+const calculateTaperedPointer = (angle: number, center: number, length: number): string => {
   const rad = (angle * Math.PI) / 180;
-  return {
-    x: center + length * Math.cos(rad),
-    y: center + length * Math.sin(rad)
-  };
+  const baseWidth = 4;
+  const baseRadius = baseWidth / 2;
+  const perpRad = rad + Math.PI / 2;
+  
+  // Calculate tip point
+  const tipX = center + length * Math.cos(rad);
+  const tipY = center + length * Math.sin(rad);
+  
+  // Calculate base arc points
+  const leftBaseX = center + baseWidth * Math.cos(perpRad);
+  const leftBaseY = center + baseWidth * Math.sin(perpRad);
+  const rightBaseX = center - baseWidth * Math.cos(perpRad);
+  const rightBaseY = center - baseWidth * Math.sin(perpRad);
+  
+  // Create path with rounded base using arc
+  return `
+    M ${leftBaseX} ${leftBaseY}
+    A ${baseWidth} ${baseWidth} 0 0 1 ${rightBaseX} ${rightBaseY}
+    L ${tipX} ${tipY}
+    Z
+  `;
 };
 
-// Subcomponents
+
 const LocationPoint: React.FC<{ info: LocationInfo }> = ({ info }) => (
   <div className="flex items-center">
     <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-600" />
@@ -79,7 +94,6 @@ const SpeedIndicator: React.FC<{ speed: number }> = ({ speed }) => (
 );
 
 const SpeedGauge: React.FC = () => {
-  // Mock props (in real usage, these would be passed as props)
   const props: GaugeProps = {
     value: 45,
     maxValue: 100,
@@ -99,9 +113,6 @@ const SpeedGauge: React.FC = () => {
   const center = CONSTANTS.VIEW_BOX_SIZE / 2;
   const angleRange = CONSTANTS.END_ANGLE - CONSTANTS.START_ANGLE;
   const valueAngle = CONSTANTS.START_ANGLE + angleRange * (props.value / props.maxValue);
-  
-  // Calculate pointer end coordinates
-  const pointerEnd = calculatePointerCoordinates(valueAngle, center, CONSTANTS.POINTER_LENGTH);
 
   return (
     <div className="w-75 h-70 relative border m-4">
@@ -130,23 +141,11 @@ const SpeedGauge: React.FC = () => {
           strokeWidth={CONSTANTS.STROKE_WIDTH}
         />
 
-        {/* Pointer */}
-        <line
-          x1={center}
-          y1={center}
-          x2={pointerEnd.x}
-          y2={pointerEnd.y}
-          stroke="#1f2937"
-          strokeWidth={CONSTANTS.POINTER_WIDTH}
-          strokeLinecap="round"
-        />
-        
-        {/* Pointer center dot */}
-        <circle
-          cx={center}
-          cy={center}
-          r={CONSTANTS.POINTER_WIDTH}
-          fill="#1f2937"
+        {/* Pointer with rounded base */}
+        <path
+          d={calculateTaperedPointer(valueAngle, center, CONSTANTS.POINTER_LENGTH)}
+          fill="#5E6278"
+          stroke="none"
         />
 
         {/* Center text */}
