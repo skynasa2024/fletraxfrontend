@@ -95,9 +95,9 @@ const VehicleInfoCards = () => {
   return (
     <>
       <Toolbar />
-      <div className="w-full mx-auto px-10">
+      <div className="px-10">
         <div className="flex flex-col lg:flex-row">
-          <div className="card hover:shadow-md w-full lg:w-2/3 rounded-lg grid grid-cols-1 mb-2">
+          <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2">
             <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
@@ -118,8 +118,8 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Device Section */}
-              <div className="flex items-center space-x-4  mb-4">
-                <div className="bg-blue-100 p-2 rounded-full"></div>
+              <div className="flex items-center space-x-2">
+                <div className="bg-blue-100 p-4 rounded-full"></div>
                 <div>
                   <span className="text-lg font-medium">41643739</span>
                   <p className="text-sm text-gray-500">Device</p>
@@ -180,7 +180,7 @@ const VehicleInfoCards = () => {
               </div>
             </div>
           </div>
-          <div className="container mx-auto p-5  grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
+          <div className="container mx-auto pl-5  grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}
             <div className="flex flex-col lg:flex-row h-full mb-4 ">
               {/* Vehicle Info Cards */}
@@ -219,7 +219,7 @@ const VehicleInfoCards = () => {
 
             {/* Inspection and Insurance Section */}
             <div className="card hover:shadow-md mb-2 p-4">
-              <h2 className="text-xl font-semibold mb-2">Vehicle Inspection and Insurance</h2>
+              <h2 className="text-xl font-semibold mb-2 border-b-2 pb-2">Vehicle Inspection and Insurance</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
                   <div key={item.title} className="flex items-start space-x-3 rounded-lg mb-4">
