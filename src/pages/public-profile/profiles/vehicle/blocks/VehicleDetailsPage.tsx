@@ -203,7 +203,7 @@ const VehicleInfoCards = () => {
               <h2 className="text-xl font-semibold mb-2">Vehicle Inspection and Insurance</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
-                  <div key={item.title} className="flex items-start space-x-3 mb-1 rounded-lg">
+                  <div key={item.title} className="flex items-start space-x-3 mb-1 rounded-lg mb-4">
                     {' '}
                     <div className="rounded-lg p-3 bg-gray-200">
                       <svg
