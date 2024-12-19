@@ -10,7 +10,7 @@ const MaintenanceViolationTable = () => {
 
   return (
     <div className="grid">
-      <div className="card card-grid h-full min-w-full">
+      <div className="card hover:shadow-md card-grid h-full min-w-full">
         <div className="card-header">
           <h3 className="card-title">Violation & Maintenance</h3>
           <div className="flex gap-7 items-center">

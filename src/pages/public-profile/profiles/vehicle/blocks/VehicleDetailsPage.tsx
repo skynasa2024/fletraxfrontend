@@ -128,7 +128,8 @@ const VehicleInfoCards = () => {
 
               {/* Image Section */}
               <div className="relative flex p-4 justify-center items-center col-span-full">
-                <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" /> {/* Corners */}
+                <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
+                 {/* Corners */}
                 <div className="absolute top-10 left-60 w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
                 <div
                   className="absolute top-10 right-60 w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
