@@ -128,19 +128,24 @@ const VehicleInfoCards = () => {
 
               {/* Image Section */}
               <div className="relative flex p-4 justify-center items-center col-span-full">
-                <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
-
+                <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" /> {/* Corners */}
+                <div className="absolute top-10 left-60 w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
+                <div
+                  className="absolute top-10 right-60 w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
+                  style={{ boxShadow: '4px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}
+                />
+                <div className="absolute bottom-10 left-60 w-16 h-20 border-b-2 border-l-2 border-blue-500 rounded-bl-full shadow-xl" />
+                <div className="absolute bottom-10 right-60 w-16 h-20 border-b-2 border-r-2 border-blue-500 rounded-br-full shadow-xl" />
                 {/* Top row */}
-                <button className="absolute top-0 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute top-0 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button className="absolute top-0 left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute top-0 left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button className="absolute top-0 right-1/3 translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute top-0 right-1/3 translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-
                 {/* Middle top row */}
                 <button className="absolute top-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                   +
@@ -151,7 +156,6 @@ const VehicleInfoCards = () => {
                 <button className="absolute top-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-
                 {/* Middle bottom row */}
                 <button className="absolute bottom-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                   +
@@ -162,7 +166,6 @@ const VehicleInfoCards = () => {
                 <button className="absolute bottom-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-
                 {/* Bottom row */}
                 <button className="absolute bottom-6 left-1/3 -translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
@@ -219,7 +222,6 @@ const VehicleInfoCards = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
                   <div key={item.title} className="flex items-start space-x-3 rounded-lg mb-4">
-                    {' '}
                     <div className="rounded-lg p-3 bg-gray-200">
                       <svg
                         width={32}
@@ -242,7 +244,7 @@ const VehicleInfoCards = () => {
                       <h3 className="font-semibold text-lg">{item.title}</h3>
                       <div className="mt-1 flex">
                         <div>
-                          <span className="font-semibold">Start</span> :{' '}
+                          <span className="font-semibold">Start</span> :
                           <span>{item.startDate}</span>
                         </div>
                         <div className="ml-4">
