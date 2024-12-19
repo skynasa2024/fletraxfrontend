@@ -224,13 +224,14 @@ const VehicleInfoCards = () => {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg ">{item.title}</h3>
-                      <div className="mt-1 space-y-0.5">
-                        <div className="text-sm text-gray-500">
-                          Start : <span className="ml-1">{item.startDate}</span>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                      <div className="mt-1 flex">
+                        <div>
+                          <span className="font-semibold">Start</span> :{' '}
+                          <span>{item.startDate}</span>
                         </div>
-                        <div className="text-sm text-gray-500">
-                          End : <span className="ml-1">{item.endDate}</span>
+                        <div className="ml-4">
+                          <span className="font-semibold">End</span> : <span>{item.endDate}</span>
                         </div>
                       </div>
                     </div>
