@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const Registration = () => {
+  const [selectedType, setSelectedType] = useState('individual');
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
@@ -8,23 +11,68 @@ const Registration = () => {
       <div className="card-body grid gap-5">
         {/* Type Selection */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2.5">
-            <label className="form-label">Type</label>
-            <div className="flex gap-4">
-              <div className="w-full flex items-center gap-2 border rounded-lg p-2 border-blue-500">
-                <input type="radio" name="type" id="individual" defaultChecked />
-                <label htmlFor="individual" className="flex items-center gap-2">
-                  <span className="text-blue-500">Individual</span>
-                </label>
-              </div>
-              <div className=" w-full flex items-center gap-2 border rounded-lg p-2">
-                <input type="radio" name="type" id="company" />
-                <label htmlFor="company" className="flex items-center gap-2">
-                  <span>Company</span>
-                </label>
-              </div>
-            </div>
-          </div>
+        <div className="grid gap-2.5">
+      <label className="form-label">Type</label>
+      <div className="flex gap-4 ">
+        <div className={`
+          w-full flex items-center gap-2 p-2 rounded-md border border-dashed   hover:bg-gray-100 bg-gray-50 transition-colors
+                flex items-center gap-2
+          ${selectedType === 'individual' ? 'border-blue-500' : 'border-gray-200'} 
+        `}>
+          <input 
+            type="radio" 
+            name="type" 
+            id="individual"
+            checked={selectedType === 'individual'}
+            onChange={() => setSelectedType('individual')}
+            className="hidden "
+          />
+          <label 
+            htmlFor="individual" 
+            className="flex items-center gap-2 cursor-pointer w-full"
+          >
+            <div className={`
+              w-4 h-4 rounded-full bg-gray-200 
+              ${selectedType === 'individual' 
+                ? 'border-4 border-blue-500' 
+                : 'border-2 border-gray-300'}
+            `} />
+            <span className={selectedType === 'individual' ? 'text-blue-500' : ''}>
+              Individual
+            </span>
+          </label>
+        </div>
+
+        <div className={`
+          w-full flex items-center gap-2 p-2 rounded-md border border-dashed   hover:bg-gray-100 bg-gray-50 transition-colors
+                flex items-center gap-2
+          ${selectedType === 'company' ? 'border-blue-500' : 'border-gray-300'}
+        `}>
+          <input 
+            type="radio" 
+            name="type" 
+            id="company"
+            checked={selectedType === 'company'}
+            onChange={() => setSelectedType('company')}
+            className="hidden"
+          />
+          <label 
+            htmlFor="company" 
+            className="flex items-center gap-2 cursor-pointer w-full"
+          >
+            <div className={`
+              w-4 h-4 rounded-full bg-gray-200 
+              ${selectedType === 'company' 
+                ? 'border-4 border-blue-500' 
+                : 'border-2 border-gray-300'}
+            `} />
+            <span className={selectedType === 'company' ? 'text-blue-500' : ' '} >
+              Company
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
           {/* Identify Number */}
           <div className="grid gap-2.5">
             <label className="form-label">Identify Number</label>
