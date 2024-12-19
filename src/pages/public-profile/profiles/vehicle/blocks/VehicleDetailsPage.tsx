@@ -95,9 +95,9 @@ const VehicleInfoCards = () => {
   return (
     <>
       <Toolbar />
-      <div className="w-full mx-auto px-4 ">
+      <div className="w-full mx-auto px-10">
         <div className="flex flex-col lg:flex-row">
-          <div className="card hover:shadow-md w-full lg:w-1/2 rounded-lg grid grid-cols-1 mb-2">
+          <div className="card hover:shadow-md w-full lg:w-2/3 rounded-lg grid grid-cols-1 mb-2">
             <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
@@ -127,35 +127,50 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Image Section */}
-              <div className="relative flex justify-center items-center col-span-full rounded-lg p-4 mb-8">
-                <img
-                  className="rounded-lg object-cover max-w-full max-h-full"
-                  src={toAbsoluteUrl('/media/images/car.png')}
-                  alt="Car"
-                />
-                {/* Plus buttons */}
-                <button
-                  className="absolute top-2 left-2 border hover:shadow-md text-gray rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() => alert('Add input here')}
-                >
+              <div className="relative flex p-4 justify-center items-center col-span-full">
+                <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
+
+                {/* Top row */}
+                <button className="absolute top-0 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button
-                  className="absolute top-2 right-2 border hover:shadow-md text-gray rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() => alert('Add input here')}
-                >
+                <button className="absolute top-0 left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button
-                  className="absolute bottom-2 left-2 border hover:shadow-md text-gray rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() => alert('Add input here')}
-                >
+                <button className="absolute top-0 right-1/3 translate-x-1/2 border hover:shadow-md bg-gray-100  text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button
-                  className="absolute bottom-2 right-2 border hover:shadow-md text-gray rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() => alert('Add input here')}
-                >
+
+                {/* Middle top row */}
+                <button className="absolute top-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute top-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute top-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+
+                {/* Middle bottom row */}
+                <button className="absolute bottom-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute bottom-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute bottom-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+
+                {/* Bottom row */}
+                <button className="absolute bottom-6 left-1/3 -translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute bottom-6 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                  +
+                </button>
+                <button className="absolute bottom-6 right-1/3 translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
               </div>
@@ -172,7 +187,7 @@ const VehicleInfoCards = () => {
                       key={index}
                       className="card p-4 rounded-lg hover:shadow-md flex flex-col h-40"
                     >
-                      <Icon className="w-6 h-6 text-gray-400" />
+                      <Icon className="w-6 h-6 text-gray-600" />
                       <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
                       <span className="text-lg font-semibold text-gray-900">{value}</span>
                     </div>
@@ -190,7 +205,7 @@ const VehicleInfoCards = () => {
                 <div className="flex-grow">
                   {details.map(({ label, value }, index) => (
                     <div key={index} className="flex items-start mb-2">
-                      <span className="text-gray-400 mr-1">{label}:</span>
+                      <span className="text-gray-600 mr-1">{label}:</span>
                       <span className="text-gray-800">{value}</span>
                     </div>
                   ))}
@@ -203,7 +218,7 @@ const VehicleInfoCards = () => {
               <h2 className="text-xl font-semibold mb-2">Vehicle Inspection and Insurance</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
-                  <div key={item.title} className="flex items-start space-x-3 mb-1 rounded-lg mb-4">
+                  <div key={item.title} className="flex items-start space-x-3 rounded-lg mb-4">
                     {' '}
                     <div className="rounded-lg p-3 bg-gray-200">
                       <svg
