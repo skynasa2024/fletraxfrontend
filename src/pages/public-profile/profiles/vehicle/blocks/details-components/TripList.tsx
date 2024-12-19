@@ -59,7 +59,7 @@ const TripList: React.FC<TripListProps> = ({
   onPageChange
 }) => {
   return (
-    <div className={`p-4 card lg:w-1/2 ${className}`}>
+    <div className={`p-4 card hover:shadow-md  lg:w-1/2 ${className}`}>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">{title}</h2>
         <span className="text-gray-500 text-sm">{totalTrips || trips.length} Trips</span>

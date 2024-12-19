@@ -26,7 +26,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
   const numericValue = typeof value === 'string' ? value.split(' ')[0] : value;
   
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md text-center flex flex-col items-center justify-center">
+    <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center">
       <div className="mb-2">
         <Icon />
       </div>
@@ -87,7 +87,7 @@ const VehicleMetrics: React.FC<VehicleMetricsProps> = ({ metrics = {
   ];
 
   return (
-    <div className="w-2/3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className=" w-2/3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {metricConfigs.map((config, index) => (
         <MetricCard key={index} {...config} />
       ))}

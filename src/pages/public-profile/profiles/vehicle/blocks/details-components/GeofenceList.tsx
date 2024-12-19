@@ -22,7 +22,7 @@ const GeofenceList: React.FC<GeofenceListProps> = ({
   );
 
   return (
-    <div className={`bg-white p-6 rounded-lg shadow-md  flex-grow ${className}`}>
+    <div className={` p-6 rounded-lg card hover:shadow-md flex-grow  ${className}`}>
       <h2 className="text-xl font-semibold mb-1">{title}</h2>
       <p className="text-sm text-gray-500 mb-4">25 Geofence</p>
       <div className="relative mb-4 flex items-center">
@@ -39,7 +39,7 @@ const GeofenceList: React.FC<GeofenceListProps> = ({
           </svg>
         </button>
       </div>
-      <div className="overflow-y-auto h-80 md:h-60">
+      <div className="overflow-y-auto h-48 mb-3 ">
         <ul className="space-y-2">
           {filteredItems.map((item, index) => (
             <React.Fragment key={index}>
