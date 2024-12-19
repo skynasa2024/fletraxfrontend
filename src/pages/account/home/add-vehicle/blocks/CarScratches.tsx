@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import carImage from './car.png';
+import { toAbsoluteUrl } from '@/utils/Assets';
 
 const CarScratches = () => {
   const [selectedPlace, setSelectedPlace] = useState('8');
@@ -120,6 +121,57 @@ const CarScratches = () => {
         {/* Right Column - Image Space */}
         <div className="h-full border border-gray-200 rounded-lg p-8">
           <img src={carImage} alt="car" className="w-full h-full object-cover rounded-lg" />
+        <div className="relative flex p-4 justify-center items-center">
+          <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" className="" />
+          {/* Corners */}
+          <div className="absolute top-[130px] left-10 w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full" />
+          <div
+            className="absolute top-[130px] right-10 w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full"
+            style={{ boxShadow: '4px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}
+          />
+          <div className="absolute bottom-[130px] left-10 w-16 h-20 border-b-2 border-l-2 border-blue-500 rounded-bl-full shadow-lg" />
+          <div className="absolute bottom-[130px] right-10 w-16 h-20 border-b-2 border-r-2 border-blue-500 rounded-br-full shadow-lg" />
+          {/* Buttons */}
+          {/* Top */}{' '}
+          <button className="absolute top-[70px] left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            1
+          </button>{' '}
+          <button className="absolute top-[110px] left-[0px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            10
+          </button>{' '}
+          <button className="absolute top-[110px] right-[0px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            2
+          </button>{' '}
+          {/* Upper Middle */}{' '}
+          <button className="absolute top-[290px] left-[-12px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            9
+          </button>{' '}
+          <button className="absolute top-[300px] left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            11
+          </button>{' '}
+          <button className="absolute top-[290px] right-[-12px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            3
+          </button>{' '}
+          {/* Lower Middle */}{' '}
+          <button className="absolute bottom-1/3 left-[-12px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            8
+          </button>{' '}
+          <button className="absolute bottom-[280px] left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            12
+          </button>{' '}
+          <button className="absolute bottom-1/3 right-[-12px] border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            4
+          </button>{' '}
+          {/* Bottom */}{' '}
+          <button className="absolute bottom-[70px] left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            6
+          </button>{' '}
+          <button className="absolute bottom-[110px] left-4 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            7
+          </button>{' '}
+          <button className="absolute bottom-[110px] right-4 border hover:shadow-md bg-gray-50 text-gray-900 rounded-full w-8 h-8 flex items-center justify-center">
+            5
+          </button>
         </div>
       </div>
     </div>
