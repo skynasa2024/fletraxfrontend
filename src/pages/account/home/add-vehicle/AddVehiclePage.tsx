@@ -5,7 +5,6 @@ import {
   InspectionAndInsurance,
   CarScratches,
   Rent,
-  ImageUploadCard
 } from './blocks';
 
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches' | 'rent';
@@ -34,7 +33,7 @@ const AddVehiclePage = () => {
 
     refs[tab].current?.scrollIntoView({
       behavior: 'smooth',
-      block: 'center'
+      block: 'center',
     });
 
     const header = refs[tab].current?.querySelector('h2, h3') as HTMLElement | null;
@@ -45,9 +44,10 @@ const AddVehiclePage = () => {
   };
 
   const handleNextClick = () => {
-    const currentIndex = tabConfig.findIndex(tab => tab.id === activeTab);
-    const nextIndex = (currentIndex + 1) % tabConfig.length;
-    handleTabClick(tabConfig[nextIndex].id as TabType);
+    const currentIndex = tabConfig.findIndex((tab) => tab.id === activeTab);
+    if (currentIndex < tabConfig.length - 1) {
+      handleTabClick(tabConfig[currentIndex + 1].id as TabType);
+    }
   };
 
   const renderContent = () => {
@@ -67,11 +67,11 @@ const AddVehiclePage = () => {
     }
   };
 
+  const isLastTab = activeTab === tabConfig[tabConfig.length - 1].id;
+
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[85rem] mx-auto">
       <div className="flex">
-       
-
         {/* Main Content */}
         <div className="w-full align-center">
           {/* Tabs Navigation */}
@@ -96,12 +96,15 @@ const AddVehiclePage = () => {
             <div ref={refs[activeTab]} className="focus:outline-none">
               {renderContent()}
               <div className="mt-5 flex justify-end">
-                <button
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
-                  onClick={handleNextClick}
-                >
-                  Next
-                </button>
+                {/* Next Button */}
+                {!isLastTab && (
+                  <button
+                    className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
+                    onClick={handleNextClick}
+                  >
+                    Next
+                  </button>
+                )}
               </div>
             </div>
           </div>

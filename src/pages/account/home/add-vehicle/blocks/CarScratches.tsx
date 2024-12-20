@@ -41,7 +41,7 @@ const CarScratches = () => {
       </div>
       <div className="card-body grid gap-5 grid-cols-1 md:grid-cols-[1fr,300px]">
         {/* Left Column */}
-        <div className="space-y-6">
+        <div className="space-y-6 p-4">
           {/* Dropdown and Add Button */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Choose a place</label>
