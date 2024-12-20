@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FaCalendarAlt } from 'react-icons/fa';
+
 import { ImageUploadCard } from './ImageUploadCard';
+
 
 interface IGeneralSettingsProps {
   title: string;
@@ -10,12 +11,17 @@ const Information = ({ title }: IGeneralSettingsProps) => {
   const [selectedCarType, setSelectedCarType] = useState<string>('PROMO');
   const [selectedGear, setSelectedGear] = useState<string>('Automatic');
 
-  const radioStyle = (isSelected: boolean) =>
-    `flex items-center gap-2 px-4 py-2 border rounded-lg cursor-pointer ${
-      isSelected
-        ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-        : 'border-gray-300 text-gray-600'
-    }`;
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState({ value: 'red', label: 'Red' });
+
+  const colors = [
+    { value: 'red', label: 'Red' },
+    { value: 'blue', label: 'Blue' },
+    { value: 'black', label: 'Black' },
+    { value: 'white', label: 'White' }
+  ];
+
+
 
   return (
     <div className="card pb-2.5">
@@ -137,31 +143,26 @@ const Information = ({ title }: IGeneralSettingsProps) => {
         {/* Fuel Type */}
         <div className="grid gap-2.5">
           <label className="form-label">Fuel Type</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6  gap-4 w-full">
             {['Hybrid', 'Diesel', 'Benzin', 'LPG', 'Kerosine', 'Electric'].map((fuel) => (
               <button
-              key={fuel}
-              onClick={() => setSelectedFuel(fuel)}
-              className={`
+                key={fuel}
+                onClick={() => setSelectedFuel(fuel)}
+                className={`
                 px-6 py-2 border border-dashed rounded-md
-                ${selectedFuel === fuel 
-                  ? 'border-blue-500' 
-                  : 'border-gray-300'}
-                hover:bg-gray-100 bg-gray-50 transition-colors
+                ${selectedFuel === fuel ? 'border-blue-500' : 'border-gray-300'}
+                hover:bg-gray-200 bg-gray-50 transition-colors
                 flex items-center gap-2
               `}
-            >
-              <div 
-                className={`
+              >
+                <div
+                  className={`
                   w-4 h-4 rounded-full bg-gray-200
-                  ${selectedFuel === fuel 
-                    ? 'border-4 border-blue-500' 
-                    : 'border-2 border-gray-300'
-                  }
+                  ${selectedFuel === fuel ? 'border-4 border-blue-500' : 'border-2 border-gray-300'}
                 `}
-              />
-              {fuel}
-            </button>
+                />
+                {fuel}
+              </button>
             ))}
           </div>
         </div>
@@ -172,28 +173,23 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 w-full">
             {['PROMO', 'Pickup', 'COMFORT', 'SUV', 'Bus', 'Van'].map((type) => (
               <button
-              key={type}
-              onClick={() => setSelectedFuel(type)}
-              className={`
+                key={type}
+                onClick={() => setSelectedFuel(type)}
+                className={`
                 px-6 py-2 border border-dashed rounded-md
-                ${selectedFuel === type 
-                  ? 'border-blue-500' 
-                  : 'border-gray-300'}
+                ${selectedFuel === type ? 'border-blue-500' : 'border-gray-300'}
                   hover:bg-gray-100 bg-gray-50 transition-colors
                 flex items-center gap-2
               `}
-            >
-              <div 
-                className={`
+              >
+                <div
+                  className={`
                   w-4 h-4 rounded-full bg-gray-200
-                  ${selectedFuel === type 
-                    ? 'border-4 border-blue-500' 
-                    : 'border-2 border-gray-300'
-                  }
+                  ${selectedFuel === type ? 'border-4 border-blue-500' : 'border-2 border-gray-300'}
                 `}
-              />
-              {type}
-            </button>
+                />
+                {type}
+              </button>
             ))}
           </div>
         </div>
@@ -207,45 +203,80 @@ const Information = ({ title }: IGeneralSettingsProps) => {
             <div className="grid  md:grid-cols-2 gap-4 w-full">
               {['Automatic', 'Manual'].map((gear) => (
                 <button
-                key={gear}
-                onClick={() => setSelectedFuel(gear)}
-                className={`
+                  key={gear}
+                  onClick={() => setSelectedFuel(gear)}
+                  className={`
                   px-6 py-2 border border-dashed rounded-md
-                  ${selectedFuel === gear 
-                    ? 'border-blue-500' 
-                    : 'border-gray-300'}
+                  ${selectedFuel === gear ? 'border-blue-500' : 'border-gray-300'}
                     hover:bg-gray-100 bg-gray-50 transition-colors
                   flex items-center gap-2
                 `}
-              >
-                <div 
-                  className={`
+                >
+                  <div
+                    className={`
                     w-4 h-4 rounded-full bg-gray-200
-                    ${selectedFuel === gear 
-                      ? 'border-4 border-blue-500' 
-                      : 'border-2 border-gray-300'
+                    ${
+                      selectedFuel === gear
+                        ? 'border-4 border-blue-500'
+                        : 'border-2 border-gray-300'
                     }
                   `}
-                />
-                {gear}
-              </button>
+                  />
+                  {gear}
+                </button>
               ))}
             </div>
           </div>
 
           {/* Color */}
-          <div className="grid gap-2.5">
+          <div className="grid gap-2.5 relative">
             <label className="form-label">Color</label>
-            <select className="select">
-              <option value="red">Red</option>
-              <option value="blue">Blue</option>
-              <option value="black">Black</option>
-              <option value="white">White</option>
-            </select>
+
+            <button
+              type="button"
+              className="flex items-center justify-between w-full h-10 px-3 py-2 select rounded-md "
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  className="inline-block w-3 h-3 rounded-full"
+                  style={{
+                    backgroundColor: selectedColor.value,
+                    border: selectedColor.value === 'white' ? '1px solid #e2e8f0' : 'none'
+                  }}
+                />
+                {selectedColor.label}
+              </div>
+             
+            </button>
+
+            {isOpen && (
+              <div className="absolute top-full left-0 w-full mt-1 bg-white border rounded-md shadow-lg z-10">
+                {colors.map((color) => (
+                  <button
+                    key={color.value}
+                    className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-gray-50"
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setIsOpen(false);
+                    }}
+                  >
+                    <span
+                      className="inline-block w-3 h-3 rounded-full"
+                      style={{
+                        backgroundColor: color.value,
+                        border: color.value === 'white' ? '1px solid #e2e8f0' : 'none'
+                      }}
+                    />
+                    {color.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Number of Seats */}
-          <div className="grid gap-2.5">
+          <div className="grid gap-2.5 relative">
             <label className="form-label">Number of seats</label>
             <select className="select">
               {[2, 3, 4, 5, 6, 7, 8].map((num) => (
