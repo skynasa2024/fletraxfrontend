@@ -9,6 +9,7 @@ import FileList from './details-components/FileList';
 import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
 import { toAbsoluteUrl } from '@/utils';
+import { useParams } from 'react-router-dom';
 
 interface TripData {
   distance: string;
@@ -61,8 +62,9 @@ const files = [
     type: 'jpg'
   }
 ];
-
 const VehicleInfoCards = () => {
+  const { id } = useParams();
+  console.log(id);
   const vehicleInfo = [
     { label: 'Model', value: 'Corolla', Icon: Model },
     { label: 'Model Series', value: 'SEDAN', Icon: ModelSeries },

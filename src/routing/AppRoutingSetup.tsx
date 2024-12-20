@@ -119,7 +119,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/drivers/add-driver" element={<AddDriver />} />
 
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
-          <Route path="/vehicles/vehicle/view-vehicle" element={<VehicleDetailsPage />} />
+          <Route path="/vehicles/vehicle/:id" element={<VehicleDetailsPage />} />
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
 
           <Route path="/devices/device" element={<Device />} />
