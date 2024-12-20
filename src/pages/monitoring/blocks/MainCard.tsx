@@ -172,7 +172,7 @@ export const MainCard = () => {
                     rowHeight={58}
                     height={resizableHeight}
                     width={width}
-                    className="scrollable pb-4"
+                    className="scrollable-y pb-4"
                   />
                 </div>
               </Resizable>
@@ -282,7 +282,7 @@ export const MainCard = () => {
                 rowHeight={192}
                 height={height - resizableHeight - 50}
                 width={width}
-                className="scrollable"
+                className="scrollable-y"
               />
             </div>
           )}

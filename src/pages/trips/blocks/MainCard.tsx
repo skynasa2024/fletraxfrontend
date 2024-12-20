@@ -132,7 +132,7 @@ export const MainCard = () => {
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         Search
       </button>
-      <div className="scrollable pb-2 flex flex-col gap-[10px]">
+      <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
         {trips.map((tripGroup) => (
           <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
         ))}
