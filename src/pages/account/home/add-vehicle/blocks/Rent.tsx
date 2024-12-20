@@ -19,7 +19,7 @@ const Rent = () => {
 
   const PriceRow: React.FC<PriceRowProps> = ({ title }) => (
     <div className="grid gap-5">
-     <h4 className="card-title text-gray-800">{title}</h4>
+     <h4 className="card-title text-gray-800 border-b-2 border-gray-200 pb-2.5">{title}</h4>
       <div className="grid lg:grid-cols-4 gap-5">
         <div className="grid gap-2.5">
           <label className="form-label">Minimum Price</label>
