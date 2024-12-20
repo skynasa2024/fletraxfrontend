@@ -5,8 +5,9 @@ import { Paginated } from '@/api/common';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
-import { CarPlate } from '../blocks/CarPlate';
+
 import { useNavigate } from 'react-router';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 interface VehicleListProps {
   searchQuery?: string;
