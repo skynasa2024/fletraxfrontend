@@ -8,8 +8,6 @@ interface IGeneralSettingsProps {
 }
 const Information = ({ title }: IGeneralSettingsProps) => {
   const [selectedFuel, setSelectedFuel] = useState<string>('Hybrid');
-  const [selectedCarType, setSelectedCarType] = useState<string>('PROMO');
-  const [selectedGear, setSelectedGear] = useState<string>('Automatic');
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState({ value: 'red', label: 'Red' });
