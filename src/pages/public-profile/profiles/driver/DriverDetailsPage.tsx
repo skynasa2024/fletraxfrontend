@@ -53,8 +53,8 @@ const VehicleInfoCards = () => {
   return (
     <>
       <Toolbar />
-      <div className="w-full mx-auto px-4 ">
-        <div className="w-full bg-white m-5 p-5 rounded-lg shadow-sm">
+      <div className="w-full mx-auto px-4 mb-0">
+        <div className="hover:shadow-md m-5 px-5 card mb-0">
           <ProfileCard
             profileImage="/path/to/image.jpg"
             name="Brad Dennis"
@@ -68,8 +68,9 @@ const VehicleInfoCards = () => {
             city="Istanbul"
             address="Some address"
           />
-
-          <div className="flex justify-between items-start space-x-4">
+        </div>
+    
+          <div className="flex justify-between items-start px-5 mt-4">
             {/* Maintenance Card */}
             <Card
               type="maintenance"
@@ -92,16 +93,16 @@ const VehicleInfoCards = () => {
               description={''}
             />
           </div>
-        </div>
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-5 mb-6 ">
-          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
-          <div className="p-4 card w-full">map</div>
+ 
+        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-5 mt-0 ">
+          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4 hover:shadow-md" title="Trips" />
+          <div className="p-4 card hover:shadow-md w-full">map</div>
         </div>
         <div className="m-5">
           <MaintenanceViolationTable />
         </div>
-        <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8 m-5">
-          <div className="p-4 card w-1/2">
+        <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8 m-5">
+          <div className="p-4 w-1/2">
             <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
             <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
           </div>

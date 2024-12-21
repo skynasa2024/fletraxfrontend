@@ -111,7 +111,7 @@ const Card: React.FC<CardProps> = ({ type, title, description, count, date, unpa
   );
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm w-full md:w-1/3 mt-8">
+    <div className="card hover:shadow-md p-4 w-full md:w-1/3">
       <div className="flex flex-wrap gap-4 mb-4">
         <div className="flex items-start space-x-2 flex-grow">
           <div>{type === 'maintenance' ? <MaintenanceIcon /> : <ViolationsIcon />}</div>

@@ -55,7 +55,7 @@ const ProfileCard: React.FC<ProfileProps> = ({
         </div>
 
         {/* Contact Info Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-3/4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-3/4 mb-8">
           <div className="flex items-center space-x-2 text-gray-600">
             <CalendarIcon />
             <span>{dob}</span>
