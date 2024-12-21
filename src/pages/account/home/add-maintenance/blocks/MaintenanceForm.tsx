@@ -15,7 +15,6 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
 
   return (
     <div className="card pb-2.5">
-      
       <div className="card-header" id="maintenance_settings">
         <h3 className="card-title">Information</h3>
       </div>
@@ -184,59 +183,61 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
         </div>
 
         <div className="w-full grid grid-cols-6 gap-2.5">
-      {/* Label */}
-      <label className="form-label col-span-6">Status</label>
+          <label className="form-label col-span-6">Status</label>
 
-      {/* Ongoing Option */}
-      <div
-        className={`
+          <div
+            className={`
            flex items-center gap-2 p-2 rounded-md border border-dashed hover:bg-gray-100 bg-gray-50 transition-colors
-          ${selectedType === "ongoing" ? "border-blue-500" : "border-gray-300"}
+          ${selectedType === 'ongoing' ? 'border-blue-500' : 'border-gray-300'}
         `}
-      >
-        <input
-          type="radio"
-          name="type"
-          id="ongoing"
-          checked={selectedType === "ongoing"}
-          onChange={() => setSelectedType("ongoing")}
-          className="hidden"
-        />
-        <label htmlFor="ongoing" className="flex items-center gap-2 cursor-pointer w-full">
-          <div
-            className={`w-4 h-4 rounded-full bg-gray-200 ${
-              selectedType === "ongoing" ? "border-4 border-blue-500" : "border-2 border-gray-300"
-            }`}
-          />
-          <span className={selectedType === "ongoing" ? "text-blue-500" : ""}>Ongoing</span>
-        </label>
-      </div>
+          >
+            <input
+              type="radio"
+              name="type"
+              id="ongoing"
+              checked={selectedType === 'ongoing'}
+              onChange={() => setSelectedType('ongoing')}
+              className="hidden"
+            />
+            <label htmlFor="ongoing" className="flex items-center gap-2 cursor-pointer w-full">
+              <div
+                className={`w-4 h-4 rounded-full bg-gray-200 ${
+                  selectedType === 'ongoing'
+                    ? 'border-4 border-blue-500'
+                    : 'border-2 border-gray-300'
+                }`}
+              />
+              <span className={selectedType === 'ongoing' ? 'text-blue-500' : ''}>Ongoing</span>
+            </label>
+          </div>
 
-      {/* Finished Option */}
-      <div
-        className={`
-          flex items-center gap-2 p-2 rounded-md border border-dashed hover:bg-gray-100 bg-gray-50 transition-colors
-          ${selectedType === "finished" ? "border-blue-500" : "border-gray-300"}
-        `}
-      >
-        <input
-          type="radio"
-          name="type"
-          id="finished"
-          checked={selectedType === "finished"}
-          onChange={() => setSelectedType("finished")}
-          className="hidden"
-        />
-        <label htmlFor="finished" className="flex items-center gap-2 cursor-pointer w-full">
+          {/* Finished Option */}
           <div
-            className={`w-4 h-4 rounded-full bg-gray-200 ${
-              selectedType === "finished" ? "border-4 border-blue-500" : "border-2 border-gray-300"
-            }`}
-          />
-          <span className={selectedType === "finished" ? "text-blue-500" : ""}>Finished</span>
-        </label>
-      </div>
-    </div>
+            className={`
+          flex items-center gap-2 p-2 rounded-md border border-dashed hover:bg-gray-100 bg-gray-50 transition-colors
+          ${selectedType === 'finished' ? 'border-blue-500' : 'border-gray-300'}
+        `}
+          >
+            <input
+              type="radio"
+              name="type"
+              id="finished"
+              checked={selectedType === 'finished'}
+              onChange={() => setSelectedType('finished')}
+              className="hidden"
+            />
+            <label htmlFor="finished" className="flex items-center gap-2 cursor-pointer w-full">
+              <div
+                className={`w-4 h-4 rounded-full bg-gray-200 ${
+                  selectedType === 'finished'
+                    ? 'border-4 border-blue-500'
+                    : 'border-2 border-gray-300'
+                }`}
+              />
+              <span className={selectedType === 'finished' ? 'text-blue-500' : ''}>Finished</span>
+            </label>
+          </div>
+        </div>
 
         <div className="flex justify-end mt-5">
           <button type="submit" className="btn btn-primary">

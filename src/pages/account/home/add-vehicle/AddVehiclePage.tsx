@@ -4,10 +4,9 @@ import {
   Registration,
   InspectionAndInsurance,
   CarScratches,
-  Rent,
 } from './blocks';
 
-type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches' | 'rent';
+type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -17,7 +16,6 @@ const AddVehiclePage = () => {
     registration: useRef<HTMLDivElement>(null),
     inspectionAndInsurance: useRef<HTMLDivElement>(null),
     carScratches: useRef<HTMLDivElement>(null),
-    rent: useRef<HTMLDivElement>(null),
   };
 
   const tabConfig = [
@@ -25,7 +23,6 @@ const AddVehiclePage = () => {
     { id: 'registration', label: 'Registration' },
     { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' },
     { id: 'carScratches', label: 'Car Scratches' },
-    { id: 'rent', label: 'Rent' },
   ] as const;
 
   const handleTabClick = (tab: TabType) => {
@@ -50,6 +47,11 @@ const AddVehiclePage = () => {
     }
   };
 
+  const handleSaveClick = () => {
+    alert('Vehicle details saved successfully!');
+    // Implement save functionality here
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'information':
@@ -60,8 +62,6 @@ const AddVehiclePage = () => {
         return <InspectionAndInsurance />;
       case 'carScratches':
         return <CarScratches />;
-      case 'rent':
-        return <Rent />;
       default:
         return null;
     }
@@ -96,13 +96,20 @@ const AddVehiclePage = () => {
             <div ref={refs[activeTab]} className="focus:outline-none">
               {renderContent()}
               <div className="mt-5 flex justify-end">
-                {/* Next Button */}
-                {!isLastTab && (
+                {/* Next or Save Button */}
+                {!isLastTab ? (
                   <button
                     className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
                     onClick={handleNextClick}
                   >
                     Next
+                  </button>
+                ) : (
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                    onClick={handleSaveClick}
+                  >
+                    Save
                   </button>
                 )}
               </div>
