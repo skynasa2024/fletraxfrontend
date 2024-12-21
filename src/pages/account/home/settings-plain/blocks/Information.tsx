@@ -32,7 +32,7 @@ const Information = ({ title }: IGeneralSettingsProps) => {
                 <option>+1</option>
                 <option>+44</option>
               </select>
-              <input type="text" className="input" placeholder="Phone" />
+             
             </div>
           </div>
 
