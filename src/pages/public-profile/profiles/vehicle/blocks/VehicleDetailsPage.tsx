@@ -109,8 +109,7 @@ const VehicleInfoCards = () => {
 
               {/* Brand logo */}
               <div className="flex items-center justify-center">
-              
-              <BrandLogo brand="toyota" size="lg" />
+                <BrandLogo brand="toyota" size="lg" />
               </div>
 
               {/* Device Section */}
@@ -123,9 +122,9 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Image Section */}
-              <div className="relative flex p-4 justify-center items-center col-span-full">
+              <div className="relative flex p-4 justify-center items-center col-span-full mb-4">
                 <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
-                 {/* Corners */}
+                {/* Corners */}
                 <div className="absolute top-10 left-[200px] w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
                 <div
                   className="absolute top-10 right-[200px] w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
@@ -164,28 +163,29 @@ const VehicleInfoCards = () => {
                   +
                 </button>
                 {/* Bottom row */}
-                <button className="absolute bottom-6 left-1/3 -translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute bottom-4 left-1/3 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button className="absolute bottom-6 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute bottom-4 left-1/2 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
-                <button className="absolute bottom-6 right-1/3 translate-x-1/2 border hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
+                <button className="absolute bottom-4 right-1/3 translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
                 </button>
               </div>
             </div>
           </div>
-          <div className="container mx-auto pl-5  grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
+          <div className="container px-2 mx-auto pl-5 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}
-            <div className="flex flex-col lg:flex-row h-full mb-4 ">
+            <div className="flex flex-col lg:flex-row h-full">
               {/* Vehicle Info Cards */}
-              <div className="flex-grow mr-0 lg:mr-4">
-                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+              <div className="flex-grow mr-0 lg:mr-4 h-full">
+                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-4 h-full">
                   {vehicleInfo.map(({ label, value, Icon }, index) => (
                     <div
                       key={index}
-                      className="card p-4 rounded-lg hover:shadow-md flex flex-col h-40"
+                      className="card p-4 rounded-lg hover:shadow-md flex flex-col h-full"
+                      style={{ width: '100%' }}
                     >
                       <Icon className="w-6 h-6 text-gray-600" />
                       <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
@@ -196,7 +196,7 @@ const VehicleInfoCards = () => {
               </div>
 
               {/* Details */}
-              <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col">
+              <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col h-full">
                 <img
                   className="w-full rounded-lg object-cover h-40 mb-4"
                   src="https://via.placeholder.com/150"
@@ -214,8 +214,10 @@ const VehicleInfoCards = () => {
             </div>
 
             {/* Inspection and Insurance Section */}
-            <div className="card hover:shadow-md mb-2 p-4">
-              <h2 className="text-xl font-semibold mb-2 border-b-2 pb-2">Vehicle Inspection and Insurance</h2>
+            <div className="card hover:shadow-md mb-2 p-4 mt-4">
+              <h2 className="text-xl font-semibold mb-2 border-b-2 pb-2">
+                Vehicle Inspection and Insurance
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
                   <div key={item.title} className="flex items-start space-x-3 rounded-lg mb-4">
@@ -255,7 +257,7 @@ const VehicleInfoCards = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-2">
+        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
           <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
           <div className="p-4 card hover:shadow-md  w-full">map</div>
         </div>
