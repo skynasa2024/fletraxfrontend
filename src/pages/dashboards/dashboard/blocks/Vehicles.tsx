@@ -31,7 +31,7 @@ const VehicleList = () => {
       <div className="card-body scrollable-x pt-2 px-6 pb-7">
         <div className="flex flex-col lg:flex-row gap-4">
           {vehicles?.data.map((vehicle) => (
-            <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 w-[386px]">
+            <div className=" hover:shadow-md flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 w-[386px]">
               <div className="flex flex-col gap-5 px-8 py-6">
                 <div className="flex justify-between items-center">
                   <CarPlate plate={vehicle.vehicle.plate} />

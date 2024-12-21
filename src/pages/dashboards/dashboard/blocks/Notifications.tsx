@@ -9,7 +9,7 @@ const Notifications = () => {
   }, []);
 
   return (
-    <div className="card h-full">
+    <div className="card hover:shadow-md h-full">
       <div className="card-header">
         <div className="card-title">
           <h3>Notifications</h3>

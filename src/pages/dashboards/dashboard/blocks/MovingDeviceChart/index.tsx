@@ -76,7 +76,7 @@ const MovingDeviceChart = () => {
 
   return (
     <div
-      className="card h-full"
+      className="card hover:shadow-md h-full"
       style={{
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100%'

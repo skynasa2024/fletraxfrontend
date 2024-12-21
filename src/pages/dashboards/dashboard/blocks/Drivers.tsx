@@ -41,7 +41,7 @@ const DriverList = () => {
       <div className="card-body scrollable-x pt-2 px-6 pb-7">
         <div className="flex flex-col lg:flex-row gap-4">
           {customers?.data.map((customer) => (
-            <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
+            <div className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
               <div
                 className="h-1 w-full"
                 style={{ backgroundColor: options[customer.state].color }}
