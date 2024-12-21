@@ -29,16 +29,19 @@ const MaintenanceDetails: React.FC = () => {
             </div>
             <div className="grid grid-cols-3 gap-8">
               <div className="border border-dashed rounded-lg border-gray-300 p-4">
+              <p className="text-gray-800 font-semibold">16-09-2024</p>
                 <p className="text-red-500 text-sm mb-1">Start Date</p>
-                <p className="text-gray-800 font-medium">16-09-2024</p>
+              
               </div>
               <div className="border border-dashed  rounded-lg  border-gray-300 p-4">
+              <p className="text-gray-800 font-semibold">16-09-2024</p>
                 <p className="text-green-500 text-sm mb-1">Finished Date</p>
-                <p className="text-gray-800 font-medium">16-09-2024</p>
+                
               </div>
               <div className="border border-dashed  rounded-lg border-gray-300 p-4">
+              <p className="text-gray-800 font-semibold">250 $</p>
                 <p className="text-gray-500 text-sm mb-1">Price</p>
-                <p className="text-gray-800 font-medium">250 $</p>
+              
               </div>
             </div>
           </div>
