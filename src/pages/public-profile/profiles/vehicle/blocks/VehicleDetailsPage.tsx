@@ -10,6 +10,7 @@ import GeofenceList from './details-components/GeofenceList';
 import TripList from './details-components/TripList';
 import { toAbsoluteUrl } from '@/utils';
 import { useParams } from 'react-router-dom';
+import BrandLogo from './Brand logo';
 
 interface TripData {
   distance: string;
@@ -108,7 +109,8 @@ const VehicleInfoCards = () => {
 
               {/* Brand logo */}
               <div className="flex items-center justify-center">
-                
+              
+              <BrandLogo brand="toyota" size="lg" />
               </div>
 
               {/* Device Section */}
