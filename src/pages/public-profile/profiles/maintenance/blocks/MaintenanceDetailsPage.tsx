@@ -46,7 +46,7 @@ const MaintenanceDetails: React.FC = () => {
 
         {/* Information Section */}
         <div className="mt-8 rounded-lg border p-4">
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Information</h3>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">Information</h3>
           <div className="divide-y divide-gray-200">
             <div className="py-4 grid grid-cols-[100px,1fr] gap-4">
               <span className="text-gray-500">Type</span>
