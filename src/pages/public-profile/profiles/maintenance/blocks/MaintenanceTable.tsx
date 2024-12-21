@@ -49,7 +49,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         accessorFn: (row) => row.vehicle,
         id: 'car',
         header: () => 'Car',
-        enableSorting: true,
+        enableSorting: false,
         cell: (info) => (
           <div className="flex items-center gap-2">
             <img 
@@ -58,7 +58,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
               className="w-6 h-6"
             />
             <div className="flex flex-col">
-              <span className="text-gray-800">GL96ABR</span>
+              <span className="text-gray-800">GL76BR</span>
               <span className="text-gray-400 text-sm">Reno Volvo</span>
             </div>
           </div>
@@ -116,7 +116,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         accessorFn: (row) => row.status,
         id: 'status',
         header: () => 'STATUS',
-        enableSorting: true,
+        enableSorting: false,
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
