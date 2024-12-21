@@ -106,17 +106,9 @@ const VehicleInfoCards = () => {
                 <CarPlate plate="5484555" />
               </div>
 
-              {/* SVG Section */}
+              {/* Brand logo */}
               <div className="flex items-center justify-center">
-                <svg width={45} height={44} viewBox="0 0 45 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect
-                    width={45}
-                    height={44}
-                    rx={8}
-                    transform="matrix(-1 0 0 1 45 0)"
-                    fill="url(#pattern0)"
-                  />
-                </svg>
+                
               </div>
 
               {/* Device Section */}
@@ -132,13 +124,13 @@ const VehicleInfoCards = () => {
               <div className="relative flex p-4 justify-center items-center col-span-full">
                 <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
                  {/* Corners */}
-                <div className="absolute top-10 left-60 w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
+                <div className="absolute top-10 left-[200px] w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
                 <div
-                  className="absolute top-10 right-60 w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
+                  className="absolute top-10 right-[200px] w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
                   style={{ boxShadow: '4px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}
                 />
-                <div className="absolute bottom-10 left-60 w-16 h-20 border-b-2 border-l-2 border-blue-500 rounded-bl-full shadow-xl" />
-                <div className="absolute bottom-10 right-60 w-16 h-20 border-b-2 border-r-2 border-blue-500 rounded-br-full shadow-xl" />
+                <div className="absolute bottom-10 left-[200px] w-16 h-20 border-b-2 border-l-2 border-blue-500 rounded-bl-full shadow-xl" />
+                <div className="absolute bottom-10 right-[200px] w-16 h-20 border-b-2 border-r-2 border-blue-500 rounded-br-full shadow-xl" />
                 {/* Top row */}
                 <button className="absolute top-0 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
                   +
