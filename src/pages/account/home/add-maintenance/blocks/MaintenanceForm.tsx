@@ -19,19 +19,38 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
         <h3 className="card-title">Maintenance Form</h3>
       </div>
       <form onSubmit={handleSubmit} className="card-body grid gap-5">
+      <div className="grid lg:grid-cols-2 gap-5">
+      <div className="grid gap-2.5">
+        <label className="form-label">Types Of Maintenance</label>
+        <select 
+          className="select"
+          defaultValue=""
+        >
+          <option value="" disabled>Select maintenance type</option>
+          <option value="oil_change">Oil Change</option>
+          <option value="brake_service">Brake Service</option>
+          <option value="tire_rotation">Tire Rotation</option>
+          <option value="battery">Battery Replacement</option>
+          <option value="air_filter">Air Filter Replacement</option>
+          <option value="transmission">Transmission Service</option>
+          <option value="tune_up">Engine Tune-up</option>
+          <option value="alignment">Wheel Alignment</option>
+        </select>
+      </div>
+    </div>
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Types Of Maintenance</label>
-            <input
-              type="text"
-              id="maintenanceType"
-              name="maintenanceType"
-              className="input"
-              placeholder="Oil Change"
-            />
+            
+          <label className="form-label">Maintenance Related To Reservation</label>
+            <div className="flex items-center">
+              <div className="switch switch-sm">
+                <input type="checkbox" id="relatedToReservation" name="relatedToReservation" />
+              </div>
+            </div>
           </div>
+
           <div className="grid gap-2.5">
-            <label className="form-label">Car Or Appointment</label>
+          <label className="form-label">Car Or Appointment</label>
             <input
               type="text"
               id="carOrAppointment"
@@ -55,13 +74,7 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Price</label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              className="input"
-              placeholder="1 $"
-            />
+            <input type="number" id="price" name="price" className="input" placeholder="1 $" />
           </div>
         </div>
 
@@ -69,12 +82,7 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
           <div className="grid gap-2.5">
             <label className="form-label">Start Date</label>
             <div className="relative flex items-center">
-              <input
-                type="date"
-                id="startDate"
-                name="startDate"
-                className="input w-full"
-              />
+              <input type="date" id="startDate" name="startDate" className="input w-full" />
               <FaCalendarAlt className="absolute right-3 text-gray-500" />
             </div>
           </div>
@@ -105,19 +113,6 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
         </div>
 
         <div className="grid gap-2.5">
-          <label className="form-label">Maintenance Related To Reservation</label>
-          <div className="flex items-center">
-            <div className="switch switch-sm">
-              <input
-                type="checkbox"
-                id="relatedToReservation"
-                name="relatedToReservation"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-2.5">
           <label className="form-label">Status</label>
           <div className="flex items-center gap-5">
             <label className="flex items-center gap-2">
@@ -144,10 +139,7 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
         </div>
 
         <div className="flex justify-end mt-5">
-          <button
-            type="submit"
-            className="btn btn-primary"
-          >
+          <button type="submit" className="btn btn-primary">
             Submit
           </button>
         </div>
