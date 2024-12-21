@@ -10,11 +10,10 @@ import { useLayout } from '@/providers';
 import { Alert } from '@/components';
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong email format')
+  username: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
+    .required('Username is required'), 
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -23,7 +22,7 @@ const loginSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  email: 'demo@keenthemes.com',
+  username: 'demoUser', 
   password: 'demo1234',
   remember: false
 };
@@ -48,12 +47,12 @@ const Login = () => {
           throw new Error('JWTProvider is required for this form.');
         }
 
-        await login(values.email, values.password);
+        await login(values.username, values.password); 
 
         if (values.remember) {
-          localStorage.setItem('email', values.email);
+          localStorage.setItem('username', values.username); 
         } else {
-          localStorage.removeItem('email');
+          localStorage.removeItem('username'); 
         }
 
         navigate(from, { replace: true });
@@ -90,27 +89,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2.5">
-          <a href="#" className="btn btn-light btn-sm justify-center">
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/google.svg')}
-              className="size-3.5 shrink-0"
-            />
-            Use Google
-          </a>
-
-          <a href="#" className="btn btn-light btn-sm justify-center">
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/apple-black.svg')}
-              className="size-3.5 shrink-0 dark:hidden"
-            />
-            <img
-              src={toAbsoluteUrl('/media/brand-logos/apple-white.svg')}
-              className="size-3.5 shrink-0 light:hidden"
-            />
-            Use Apple
-          </a>
-        </div>
+       
 
         <div className="flex items-center gap-2">
           <span className="border-t border-gray-200 w-full"></span>
@@ -118,28 +97,23 @@ const Login = () => {
           <span className="border-t border-gray-200 w-full"></span>
         </div>
 
-        <Alert variant="primary">
-          Use <span className="font-semibold text-gray-900">demo@keenthemes.com</span> username and{' '}
-          <span className="font-semibold text-gray-900">demo1234</span> password.
-        </Alert>
-
         {formik.status && <Alert variant="danger">{formik.status}</Alert>}
 
         <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Email</label>
+          <label className="form-label text-gray-900">Username</label>
           <label className="input">
             <input
               placeholder="Enter username"
               autoComplete="off"
-              {...formik.getFieldProps('email')}
+              {...formik.getFieldProps('username')} 
               className={clsx('form-control', {
-                'is-invalid': formik.touched.email && formik.errors.email
+                'is-invalid': formik.touched.username && formik.errors.username 
               })}
             />
           </label>
-          {formik.touched.email && formik.errors.email && (
+          {formik.touched.username && formik.errors.username && ( 
             <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.email}
+              {formik.errors.username} 
             </span>
           )}
         </div>
