@@ -15,8 +15,9 @@ const MaintenanceForm: React.FC<MaintenanceFormProps> = ({ onSubmit }) => {
 
   return (
     <div className="card pb-2.5">
+      
       <div className="card-header" id="maintenance_settings">
-        <h3 className="card-title">Maintenance Form</h3>
+        <h3 className="card-title">Information</h3>
       </div>
       <form onSubmit={handleSubmit} className="card-body grid gap-5">
         <div className="grid lg:grid-cols-2 gap-5">

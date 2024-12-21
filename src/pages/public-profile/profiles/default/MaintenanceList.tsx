@@ -150,11 +150,11 @@ const MaintenanceList = ({ items = sampleData }) => {
             key={index}
             className={` card p-4 rounded-lg transition-colors duration-200 ${
               item.status === 'selected'
-                ? 'bg-gray-50 '
+                ? 'bg-[#5151F91A] '
                 : item.status === 'success'
-                  ? 'bg-green-50 '
+                  ? 'bg-[#E7E8ED] '
                   : item.status === 'warning'
-                    ? 'bg-yellow-50 '
+                    ? 'bg-[#50CD891A] '
                     : 'bg-white '
             }`}
           >
