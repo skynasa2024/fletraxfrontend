@@ -28,7 +28,7 @@ const AddUserPage = () => {
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
-      <div className="tabs mb-5 flex " data-tabs="true">
+      <div className="tabs flex " data-tabs="true">
         <button
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
             activeTab === 'information'

@@ -28,7 +28,7 @@ const AddDevice = () => {
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
-      <div className="tabs mb-5 flex">
+      <div className="tabs flex">
         <button
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
             activeTab === 'information'

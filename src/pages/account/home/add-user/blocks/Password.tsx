@@ -1,6 +1,6 @@
 const Password = () => {
   return (
-    <div className="card pb-2.5">
+    <div className="card">
       
       <div className="card-header" id="company_settings">
         
@@ -21,10 +21,7 @@ const Password = () => {
           <label className="form-label">Password</label>
           <input type="text" className="input w-1/2" placeholder="*****" value="" readOnly />
         </div>
-        <div className="grid gap-2.5 mb-2.5">
-          
-      
-        </div>
+       
       </div>
     </div>
   );
