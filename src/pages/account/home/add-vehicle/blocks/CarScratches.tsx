@@ -136,7 +136,7 @@ const CarScratches = () => {
 
         {/* Right Column - Image Space */}
 
-        <div className="relative flex p-4 justify-center items-center">
+        <div className="relative flex p-4 justify-center items-center w-[310px] h-[800px]">
           <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" className="" />
           {/* Corners */}
           <div className="absolute top-[130px] left-10 w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full" />
