@@ -104,7 +104,7 @@ const CarScratches = () => {
 
                     {/* Image Upload */}
                     <div className="w-2/3">
-                      <div className="relative border border-gray-300 rounded-lg h-16">
+                      <div className="relative border border-gray-600 rounded-lg h-16">
                         <div className="absolute inset-0 flex items-center justify-between px-4">
                           <span className="text-gray-500">Drag and drop your files</span>
                           <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-colors">
