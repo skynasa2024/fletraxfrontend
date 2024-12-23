@@ -409,7 +409,7 @@ module.exports = {
               tooltip: '0'
             },
             dark: {
-              card: `1px solid ${theme('base.colors.gray.dark')['100']}`,
+              card: `1px solid ${theme('base.colors.gray.dark')['900']}`,
               table: `1px solid ${theme('base.colors.gray.dark')['100']}`,
               dropdown: `1px solid ${theme('base.colors.gray.dark')['100']}`,
               tooltip: `1px solid ${theme('base.colors.gray.dark')['100']}`,
