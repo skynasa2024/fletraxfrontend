@@ -389,7 +389,7 @@ module.exports = {
               tableHead: 'transparent'
             },
             dark: {
-              card: theme('colors.coal')['300'],
+              card: theme('colors.coal')['100'],
               tooltip: theme('colors.coal')['600'],
               popover: theme('colors.coal')['600'],
               modal: theme('colors.coal')['600'],
@@ -409,7 +409,7 @@ module.exports = {
               tooltip: '0'
             },
             dark: {
-              card: `1px solid ${theme('base.colors.gray.dark')['900']}`,
+              card: `1px solid ${theme('base.colors.gray.dark')['600']}`,
               table: `1px solid ${theme('base.colors.gray.dark')['100']}`,
               dropdown: `1px solid ${theme('base.colors.gray.dark')['100']}`,
               tooltip: `1px solid ${theme('base.colors.gray.dark')['100']}`,
