@@ -1,4 +1,5 @@
 import React, { Fragment, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   children: ReactNode;
@@ -19,7 +20,8 @@ const Card: React.FC<CardProps> = ({ children, className }) => (
   <div className={`card ${className ?? ''}`}>{children}</div>
 );
 
-const DeviceStatus: React.FC = () => {
+const DeviceStatus: React.FC = () => 
+{  const navigate = useNavigate();
   const stats: StatItem[] = [
     {
       title: 'Total Devices',
@@ -120,7 +122,7 @@ const DeviceStatus: React.FC = () => {
 
   return (
     <Fragment>
-      <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
+      <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto" onClick={() => navigate('/devices/add-device')}>
         Add Device
       </button>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
