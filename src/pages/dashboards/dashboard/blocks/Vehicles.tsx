@@ -1,10 +1,9 @@
 import { getVehicles, VehicleDetails } from '@/api/cars';
 import { Paginated } from '@/api/common';
 import { useEffect, useState } from 'react';
-import { CarPlate } from './CarPlate';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from './StatusDropdown';
-
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 const VehicleList = () => {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 

@@ -1,5 +1,6 @@
 import { Vehicle } from '@/api/cars';
-import { CarPlate } from './CarPlate';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+
 
 export interface CarViewProps {
   vehicle: Vehicle;
