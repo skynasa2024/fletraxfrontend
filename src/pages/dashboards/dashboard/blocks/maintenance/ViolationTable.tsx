@@ -23,13 +23,13 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
           <div className="flex gap-2 items-center">
             <img
               src={info.row.original.customer.avatar}
-              className="size-9 rounded-full aspect-square"
+              className="size-8 rounded-full aspect-square"
             />
             <span className="text-gray-800 font-bold">{info.row.original.customer.name}</span>
           </div>
         ),
         meta: {
-          className: 'min-w-48'
+          className: ''
         }
       },
       {
@@ -39,7 +39,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         enableSorting: true,
         cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
         meta: {
-          className: 'min-w-60'
+          className: ''
         }
       },
       {
@@ -53,7 +53,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
           </span>
         ),
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       },
       {
@@ -63,7 +63,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         enableSorting: true,
         cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>,
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       },
       {
@@ -110,7 +110,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
           />
         ),
         meta: {
-          className: 'min-w-44'
+          className: 'min-w-40'
         }
       },
       {
@@ -129,7 +129,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
           </div>
         ),
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       }
     ],

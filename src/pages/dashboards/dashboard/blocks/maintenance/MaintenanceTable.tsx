@@ -25,7 +25,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           </span>
         ),
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       },
       {
@@ -35,7 +35,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         enableSorting: true,
         cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
         meta: {
-          className: 'min-w-60'
+          className: ''
         }
       },
       {
@@ -45,7 +45,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         enableSorting: true,
         cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>,
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       },
       {
@@ -57,7 +57,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           <span className="text-gray-800 font-bold">{info.row.original.supplier}</span>
         ),
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       },
       {
@@ -115,7 +115,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           </div>
         ),
         meta: {
-          className: 'min-w-36'
+          className: ''
         }
       }
     ],
