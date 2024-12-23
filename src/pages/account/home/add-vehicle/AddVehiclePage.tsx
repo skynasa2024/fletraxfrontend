@@ -75,7 +75,7 @@ const AddVehiclePage = () => {
         {/* Main Content */}
         <div className="w-full align-center">
           {/* Tabs Navigation */}
-          <div className="tabs flex flex-wrap border-b" data-tabs="true">
+          <div className="tabs flex flex-wrap border-b mb-4" data-tabs="true">
             {tabConfig.map(({ id, label }) => (
               <button
                 key={id}

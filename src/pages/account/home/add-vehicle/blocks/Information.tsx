@@ -138,13 +138,13 @@ const Information = ({ title }: IGeneralSettingsProps) => {
         {/* Fuel Type */}
         <div className="grid gap-2.5">
           <label className="form-label">Fuel Type</label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6  gap-4 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6 gap-4 w-full">
             {['Hybrid', 'Diesel', 'Benzin', 'LPG', 'Kerosine', 'Electric'].map((fuel) => (
               <button
                 key={fuel}
                 onClick={() => setSelectedFuel(fuel)}
                 className={`
-                px-6 py-2 border border-dashed rounded-md
+                px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active
                 ${selectedFuel === fuel ? 'border-blue-500' : 'border-gray-300'}
                 hover:bg-gray-200 bg-gray-50 transition-colors
                 flex items-center gap-2
@@ -171,7 +171,7 @@ const Information = ({ title }: IGeneralSettingsProps) => {
                 key={type}
                 onClick={() => setSelectedFuel(type)}
                 className={`
-          px-6 py-2 border border-dashed rounded-md
+          px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active
           ${selectedFuel === type ? 'border-blue-500' : 'border-gray-300'}
           hover:bg-gray-100 bg-gray-50 transition-colors
           flex items-center justify-between gap-2
@@ -382,13 +382,13 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           {/* Gear */}
           <div className="grid gap-2.5">
             <label className="form-label">Gear</label>
-            <div className="grid  md:grid-cols-2 gap-4 w-full">
+            <div className="grid  md:grid-cols-2 gap-4 w-full ">
               {['Automatic', 'Manual'].map((gear) => (
                 <button
                   key={gear}
                   onClick={() => setSelectedFuel(gear)}
                   className={`
-                  px-6 py-2 border border-dashed rounded-md
+                  px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active
                   ${selectedFuel === gear ? 'border-blue-500' : 'border-gray-300'}
                     hover:bg-gray-100 bg-gray-50 transition-colors
                   flex items-center gap-2
