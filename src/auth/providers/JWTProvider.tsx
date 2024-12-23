@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
+import { axios } from '@/api/axios';
 import {
   createContext,
   type Dispatch,
@@ -11,13 +12,13 @@ import {
 
 import * as authHelper from '../_helpers';
 import { type AuthModel, type UserModel } from '@/auth';
+import { ResponseModel } from '@/api/response';
 
-const API_URL = import.meta.env.VITE_APP_API_URL;
-export const LOGIN_URL = `${API_URL}/login`;
-export const REGISTER_URL = `${API_URL}/register`;
-export const FORGOT_PASSWORD_URL = `${API_URL}/forgot-password`;
-export const RESET_PASSWORD_URL = `${API_URL}/reset-password`;
-export const GET_USER_URL = `${API_URL}/user`;
+export const LOGIN_URL = `/login`;
+export const REGISTER_URL = `/register`;
+export const FORGOT_PASSWORD_URL = `/forgot-password`;
+export const RESET_PASSWORD_URL = `/reset-password`;
+export const GET_USER_URL = `/api/users/find-current-user`;
 
 interface AuthContextProps {
   isLoading: boolean;
@@ -53,7 +54,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     if (auth) {
       try {
         const { data: user } = await getUser();
-        setCurrentUser(user);
+        setCurrentUser(user.result);
       } catch {
         saveAuth(undefined);
         setCurrentUser(undefined);
@@ -65,6 +66,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     verify().finally(() => {
       setLoading(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveAuth = (auth: AuthModel | undefined) => {
@@ -76,15 +78,15 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (username: string, password: string) => {
     try {
-      const { data: auth } = await axios.post<AuthModel>(LOGIN_URL, {
-        email,
+      const { data: auth } = await axios.post<ResponseModel<AuthModel>>(LOGIN_URL, {
+        username,
         password
       });
-      saveAuth(auth);
+      saveAuth(auth.result);
       const { data: user } = await getUser();
-      setCurrentUser(user);
+      setCurrentUser(user.result);
     } catch (error) {
       saveAuth(undefined);
       throw new Error(`Error ${error}`);
@@ -100,7 +102,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       });
       saveAuth(auth);
       const { data: user } = await getUser();
-      setCurrentUser(user);
+      setCurrentUser(user.result);
     } catch (error) {
       saveAuth(undefined);
       throw new Error(`Error ${error}`);
@@ -128,7 +130,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const getUser = async () => {
-    return await axios.get<UserModel>(GET_USER_URL);
+    return await axios.get<ResponseModel<UserModel>>(GET_USER_URL);
   };
 
   const logout = () => {

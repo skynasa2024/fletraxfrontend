@@ -2,23 +2,25 @@ import { type TLanguageCode } from '@/i18n';
 
 export interface AuthModel {
   access_token: string;
-  refreshToken?: string;
-  api_token: string;
+  refreshToken: string;
+  expires_in: number;
+  refresh_expires_in: number;
 }
 
 export interface UserModel {
   id: number;
+  name: string;
+  identifyNumber: string;
   username: string;
-  password: string | undefined;
+  password: string | null;
   email: string;
-  first_name: string;
-  last_name: string;
-  fullname?: string;
-  occupation?: string;
-  companyName?: string;
-  phone?: string;
-  roles?: number[];
-  pic?: string;
-  language?: TLanguageCode;
-  auth?: AuthModel;
+  phoneCode: string;
+  phone: string;
+  role: string;
+  status: boolean;
+  address: string;
+  subscriptionStartDate: string;
+  timezone: string;
+  locale: TLanguageCode;
+  parentId: number | null;
 }

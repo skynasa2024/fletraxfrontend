@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { KeenIcon } from '@/components';
-import { toAbsoluteUrl } from '@/utils';
 import { useAuthContext } from '@/auth';
 import { useLayout } from '@/providers';
 import { Alert } from '@/components';
@@ -13,7 +12,7 @@ const loginSchema = Yup.object().shape({
   username: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
-    .required('Username is required'), 
+    .required('Username is required'),
   password: Yup.string()
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
@@ -22,8 +21,8 @@ const loginSchema = Yup.object().shape({
 });
 
 const initialValues = {
-  username: 'demoUser', 
-  password: 'demo1234',
+  username: '',
+  password: '',
   remember: false
 };
 
@@ -47,12 +46,12 @@ const Login = () => {
           throw new Error('JWTProvider is required for this form.');
         }
 
-        await login(values.username, values.password); 
+        await login(values.username, values.password);
 
         if (values.remember) {
-          localStorage.setItem('username', values.username); 
+          localStorage.setItem('username', values.username);
         } else {
-          localStorage.removeItem('username'); 
+          localStorage.removeItem('username');
         }
 
         navigate(from, { replace: true });
@@ -89,8 +88,6 @@ const Login = () => {
           </div>
         </div>
 
-       
-
         <div className="flex items-center gap-2">
           <span className="border-t border-gray-200 w-full"></span>
           <span className="text-2xs text-gray-500 font-medium uppercase">Or</span>
@@ -105,15 +102,15 @@ const Login = () => {
             <input
               placeholder="Enter username"
               autoComplete="off"
-              {...formik.getFieldProps('username')} 
+              {...formik.getFieldProps('username')}
               className={clsx('form-control', {
-                'is-invalid': formik.touched.username && formik.errors.username 
+                'is-invalid': formik.touched.username && formik.errors.username
               })}
             />
           </label>
-          {formik.touched.username && formik.errors.username && ( 
+          {formik.touched.username && formik.errors.username && (
             <span role="alert" className="text-danger text-xs mt-1">
-              {formik.errors.username} 
+              {formik.errors.username}
             </span>
           )}
         </div>
