@@ -1,7 +1,8 @@
 import React from 'react';
-import { CarPlate } from '../../vehicle/blocks/CarPlate';
+
 import CarBrandImage from '@/components/CarBrandsImage';
 import Toolbar from './Toolbar';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 const MaintenanceDetails: React.FC = () => {
   return (

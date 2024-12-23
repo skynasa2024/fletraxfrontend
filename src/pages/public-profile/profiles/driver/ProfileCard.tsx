@@ -1,7 +1,8 @@
 import React from 'react';
 import { CalendarIcon, MailIcon, PhoneIcon, MapIcon } from './svg';
-import { CarPlate } from './CarPlate';
+
 import CarBrandImage from '@/components/CarBrandsImage';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 type ProfileProps = {
   profileImage: string;

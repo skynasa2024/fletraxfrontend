@@ -1,6 +1,5 @@
 import { MaintenanceViolationTable } from '../blocks/maintenance/MaintenanceViolation';
 
-import { CarPlate } from './CarPlate';
 import Toolbar from './Toolbar';
 import { Model, ModelSeries, ModelYear, FuelType, Gear, Volume, Power, Color, Tayp } from './svg';
 
@@ -11,6 +10,7 @@ import TripList from './details-components/TripList';
 import { toAbsoluteUrl } from '@/utils';
 import { useParams } from 'react-router-dom';
 import BrandLogo from './Brand logo';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 interface TripData {
   distance: string;
