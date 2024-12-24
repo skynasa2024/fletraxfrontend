@@ -148,7 +148,10 @@ export const MainCard = () => {
                           >
                             <div className="flex gap-2 items-center font-medium">
                               <img
-                                src={client.avatar}
+                                src={
+                                  client.avatar ||
+                                  toAbsoluteUrl('/media/avatars/avatar-placeholder.png')
+                                }
                                 className="size-8 rounded-md object-contain"
                               />
                               <span>{client.name}</span>
@@ -196,7 +199,7 @@ export const MainCard = () => {
                     <div key={key} style={style} className="pb-2">
                       <div
                         data-selected={selectedLocation?.vehicle.imei === location.vehicle.imei}
-                        className="flex flex-col p-[15px] border data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F9]/5 border-[#E7E8ED] dark:border-gray-300 rounded-[10px] gap-[10px] cursor-pointer"
+                        className="flex flex-col p-[15px] border data-[selected=true]:border-[#5151F9] dark:data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F9]/5 border-[#E7E8ED] dark:border-gray-300 rounded-[10px] gap-[10px] cursor-pointer"
                         onClick={() => {
                           if (selectedLocation?.vehicle.imei === location.vehicle.imei) {
                             setSelectedLocation(undefined);

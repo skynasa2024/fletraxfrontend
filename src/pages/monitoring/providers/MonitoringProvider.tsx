@@ -11,6 +11,8 @@ import {
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import mqtt from 'mqtt';
+import { axios } from '@/api/axios';
+import { ResponseModel } from '@/api/response';
 
 interface MqttResponse {
   device_id: number;
@@ -95,8 +97,22 @@ const MonitoringContext = createContext<MonitoringContextProps>({
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clients, setClients] = useState<Client[]>([]);
+  const [filteredClientsNames, setFilteredClientsNames] = useState<number[]>();
+  const filteredClients = useMemo(() => {
+    if (!filteredClientsNames) {
+      return clients;
+    }
+    return clients.filter((c) => filteredClientsNames.includes(c.id));
+  }, [clients, filteredClientsNames]);
+  const [clientToLocations, setClientToLocations] = useState<Record<number, string[]>>({});
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
-  const [filteredLocations, setFilteredLocations] = useState<VehicleLocation[]>([]);
+  const [filteredLocationsImei, setFilteredLocationsImei] = useState<string[]>();
+  const filteredLocations = useMemo(() => {
+    if (!filteredLocationsImei) {
+      return locations;
+    }
+    return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
+  }, [locations, filteredLocationsImei]);
   const [showImei, setShowImei] = useState(true);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
@@ -138,10 +154,13 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
-    mqttClient.on('connect', () => {
-      mqttClient.subscribeAsync('device/monitoring/+', {
-        qos: 2
-      });
+    mqttClient.on('connect', async () => {
+      const availableLocations = await axios.get<ResponseModel<string[]>>('api/devices/get-idents');
+      for (const location of availableLocations.data.result) {
+        mqttClient.subscribeAsync(`device/monitoring/${location}`, {
+          qos: 2
+        });
+      }
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
@@ -216,8 +235,46 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [mqttClient]);
 
   useEffect(() => {
-    getClients('').then(setClients);
+    getClients()
+      .then((clients) => {
+        setClients(clients);
+        return clients;
+      })
+      .then((clients) => {
+        let promises: ReturnType<typeof axios.get<ResponseModel<string[]>>>[] = [];
+        for (const client of clients) {
+          promises.push(
+            axios.get<ResponseModel<string[]>>(`api/devices/get-idents-by-user-id/${client.id}`)
+          );
+        }
+        Promise.all(promises).then((results) => {
+          const clientToImeis: Record<number, string[]> = {};
+          for (let i = 0; i < clients.length; i++) {
+            clientToImeis[clients[i].id] = results[i].data.result;
+          }
+          setClientToLocations(clientToImeis);
+        });
+      });
   }, []);
+
+  const updateLocations = useCallback(async () => {
+    const locations = Object.values(memoryMaplocations);
+    setLocations(locations);
+    let newClients = clients;
+    for (const client of newClients) {
+      client.onlineDevices = 0;
+      client.offlineDevices = 0;
+    }
+    for (const location of locations) {
+      const client = newClients.find((c) =>
+        clientToLocations[c.id]?.includes(location.vehicle.imei)
+      );
+      if (client) {
+        location.online ? client.onlineDevices++ : client.offlineDevices++;
+      }
+    }
+    setClients([...newClients]);
+  }, [clientToLocations, clients]);
 
   useEffect(() => {
     // TODO: Need to activate this when changing subscriptions
@@ -225,41 +282,58 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     // setLocations([]);
     const timeout = setTimeout(async () => {
       for (let i = 0; i < 5; i++) {
-        setLocations(Object.values(memoryMaplocations));
+        updateLocations();
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     }, 2000);
     const interval = setInterval(async () => {
-      setLocations(Object.values(memoryMaplocations));
+      updateLocations();
     }, 10000);
 
     return () => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [selectedClient]);
+  }, [updateLocations]);
+
+  useEffect(() => {
+    if (selectedClient) {
+      setSelectedLocation(undefined);
+      setFilteredLocationsImei(clientToLocations[selectedClient.id] || []);
+    } else {
+      setFilteredLocationsImei(undefined);
+    }
+  }, [clientToLocations, selectedClient, setSelectedLocation]);
 
   const search = async (target: string, query: string) => {
     if (query === '') {
-      setFilteredLocations([]);
-      setClients(await getClients(''));
+      setFilteredLocationsImei(undefined);
+      setFilteredClientsNames(undefined);
       return;
     }
 
     if (target === 'Vehicle') {
-      setFilteredLocations(
-        locations.filter((l) => l.vehicle.name.toLowerCase().includes(query.toLowerCase()))
+      setFilteredLocationsImei(
+        locations
+          .filter(
+            (l) =>
+              l.vehicle.name.toLowerCase().includes(query.toLowerCase()) ||
+              l.vehicle.imei.includes(query)
+          )
+          .map((l) => l.vehicle.imei)
       );
     } else {
-      setClients(await getClients(query));
+      setFilteredClientsNames(
+        clients.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())).map((c) => c.id)
+      );
     }
   };
 
   return (
     <MonitoringContext.Provider
       value={{
-        locations: filteredLocations.length ? filteredLocations : locations,
-        clients,
+        locations: filteredLocations ? filteredLocations : locations,
+        clients: filteredClients ? filteredClients : clients,
         selectedClient,
         setSelectedClient,
         selectedLocation,

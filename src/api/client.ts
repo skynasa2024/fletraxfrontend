@@ -1,19 +1,41 @@
-import { faker } from '@faker-js/faker';
+import { axios } from './axios';
+import { ResponseModel } from './response';
+
+interface ClientModel {
+  id: number;
+  name: string;
+  identifyNumber: string;
+  username: string;
+  password: string;
+  email: string;
+  phoneCode: string;
+  phone: string;
+  role: string;
+  status: boolean;
+  address: string;
+  subscriptionStartDate: string;
+  timezone: string;
+  locale: string;
+  parentId: number;
+  keycloakUserId: string;
+}
 
 export interface Client {
+  id: number;
   name: string;
-  avatar: string;
+  avatar?: string;
   onlineDevices: number;
   offlineDevices: number;
 }
 
-export const getClients = async (filter: string): Promise<Client[]> => {
-  return Array(faker.number.int(100))
-    .fill(0)
-    .map(() => ({
-      name: faker.company.name(),
-      avatar: faker.image.avatar(),
-      onlineDevices: faker.number.int(1000),
-      offlineDevices: faker.number.int(1000)
-    }));
+export const getClients = async (): Promise<Client[]> => {
+  const clients = await axios.get<ResponseModel<ClientModel[]>>(
+    '/api/users/get-current-user-with-children'
+  );
+  return clients.data.result.map((client) => ({
+    id: client.id,
+    name: client.name,
+    onlineDevices: 0,
+    offlineDevices: 0
+  }));
 };
