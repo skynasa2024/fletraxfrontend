@@ -18,7 +18,7 @@ export const MainCard = () => {
     setSelectedLocation,
     search
   } = useMonitoringProvider();
-  const [searchTarget, setSearchTarget] = useState('Customer');
+  const [searchTarget, setSearchTarget] = useState('User');
   const [searchQuery, setSearchQuery] = useState('');
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
@@ -79,11 +79,10 @@ export const MainCard = () => {
                 <KeenIcon icon="down" className="!text-inherit !text-xs" />
               </MenuToggle>
               <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
-                {['Customer', 'Vehicle'].map((target) => (
+                {['User', 'Vehicle'].map((target) => (
                   <MenuItem
                     key={target}
                     onClick={() => {
-                      console.log(target);
                       setSearchTarget(target);
                     }}
                   >
