@@ -16,7 +16,7 @@ const Notifications = () => {
         </div>
       </div>
 
-      <div className="card-body flex flex-col gap-4 scrollable grow px-3 py-3 h-[455px]">
+      <div className="card-body flex flex-col gap-4 scrollable grow px-3 py-3">
         {notifications?.map((notification) => (
           <>
             <div className="flex gap-4">

@@ -15,24 +15,24 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
   const columns = useMemo<ColumnDef<Violation>[]>(
     () => [
       {
-        accessorFn: (row) => row.customer,
+        accessorFn: (row) => row.user,
         id: 'driver',
         header: () => 'Driver',
         enableSorting: true,
         cell: (info) => (
           <div className="flex gap-2 items-center">
             <img
-              src={info.row.original.customer.avatar}
+              src={info.row.original.user.avatar}
               className="size-9 rounded-full aspect-square"
             />
-            <span className="text-gray-800 font-bold">{info.row.original.customer.name}</span>
+            <span className="text-gray-800 font-bold">{info.row.original.user.name}</span>
           </div>
         ),
         meta: {
           className: 'min-w-48'
         }
       },
-     
+
       {
         accessorFn: (row) => row.date,
         id: 'date',
@@ -79,7 +79,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
-            setSelected={() => {}}
+            setSelected={() => { }}
             options={{
               Unpaid: {
                 color: '#F1416C',
@@ -133,11 +133,11 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
       filters={
         searchQuery.trim().length > 2
           ? [
-              {
-                id: '__any',
-                value: searchQuery
-              }
-            ]
+            {
+              id: '__any',
+              value: searchQuery
+            }
+          ]
           : []
       }
       serverSide={true}

@@ -3,7 +3,11 @@ import { fakeCustomer, fakeVehicle } from './faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Customer } from './customer';
-import { Client } from './client';
+import { User, getUser } from './user';
+import { axios } from './axios';
+import { PagenatedResponseModel, ResponseModel } from './response';
+import { getDevice } from './devices';
+import { toAbsoluteUrl } from '@/utils';
 
 export const getMovingCars = async (): Promise<Record<string, number>> => {
   return {
@@ -35,6 +39,51 @@ export interface VehicleDetails {
   status: string;
 }
 
+export interface VehicleDTO {
+  id: number;
+  plate: string;
+  image: string | null;
+  imageFile: string | null;
+  type: string;
+  status: string;
+  brand: string;
+  model: string;
+  modelSeries: string;
+  modelYear: number;
+  volume: string;
+  power: string;
+  fuelType: string;
+  carType: string;
+  gear: string;
+  color: string;
+  identifyNumber: string;
+  chassisNumber: string;
+  engineNumber: string;
+  registrationNumber: string;
+  registrationDate: string;
+  firstRegistrationDate: string;
+  licenseSerialNumber: string;
+  price: number;
+  inspectionStartDate: string;
+  inspectionEndDate: string;
+  insuranceStartDate: string;
+  insuranceEndDate: string;
+  kaskoInsuranceStartDate: string;
+  kaskoInsuranceEndDate: string;
+  exhaustStartDate: string;
+  exhaustEndDate: string;
+  hgsNumber: string;
+  currentMileage: string;
+  maintenanceMileage: string;
+  fuelConsumption: number;
+  licenseImage: string;
+  owner: string;
+  userId: number;
+  deviceId: number;
+  vehicleId: number;
+  scratches: any[];
+}
+
 export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
@@ -59,10 +108,23 @@ export const getCarsMileageAndEngine = async (cursor?: string): Promise<CarMilea
     });
 };
 
+export interface ViolationDTO {
+  id: number;
+  type: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  amount: number;
+  userId: number;
+  vehicleId: number;
+}
+
 export interface Violation {
+  id: number;
   vehicle: Vehicle;
   date: Date;
-  customer: Customer;
+  user: User;
   type: string;
   price: number;
   status: string;
@@ -71,25 +133,48 @@ export interface Violation {
 export const getViolations = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Violation>> => {
-  const totalCount = faker.number.int({ min: 2, max: 100 });
-  const originalDataset: Violation[] = Array(params.pageSize)
-    .fill(0)
-    .map(() => ({
-      customer: fakeCustomer(),
-      vehicle: fakeVehicle(),
-      date: faker.date.past(),
-      price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
-      status: faker.helpers.arrayElement(['Unpaid', 'Under Review', 'Recorded', 'Paid']),
-      type: faker.word.words(2)
-    }));
+  const violations = await axios.get<PagenatedResponseModel<ViolationDTO>>(
+    '/api/violations/index',
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize
+      }
+    }
+  );
+
+  const usersPromise = violations.data.result.content.map((violation) => getUser(violation.userId));
+  const users = await Promise.all(usersPromise);
+
+  const vehiclePromise = violations.data.result.content.map((violation) =>
+    getVehicle(violation.vehicleId)
+  );
+  const vehicles = await Promise.all(vehiclePromise);
 
   return {
-    data: originalDataset,
-    totalCount
+    data: violations.data.result.content.map((violation, i) => ({
+      id: violation.id,
+      vehicle: vehicles[i],
+      date: new Date(violation.startDate),
+      user: users[i],
+      type: violation.type,
+      price: violation.amount,
+      status: violation.status
+    })),
+    totalCount: violations.data.result.totalElements
   };
 };
 
+export const updateViolationStatus = async (id: number, status: string): Promise<void> => {
+  await axios.patch(`/api/violations/update-status/${id}`, undefined, {
+    params: {
+      status
+    }
+  });
+};
+
 export interface Maintenance {
+  id: number;
   date: Date;
   vehicle: Vehicle;
   type: string;
@@ -98,25 +183,57 @@ export interface Maintenance {
   status: string;
 }
 
+export interface MaintenanceDTO {
+  id: number;
+  type: string;
+  description: string;
+  supplier: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  amount: number;
+  vehicleId: number;
+  userId: number;
+}
+
 export const getMaintenance = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Maintenance>> => {
-  const totalCount = faker.number.int({ min: 2, max: 100 });
-  const originalDataset: Maintenance[] = Array(params.pageSize)
-    .fill(0)
-    .map(() => ({
-      vehicle: fakeVehicle(),
-      date: faker.date.past(),
-      price: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
-      status: faker.helpers.arrayElement(['Completed', 'In Maintenance']),
-      type: faker.word.words(2),
-      supplier: faker.person.fullName()
-    }));
+  const maintenances = await axios.get<PagenatedResponseModel<MaintenanceDTO>>(
+    '/api/maintenances/index',
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize
+      }
+    }
+  );
+
+  const vehiclePromise = maintenances.data.result.content.map((maintenance) =>
+    getVehicle(maintenance.vehicleId)
+  );
+  const vehicles = await Promise.all(vehiclePromise);
 
   return {
-    data: originalDataset,
-    totalCount
+    data: maintenances.data.result.content.map((maintenance, i) => ({
+      id: maintenance.id,
+      date: new Date(maintenance.startDate),
+      vehicle: vehicles[i],
+      type: maintenance.type,
+      supplier: maintenance.supplier,
+      price: maintenance.amount,
+      status: maintenance.status
+    })),
+    totalCount: maintenances.data.result.totalElements
   };
+};
+
+export const updateMaintenanceStatus = async (id: number, status: string): Promise<void> => {
+  await axios.patch(`/api/maintenances/update-status/${id}`, undefined, {
+    params: {
+      status
+    }
+  });
 };
 
 export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDetails>> => {
@@ -137,6 +254,19 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
   return {
     data: originalDataset,
     totalCount
+  };
+};
+
+const getVehicle = async (id: number): Promise<Vehicle> => {
+  const vehicle = await axios.get<ResponseModel<VehicleDTO>>(
+    `/api/vehicles/cars/find-by-vehicle-id/${id}`
+  );
+  const device = await getDevice(vehicle.data.result.deviceId);
+  return {
+    brandImage: toAbsoluteUrl(`/media/car-brands/${vehicle.data.result.brand}.png`),
+    plate: vehicle.data.result.plate,
+    imei: device.imei,
+    name: `${vehicle.data.result.brand} ${vehicle.data.result.model}`
   };
 };
 
@@ -162,7 +292,7 @@ export interface VehicleLocation {
   status: VehicleStatus;
 }
 
-export const getVehicleLocations = async (client: Client): Promise<VehicleLocation[]> => {
+export const getVehicleLocations = async (client: User): Promise<VehicleLocation[]> => {
   return Array(faker.number.int(2000))
     .fill(0)
     .map(() => {

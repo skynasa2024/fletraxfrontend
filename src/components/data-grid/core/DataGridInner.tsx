@@ -18,8 +18,8 @@ const DataGridInner = <TData extends object>() => {
 
   return (
     <Fragment>
-      <div className="grid min-w-full">
-        <div className="scrollable-x-auto">
+      <div className="flex flex-col min-w-full h-full">
+        <div className="scrollable-x-auto flex-grow">
           <DataGridTable>
             <DataGridTableHead>
               {table

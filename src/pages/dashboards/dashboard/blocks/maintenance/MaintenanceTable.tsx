@@ -1,11 +1,34 @@
-import { DataGrid } from '@/components';
-import { getMaintenance, Maintenance } from '@/api/cars';
+import { DataGrid, useDataGrid } from '@/components';
+import { getMaintenance, Maintenance, updateMaintenanceStatus } from '@/api/cars';
 import { useMemo } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
+
+const MaintenanceStatusDropdown = (info: CellContext<Maintenance, unknown>) => {
+  const reload = useDataGrid().fetchServerSideData;
+  return (
+    <StatusDropdown
+      selected={info.row.original.status}
+      setSelected={async (value) => {
+        await updateMaintenanceStatus(info.row.original.id, value);
+        reload();
+      }}
+      options={{
+        'In Maintenance': {
+          color: '#FFA800',
+          backgroundColor: '#FFF8EA'
+        },
+        Completed: {
+          color: '#50CD89',
+          backgroundColor: '#EEFAF4'
+        }
+      }}
+    />
+  );
+};
 
 interface ViolationTableProps {
   searchQuery: string;
@@ -79,22 +102,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         id: 'status',
         header: () => 'Status',
         enableSorting: true,
-        cell: (info) => (
-          <StatusDropdown
-            selected={info.row.original.status}
-            setSelected={() => {}}
-            options={{
-              'In Maintenance': {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
-              },
-              Completed: {
-                color: '#50CD89',
-                backgroundColor: '#EEFAF4'
-              }
-            }}
-          />
-        ),
+        cell: (info) => <MaintenanceStatusDropdown {...info} />,
         meta: {
           className: 'min-w-44'
         }

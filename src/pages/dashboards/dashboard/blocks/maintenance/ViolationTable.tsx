@@ -1,11 +1,42 @@
-import { DataGrid } from '@/components';
-import { getViolations, Violation } from '@/api/cars';
+import { DataGrid, useDataGrid } from '@/components';
+import { getViolations, updateViolationStatus, Violation } from '@/api/cars';
 import { useMemo } from 'react';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
+
+const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
+  const reload = useDataGrid().fetchServerSideData;
+  return (
+    <StatusDropdown
+      selected={info.row.original.status}
+      setSelected={async (value) => {
+        await updateViolationStatus(info.row.original.id, value);
+        reload();
+      }}
+      options={{
+        Unpaid: {
+          color: '#F1416C',
+          backgroundColor: '#FFF5F8'
+        },
+        'Under Review': {
+          color: '#FFA800',
+          backgroundColor: '#FFF8EA'
+        },
+        Recorded: {
+          color: '#00A3FF',
+          backgroundColor: '#EEF9FF'
+        },
+        Paid: {
+          color: '#50CD89',
+          backgroundColor: '#EEFAF4'
+        }
+      }}
+    />
+  );
+};
 
 interface ViolationTableProps {
   searchQuery: string;
@@ -15,17 +46,20 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
   const columns = useMemo<ColumnDef<Violation>[]>(
     () => [
       {
-        accessorFn: (row) => row.customer,
+        accessorFn: (row) => row.user,
         id: 'driver',
         header: () => 'Driver',
         enableSorting: true,
         cell: (info) => (
           <div className="flex gap-2 items-center">
             <img
-              src={info.row.original.customer.avatar}
+              src={
+                info.row.original.user.avatar ||
+                toAbsoluteUrl('/media/avatars/avatar-placeholder.png')
+              }
               className="size-8 rounded-full aspect-square"
             />
-            <span className="text-gray-800 font-bold">{info.row.original.customer.name}</span>
+            <span className="text-gray-800 font-bold">{info.row.original.user.name}</span>
           </div>
         ),
         meta: {
@@ -85,30 +119,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         id: 'status',
         header: () => 'Status',
         enableSorting: true,
-        cell: (info) => (
-          <StatusDropdown
-            selected={info.row.original.status}
-            setSelected={() => {}}
-            options={{
-              Unpaid: {
-                color: '#F1416C',
-                backgroundColor: '#FFF5F8'
-              },
-              'Under Review': {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
-              },
-              Recorded: {
-                color: '#00A3FF',
-                backgroundColor: '#EEF9FF'
-              },
-              Paid: {
-                color: '#50CD89',
-                backgroundColor: '#EEFAF4'
-              }
-            }}
-          />
-        ),
+        cell: (info) => <ViolationStatusDropdown {...info} />,
         meta: {
           className: 'min-w-40'
         }

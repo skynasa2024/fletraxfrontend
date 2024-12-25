@@ -1,7 +1,7 @@
 import { axios } from './axios';
 import { ResponseModel } from './response';
 
-interface ClientModel {
+interface UserModel {
   id: number;
   name: string;
   identifyNumber: string;
@@ -20,22 +20,26 @@ interface ClientModel {
   keycloakUserId: string;
 }
 
-export interface Client {
+export interface User {
   id: number;
   name: string;
   avatar?: string;
-  onlineDevices: number;
-  offlineDevices: number;
 }
 
-export const getClients = async (): Promise<Client[]> => {
-  const clients = await axios.get<ResponseModel<ClientModel[]>>(
+export const getUsers = async (): Promise<User[]> => {
+  const clients = await axios.get<ResponseModel<UserModel[]>>(
     '/api/users/get-current-user-with-children'
   );
   return clients.data.result.map((client) => ({
     id: client.id,
-    name: client.name,
-    onlineDevices: 0,
-    offlineDevices: 0
+    name: client.name
   }));
+};
+
+export const getUser = async (id: number): Promise<User> => {
+  const client = await axios.get<ResponseModel<UserModel>>(`/api/users/show/${id}`);
+  return {
+    id: client.data.result.id,
+    name: client.data.result.name
+  };
 };

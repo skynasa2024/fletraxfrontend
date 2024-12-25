@@ -1,5 +1,5 @@
 import { VehicleLocation } from '@/api/cars';
-import { Client, getClients } from '@/api/client';
+import { User, getUsers } from '@/api/user';
 import {
   createContext,
   PropsWithChildren,
@@ -42,11 +42,13 @@ interface MqttResponse {
   status?: string;
 }
 
+type UserWithDevices = User & { onlineDevices?: number; offlineDevices?: number };
+
 interface MonitoringContextProps {
-  clients: Client[];
-  selectedClient?: Client;
+  clients: UserWithDevices[];
+  selectedClient?: UserWithDevices;
   // eslint-disable-next-line no-unused-vars
-  setSelectedClient: (v: Client | undefined) => void;
+  setSelectedClient: (v: User | undefined) => void;
   locations: VehicleLocation[];
   selectedLocation?: VehicleLocation;
   // eslint-disable-next-line no-unused-vars
@@ -96,7 +98,7 @@ const MonitoringContext = createContext<MonitoringContextProps>({
 
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [clients, setClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState<UserWithDevices[]>([]);
   const [filteredClientsNames, setFilteredClientsNames] = useState<number[]>();
   const filteredClients = useMemo(() => {
     if (!filteredClientsNames) {
@@ -135,7 +137,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 
   const setSelectedClient = useCallback(
-    (client?: Client) => {
+    (client?: User) => {
       setSearchParams((params) => {
         client ? params.set('client', client.name) : params.delete('client');
         return params;
@@ -235,7 +237,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [mqttClient]);
 
   useEffect(() => {
-    getClients()
+    getUsers()
       .then((clients) => {
         setClients(clients);
         return clients;
@@ -270,7 +272,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         clientToLocations[c.id]?.includes(location.vehicle.imei)
       );
       if (client) {
-        location.online ? client.onlineDevices++ : client.offlineDevices++;
+        location.online ? client.onlineDevices!++ : client.offlineDevices!++;
       }
     }
     setClients([...newClients]);

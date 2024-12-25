@@ -1,9 +1,9 @@
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
-import { Dispatch, SetStateAction } from 'react';
 
 export interface StatusDropdownProps {
   selected: string;
-  setSelected: Dispatch<SetStateAction<string>>;
+  // eslint-disable-next-line no-unused-vars
+  setSelected: (value: string) => void;
   options: Record<
     string,
     {
@@ -45,7 +45,7 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
           {Object.entries(options).map(([key, options]) => (
             <MenuItem
               key={key}
-              handleClick={() => {
+              onClick={() => {
                 setSelected(key);
               }}
             >

@@ -27,6 +27,7 @@ export interface IDataGridContextProps<TData extends object> {
   getSelectedRowIds: () => string[];
   isSelectAllChecked: boolean;
   isSelectAllIndeterminate: boolean;
+  fetchServerSideData: () => void;
 }
 
 const DataGridContext = createContext<IDataGridContextProps<any> | undefined>(undefined);
@@ -213,7 +214,8 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
         toggleAllRowsSelection,
         getSelectedRowIds,
         isSelectAllChecked,
-        isSelectAllIndeterminate
+        isSelectAllIndeterminate,
+        fetchServerSideData
       }}
     >
       <DataGridInner />
