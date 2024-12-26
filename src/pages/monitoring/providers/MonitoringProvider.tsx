@@ -300,7 +300,6 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (selectedClient) {
-      setSelectedLocation(undefined);
       setFilteredLocationsImei(clientToLocations[selectedClient.id] || []);
     } else {
       setFilteredLocationsImei(undefined);
