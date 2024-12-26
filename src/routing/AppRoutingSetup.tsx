@@ -99,6 +99,7 @@ import DriverDetailsPage from '@/pages/public-profile/profiles/driver/DriverDeta
 import { TripsPage } from '@/pages/trips/TripsPage';
 import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
 import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintenance';
+import { GeofencePage } from '@/pages/geofence/GeofencePage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -108,6 +109,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DefaultPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
+          <Route path="/geofences" element={<GeofencePage />} />
 
           <Route path="/users/user/*" element={<User />} />
           <Route path="/users/add-users" element={<AddUser />} />

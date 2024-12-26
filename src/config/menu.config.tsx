@@ -24,17 +24,17 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       {
         title: 'Geofence',
-        path: '/geofence/get-started'
+        path: '/geofences',
+        fullScreen: true
       },
       {
         title: 'Linked Geofence',
-       
+        path: '/geofence/linked'
       },
       {
         title: 'Add Geofence',
-        
-      },
-      
+        path: '/geofence/add'
+      }
     ]
   },
   {

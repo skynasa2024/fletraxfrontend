@@ -1,13 +1,14 @@
 import { KeenIcon } from '@/components';
 import { Collapse } from '@mui/material';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, ReactElement, useState } from 'react';
 import { useMap } from 'react-leaflet';
 
 export interface MainControlProps extends PropsWithChildren {
   title: string;
+  bar?: ReactElement;
 }
 
-export const MainControl = ({ children, title }: MainControlProps) => {
+export const MainControl = ({ children, title, bar }: MainControlProps) => {
   const map = useMap();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -37,7 +38,10 @@ export const MainControl = ({ children, title }: MainControlProps) => {
             <div className="card-title font-bold text-[22px]">
               <h3>{title}</h3>
             </div>
-            {isOpen ? <KeenIcon icon="up" /> : <KeenIcon icon="down" />}
+            <div className="flex items-center gap-2">
+              {bar}
+              {isOpen ? <KeenIcon icon="up" /> : <KeenIcon icon="down" />}
+            </div>
           </div>
 
           <Collapse in={isOpen} className="flex-grow" classes={{ wrapper: 'h-full' }}>

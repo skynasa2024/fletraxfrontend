@@ -5,7 +5,7 @@ import { Paginated } from './common';
 import { Customer } from './customer';
 import { User, getUser } from './user';
 import { axios } from './axios';
-import { PagenatedResponseModel, ResponseModel } from './response';
+import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
 import { toAbsoluteUrl } from '@/utils';
 
@@ -133,7 +133,7 @@ export interface Violation {
 export const getViolations = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Violation>> => {
-  const violations = await axios.get<PagenatedResponseModel<ViolationDTO>>(
+  const violations = await axios.get<PaginatedResponseModel<ViolationDTO>>(
     '/api/violations/index',
     {
       params: {
@@ -199,7 +199,7 @@ export interface MaintenanceDTO {
 export const getMaintenance = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Maintenance>> => {
-  const maintenances = await axios.get<PagenatedResponseModel<MaintenanceDTO>>(
+  const maintenances = await axios.get<PaginatedResponseModel<MaintenanceDTO>>(
     '/api/maintenances/index',
     {
       params: {

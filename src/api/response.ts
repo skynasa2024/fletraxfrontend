@@ -4,7 +4,7 @@ export interface ResponseModel<T> {
   result: T;
 }
 
-export interface PagenatetionModel<T> {
+export interface PaginatedModel<T> {
   content: T[];
   pageable: {
     pageNumber: number;
@@ -25,4 +25,4 @@ export interface PagenatetionModel<T> {
   empty: boolean;
 }
 
-export type PagenatedResponseModel<T> = ResponseModel<PagenatetionModel<T>>;
+export type PaginatedResponseModel<T> = ResponseModel<PaginatedModel<T>>;
