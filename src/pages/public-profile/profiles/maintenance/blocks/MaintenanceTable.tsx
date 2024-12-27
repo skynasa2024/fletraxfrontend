@@ -53,7 +53,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
         cell: (info) => (
           <div className="flex items-center gap-2">
             <img 
-              src={info.row.original.vehicle.brandImage} 
+              src={info.row.original.vehicle?.brandImage || ''} 
               alt="Car logo"
               className="w-6 h-6"
             />
