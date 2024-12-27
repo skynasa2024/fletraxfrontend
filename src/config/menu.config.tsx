@@ -40,17 +40,19 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'Vehicle',
     externalIcon: 'vehicle',
-    children: [{
-      title: 'Add Vehicle',
-      path: '/vehicles/add-vehicle'
-    },
-    {
-      title: 'Vehicle',
-      path: '/vehicles/vehicle'
-    }, ]
+    children: [
+      {
+        title: 'Vehicle',
+        path: '/vehicles/vehicle'
+      },
+      {
+        title: 'Add Vehicle',
+        path: '/vehicles/add-vehicle'
+      }
+    ]
   },
 
-/*   {
+  /*   {
     title: 'Reservations',
     externalIcon: 'reservations', 
     children: [
@@ -95,9 +97,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Add Maintenance',
         path: '/maintenance/add-maintenance'
-      },
-
-     
+      }
     ]
   },
   {
@@ -111,9 +111,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Add device',
         path: '/devices/add-device'
-      },
-
-     
+      }
     ]
   },
   {
@@ -127,9 +125,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Add users',
         path: '/users/add-users'
-      },
-
-     
+      }
     ]
   },
   {
@@ -143,9 +139,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Add Driver',
         path: '/drivers/add-driver'
-      },
-
-     
+      }
     ]
   }
 ];
