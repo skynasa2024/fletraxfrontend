@@ -42,6 +42,15 @@ interface MqttResponse {
   status?: string;
 }
 
+interface MonitoringDTO {
+  ident: string;
+  status: string;
+  motionStatus: string;
+  userId: number;
+  vehiclePlate: string;
+  vehicleImage: string | null;
+}
+
 type UserWithDevices = User & { onlineDevices?: number; offlineDevices?: number };
 
 interface MonitoringContextProps {
@@ -157,9 +166,22 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     mqttClient.on('connect', async () => {
-      const availableLocations = await axios.get<ResponseModel<string[]>>('api/devices/get-idents');
+      const availableLocations =
+        await axios.get<ResponseModel<MonitoringDTO[]>>('api/devices/monitoring');
       for (const location of availableLocations.data.result) {
-        mqttClient.subscribeAsync(`device/monitoring/${location}`, {
+        const topic = `device/monitoring/${location.ident}`;
+
+        memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
+        memoryMaplocations[topic].vehicle.imei = location.ident;
+        memoryMaplocations[topic].vehicle.plate = location.vehiclePlate;
+        memoryMaplocations[topic].online = location.status === 'online';
+
+        setClientToLocations((prev) => ({
+          ...prev,
+          [location.userId]: [...(prev[location.userId] || []), location.ident]
+        }));
+
+        mqttClient.subscribeAsync(topic, {
           qos: 2
         });
       }
@@ -170,7 +192,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       type RecursivePartial<T> = {
         [P in keyof T]?: Partial<T[P]>;
       };
-      const oldVehicle = memoryMaplocations[topic] || defaultLocation;
+      const oldVehicle = memoryMaplocations[topic] || JSON.parse(JSON.stringify(defaultLocation));
 
       const partialVehicle: RecursivePartial<VehicleLocation> = {
         online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
@@ -194,9 +216,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         },
         vehicle: {
           imei: device.ident,
-          name: device.device_name,
-          brandImage: '',
-          plate: 'AAAAAA'
+          name: device.device_name
         }
       };
 
@@ -237,26 +257,10 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [mqttClient]);
 
   useEffect(() => {
-    getUsers()
-      .then((clients) => {
-        setClients(clients);
-        return clients;
-      })
-      .then((clients) => {
-        let promises: ReturnType<typeof axios.get<ResponseModel<string[]>>>[] = [];
-        for (const client of clients) {
-          promises.push(
-            axios.get<ResponseModel<string[]>>(`api/devices/get-idents-by-user-id/${client.id}`)
-          );
-        }
-        Promise.all(promises).then((results) => {
-          const clientToImeis: Record<number, string[]> = {};
-          for (let i = 0; i < clients.length; i++) {
-            clientToImeis[clients[i].id] = results[i].data.result;
-          }
-          setClientToLocations(clientToImeis);
-        });
-      });
+    getUsers().then((clients) => {
+      setClients(clients);
+      return clients;
+    });
   }, []);
 
   const updateLocations = useCallback(async () => {
