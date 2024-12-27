@@ -9,17 +9,21 @@ import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
 import { toAbsoluteUrl } from '@/utils';
 
-export const getMovingCars = async (): Promise<Record<string, number>> => {
-  return {
-    Moving: 1700,
-    Parked: 290
-  };
-};
+export interface CarCountsDTO {
+  total: number;
+  offline: number;
+  online: number;
+  moving: number;
+  parking: number;
+}
 
-export const getOnlineCars = async (): Promise<Record<string, number>> => {
+export const getCarCount = async (): Promise<Record<string, number>> => {
+  const carCounts = await axios.get<ResponseModel<CarCountsDTO>>('/api/devices/counts');
   return {
-    Online: 1800,
-    Offline: 190
+    Moving: carCounts.data.result.moving,
+    Parked: carCounts.data.result.parking,
+    Online: carCounts.data.result.online,
+    Offline: carCounts.data.result.offline
   };
 };
 

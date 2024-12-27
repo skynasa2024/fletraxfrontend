@@ -1,7 +1,7 @@
 import ApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
-import { useEffect, useState } from 'react';
-import { getMovingCars, getOnlineCars } from '@/api/cars';
+import { useEffect, useMemo, useState } from 'react';
+import { getCarCount } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
 import { ButtonRadioGroup } from '../ButtonRadioGroup';
 import { toAbsoluteUrl } from '@/utils';
@@ -9,8 +9,21 @@ import './style.css';
 
 const MovingDeviceChart = () => {
   const [selection, setSelection] = useState('Device');
-  const [data, setData] = useState<number[]>();
-  const [labels, setLabels] = useState<string[]>();
+  const [allData, setAllData] = useState<Record<string, number>>();
+  const data = useMemo(() => {
+    if (allData) {
+      return selection === 'Moving'
+        ? [allData.Moving, allData.Parked]
+        : [allData.Online, allData.Offline];
+    }
+    return null;
+  }, [allData, selection]);
+  const labels = useMemo(() => {
+    if (allData) {
+      return selection === 'Moving' ? ['Moving', 'Parked'] : ['Online', 'Offline'];
+    }
+    return null;
+  }, [allData, selection]);
   const colors: string[] = ['var(--tw-success)', 'var(--tw-danger)'];
 
   const options: ApexOptions = {
@@ -57,18 +70,14 @@ const MovingDeviceChart = () => {
   };
 
   useEffect(() => {
-    if (selection === 'Moving') {
-      getMovingCars().then((cars) => {
-        setLabels(Object.keys(cars));
-        setData(Object.values(cars));
+    const interval = setInterval(() => {
+      getCarCount().then((data) => {
+        setAllData(data);
       });
-    } else {
-      getOnlineCars().then((cars) => {
-        setLabels(Object.keys(cars));
-        setData(Object.values(cars));
-      });
-    }
-  }, [selection]);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (!data || !labels) {
     return <CircularProgress />;
