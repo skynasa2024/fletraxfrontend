@@ -8,6 +8,7 @@ import { StatusDropdown } from './maintenance/StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
 import { Download, Filter, Search } from 'lucide-react';
+
 interface DriverListProps {
   searchQuery?: string;
 }
@@ -16,17 +17,79 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
   const columns = useMemo<ColumnDef<Driver>[]>(
     () => [
       {
-        accessorKey: 'owner',
-        header: 'Owner',
+        accessorKey: 'fullName',  
+        header: 'Full Name',      
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
-              {row.original.owner.charAt(0)}
+              {row.original.fullName.charAt(0)}  
             </div>
             <div>
-              <div className="font-bold">{row.original.owner}</div>
+              <div className="font-bold">{row.original.fullName}</div>  
             </div>
           </div>
+        )
+      },
+      {
+        accessorKey: 'birthDate',
+        header: 'Birth Date',
+        cell: ({ row }) => (
+          <span className="text-gray-800">{format(row.original.birthDate, 'MMM d, yyyy')}</span>
+        )
+      },
+      // ... rest of the columns remain the same
+      {
+        accessorKey: 'identityType',
+        header: 'Identity Type',
+        cell: ({ row }) => (
+          <span className={`px-3 py-1 rounded-full ${
+            row.original.identityType === 'Turkish' 
+              ? 'bg-blue-100 text-blue-800' 
+              : 'bg-purple-100 text-purple-800'
+          }`}>
+            {row.original.identityType}
+          </span>
+        )
+      },
+      {
+        accessorKey: 'company',
+        header: 'Company',
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.company}</span>
+        )
+      },
+      {
+        accessorKey: 'username',
+        header: 'Username',
+        cell: ({ row }) => (
+          <span className="text-gray-800">{row.original.username}</span>
+        )
+      },
+      {
+        accessorKey: 'idNumber',
+        header: 'ID Number',
+        cell: ({ row }) => (
+          <span className="font-mono text-gray-800">{row.original.idNumber}</span>
+        )
+      },
+      {
+        accessorKey: 'licenseNumber',
+        header: 'License Number',
+        cell: ({ row }) => (
+          <span className="font-mono text-gray-800">{row.original.licenseNumber}</span>
+        )
+      },
+      {
+        accessorKey: 'licenseExpiryDate',
+        header: 'License Expiry',
+        cell: ({ row }) => (
+          <span className={`text-gray-800 ${
+            new Date(row.original.licenseExpiryDate) < new Date() 
+              ? 'text-red-600 font-medium' 
+              : ''
+          }`}>
+            {format(row.original.licenseExpiryDate, 'MMM d, yyyy')}
+          </span>
         )
       },
       {
@@ -56,14 +119,6 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
               }
             }}
           />
-        )
-      },
-      {
-        accessorKey: 'date',
-        header: 'Date',
-        enableSorting: true,
-        cell: ({ row }) => (
-          <span className="text-gray-800">{format(row.original.date, 'MMM d, yyyy')}</span>
         )
       },
       {
