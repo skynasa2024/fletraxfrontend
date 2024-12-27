@@ -157,18 +157,7 @@ const Projects = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold">Device List</h3>
-        <Menu>
-          <MenuItem
-            toggle="dropdown"
-            trigger="click"
-            dropdownProps={{
-              placement: isRTL() ? 'bottom-start' : 'bottom-end',
-              modifiers: [{ name: 'offset', options: { offset: [0, -10] } }]
-            }}
-          >
-            Actions
-          </MenuItem>
-        </Menu>
+       
       </div>
       <div className="space-y-4">
         {items.map(renderItem)}

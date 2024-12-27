@@ -1,5 +1,3 @@
-import { FaCalendarAlt } from 'react-icons/fa';
-
 interface IGeneralSettingsProps {
   title: string;
 }
