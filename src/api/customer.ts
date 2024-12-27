@@ -9,6 +9,7 @@ export interface Customer {
 }
 
 export interface CustomerDetails {
+  id: number;
   customer: Customer;
   nationality: string;
   country: string;
@@ -24,6 +25,7 @@ export const getCustomers = async (cursor?: string): Promise<Paginated<CustomerD
   const originalDataset: CustomerDetails[] = Array(limit)
     .fill(0)
     .map(() => ({
+      id: faker.number.int(),
       customer: fakeCustomer(),
       nationality: 'Turkish',
       city: faker.location.city(),

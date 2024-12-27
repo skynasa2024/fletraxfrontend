@@ -126,7 +126,7 @@ export interface ViolationDTO {
 
 export interface Violation {
   id: number;
-  vehicle: Vehicle;
+  vehicle: Vehicle | null;
   date: Date;
   user: User;
   type: string;
@@ -180,7 +180,7 @@ export const updateViolationStatus = async (id: number, status: string): Promise
 export interface Maintenance {
   id: number;
   date: Date;
-  vehicle: Vehicle;
+  vehicle: Vehicle | null;
   type: string;
   supplier: string;
   price: number;
@@ -261,10 +261,15 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
   };
 };
 
-const getVehicle = async (id: number): Promise<Vehicle> => {
-  const vehicle = await axios.get<ResponseModel<VehicleDTO>>(
+const getVehicle = async (id: number): Promise<Vehicle | null> => {
+  const vehicle = await axios.get<ResponseModel<VehicleDTO | null>>(
     `/api/vehicles/cars/find-by-vehicle-id/${id}`
   );
+
+  if (!vehicle.data.result) {
+    return null;
+  }
+
   const device = await getDevice(vehicle.data.result.deviceId);
   return {
     brandImage: toAbsoluteUrl(`/media/car-brands/${vehicle.data.result.brand}.png`),

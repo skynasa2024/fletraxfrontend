@@ -71,7 +71,8 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         id: 'vehicle',
         header: () => 'Car',
         enableSorting: true,
-        cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
+        cell: (info) =>
+          info.row.original.vehicle && <CarView vehicle={info.row.original.vehicle} />,
         meta: {
           className: ''
         }

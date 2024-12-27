@@ -41,7 +41,10 @@ const DriverList = () => {
       <div className="card-body scrollable-x pt-2 px-6 pb-7">
         <div className="flex flex-col lg:flex-row gap-4">
           {customers?.data.map((customer) => (
-            <div className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
+            <div
+              key={customer.id}
+              className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden"
+            >
               <div
                 className="h-1 w-full"
                 style={{ backgroundColor: options[customer.state].color }}
@@ -55,7 +58,9 @@ const DriverList = () => {
                     options={options}
                   />
                 </div>
-                <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[22px]">{customer.customer.name}</div>
+                <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[22px]">
+                  {customer.customer.name}
+                </div>
                 <div className="text-[#B5B5C3] font-medium">{customer.nationality}</div>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-3 font-medium text-sm text-[#B5B5C3] text-nowrap">
                   <div className="flex gap-1 w-36">

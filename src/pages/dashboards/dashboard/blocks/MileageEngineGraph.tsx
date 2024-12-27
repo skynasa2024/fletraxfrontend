@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { ButtonRadioGroup } from './ButtonRadioGroup';
 import { CarMileageAndEngine, getCarsMileageAndEngine } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
@@ -31,7 +31,7 @@ const MileageEngineGraph = () => {
       </div>
       <div className="card-body flex flex-col gap-2 scrollable grow px-3 py-3">
         {data.map((car) => (
-          <>
+          <Fragment key={car.vehicle.imei}>
             <div className="flex gap-4">
               <img src={car.vehicle.brandImage} className="size-12 object-cover" />
               <div className="w-40">
@@ -66,7 +66,7 @@ const MileageEngineGraph = () => {
               </div>
             </div>
             <div className="border-b-2 border-dashed" />
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { getNotifications, Notification } from '@/api/notifications';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>();
@@ -18,7 +18,7 @@ const Notifications = () => {
 
       <div className="card-body flex flex-col gap-4 scrollable grow px-3 py-3">
         {notifications?.map((notification) => (
-          <>
+          <Fragment key={notification.id}>
             <div className="flex gap-4">
               {notification.image ? (
                 <img
@@ -36,7 +36,7 @@ const Notifications = () => {
               </div>
             </div>
             <div className="border-b-2 border-dashed" />
-          </>
+          </Fragment>
         ))}
       </div>
     </div>
