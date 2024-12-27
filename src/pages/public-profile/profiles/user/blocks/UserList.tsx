@@ -7,6 +7,7 @@ import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
 import { StatusDropdown } from '../StatusDropdown';
 import { Download, Filter, Search } from 'lucide-react';
+
 interface UserListProps {
   searchQuery?: string;
 }
@@ -16,6 +17,7 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
   const handleViewUserClick = () => {
     navigate('view-user');
   };
+
   const columns = useMemo<ColumnDef<User>[]>(
     () => [
       {
@@ -25,8 +27,14 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
         cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.id}</span>
       },
       {
+        accessorKey: 'username',
+        header: 'Username',
+        enableSorting: true,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.username}</span>
+      },
+      {
         accessorKey: 'owner',
-        header: 'Owner',
+        header: 'Name',
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
@@ -40,8 +48,20 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
+        accessorKey: 'city',
+        header: 'City',
+        enableSorting: true,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.city}</span>
+      },
+      {
+        accessorKey: 'timezone',
+        header: 'Timezone',
+        enableSorting: true,
+        cell: ({ row }) => <span className="text-gray-800">{row.original.timezone}</span>
+      },
+      {
         accessorKey: '',
-        header: 'Date',
+        header: 'Subscription Start Date',
         enableSorting: true,
         cell: ({ row }) => (
           <span className="text-gray-800">{format(row.original.date, 'MMM d, yyyy')}</span>
@@ -57,7 +77,6 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
         accessorFn: (row) => row.status,
         id: 'status',
         header: () => 'Status',
-
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
@@ -86,7 +105,6 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '' }) => {
           className: 'min-w-44'
         }
       },
-
       {
         id: 'actions',
         header: () => 'Actions',
