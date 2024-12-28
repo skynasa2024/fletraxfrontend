@@ -41,6 +41,7 @@ export interface VehicleDetails {
   type: string;
   mileage: number;
   status: string;
+  deviceName: string;
 }
 
 export interface VehicleDTO {
@@ -252,7 +253,8 @@ export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDet
       brandName: faker.vehicle.vehicle(),
       mileage: faker.number.int({ min: 5, max: 1000 }),
       type: faker.helpers.arrayElement(['Manual', 'Automatic']),
-      status: faker.helpers.arrayElement(['Unavailable', 'Maintenance', 'Available'])
+      status: faker.helpers.arrayElement(['Unavailable', 'Maintenance', 'Available']),
+      deviceName: faker.vehicle.manufacturer()
     }));
 
   return {

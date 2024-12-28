@@ -8,7 +8,27 @@ import { StatusDropdown } from '../StatusDropdown';
 
 import { useNavigate } from 'react-router';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
-import { Download, Filter, Search } from 'lucide-react';
+import { Download, Filter } from 'lucide-react';
+import clsx from 'clsx';
+
+const STATUS_OPTIONS = {
+  Unavailable: {
+    color: '#F1416C',
+    backgroundColor: '#FFF5F8'
+  },
+  Maintenance: {
+    color: '#FFA800',
+    backgroundColor: '#FFF8EA'
+  },
+  Available: {
+    color: '#50CD89',
+    backgroundColor: '#EEFAF4'
+  },
+  Rented: {
+    color: '#00A3FF',
+    backgroundColor: '#E5F7FF'
+  }
+} as const;
 
 interface VehicleListProps {
   searchQuery?: string;
@@ -17,7 +37,7 @@ interface VehicleListProps {
 type ViewMode = 'grid' | 'card';
 
 const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
-  const [viewMode, setViewMode] = useState<ViewMode>('card');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
   useEffect(() => {
@@ -44,11 +64,6 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
-        accessorKey: 'vehicle.plate',
-        header: 'Plate',
-        cell: ({ row }) => <CarPlate plate={row.original.vehicle.plate} />
-      },
-      {
         accessorKey: 'brandName',
         header: 'Brand',
         cell: ({ row }) => (
@@ -59,6 +74,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
+        accessorKey: 'vehicle.plate',
+        header: 'Plate',
+        cell: ({ row }) => <CarPlate plate={row.original.vehicle.plate} />
+      },
+      {
         accessorKey: 'gear',
         header: 'Gear',
         cell: ({ row }) => (
@@ -67,6 +87,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             <span>{row.original.type}</span>
           </div>
         )
+      },
+      {
+        accessorKey: 'device.name',
+        header: 'Device Name',
+        cell: ({ row }) => <span>{row.original.deviceName}</span>
       },
       {
         accessorKey: 'mileage',
@@ -85,20 +110,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
           <StatusDropdown
             selected={row.original.status}
             setSelected={() => {}}
-            options={{
-              Unavailable: {
-                color: '#F1416C',
-                backgroundColor: '#FFF5F8'
-              },
-              Maintenance: {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
-              },
-              Available: {
-                color: '#50CD89',
-                backgroundColor: '#EEFAF4'
-              }
-            }}
+            options={STATUS_OPTIONS}
           />
         )
       },
@@ -107,10 +119,17 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         header: 'Actions',
         cell: () => (
           <div className="flex gap-3">
-            <a href="#" onClick={handleViewVehicleClick} className="p-2">
+            <a
+              href="#"
+              onClick={handleViewVehicleClick}
+              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
+            >
               <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
             </a>
-            <a href="#" className="p-2">
+            <a
+              href="#"
+              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
+            >
               <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
             </a>
           </div>
@@ -124,31 +143,124 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
     navigate('view-vehicle');
   };
 
-  const renderVehicleCard = (vehicle: VehicleDetails) => (
-    <div
-      key={vehicle.vehicle.plate}
-      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full hover:shadow-lg transition-shadow duration-200"
-    >
+  return (
+    <div className="card">
+      <div className="px-4 sm:px-7 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="card-title">
+          <h3>Vehicle</h3>
+          <h4 className="text-sm font-thin text-[#B5B5C3]">
+            You have {vehicles?.totalCount}{' '}
+            {(vehicles?.totalCount ?? 0 > 1) ? 'vehicles' : 'vehicle'}
+          </h4>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button
+            className={clsx(
+              'px-2.5 py-1 transition-colors border rounded-lg',
+              viewMode === 'card' ? 'text-info' : 'hover:bg-gray-50'
+            )}
+            onClick={() => setViewMode('card')}
+            title="Card View"
+          >
+            <i
+              className={clsx(
+                'ki-duotone ki-category text-xl',
+                viewMode === 'card' ? 'text-info' : 'text-gray-400'
+              )}
+            />
+          </button>
+          <button
+            className={clsx(
+              'px-2.5 py-1 transition-colors border rounded-lg',
+              viewMode === 'grid' ? 'text-info' : 'hover:bg-gray-50'
+            )}
+            onClick={() => setViewMode('grid')}
+            title="Grid View"
+          >
+            <i
+              className={clsx(
+                'ki-duotone ki-row-horizontal text-xl',
+                viewMode === 'grid' ? 'text-info' : 'text-gray-400'
+              )}
+            />
+          </button>
+          <div className="flex items-center gap-4">
+            {/* Filters Button */}
+            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 rounded-lg border hover:bg-gray-50">
+              <Filter size={16} />
+              <span>Filters</span>
+              <span className="flex items-center justify-center w-5 h-5 text-xs bg-gray-100 rounded-full">
+                2
+              </span>
+            </button>
+          </div>
+          {/* Export Button */}
+          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border">
+            <Download size={16} />
+            <span>Export</span>
+          </button>
+
+          {/* Search Input */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <i className="ki-duotone ki-magnifier" />
+            </div>
+            <input
+              type="search"
+              className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+              placeholder="Search"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="gap-cols responsive-card">
+        <div className="card-body pt-2 px-2 sm:px-6 pb-7">
+          {viewMode === 'grid' ? (
+            <DataGrid
+              columns={columns}
+              data={vehicles?.data ?? []}
+              serverSide={false}
+              filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
+            />
+          ) : (
+            <div className="w-full">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+                {vehicles?.data.map(
+                  (vehicle) =>
+                    vehicle && (
+                      <VehicleCard
+                        key={vehicle.vehicle.plate}
+                        vehicle={vehicle}
+                        handleViewVehicle={handleViewVehicleClick}
+                      />
+                    )
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+function VehicleCard({
+  vehicle,
+  handleViewVehicle
+}: {
+  vehicle: VehicleDetails;
+  handleViewVehicle: () => void;
+}) {
+  return (
+    <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full hover:shadow-lg transition-shadow duration-200">
       <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
           <StatusDropdown
             selected={vehicle.status}
             setSelected={() => {}}
-            options={{
-              Unavailable: {
-                color: '#F1416C',
-                backgroundColor: '#FFF5F8'
-              },
-              Maintenance: {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
-              },
-              Available: {
-                color: '#50CD89',
-                backgroundColor: '#EEFAF4'
-              }
-            }}
+            options={STATUS_OPTIONS}
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-[38px] sm:justify-between">
@@ -187,11 +299,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         </div>
       </div>
       <div className="text-xs border-t flex justify-center">
-        <a
-          href="#"
-          onClick={handleViewVehicleClick}
-          className="px-5 py-2 flex gap-2 hover:bg-gray-50"
-        >
+        <a href="#" onClick={handleViewVehicle} className="px-5 py-2 flex gap-2 hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
@@ -202,90 +310,6 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
       </div>
     </div>
   );
-
-  return (
-    <div className="card">
-      <div className="px-4 sm:px-7 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="card-title">
-          <h3>Vehicle</h3>
-          <h4 className="text-sm font-thin text-[#B5B5C3]">
-            You have {vehicles?.totalCount}{' '}
-            {(vehicles?.totalCount ?? 0 > 1) ? 'vehicles' : 'vehicle'}
-          </h4>
-        </div>
-       
-
-        <div className="flex items-center gap-4">
-        <div className="flex gap-1 border rounded-lg p-1">
-            <button
-              className={`p-2 rounded transition-colors ${
-                viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-50'
-              }`}
-              onClick={() => setViewMode('grid')}
-              title="Grid View"
-            >
-              <i className="ki-filled ki-row-horizontal text-xl" />
-            </button>
-            <button
-              className={`p-2 rounded transition-colors ${
-                viewMode === 'card' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-50'
-              }`}
-              onClick={() => setViewMode('card')}
-              title="Card View"
-            >
-              <i className="ki-filled ki-category text-xl" />
-            </button>
-          </div>
-        <div className="flex items-center gap-4">
-          {/* Filters Button */}
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 rounded-lg border">
-            <Filter size={16} />
-            <span>Filters</span>
-            <span className="flex items-center justify-center w-5 h-5 text-xs bg-gray-100 rounded-full">
-              2
-            </span>
-          </button>
-        </div>
-          {/* Export Button */}
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border">
-            <Download size={16} />
-            <span>Export</span>
-          </button>
-
-          {/* Search Input */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Search className="w-4 h-4 text-gray-400" />
-            </div>
-            <input
-              type="search"
-              className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Search"
-            />
-          </div>
-         
-        </div>
-      </div>
-      <div className="gap-cols responsive-card">
-        <div className="card-body pt-2 px-2 sm:px-6 pb-7">
-          {viewMode === 'grid' ? (
-            <DataGrid
-              columns={columns}
-              data={vehicles?.data ?? []}
-              serverSide={false}
-              filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
-            />
-          ) : (
-            <div className="w-full">
-              <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
-                {vehicles?.data.map(renderVehicleCard)}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+}
 
 export { VehicleList };
