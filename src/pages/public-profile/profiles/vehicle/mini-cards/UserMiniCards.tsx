@@ -1,5 +1,4 @@
-import React, { Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import clsx from 'clsx';
 
 export interface MetricData {
