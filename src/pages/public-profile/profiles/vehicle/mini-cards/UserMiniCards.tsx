@@ -17,9 +17,7 @@ export default function UserMiniCards({ metrics }: { metrics: MetricData[] }) {
           <MetricCard
             key={index}
             classNames={{
-              root: clsx(metric.bgColor, {
-                'rounded-xl': index === 0
-              }),
+              root: metric.bgColor,
               icon: metric.textColor,
               label: metric.textColor,
               value: metric.textColor
@@ -50,7 +48,7 @@ function MetricCard({ classNames, icon, label, value }: MertricCardProps) {
   return (
     <div
       className={clsx(
-        'card rounded-md flex flex-col items-start hover:shadow-lg',
+        'card rounded-lg flex flex-col items-start hover:shadow-lg',
         classNames?.root
       )}
     >

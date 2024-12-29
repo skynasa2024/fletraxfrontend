@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { DataGrid } from '@/components';
+import { DataGrid, KeenIcon } from '@/components';
 import { getVehicles, VehicleDetails } from '@/api/cars';
 import { Paginated } from '@/api/common';
 import { ColumnDef } from '@tanstack/react-table';
@@ -157,32 +157,30 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         <div className="flex items-center gap-4">
           <button
             className={clsx(
-              'px-2.5 py-1 transition-colors border rounded-lg',
+              'p-3 transition-colors border rounded-lg flex items-center justify-center',
               viewMode === 'card' ? 'text-info' : 'hover:bg-gray-50'
             )}
             onClick={() => setViewMode('card')}
             title="Card View"
           >
-            <i
-              className={clsx(
-                'ki-duotone ki-category text-xl',
-                viewMode === 'card' ? 'text-info' : 'text-gray-400'
-              )}
+            <KeenIcon
+              style="duotone"
+              icon="category"
+              className={clsx(viewMode === 'card' ? 'text-info' : 'text-gray-400')}
             />
           </button>
           <button
             className={clsx(
-              'px-2.5 py-1 transition-colors border rounded-lg',
+              'p-3 transition-colors border rounded-lg flex items-center justify-center',
               viewMode === 'grid' ? 'text-info' : 'hover:bg-gray-50'
             )}
             onClick={() => setViewMode('grid')}
             title="Grid View"
           >
-            <i
-              className={clsx(
-                'ki-duotone ki-row-horizontal text-xl',
-                viewMode === 'grid' ? 'text-info' : 'text-gray-400'
-              )}
+            <KeenIcon
+              style="duotone"
+              icon="row-horizontal"
+              className={clsx(viewMode === 'grid' ? 'text-info' : 'text-gray-400')}
             />
           </button>
           <div className="flex items-center gap-4">
@@ -204,7 +202,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
           {/* Search Input */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <i className="ki-duotone ki-magnifier" />
+              <KeenIcon style="duotone" icon="magnifier" />
             </div>
             <input
               type="search"
