@@ -170,6 +170,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         await axios.get<ResponseModel<MonitoringDTO[]>>('api/devices/monitoring');
       for (const location of availableLocations.data.result) {
         const topic = `device/monitoring/${location.ident}`;
+        if (memoryMaplocations[topic]) {
+          continue;
+        }
 
         memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
         memoryMaplocations[topic].vehicle.imei = location.ident;
@@ -283,9 +286,6 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [clientToLocations, clients]);
 
   useEffect(() => {
-    // TODO: Need to activate this when changing subscriptions
-    // memoryMaplocations = {};
-    // setLocations([]);
     const timeout = setTimeout(async () => {
       for (let i = 0; i < 5; i++) {
         updateLocations();
