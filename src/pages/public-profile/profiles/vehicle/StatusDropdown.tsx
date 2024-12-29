@@ -1,19 +1,27 @@
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { Dispatch, SetStateAction } from 'react';
 
-export interface StatusDropdownProps {
-  selected: string;
-  setSelected: Dispatch<SetStateAction<string>>;
-  options: Record<
-    string,
-    {
-      color: string;
-      backgroundColor: string;
-    }
-  >;
+type DropdownOption = {
+  color: string;
+  backgroundColor: string;
+  name: string;
+};
+
+export type DropdownOptions<T extends string> = Record<T, DropdownOption>;
+
+export interface StatusDropdownProps<T extends string> {
+  selected: T | null;
+  setSelected: Dispatch<SetStateAction<T | null>>;
+  options: DropdownOptions<T>;
 }
 
-export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdownProps) => {
+export const StatusDropdown = <T extends string>({
+  selected,
+  setSelected,
+  options
+}: StatusDropdownProps<T>) => {
+  const selectedOption = selected ? options[selected] : null;
+
   return (
     <Menu>
       <MenuItem
@@ -25,7 +33,7 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
             {
               name: 'offset',
               options: {
-                offset: [0, 10] // [skid, distance]
+                offset: [0, 10]
               }
             }
           ]
@@ -34,15 +42,15 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
         <MenuToggle
           className="btn btn-clear font-bold text-xs h-fit px-3 py-[6px]"
           style={{
-            color: options[selected]?.color ?? 'white',
-            backgroundColor: options[selected]?.backgroundColor ?? 'gray'
+            color: selectedOption?.color ?? 'white',
+            backgroundColor: selectedOption?.backgroundColor ?? '#41424663'
           }}
         >
-          {selected}
+          {selectedOption?.name ?? 'Unknown'}
           <KeenIcon icon="down" className="!text-inherit !text-xs" />
         </MenuToggle>
         <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
-          {Object.entries(options).map(([key, options]) => (
+          {(Object.entries(options) as [T, DropdownOption][]).map(([key, option]) => (
             <MenuItem key={key}>
               <MenuLink
                 handleClick={() => {
@@ -52,10 +60,10 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
                 <MenuTitle>
                   <div
                     style={{
-                      color: options.color
+                      color: option.color
                     }}
                   >
-                    {key}
+                    {option.name}
                   </div>
                 </MenuTitle>
               </MenuLink>
