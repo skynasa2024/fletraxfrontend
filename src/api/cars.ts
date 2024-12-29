@@ -89,6 +89,13 @@ export interface VehicleDTO {
   scratches: any[];
 }
 
+export interface VehicleStats {
+  total: number;
+  available: number;
+  inRent: number;
+  inMaintenance: number;
+}
+
 export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
@@ -331,4 +338,9 @@ export const getVehicleLocations = async (client: User): Promise<VehicleLocation
         }
       };
     });
+};
+
+export const getVehiclesStats = async (): Promise<VehicleStats> => {
+  const stats = await axios.get<ResponseModel<VehicleStats>>('api/vehicles/cars/stats');
+  return stats.data.result;
 };
