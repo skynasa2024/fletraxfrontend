@@ -70,6 +70,9 @@ const MovingDeviceChart = () => {
   };
 
   useEffect(() => {
+    getCarCount().then((data) => {
+      setAllData(data);
+    });
     const interval = setInterval(() => {
       getCarCount().then((data) => {
         setAllData(data);
