@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { fakeCustomer, fakeVehicle } from './faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
-import { Customer } from './customer';
+import { Driver } from './drivers';
 import { User, getUser } from './user';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
@@ -36,7 +36,7 @@ export interface Vehicle {
 
 export interface VehicleDetails {
   vehicle: Vehicle;
-  customer: Customer;
+  customer: Driver;
   brandName: string;
   type: string;
   mileage: number;

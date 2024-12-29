@@ -1,7 +1,7 @@
 import { toAbsoluteUrl } from '@/utils';
 import { Vehicle } from './cars';
 import { faker } from '@faker-js/faker';
-import { Customer } from './customer';
+import { Driver } from './drivers';
 
 export const fakeVehicle = (): Vehicle => {
   return {
@@ -12,7 +12,7 @@ export const fakeVehicle = (): Vehicle => {
   };
 };
 
-export const fakeCustomer = (): Customer => {
+export const fakeCustomer = (): Driver => {
   return {
     name: faker.person.fullName(),
     avatar: `https://thispersondoesnotexist.com/`,
