@@ -35,7 +35,7 @@ export const MainCard = () => {
     if (!selectedLocation) return;
 
     locationsListRef.current?.scrollToRow(
-      locations.findIndex((v) => v.vehicle.imei === selectedLocation?.vehicle.imei)
+      activeLocations.findIndex((v) => v.vehicle.imei === selectedLocation?.vehicle.imei)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocation]);
