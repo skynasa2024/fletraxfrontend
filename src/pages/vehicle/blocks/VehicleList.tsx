@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataGrid, KeenIcon } from '@/components';
-import { getVehicles, VehicleDetails, VehicleStatusValues } from '@/api/cars';
-import { Paginated } from '@/api/common';
+import { getVehicles, VehicleDetails, VehicleStatusValues } from '@/api/cars.ts';
+import { Paginated } from '@/api/common.ts';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
-import { DropdownOptions, StatusDropdown } from '../StatusDropdown';
+import { DropdownOptions, StatusDropdown } from '../StatusDropdown.tsx';
 
 import { useNavigate } from 'react-router';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
 import { Download, Filter } from 'lucide-react';
 import clsx from 'clsx';
-import Image from '@/components/image/Image';
+import Image from '@/components/image/Image.tsx';
 
 const STATUS_OPTIONS: DropdownOptions<VehicleStatusValues> = {
   unavailable: {
@@ -65,7 +65,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
               className="w-9 h-9 object-cover"
               fallback={
                 <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
-                  <KeenIcon style="duotone" icon="user" className="text-gray-400 text-black" />
+                  <KeenIcon style="duotone" icon="user" className="text-black" />
                 </div>
               }
             />
@@ -87,7 +87,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
                 className="w-9 h-9 object-cover"
                 fallback={
                   <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
-                    <KeenIcon style="duotone" icon="car" className="text-gray-400 text-black" />
+                    <KeenIcon style="duotone" icon="car" className="text-black" />
                   </div>
                 }
               />
@@ -294,7 +294,7 @@ function VehicleCard({
                 className="size-10 object-cover"
                 fallback={
                   <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
-                    <KeenIcon style="duotone" icon="user" className="text-gray-400 text-black" />
+                    <KeenIcon style="duotone" icon="user" className="text-black" />
                   </div>
                 }
               />
@@ -315,7 +315,7 @@ function VehicleCard({
             className="size-10 object-cover"
             fallback={
               <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
-                <KeenIcon style="duotone" icon="car" className="text-gray-400 text-black" />
+                <KeenIcon style="duotone" icon="car" className="text-black" />
               </div>
             }
           />

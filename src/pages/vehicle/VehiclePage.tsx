@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router';
 import { VehicleList } from './blocks';
-import UserMiniCards, { MetricData } from './mini-cards/UserMiniCards';
-import BlocksIcon from './blocks/svg/BlocksIcon';
-import PeopleIcon from './blocks/svg/PeopleIcon';
+import UserMiniCards, { MetricData } from './mini-cards/UserMiniCards.tsx';
+import BlocksIcon from './blocks/svg/BlocksIcon.tsx';
+import PeopleIcon from './blocks/svg/PeopleIcon.tsx';
 import { useEffect, useState } from 'react';
-import { getVehiclesStats, VehicleStats } from '@/api/cars';
+import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
 
 const VehiclePage = () => {
   const navigate = useNavigate();

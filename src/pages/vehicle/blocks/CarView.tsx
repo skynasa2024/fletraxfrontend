@@ -1,5 +1,5 @@
-import { Vehicle } from '@/api/cars';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { Vehicle } from '@/api/cars.ts';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
 
 
 export interface CarViewProps {

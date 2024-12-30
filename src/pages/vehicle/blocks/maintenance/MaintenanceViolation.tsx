@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { KeenIcon } from '@/components';
-import { ButtonRadioGroup } from './ButtonRadioGroup';
-import { ViolationTable } from './ViolationTable';
-import { MaintenanceTable } from './MaintenanceTable';
+import { ButtonRadioGroup } from './ButtonRadioGroup.tsx';
+import { ViolationTable } from './ViolationTable.tsx';
+import { MaintenanceTable } from './MaintenanceTable.tsx';
 
 const MaintenanceViolationTable = () => {
   const [selection, setSelection] = useState('Maintenance');

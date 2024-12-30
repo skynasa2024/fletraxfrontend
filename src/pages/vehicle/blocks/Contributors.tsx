@@ -1,58 +1,68 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/i18n';
 import { KeenIcon, Menu, MenuItem, MenuToggle } from '@/components';
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from '@/utils/Assets.ts';
 
 import { DropdownCard1, DropdownCardItem1 } from '@/partials/dropdowns/general';
 
-interface IRecentUploadsItem {
-  image: string;
-  desc: string;
-  date: string;
+interface IContributorsItem {
+  avatar: string;
+  name: string;
+  connections: number;
+  connected: boolean;
 }
-interface IRecentUploadsItems extends Array<IRecentUploadsItem> {}
+interface IContributorsItems extends Array<IContributorsItem> {}
 
-interface IRecentUploadsProps {
-  title: string;
-}
-
-const RecentUploads = ({ title }: IRecentUploadsProps) => {
+const Contributors = () => {
   const { isRTL } = useLanguage();
 
-  const items: IRecentUploadsItems = [
+  const items: IContributorsItems = [
     {
-      image: 'pdf.svg',
-      desc: 'Project-pitch.pdf',
-      date: '4.7 MB 26 Sep 2024 3:20 PM'
+      avatar: '300-3.png',
+      name: 'Tyler Hero',
+      connections: 6,
+      connected: false
     },
     {
-      image: 'doc.svg',
-      desc: 'Report-v1.docx',
-      date: '2.3 MB 1 Oct 2024 12:00 PM'
+      avatar: '300-1.png',
+      name: 'Esther Howard',
+      connections: 29,
+      connected: true
     },
     {
-      image: 'ai.svg',
-      desc: 'Framework-App.js',
-      date: '0.8 MB 17 Oct 2024 6:46 PM'
+      avatar: '300-14.png',
+      name: 'Cody Fisher',
+      connections: 34,
+      connected: false
     },
     {
-      image: 'js.svg',
-      desc: 'Mobile-logo.ai',
-      date: '0.2 MB 4 Nov 2024 11:30 AM'
+      avatar: '300-7.png',
+      name: 'Arlene McCoy',
+      connections: 1,
+      connected: true
     }
   ];
 
-  const renderItem = (item: IRecentUploadsItem, index: number) => {
+  const renderItem = (item: IContributorsItem, index: number) => {
     return (
-      <div key={index} className="flex items-center gap-3">
+      <div key={index} className="flex items-center gap-2">
         <div className="flex items-center grow gap-2.5">
-          <img src={toAbsoluteUrl(`/media/file-types/${item.image}`)} alt="" />
+          <img
+            src={toAbsoluteUrl(`/media/avatars/${item.avatar}`)}
+            className="rounded-full size-9 shrink-0"
+            alt=""
+          />
 
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-900 cursor-pointer hover:text-primary mb-px">
-              {item.desc}
+            <a
+              href="#"
+              className="text-sm font-semibold text-gray-900 hover:text-primary-active mb-px"
+            >
+              {item.name}
+            </a>
+            <span className="text-xs font-semibold text-gray-600">
+              {item.connections} contributors
             </span>
-            <span className="text-xs text-gray-700">{item.date}</span>
           </div>
         </div>
 
@@ -84,8 +94,8 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
 
   return (
     <div className="card">
-      <div className="card-header">
-        <h3 className="card-title">{title}</h3>
+      <div className="card-header gap-2">
+        <h3 className="card-title">Contributors</h3>
 
         <Menu>
           <MenuItem
@@ -112,7 +122,7 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
       </div>
 
       <div className="card-body">
-        <div className="grid gap-2.5 lg:gap-5">
+        <div className="flex flex-col gap-2 lg:gap-5">
           {items.map((item, index) => {
             return renderItem(item, index);
           })}
@@ -120,17 +130,12 @@ const RecentUploads = ({ title }: IRecentUploadsProps) => {
       </div>
 
       <div className="card-footer justify-center">
-        <Link to="/account/integrations" className="btn btn-link">
-          All Files
+        <Link to="/public-profile/network" className="btn btn-link">
+          All Contributors
         </Link>
       </div>
     </div>
   );
 };
 
-export {
-  RecentUploads,
-  type IRecentUploadsItem,
-  type IRecentUploadsItems,
-  type IRecentUploadsProps
-};
+export { Contributors, type IContributorsItem, type IContributorsItems };

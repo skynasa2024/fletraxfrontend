@@ -1,11 +1,11 @@
 import { Fragment } from 'react';
 
-import { toAbsoluteUrl } from '@/utils/Assets';
+import { toAbsoluteUrl } from '@/utils/Assets.ts';
 import { Container } from '@/components/container';
 
 
 
-import { VehiclePage } from '.';
+import { VehiclePage } from './index.ts';
 
 const Vehicles = () => {
   const image = (

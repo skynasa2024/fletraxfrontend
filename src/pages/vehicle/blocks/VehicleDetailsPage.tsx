@@ -1,16 +1,16 @@
-import { MaintenanceViolationTable } from '../blocks/maintenance/MaintenanceViolation';
+import { MaintenanceViolationTable } from './maintenance/MaintenanceViolation.tsx';
 
-import Toolbar from './Toolbar';
+import Toolbar from './Toolbar.tsx';
 import { Model, ModelSeries, ModelYear, FuelType, Gear, Volume, Power, Color, Tayp } from './svg';
 
-import VehicleMetrics from './details-components/VehicleMetrics';
-import FileList from './details-components/FileList';
-import GeofenceList from './details-components/GeofenceList';
-import TripList from './details-components/TripList';
+import VehicleMetrics from './details-components/VehicleMetrics.tsx';
+import FileList from './details-components/FileList.tsx';
+import GeofenceList from './details-components/GeofenceList.tsx';
+import TripList from './details-components/TripList.tsx';
 import { toAbsoluteUrl } from '@/utils';
 import { useParams } from 'react-router-dom';
-import BrandLogo from './Brand logo';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import BrandLogo from './Brand logo.tsx';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
 
 interface TripData {
   distance: string;

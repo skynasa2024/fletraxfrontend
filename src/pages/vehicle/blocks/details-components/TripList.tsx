@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import MapPin from '../svg/MapPin';
+import MapPin from '../svg/MapPin.tsx';
 
 interface Trip {
   distance: string;

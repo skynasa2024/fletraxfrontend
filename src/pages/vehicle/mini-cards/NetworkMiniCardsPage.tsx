@@ -10,9 +10,9 @@ import {
 } from '@/partials/toolbar';
 
 import { useLayout } from '@/providers';
-import UserMiniCards, { MetricData } from './UserMiniCards';
-import BlocksIcon from '../blocks/svg/BlocksIcon';
-import PeopleIcon from '../blocks/svg/PeopleIcon';
+import UserMiniCards, { MetricData } from './UserMiniCards.tsx';
+import BlocksIcon from '../blocks/svg/BlocksIcon.tsx';
+import PeopleIcon from '../blocks/svg/PeopleIcon.tsx';
 import { useNavigate } from 'react-router';
 
 const metrics: MetricData[] = [
