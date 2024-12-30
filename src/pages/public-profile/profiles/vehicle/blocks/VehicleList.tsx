@@ -1,34 +1,39 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataGrid, KeenIcon } from '@/components';
-import { getVehicles, VehicleDetails } from '@/api/cars';
+import { getVehicles, VehicleDetails, VehicleStatusValues } from '@/api/cars';
 import { Paginated } from '@/api/common';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
-import { StatusDropdown } from '../StatusDropdown';
+import { DropdownOptions, StatusDropdown } from '../StatusDropdown';
 
 import { useNavigate } from 'react-router';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { Download, Filter } from 'lucide-react';
 import clsx from 'clsx';
+import Image from '@/components/image/Image';
 
-const STATUS_OPTIONS = {
-  Unavailable: {
+const STATUS_OPTIONS: DropdownOptions<VehicleStatusValues> = {
+  unavailable: {
     color: '#F1416C',
-    backgroundColor: '#FFF5F8'
+    backgroundColor: '#FFF5F8',
+    name: 'Unavailable'
   },
-  Maintenance: {
+  in_maintenance: {
     color: '#FFA800',
-    backgroundColor: '#FFF8EA'
+    backgroundColor: '#FFF8EA',
+    name: 'Maintenance'
   },
-  Available: {
+  available: {
     color: '#50CD89',
-    backgroundColor: '#EEFAF4'
+    backgroundColor: '#EEFAF4',
+    name: 'Available'
   },
-  Rented: {
+  rented: {
     color: '#00A3FF',
-    backgroundColor: '#E5F7FF'
+    backgroundColor: '#E5F7FF',
+    name: 'Rented'
   }
-} as const;
+};
 
 interface VehicleListProps {
   searchQuery?: string;
@@ -40,8 +45,10 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
+  console.log('vehicles', vehicles);
+
   useEffect(() => {
-    getVehicles().then(setVehicles);
+    getVehicles(0, 10).then(setVehicles);
   }, []);
 
   const columns = useMemo<ColumnDef<VehicleDetails>[]>(
@@ -50,11 +57,17 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         accessorKey: 'customer.name',
         header: 'Owner',
         cell: ({ row }) => (
-          <div className="flex items-center">
-            <img
+          <div className="flex items-center gap-3">
+            <Image
               src={row.original.customer.avatar}
-              className="w-10 h-10 rounded-full mr-3"
               alt={row.original.customer.name}
+              title={row.original.customer.name}
+              className="w-9 h-9 object-cover"
+              fallback={
+                <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
+                  <KeenIcon style="duotone" icon="user" className="text-gray-400 text-black" />
+                </div>
+              }
             />
             <div>
               <div className="font-bold text-[#3F4254]">{row.original.customer.name}</div>
@@ -68,7 +81,17 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         header: 'Brand',
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <img src={row.original.vehicle.brandImage} className="w-9 h-9 object-cover" />
+            <div className="w-9 h-9 aspect-square">
+              <Image
+                src={toAbsoluteUrl(row.original.vehicle.name)}
+                className="w-9 h-9 object-cover"
+                fallback={
+                  <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
+                    <KeenIcon style="duotone" icon="car" className="text-gray-400 text-black" />
+                  </div>
+                }
+              />
+            </div>
             <span className="text-[#3F4254]">{row.original.brandName}</span>
           </div>
         )
@@ -99,7 +122,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
-            <span>{row.original.mileage} KM</span>
+            <span>{row.original.mileage === 'NA' ? 'NA' : row.original.mileage + ' KM'}</span>
           </div>
         )
       },
@@ -107,7 +130,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         accessorKey: 'status',
         header: 'Status',
         cell: ({ row }) => (
-          <StatusDropdown
+          <StatusDropdown<VehicleStatusValues>
             selected={row.original.status}
             setSelected={() => {}}
             options={STATUS_OPTIONS}
@@ -153,8 +176,8 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
             {(vehicles?.totalCount ?? 0 > 1) ? 'vehicles' : 'vehicle'}
           </h4>
         </div>
-
         <div className="flex items-center gap-4">
+          {/* View Mode Buttons */}
           <button
             className={clsx(
               'p-3 transition-colors border rounded-lg flex items-center justify-center',
@@ -183,8 +206,8 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
               className={clsx(viewMode === 'grid' ? 'text-info' : 'text-gray-400')}
             />
           </button>
+          {/* Filters Button */}
           <div className="flex items-center gap-4">
-            {/* Filters Button */}
             <button className="flex items-center gap-2 px-3 py-2 text-gray-600 rounded-lg border hover:bg-gray-50">
               <Filter size={16} />
               <span>Filters</span>
@@ -255,7 +278,7 @@ function VehicleCard({
       <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
-          <StatusDropdown
+          <StatusDropdown<VehicleStatusValues>
             selected={vehicle.status}
             setSelected={() => {}}
             options={STATUS_OPTIONS}
@@ -264,7 +287,17 @@ function VehicleCard({
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-[38px] sm:justify-between">
           <div className="flex gap-4">
             <div className="flex gap-2 items-center">
-              <img src={vehicle.customer.avatar} className="size-9 rounded-full aspect-square" />
+              <Image
+                src={vehicle.customer.avatar}
+                alt={vehicle.customer.name}
+                title={vehicle.customer.name}
+                className="size-10 object-cover"
+                fallback={
+                  <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
+                    <KeenIcon style="duotone" icon="user" className="text-gray-400 text-black" />
+                  </div>
+                }
+              />
               <div className="w-full sm:w-48 text-nowrap">
                 <div className="text-[#3F4254] font-bold text-[15px] text-ellipsis overflow-hidden">
                   {vehicle.customer.name}
@@ -275,9 +308,16 @@ function VehicleCard({
               </div>
             </div>
           </div>
-          <img
-            src={vehicle.vehicle.brandImage}
-            className="size-9 aspect-square object-cover mr-0.5"
+          <Image
+            src={vehicle.brandName}
+            alt={vehicle.brandName}
+            title={vehicle.brandName}
+            className="size-10 object-cover"
+            fallback={
+              <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
+                <KeenIcon style="duotone" icon="car" className="text-gray-400 text-black" />
+              </div>
+            }
           />
         </div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">

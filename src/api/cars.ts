@@ -9,6 +9,8 @@ import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
 import { toAbsoluteUrl } from '@/utils';
 
+export type VehicleStatusValues = 'unavailable' | 'in_maintenance' | 'available' | 'rented';
+
 export interface CarCountsDTO {
   total: number;
   offline: number;
@@ -39,8 +41,8 @@ export interface VehicleDetails {
   customer: Customer;
   brandName: string;
   type: string;
-  mileage: number;
-  status: string;
+  mileage: string;
+  status: VehicleStatusValues;
   deviceName: string;
 }
 
@@ -50,7 +52,7 @@ export interface VehicleDTO {
   image: string | null;
   imageFile: string | null;
   type: string;
-  status: string;
+  status: VehicleStatusValues;
   brand: string;
   model: string;
   modelSeries: string;
@@ -248,25 +250,37 @@ export const updateMaintenanceStatus = async (id: number, status: string): Promi
   });
 };
 
-export const getVehicles = async (cursor?: string): Promise<Paginated<VehicleDetails>> => {
-  const limit = 10;
-  const totalCount = faker.number.int({ min: 6, max: 500 });
-
-  const originalDataset: VehicleDetails[] = Array(limit)
-    .fill(0)
-    .map(() => ({
-      vehicle: fakeVehicle(),
-      customer: fakeCustomer(),
-      brandName: faker.vehicle.vehicle(),
-      mileage: faker.number.int({ min: 5, max: 1000 }),
-      type: faker.helpers.arrayElement(['Manual', 'Automatic']),
-      status: faker.helpers.arrayElement(['Unavailable', 'Maintenance', 'Available']),
-      deviceName: faker.vehicle.manufacturer()
-    }));
+export const getVehicles = async (
+  page: number,
+  size: number
+): Promise<Paginated<VehicleDetails>> => {
+  const vehicles = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
+    params: {
+      page,
+      size
+    }
+  });
 
   return {
-    data: originalDataset,
-    totalCount
+    data: vehicles.data.result.content.map((vehicle) => ({
+      vehicle: {
+        brandImage: vehicle.image ?? '',
+        plate: vehicle.plate,
+        imei: vehicle.identifyNumber,
+        name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
+      },
+      customer: {
+        name: 'vehicle.owner',
+        avatar: 'vehicle.owner.avatar',
+        email: 'vehicle.owner.email'
+      },
+      brandName: vehicle.brand,
+      type: vehicle.gear ?? 'NA',
+      mileage: vehicle.currentMileage ? vehicle.currentMileage.replace(' km', '') : 'NA',
+      status: vehicle.status,
+      deviceName: vehicle.deviceId?.toString()
+    })),
+    totalCount: vehicles.data.result.totalElements
   };
 };
 
