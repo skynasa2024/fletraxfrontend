@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { DataGrid, KeenIcon } from '@/components';
+import React, { useMemo, useState } from 'react';
+import { DataGrid, KeenIcon, TDataGridRequestParams } from '@/components';
 import {
   Menu,
   MenuItem,
@@ -54,11 +54,11 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
-  console.log('vehicles', vehicles);
-
-  useEffect(() => {
-    getVehicles(0, 5).then(setVehicles);
-  }, []);
+  const handleGetVehicles = async (params: TDataGridRequestParams) => {
+    const vehicles = await getVehicles(params);
+    setVehicles(vehicles);
+    return vehicles;
+  };
 
   const columns = useMemo<ColumnDef<VehicleDetails>[]>(
     () => [
@@ -229,12 +229,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
       <div className="gap-cols responsive-card">
         <div className="card-body pt-2 px-2 sm:px-6 pb-7">
           {viewMode === 'grid' ? (
-            <DataGrid
-              columns={columns}
-              data={vehicles?.data ?? []}
-              serverSide={false}
-              filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
-            />
+            <DataGrid columns={columns} serverSide onFetchData={handleGetVehicles} />
           ) : (
             <div className="w-full">
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">

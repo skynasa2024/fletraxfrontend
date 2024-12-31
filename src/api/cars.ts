@@ -251,15 +251,14 @@ export const updateMaintenanceStatus = async (id: number, status: string): Promi
 };
 
 export const getVehicles = async (
-  page: number,
-  size: number
+  params: TDataGridRequestParams
 ): Promise<Paginated<VehicleDetails>> => {
   const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/index',
     {
       params: {
-        page,
-        size
+        page: params.pageIndex,
+        size: params.pageSize
       }
     }
   );
