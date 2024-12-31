@@ -30,6 +30,7 @@ export const getCarCount = async (): Promise<Record<string, number>> => {
 };
 
 export interface Vehicle {
+  id: number;
   brandImage: string;
   plate: string;
   imei: string;
@@ -187,6 +188,17 @@ export const updateViolationStatus = async (id: number, status: string): Promise
   });
 };
 
+export const updateVehicleStatus = async (
+  id: number,
+  status: VehicleStatusValues
+): Promise<void> => {
+  await axios.post(`/api/vehicles/cars/update-status/${id}`, undefined, {
+    params: {
+      status
+    }
+  });
+};
+
 export interface Maintenance {
   id: number;
   date: Date;
@@ -274,6 +286,7 @@ export const getVehicles = async (
 
       return {
         vehicle: {
+          id: vehicle.id,
           brandImage: vehicle.image ?? '',
           plate: vehicle.plate,
           imei: device.imei,
@@ -310,6 +323,7 @@ const getVehicle = async (id: number): Promise<Vehicle | null> => {
 
   const device = await getDevice(vehicle.data.result.deviceId);
   return {
+    id: vehicle.data.result.id,
     brandImage: toAbsoluteUrl(`/media/car-brands/${vehicle.data.result.brand}.png`),
     plate: vehicle.data.result.plate,
     imei: device.imei,

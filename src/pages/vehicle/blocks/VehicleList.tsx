@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { DataGrid, KeenIcon, TDataGridRequestParams } from '@/components';
+import { DataGrid, KeenIcon, TDataGridRequestParams, useDataGrid } from '@/components';
 import {
   Menu,
   MenuItem,
@@ -9,7 +9,12 @@ import {
   MenuToggle,
   MenuIcon
 } from '@/components/menu';
-import { getVehicles, VehicleDetails, VehicleStatusValues } from '@/api/cars.ts';
+import {
+  getVehicles,
+  updateVehicleStatus,
+  VehicleDetails,
+  VehicleStatusValues
+} from '@/api/cars.ts';
 import { Paginated } from '@/api/common.ts';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
@@ -44,13 +49,25 @@ const STATUS_OPTIONS: DropdownOptions<VehicleStatusValues> = {
   }
 };
 
-interface VehicleListProps {
-  searchQuery?: string;
-}
-
 type ViewMode = 'grid' | 'card';
 
-const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
+function VehicleStatusDropdown({ vehicleDetails }: { vehicleDetails: VehicleDetails }) {
+  const reload = useDataGrid().fetchServerSideData;
+
+  return (
+    <StatusDropdown<VehicleStatusValues>
+      selected={vehicleDetails.status}
+      setSelected={async (value) => {
+        console.log('Updating vehicle status to:', value);
+        await updateVehicleStatus(vehicleDetails.vehicle.id, value);
+        reload();
+      }}
+      options={STATUS_OPTIONS}
+    />
+  );
+}
+
+function VehicleList() {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
@@ -136,13 +153,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
       {
         accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => (
-          <StatusDropdown<VehicleStatusValues>
-            selected={row.original.status}
-            setSelected={() => {}}
-            options={STATUS_OPTIONS}
-          />
-        )
+        cell: ({ row }) => <VehicleStatusDropdown vehicleDetails={row.original} />
       },
       {
         id: 'actions',
@@ -250,7 +261,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
       </div>
     </div>
   );
-};
+}
 
 function VehicleCard({
   vehicle,

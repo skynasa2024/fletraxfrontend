@@ -1,5 +1,4 @@
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
-import { Dispatch, SetStateAction } from 'react';
 
 type DropdownOption = {
   color: string;
@@ -11,7 +10,7 @@ export type DropdownOptions<T extends string> = Record<T, DropdownOption>;
 
 export interface StatusDropdownProps<T extends string> {
   selected: T | null;
-  setSelected: Dispatch<SetStateAction<T | null>>;
+  setSelected: (value: T) => void;
   options: DropdownOptions<T>;
 }
 
@@ -51,12 +50,8 @@ export const StatusDropdown = <T extends string>({
         </MenuToggle>
         <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
           {(Object.entries(options) as [T, DropdownOption][]).map(([key, option]) => (
-            <MenuItem key={key}>
-              <MenuLink
-                handleClick={() => {
-                  setSelected(key);
-                }}
-              >
+            <MenuItem key={key} onClick={() => setSelected(key)}>
+              <MenuLink>
                 <MenuTitle>
                   <div
                     style={{
