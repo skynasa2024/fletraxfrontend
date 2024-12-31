@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataGrid, KeenIcon } from '@/components';
+import {
+  Menu,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle,
+  MenuIcon
+} from '@/components/menu';
 import { getVehicles, VehicleDetails, VehicleStatusValues } from '@/api/cars.ts';
 import { Paginated } from '@/api/common.ts';
 import { ColumnDef } from '@tanstack/react-table';
@@ -138,23 +147,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
       {
         id: 'actions',
         header: 'Actions',
-        cell: () => (
-          <div className="flex gap-3">
-            <a
-              href="#"
-              onClick={handleViewVehicleClick}
-              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-            >
-              <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
-            </a>
-            <a
-              href="#"
-              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
-            >
-              <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
-            </a>
-          </div>
-        )
+        cell: () => <ActionsDropdown handleViewVehicle={handleViewVehicleClick} />
       }
     ],
     []
@@ -273,7 +266,7 @@ function VehicleCard({
 }) {
   return (
     <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full hover:shadow-lg transition-shadow duration-200">
-      <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6 grow">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
           <StatusDropdown<VehicleStatusValues>
@@ -322,28 +315,89 @@ function VehicleCard({
           <div className="flex flex-wrap gap-4 sm:gap-[18px] text-[#72767C] font-dm-sans">
             <div className="flex gap-1">
               <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
-              <span>{vehicle.mileage} KM</span>
+              <span className="uppercase">{vehicle.mileage}</span>
             </div>
             <div className="flex gap-1">
               <img src={toAbsoluteUrl('/media/icons/manual.svg')} />
               <span>{vehicle.type}</span>
             </div>
           </div>
-          <div className="text-xs font-semibold text-[#3F4254] max-w-full sm:max-w-[92px] text-ellipsis overflow-hidden text-nowrap">
+          <div className="text-md capitalize font-semibold text-[#3F4254] max-w-full sm:max-w-[92px] text-ellipsis overflow-hidden text-nowrap">
             {vehicle.brandName}
           </div>
         </div>
       </div>
-      <div className="text-xs border-t flex justify-center">
-        <a href="#" onClick={handleViewVehicle} className="px-5 py-2 flex gap-2 hover:bg-gray-50">
+      <div className="text-xs border-t grid grid-cols-4 w-full overflow-hidden rounded-b-2xl">
+        <a
+          href="#"
+          onClick={handleViewVehicle}
+          className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50"
+        >
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
-        <a href="#" className="px-5 py-2 border-x flex gap-2 hover:bg-gray-50">
+        <a href="#" className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
         </a>
+        <a href="#" className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50">
+          <img src={toAbsoluteUrl('/media/icons/rent-light.svg')} />
+          <span>Rent</span>
+        </a>
+        <a href="#" className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50">
+          <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
+          <span>Delete</span>
+        </a>
       </div>
+    </div>
+  );
+}
+
+type ActionsDropdownProps = {
+  handleViewVehicle: () => void;
+};
+
+function ActionsDropdown({ handleViewVehicle }: ActionsDropdownProps) {
+  return (
+    <div className="flex gap-3 items-center justify-center">
+      <a
+        href="#"
+        onClick={handleViewVehicle}
+        className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
+      >
+        <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
+      </a>
+      <a
+        href="#"
+        className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
+      >
+        <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
+      </a>
+      <Menu>
+        <MenuItem toggle="dropdown" trigger="click">
+          <MenuToggle>
+            <KeenIcon className="text-xl" icon="dots-vertical" />
+          </MenuToggle>
+          <MenuSub className="menu-default">
+            <MenuItem>
+              <MenuLink>
+                <MenuIcon>
+                  <img src={toAbsoluteUrl('/media/icons/rent-light.svg')} />
+                </MenuIcon>
+                <MenuTitle>Rent</MenuTitle>
+              </MenuLink>
+            </MenuItem>
+            <MenuItem>
+              <MenuLink>
+                <MenuIcon>
+                  <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
+                </MenuIcon>
+                <MenuTitle>Delete</MenuTitle>
+              </MenuLink>
+            </MenuItem>
+          </MenuSub>
+        </MenuItem>
+      </Menu>
     </div>
   );
 }
