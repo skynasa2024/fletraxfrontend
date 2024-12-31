@@ -24,6 +24,7 @@ export interface User {
   id: number;
   name: string;
   avatar?: string;
+  email: string;
 }
 
 export const getUsers = async (): Promise<User[]> => {
@@ -32,7 +33,8 @@ export const getUsers = async (): Promise<User[]> => {
   );
   return clients.data.result.map((client) => ({
     id: client.id,
-    name: client.name
+    name: client.name,
+    email: client.email
   }));
 };
 
@@ -40,6 +42,7 @@ export const getUser = async (id: number): Promise<User> => {
   const client = await axios.get<ResponseModel<UserModel>>(`/api/users/show/${id}`);
   return {
     id: client.data.result.id,
-    name: client.data.result.name
+    name: client.data.result.name,
+    email: client.data.result.email
   };
 };

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { fakeCustomer, fakeVehicle } from './faker';
+import { fakeVehicle } from './faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Driver } from './drivers';
@@ -254,33 +254,49 @@ export const getVehicles = async (
   page: number,
   size: number
 ): Promise<Paginated<VehicleDetails>> => {
-  const vehicles = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
-    params: {
-      page,
-      size
+  const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
+    '/api/vehicles/cars/index',
+    {
+      params: {
+        page,
+        size
+      }
     }
-  });
+  );
+
+  const vehicles = vehiclesRes.data.result.content;
+
+  const fullVehicleDetails: VehicleDetails[] = await Promise.all(
+    vehicles.map(async (vehicle) => {
+      const [device, user] = await Promise.all([
+        getDevice(vehicle.deviceId),
+        getUser(vehicle.userId)
+      ]);
+
+      return {
+        vehicle: {
+          brandImage: vehicle.image ?? '',
+          plate: vehicle.plate,
+          imei: device.imei,
+          name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
+        },
+        customer: {
+          name: user.name,
+          avatar: user.avatar ?? '',
+          email: user.email
+        },
+        brandName: vehicle.brand,
+        type: vehicle.gear ?? 'NA',
+        mileage: vehicle.currentMileage ? vehicle.currentMileage : 'NA',
+        status: vehicle.status,
+        deviceName: device.name
+      };
+    })
+  );
 
   return {
-    data: vehicles.data.result.content.map((vehicle) => ({
-      vehicle: {
-        brandImage: vehicle.image ?? '',
-        plate: vehicle.plate,
-        imei: vehicle.identifyNumber,
-        name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
-      },
-      customer: {
-        name: 'vehicle.owner',
-        avatar: 'vehicle.owner.avatar',
-        email: 'vehicle.owner.email'
-      },
-      brandName: vehicle.brand,
-      type: vehicle.gear ?? 'NA',
-      mileage: vehicle.currentMileage ? vehicle.currentMileage.replace(' km', '') : 'NA',
-      status: vehicle.status,
-      deviceName: vehicle.deviceId?.toString()
-    })),
-    totalCount: vehicles.data.result.totalElements
+    data: fullVehicleDetails,
+    totalCount: vehiclesRes.data.result.totalElements
   };
 };
 

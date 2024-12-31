@@ -48,7 +48,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
   console.log('vehicles', vehicles);
 
   useEffect(() => {
-    getVehicles(0, 10).then(setVehicles);
+    getVehicles(0, 5).then(setVehicles);
   }, []);
 
   const columns = useMemo<ColumnDef<VehicleDetails>[]>(
@@ -62,9 +62,9 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
               src={row.original.customer.avatar}
               alt={row.original.customer.name}
               title={row.original.customer.name}
-              className="w-9 h-9 object-cover"
+              className="size-9 aspect-square object-cover"
               fallback={
-                <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
+                <div className="bg-neutral-200 size-9 aspect-square rounded-full flex items-center justify-center">
                   <KeenIcon style="duotone" icon="user" className="text-black" />
                 </div>
               }
@@ -81,18 +81,16 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         header: 'Brand',
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 aspect-square">
-              <Image
-                src={toAbsoluteUrl(row.original.vehicle.name)}
-                className="w-9 h-9 object-cover"
-                fallback={
-                  <div className="bg-neutral-200 w-9 h-9 rounded-full flex items-center justify-center">
-                    <KeenIcon style="duotone" icon="car" className="text-black" />
-                  </div>
-                }
-              />
-            </div>
-            <span className="text-[#3F4254]">{row.original.brandName}</span>
+            <Image
+              src={toAbsoluteUrl(row.original.vehicle.name)}
+              className="size-9 object-cover aspect-square"
+              fallback={
+                <div className="bg-neutral-200 size-9 aspect-square rounded-full flex items-center justify-center">
+                  <KeenIcon style="duotone" icon="car" className="text-black" />
+                </div>
+              }
+            />
+            <span className="text-[#3F4254] capitalize">{row.original.brandName}</span>
           </div>
         )
       },
@@ -107,7 +105,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/manual.svg')} />
-            <span>{row.original.type}</span>
+            <span className="capitalize">{row.original.type}</span>
           </div>
         )
       },
@@ -122,7 +120,7 @@ const VehicleList: React.FC<VehicleListProps> = ({ searchQuery = '' }) => {
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
-            <span>{row.original.mileage === 'NA' ? 'NA' : row.original.mileage + ' KM'}</span>
+            <span className="uppercase">{row.original.mileage}</span>
           </div>
         )
       },
@@ -291,9 +289,9 @@ function VehicleCard({
                 src={vehicle.customer.avatar}
                 alt={vehicle.customer.name}
                 title={vehicle.customer.name}
-                className="size-10 object-cover"
+                className="size-10 object-cover aspect-square"
                 fallback={
-                  <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
+                  <div className="bg-neutral-200 size-10 aspect-square rounded-full flex items-center justify-center">
                     <KeenIcon style="duotone" icon="user" className="text-black" />
                   </div>
                 }
@@ -312,9 +310,9 @@ function VehicleCard({
             src={vehicle.brandName}
             alt={vehicle.brandName}
             title={vehicle.brandName}
-            className="size-10 object-cover"
+            className="size-10 object-cover aspect-square"
             fallback={
-              <div className="bg-neutral-200 size-10 rounded-full flex items-center justify-center">
+              <div className="bg-neutral-200 size-10 aspect-square rounded-full flex items-center justify-center">
                 <KeenIcon style="duotone" icon="car" className="text-black" />
               </div>
             }
