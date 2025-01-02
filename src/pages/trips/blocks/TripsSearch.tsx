@@ -32,7 +32,8 @@ export const TripsSearch = ({ search, setSearch, onSearch }: TripsSearchProps) =
         }
         onSearch?.();
       });
-  }, [onSearch, search, setSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="input input-sm h-[34px] shrink-0 relative">

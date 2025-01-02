@@ -30,6 +30,7 @@ interface TripPoint {
   longitude: number;
   timestamp: number;
   speed: number;
+  direction: number;
 }
 
 export interface Trip {
@@ -94,7 +95,7 @@ export const searchTrips = async ({
         tripId: trip.id,
         latitude: point.latitude,
         longitude: point.longitude,
-        direction: 0,
+        direction: point.direction,
         speed: point.speed,
         timestamp: new Date(point.timestamp * 1000)
       }))
