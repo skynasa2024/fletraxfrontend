@@ -1,16 +1,49 @@
-import { faker } from '@faker-js/faker';
+import { format } from 'date-fns';
+import { axios } from './axios';
+import { OffsetBounds } from './common';
+import { ResponseModel } from './response';
+
+interface TripGroupsDTO {
+  [key: string]: TripDTO[];
+}
+
+interface TripDTO {
+  id: number;
+  ident: string;
+  intervalType: string;
+  startTime: string;
+  endTime: string;
+  startLatitude: number;
+  startLongitude: number;
+  endLatitude: number;
+  endLongitude: number;
+  totalDistance: string;
+  pointsList: TripPoint[];
+  totalDuration: string;
+  maxSpeed: string;
+  averageSpeed: string;
+  route: string;
+}
+
+interface TripPoint {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+  speed: number;
+}
 
 export interface Trip {
-  id: string;
+  id: number;
   imei: string;
   startDate: Date;
   endDate: Date;
-  mileage: number;
-  maxSpeed: number;
+  mileage: string;
+  maxSpeed: string;
+  path: TripPath[];
 }
 
 export interface TripPath {
-  tripId: string;
+  tripId: number;
   latitude: number;
   longitude: number;
   direction: number;
@@ -28,6 +61,7 @@ export interface SearchTripsParams {
   query: string;
   startDate?: Date;
   endDate?: Date;
+  offset?: OffsetBounds;
 }
 
 export const searchTrips = async ({
@@ -35,62 +69,35 @@ export const searchTrips = async ({
   startDate,
   endDate
 }: SearchTripsParams): Promise<TripGroup[]> => {
-  const numberOfTripGroups = faker.number.int({ min: 1, max: 5 });
-  return Array(numberOfTripGroups)
-    .fill(0)
-    .map(() => {
-      const numberOfTrips = faker.number.int({ min: 1, max: 5 });
-      const date = faker.date.recent({ days: 7 });
-      return {
-        id: faker.string.uuid(),
-        date,
-        trips: Array(numberOfTrips)
-          .fill(0)
-          .map(() => ({
-            id: faker.string.uuid(),
-            imei: faker.phone.imei(),
-            startDate: faker.date.recent({ refDate: date }),
-            endDate: faker.date.recent({ refDate: date }),
-            mileage: faker.number.float({ min: 0, max: 1000, fractionDigits: 2 }),
-            maxSpeed: faker.number.int({ min: 0, max: 100 })
-          }))
-      };
-    })
-    .sort((a, b) => b.date.getTime() - a.date.getTime());
-};
-
-export const getTripPath = async (trip: Trip): Promise<TripPath[]> => {
-  const numberOfPoints = faker.number.int({ min: 10, max: 50 });
-  const location = faker.location.nearbyGPSCoordinate({
-    origin: [38.9637, 33.2433],
-    radius: 200
+  const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
+    params: {
+      ident: query,
+      startDate: startDate && format(startDate, 'yyyy-MM-dd'),
+      endDate: endDate && format(endDate, 'yyyy-MM-dd'),
+      startTime: startDate && format(startDate, 'HH:mm:ss'),
+      endTime: endDate && format(endDate, 'HH:mm:ss'),
+      sort: 'startTime,desc'
+    }
   });
-  let timestamp = trip.startDate;
-  return Array(numberOfPoints)
-    .fill(0)
-    .map((_, _i) => {
-      const stop = faker.location.nearbyGPSCoordinate({
-        origin: location,
-        radius: 10
-      });
-      // Add 10 to 60 seconds to the timestamp
-      timestamp = new Date(timestamp.getTime() + faker.number.int({ min: 10, max: 60 }) * 1000);
-      return {
-        tripId: trip.id,
-        latitude: stop[0],
-        longitude: stop[1],
-        direction: faker.number.int({ min: 0, max: 360 }),
-        speed: faker.number.int({ min: 0, max: 100 }),
-        timestamp
-      };
-    });
-};
 
-export const getTripGroupPath = async (tripGroup: TripGroup): Promise<TripPath[]> => {
-  const tripPaths = await Promise.all(
-    tripGroup.trips.map(async (trip) => {
-      return getTripPath(trip);
-    })
-  );
-  return tripPaths.flat();
+  return Object.entries(trips.data.result).map(([date, tripGroup]) => ({
+    id: date,
+    date: new Date(date),
+    trips: tripGroup.map((trip) => ({
+      id: trip.id,
+      imei: trip.ident,
+      startDate: new Date(trip.startTime),
+      endDate: new Date(trip.endTime),
+      mileage: trip.totalDistance,
+      maxSpeed: trip.maxSpeed,
+      path: trip.pointsList.map((point) => ({
+        tripId: trip.id,
+        latitude: point.latitude,
+        longitude: point.longitude,
+        direction: 0,
+        speed: point.speed,
+        timestamp: new Date(point.timestamp * 1000)
+      }))
+    }))
+  }));
 };

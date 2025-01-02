@@ -1,4 +1,4 @@
-import { getTripGroupPath, getTripPath, searchTrips, Trip, TripGroup, TripPath } from '@/api/trips';
+import { searchTrips, Trip, TripGroup, TripPath } from '@/api/trips';
 import {
   createContext,
   PropsWithChildren,
@@ -44,20 +44,24 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
   const [path, setPath] = useState<TripPath[]>();
-  const searchDeviceQuery = searchParams.get('device') || '';
+  const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
   const setSearchDeviceQuery = useCallback(
     (query: string) => {
       setSearchParams((params) => {
+        if (!query) {
+          params.delete('device');
+          return params;
+        }
         params.set('device', query);
         return params;
       });
     },
     [setSearchParams]
   );
-  const startDate = useMemo(() => {
+  const [startDate, _setStartDate] = useState(() => {
     const date = searchParams.get('startDate');
     return date ? new Date(+date) : undefined;
-  }, [searchParams]);
+  });
   const setStartDate = useCallback(
     (date: Date | undefined) => {
       if (date && isNaN(date?.getTime())) {
@@ -75,10 +79,10 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     },
     [setSearchParams]
   );
-  const endDate = useMemo(() => {
+  const [endDate, _setEndDate] = useState(() => {
     const date = searchParams.get('endDate');
     return date ? new Date(+date) : undefined;
-  }, [searchParams]);
+  });
   const setEndDate = useCallback(
     (date: Date | undefined) => {
       setSearchParams((params) => {
@@ -94,18 +98,16 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   );
   const [trips, setTrips] = useState<TripGroup[]>([]);
   const search = useCallback(async () => {
+    setSearchDeviceQuery(searchDeviceQuery);
+    setStartDate(startDate);
+    setEndDate(endDate);
     const trips = await searchTrips({
       query: searchDeviceQuery,
       startDate,
       endDate
     });
     setTrips(trips);
-  }, [endDate, searchDeviceQuery, startDate]);
-
-  useEffect(() => {
-    search();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [endDate, searchDeviceQuery, setEndDate, setSearchDeviceQuery, setStartDate, startDate]);
 
   useEffect(() => {
     if (!selectedTrip) {
@@ -114,22 +116,23 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     }
 
     if ('trips' in selectedTrip) {
-      getTripGroupPath(selectedTrip).then(setPath);
+      const pathes = selectedTrip.trips.map((trip) => trip.path).reverse();
+      setPath(pathes.flat());
       return;
     }
 
-    getTripPath(selectedTrip).then(setPath);
+    setPath(selectedTrip.path);
   }, [selectedTrip]);
 
   return (
     <TripsContext.Provider
       value={{
         searchDeviceQuery,
-        setSearchDeviceQuery,
+        setSearchDeviceQuery: _setSearchDeviceQuery,
         startDate,
-        setStartDate,
+        setStartDate: _setStartDate,
         endDate,
-        setEndDate,
+        setEndDate: _setEndDate,
         search,
         trips,
         selectedTrip,

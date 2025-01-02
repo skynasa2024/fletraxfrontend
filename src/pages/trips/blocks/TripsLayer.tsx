@@ -72,6 +72,7 @@ export const TripsLayer = () => {
     if (!interpolatedState) {
       return null;
     }
+    console.log(interpolatedState);
 
     return interpolatedState.direction;
   }, [interpolatedState]);
@@ -93,7 +94,7 @@ export const TripsLayer = () => {
         pathOptions={{ color: '#5271FF' }}
         positions={path?.map((point) => [point.latitude, point.longitude])}
       />
-      {latLng && rotation && (
+      {latLng && rotation !== null && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
       )}
     </>

@@ -37,3 +37,18 @@ export const getDevice = async (id: number): Promise<Device> => {
     vehiclePlate: device.data.result.vehiclePlate
   };
 };
+
+export interface MonitoringDTO {
+  ident: string;
+  status: string;
+  motionStatus: string;
+  userId: number;
+  vehiclePlate: string;
+  vehicleImage: string | null;
+}
+
+export const getMonitoringDevices = async (): Promise<MonitoringDTO[]> => {
+  const availableLocations =
+    await axios.get<ResponseModel<MonitoringDTO[]>>('api/devices/monitoring');
+  return availableLocations.data.result;
+};

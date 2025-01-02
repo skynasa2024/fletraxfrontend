@@ -1,0 +1,71 @@
+import { getMonitoringDevices, MonitoringDTO } from '@/api/devices';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { useEffect, useMemo, useState } from 'react';
+
+interface TripsSearchProps {
+  search: string;
+  // eslint-disable-next-line no-unused-vars
+  setSearch: (value: string) => void;
+  onSearch?: () => void;
+}
+export const TripsSearch = ({ search, setSearch, onSearch }: TripsSearchProps) => {
+  const [devices, setDevices] = useState<MonitoringDTO[]>();
+  const filteredDevices = useMemo(() => {
+    return devices?.filter(
+      (device) =>
+        device.ident.toLowerCase().includes(search.toLowerCase()) ||
+        device.vehiclePlate.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [devices, search]);
+  const [focused, setFocused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    getMonitoringDevices()
+      .then((devices) => {
+        setDevices(devices);
+        return devices;
+      })
+      .then((devices) => {
+        if (!search) {
+          setSearch(devices[0].ident);
+        }
+        onSearch?.();
+      });
+  }, [onSearch, search, setSearch]);
+
+  return (
+    <div className="input input-sm h-[34px] shrink-0 relative">
+      <input
+        type="text"
+        placeholder="Search Devices"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      />
+      {(focused || hovered) && (
+        <div
+          className="absolute top-full left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          {!filteredDevices && <div className="p-2">Loading...</div>}
+          {filteredDevices?.map((device) => (
+            <div
+              key={device.ident}
+              className="p-2 hover:bg-gray-100 flex justify-between items-center gap-2 cursor-pointer"
+              onClick={() => {
+                setSearch(device.ident);
+                setHovered(false);
+              }}
+            >
+              <CarPlate plate={device.vehiclePlate} />
+              <div>{device.ident}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

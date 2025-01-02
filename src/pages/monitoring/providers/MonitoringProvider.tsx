@@ -11,8 +11,7 @@ import {
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import mqtt from 'mqtt';
-import { axios } from '@/api/axios';
-import { ResponseModel } from '@/api/response';
+import { getMonitoringDevices } from '@/api/devices';
 
 interface MqttResponse {
   device_id: number;
@@ -40,15 +39,6 @@ interface MqttResponse {
   engine_blocked_status?: boolean;
   battery_level?: number;
   status?: string;
-}
-
-interface MonitoringDTO {
-  ident: string;
-  status: string;
-  motionStatus: string;
-  userId: number;
-  vehiclePlate: string;
-  vehicleImage: string | null;
 }
 
 type UserWithDevices = User & { onlineDevices?: number; offlineDevices?: number };
@@ -166,9 +156,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     mqttClient.on('connect', async () => {
-      const availableLocations =
-        await axios.get<ResponseModel<MonitoringDTO[]>>('api/devices/monitoring');
-      for (const location of availableLocations.data.result) {
+      const availableLocations = await getMonitoringDevices();
+      for (const location of availableLocations) {
         const topic = `device/monitoring/${location.ident}`;
         if (memoryMaplocations[topic]) {
           continue;
