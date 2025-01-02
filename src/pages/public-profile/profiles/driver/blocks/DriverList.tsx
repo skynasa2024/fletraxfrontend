@@ -1,19 +1,16 @@
 import React, { useMemo } from 'react';
 import { DataGrid } from '@/components';
-import { getDrivers, Driver } from '@/api/drivers';
+import { getDrivers, DriverDetails } from '@/api/drivers';
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
-import { CarView } from '../../../../../pages/dashboards/dashboard/blocks/CarView';
 import { StatusDropdown } from './maintenance/StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
-import { useNavigate } from 'react-router';
 
 interface DriverListProps {
   searchQuery?: string;
 }
 
 const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
-  const columns = useMemo<ColumnDef<Driver>[]>(
+  const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
         accessorKey: 'owner',
@@ -21,22 +18,13 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
-              {row.original.owner.charAt(0)}
+              {'D'}
             </div>
             <div>
-              <div className="font-bold">{row.original.owner}</div>
+              <div className="font-bold">{row.original.driver.name}</div>
             </div>
           </div>
         )
-      },
-      {
-        accessorFn: (row) => row.vehicle,
-        id: 'vehicle',
-        header: () => 'Car',
-        cell: (info) => <CarView vehicle={info.row.original.vehicle} />,
-        meta: {
-          className: 'min-w-60'
-        }
       },
       {
         accessorKey: 'status',
@@ -59,19 +47,11 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         )
       },
       {
-        accessorKey: 'date',
-        header: 'Date',
-        enableSorting: true,
-        cell: ({ row }) => (
-          <span className="text-gray-800">{format(row.original.date, 'MMM d, yyyy')}</span>
-        )
-      },
-      {
         id: 'actions',
         header: 'Actions',
         cell: () => (
           <div className="flex gap-3">
-            <a href="#" onClick={handleViewDriverClick}>
+            <a href="#">
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
             <a href="#">
@@ -84,14 +64,8 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
     []
   );
 
-  const navigate = useNavigate();
-  const handleViewDriverClick = () => {
-    navigate('view-driver');
-  };
-
   return (
     <div className="card">
- 
       <div className="flex items-center justify-between p-6 ">
         <h2 className="text-xl font-semibold text-gray-800">Drivers List</h2>
       </div>
