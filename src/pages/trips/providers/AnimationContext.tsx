@@ -1,10 +1,12 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { useTripsContext } from './TripsContext';
 
 interface AnimationContextProps {
   playing: boolean;
   current: number;
   // eslint-disable-next-line no-unused-vars
   setCurrent: (current: number) => void;
+  duration: number;
   play: () => void;
   pause: () => void;
   stop: () => void;
@@ -20,6 +22,7 @@ const AnimationContext = createContext<AnimationContextProps>({
   playing: false,
   current: 0,
   setCurrent: () => {},
+  duration: 0,
   play: () => {},
   pause: () => {},
   stop: () => {},
@@ -29,15 +32,17 @@ const AnimationContext = createContext<AnimationContextProps>({
 });
 
 export const AnimationProvider = ({ children }: PropsWithChildren) => {
+  const { path } = useTripsContext();
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [max, setMax] = useState(10000);
   const [multiplier, setMultiplier] = useState(1);
   const [metaData, setMetaData] = useState<any>();
   const frameRate = 60;
   const latency = 1000 / frameRate;
 
   const play = () => {
-    if (current === 10000) {
+    if (current === max) {
       setCurrent(0);
       // Wait for 200 ms then play
       setTimeout(() => {
@@ -62,9 +67,9 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
       const interval = setInterval(() => {
         setCurrent((prev) => {
           const next = prev + latency * multiplier;
-          if (next >= 10000) {
+          if (next >= max) {
             pause();
-            return 10000;
+            return max;
           }
           return next;
         });
@@ -74,7 +79,14 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
         clearInterval(interval);
       };
     }
-  }, [latency, multiplier, playing]);
+  }, [latency, max, multiplier, playing]);
+
+  useEffect(() => {
+    if (path && path.length > 0) {
+      const last = path[path.length - 1];
+      setMax(last.timestamp.getTime() - path[0].timestamp.getTime());
+    }
+  }, [path]);
 
   const changeCurrent = (newValue: number) => {
     pause();
@@ -87,6 +99,7 @@ export const AnimationProvider = ({ children }: PropsWithChildren) => {
         playing,
         current,
         setCurrent: changeCurrent,
+        duration: max,
         play,
         pause,
         stop,

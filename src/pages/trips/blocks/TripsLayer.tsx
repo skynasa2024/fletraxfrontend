@@ -38,11 +38,9 @@ export const TripsLayer = () => {
     }
 
     const startTime = path[0].timestamp.getTime();
-    const endTime = path[path.length - 1].timestamp.getTime();
-    const duration = endTime - startTime;
 
     // time is from 0 to 10,000
-    return startTime + (time / 10000) * duration;
+    return startTime + time;
   }, [time, path]);
 
   const interpolatedState = useMemo(() => {
@@ -72,7 +70,6 @@ export const TripsLayer = () => {
     if (!interpolatedState) {
       return null;
     }
-    console.log(interpolatedState);
 
     return interpolatedState.direction;
   }, [interpolatedState]);

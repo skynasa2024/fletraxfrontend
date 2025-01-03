@@ -4,11 +4,20 @@ import { useAnimationContext } from '../providers/AnimationContext';
 import clsx from 'clsx';
 import { FaPause, FaPlay } from 'react-icons/fa';
 
-const MultiplierOptions = [1, 2, 3, 5];
+const MultiplierOptions = [1, 2, 3, 5, 10, 0.25, 0.5];
 
 export const PlaybackCard = () => {
-  const { playing, play, pause, current, setCurrent, metaData, multiplier, setMultiplier } =
-    useAnimationContext();
+  const {
+    playing,
+    play,
+    pause,
+    current,
+    setCurrent,
+    metaData,
+    multiplier,
+    setMultiplier,
+    duration
+  } = useAnimationContext();
 
   return (
     <div className="card">
@@ -27,7 +36,7 @@ export const PlaybackCard = () => {
               }
             }}
             min={0}
-            max={10000}
+            max={duration}
           />
           {metaData && (
             <div className="flex justify-between">
