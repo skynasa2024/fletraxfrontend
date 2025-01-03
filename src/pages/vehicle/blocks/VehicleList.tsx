@@ -9,7 +9,11 @@ import VehiclesCardsView from '../components/VehiclesCardsView.tsx';
 
 type ViewMode = 'grid' | 'card';
 
-function VehicleList() {
+type VehicleListProps = {
+  fetchVehicleStats: () => void;
+};
+
+function VehicleList({ fetchVehicleStats }: VehicleListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
@@ -92,9 +96,9 @@ function VehicleList() {
       <div className="gap-cols responsive-card">
         <div className="card-body pt-2 px-2 sm:px-6 pb-7">
           {viewMode === 'grid' ? (
-            <VehiclesGridView searchQuery="" />
+            <VehiclesGridView searchQuery="" refetchStats={fetchVehicleStats} />
           ) : (
-            <VehiclesCardsView searchQuery="" />
+            <VehiclesCardsView searchQuery="" refetchStats={fetchVehicleStats} />
           )}
         </div>
       </div>

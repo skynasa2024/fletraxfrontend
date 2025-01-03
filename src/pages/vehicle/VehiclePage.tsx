@@ -8,6 +8,25 @@ import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
 
 const VehiclePage = () => {
   const navigate = useNavigate();
+  const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
+    total: 0,
+    inRent: 0,
+    inMaintenance: 0,
+    available: 0
+  });
+
+  const handleGetVehiclesStats = async () => {
+    try {
+      const data = await getVehiclesStats();
+      setVehiclesStats(data);
+    } catch (error) {
+      console.error('Failed to fetch vehicle stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetVehiclesStats();
+  }, []);
 
   return (
     <div className="grid gap-5 lg:gap-7.5">
@@ -20,58 +39,44 @@ const VehiclePage = () => {
         New Vehicle
       </button>
 
-      <VehiclesMiniCards />
-      <VehicleList />
+      <VehiclesMiniCards stats={vehiclesStats} />
+      <VehicleList fetchVehicleStats={handleGetVehiclesStats} />
     </div>
   );
 };
 
-const VehiclesMiniCards = () => {
-  const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
-    total: 0,
-    available: 0,
-    inRent: 0,
-    inMaintenance: 0
-  });
+type VehiclesMiniCardsProps = {
+  stats: VehicleStats;
+};
 
+const VehiclesMiniCards = ({ stats }: VehiclesMiniCardsProps) => {
   const metrics: MetricData[] = [
     {
-      value: vehiclesStats.total,
+      value: stats.total,
       label: 'Total Vehicles',
       textColor: 'text-white',
       bgColor: 'bg-blue-500',
       icon: <BlocksIcon />
     },
     {
-      value: vehiclesStats.inRent,
+      value: stats.inRent,
       label: 'Rented Vehicles',
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#FF0000" />
     },
     {
-      value: vehiclesStats.inMaintenance,
+      value: stats.inMaintenance,
       label: 'Vehicles in maintenance',
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#FFA800" />
     },
     {
-      value: vehiclesStats.available,
+      value: stats.available,
       label: 'Available For Rent',
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#5271FF" />
     }
   ];
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await getVehiclesStats();
-        setVehiclesStats(data);
-      } catch (error) {
-        console.error('Failed to fetch vehicle stats:', error);
-      }
-    })();
-  }, []);
 
   return <UserMiniCards metrics={metrics} />;
 };

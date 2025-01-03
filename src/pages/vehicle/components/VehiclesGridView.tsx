@@ -1,20 +1,23 @@
-import { DataGrid, KeenIcon, TDataGridRequestParams } from '@/components';
+import { DataGrid, KeenIcon, TDataGridRequestParams, useDataGrid } from '@/components';
 import { Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components/menu';
 import Image from '@/components/image/Image';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { getVehicles, VehicleDetails } from '@/api/cars';
+import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { MenuIcon } from 'lucide-react';
-import VehicleStatusDropdown from './VehiclesStatusDropdown';
 import { useNavigate } from 'react-router';
+import { VehicleStatusValues } from '@/api/cars.ts';
+import { StatusDropdown } from '../StatusDropdown';
+import { STATUS_OPTIONS } from '../constants';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
+  refetchStats: () => void;
 };
 
-export default function VehiclesGridView({ searchQuery }: VehiclesGridViewProps) {
+export default function VehiclesGridView({ searchQuery, refetchStats }: VehiclesGridViewProps) {
   const navigate = useNavigate();
 
   const handleViewVehicle = () => {
@@ -24,10 +27,6 @@ export default function VehiclesGridView({ searchQuery }: VehiclesGridViewProps)
   const handleGetVehicles = async (params: TDataGridRequestParams) => {
     return await getVehicles(params);
   };
-
-  // const handleUpdateVehicleStatus = async (vehicleId: string, status: string) => {
-  //   await updateVehicleStatus(vehicleId, status);
-  // };
 
   const columns = React.useMemo<ColumnDef<VehicleDetails>[]>(
     () => [
@@ -105,7 +104,9 @@ export default function VehiclesGridView({ searchQuery }: VehiclesGridViewProps)
       {
         accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => <VehicleStatusDropdown vehicleDetails={row.original} />
+        cell: ({ row }) => (
+          <GridViewStatusDropdown vehicleDetails={row.original} refetchStats={refetchStats} />
+        )
       },
       {
         id: 'actions',
@@ -164,5 +165,26 @@ function ActionsDropdown({ handleViewVehicle }: ActionsDropdownProps) {
         </MenuItem>
       </Menu>
     </div>
+  );
+}
+
+type StatusDropdownProps = {
+  vehicleDetails: VehicleDetails;
+  refetchStats: () => void;
+};
+
+function GridViewStatusDropdown({ vehicleDetails, refetchStats }: StatusDropdownProps) {
+  const refetch = useDataGrid().fetchServerSideData;
+
+  return (
+    <StatusDropdown<VehicleStatusValues>
+      selected={vehicleDetails.status}
+      setSelected={async (value) => {
+        await updateVehicleStatus(vehicleDetails.vehicle.id, value);
+        refetch();
+        refetchStats();
+      }}
+      options={STATUS_OPTIONS}
+    />
   );
 }
