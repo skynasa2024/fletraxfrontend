@@ -22,12 +22,12 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
   const getIconSrc = (type: string) => `/api/placeholder/24/24`; // Placeholder for demo
 
   return (
-    <div className="card hover:shadow-md  p-4 rounded-lg mb-4 last:mb-0 w-full">
+    <div className="card hover:shadow-md p-4 rounded-lg mb-4 last:mb-0 w-full h-1/2">
       <div className="flex items-center sm:flex-row flex-col">
         <img
           src={getIconSrc(file.type)}
           alt={`${file.type.toUpperCase()} Icon`}
-          className="w-6 h-6 mr-2"
+          className="w-6 h-6 mr-2 mb-5"
         />
         <div>
           <p className="text-sm font-semibold">{file.name}</p>
@@ -36,7 +36,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
           </p>
         </div>
 
-        {/* Aligning elements to the end */}
+  
         <div className="ml-auto flex items-center gap-2">
           <button
             onClick={onView}
@@ -55,7 +55,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, onView }) => {
 
 const FileList: React.FC<FileListProps> = ({ files, onView }) => {
   return (
-    <div className=" flex space-x-4 p-4">
+    <div className=" flex space-x-4">
       <div className="w-full">
         {files.map((file, index) => (
           <FileCard
