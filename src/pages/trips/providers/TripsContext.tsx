@@ -114,13 +114,20 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
+    const pathesMap: Record<number, TripPath> = {};
+
     if ('trips' in selectedTrip) {
-      const pathes = selectedTrip.trips.map((trip) => trip.path).reverse();
-      setPath(pathes.flat());
-      return;
+      const pathes = selectedTrip.trips.map((trip) => trip.path).flat();
+      pathes.forEach((path) => {
+        pathesMap[path.timestamp.getTime()] = path;
+      });
+    } else {
+      selectedTrip.path.forEach((path) => {
+        pathesMap[path.timestamp.getTime()] = path;
+      });
     }
 
-    setPath(selectedTrip.path);
+    setPath(Object.values(pathesMap).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
   }, [selectedTrip]);
 
   return (

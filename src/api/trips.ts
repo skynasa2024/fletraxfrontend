@@ -17,10 +17,12 @@ interface TripDTO {
   startLongitude: number;
   endLatitude: number;
   endLongitude: number;
-  totalDistance: string;
+  totalDistance: number;
+  formattedTotalDistance: string;
   pointsList: TripPoint[];
-  totalDuration: string;
-  maxSpeed: string;
+  totalDuration: number;
+  formattedTotalDuration: string;
+  maxSpeed: number;
   averageSpeed: string;
   route: string;
 }
@@ -38,8 +40,8 @@ export interface Trip {
   imei: string;
   startDate: Date;
   endDate: Date;
-  mileage: string;
-  maxSpeed: string;
+  mileage: number;
+  maxSpeed: number;
   path: TripPath[];
 }
 
