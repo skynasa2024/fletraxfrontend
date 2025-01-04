@@ -22,14 +22,19 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
     navigate('view-vehicle');
   };
 
-  const handleGetVehicles = async () => {
-    const vehicles = await getVehicles({ pageIndex: 0, pageSize: PAGE_SIZE });
+  const handleGetVehicles = async (searchQuery?: string) => {
+    const vehicles = await getVehicles({
+      pageIndex: 0,
+      pageSize: PAGE_SIZE,
+      filters: searchQuery?.trim().length ? [{ id: '__any', value: searchQuery }] : []
+    });
+
     setVehicles(vehicles.data);
   };
 
   useEffect(() => {
-    handleGetVehicles();
-  }, []);
+    handleGetVehicles(searchQuery);
+  }, [searchQuery]);
 
   return (
     <div className="w-full">

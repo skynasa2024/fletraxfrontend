@@ -27,7 +27,6 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   const handleGetVehicles = async (params: TDataGridRequestParams) => {
     return await getVehicles(params);
   };
-
   const columns = React.useMemo<ColumnDef<VehicleDetails>[]>(
     () => [
       {
@@ -116,7 +115,18 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
     ],
     []
   );
-  return <DataGrid columns={columns} serverSide onFetchData={handleGetVehicles} />;
+  return (
+    <DataGrid
+      columns={columns}
+      serverSide
+      onFetchData={(params) =>
+        handleGetVehicles({
+          ...params
+        })
+      }
+      filters={searchQuery.trim().length >= 1 ? [{ id: '__any', value: searchQuery.trim() }] : []}
+    />
+  );
 }
 
 type ActionsDropdownProps = {

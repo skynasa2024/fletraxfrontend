@@ -171,6 +171,12 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
     }
   }, [pagination, sorting, filters]);
 
+  useEffect(() => {
+    if (mergedProps.filters) {
+      table.setColumnFilters(mergedProps.filters);
+    }
+  }, [mergedProps.filters]);
+
   // Listen for sorting changes
   useEffect(() => {
     if (table.getState().sorting.length > 0) {

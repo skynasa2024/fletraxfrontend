@@ -6,6 +6,7 @@ import { Download, Filter } from 'lucide-react';
 import clsx from 'clsx';
 import VehiclesGridView from '../components/VehiclesGridView.tsx';
 import VehiclesCardsView from '../components/VehiclesCardsView.tsx';
+import DebouncedSearchInput from '../components/DebouncedInputField.tsx';
 
 type ViewMode = 'grid' | 'card';
 
@@ -16,13 +17,23 @@ type VehicleListProps = {
 function VehicleList({ fetchVehicleStats }: VehicleListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     (async () => {
-      const vehicles = await getVehicles({ pageIndex: 0, pageSize: 1 });
+      const vehicles = await getVehicles({
+        pageIndex: 0,
+        pageSize: 1,
+        filters: [
+          {
+            id: '__any',
+            value: searchQuery
+          }
+        ]
+      });
       setVehicles(vehicles);
     })();
-  }, []);
+  }, [searchQuery]);
 
   return (
     <div className="card">
@@ -85,10 +96,11 @@ function VehicleList({ fetchVehicleStats }: VehicleListProps) {
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <KeenIcon style="duotone" icon="magnifier" />
             </div>
-            <input
+            <DebouncedSearchInput
               type="search"
               className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
               placeholder="Search"
+              onDebounce={setSearchQuery}
             />
           </div>
         </div>
@@ -96,9 +108,9 @@ function VehicleList({ fetchVehicleStats }: VehicleListProps) {
       <div className="gap-cols responsive-card">
         <div className="card-body pt-2 px-2 sm:px-6 pb-7">
           {viewMode === 'grid' ? (
-            <VehiclesGridView searchQuery="" refetchStats={fetchVehicleStats} />
+            <VehiclesGridView searchQuery={searchQuery} refetchStats={fetchVehicleStats} />
           ) : (
-            <VehiclesCardsView searchQuery="" refetchStats={fetchVehicleStats} />
+            <VehiclesCardsView searchQuery={searchQuery} refetchStats={fetchVehicleStats} />
           )}
         </div>
       </div>
