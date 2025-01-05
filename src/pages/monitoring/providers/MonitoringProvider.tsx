@@ -125,9 +125,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
   const mqttClient = useMemo(
     () =>
-      mqtt.connect('wss://app.skynasa.com:8084/mqtt', {
-        username: 'super_admin',
-        password: 'skynasa159',
+      mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
+        username: 'admin',
+        password: 'fletrax159',
         clean: true,
         keepalive: 60,
         protocolVersion: 5
@@ -174,7 +174,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         }));
 
         mqttClient.subscribeAsync(topic, {
-          qos: 2
+          qos: 1
         });
       }
     });
