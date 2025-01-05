@@ -1,4 +1,5 @@
 import { getMonitoringDevices, MonitoringDTO } from '@/api/devices';
+import { KeenIcon } from '@/components';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -45,6 +46,9 @@ export const TripsSearch = ({ search, setSearch, onSearch }: TripsSearchProps) =
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
+      <button className="btn btn-icon" onClick={() => setSearch('')}>
+        <KeenIcon icon="cross" />
+      </button>
       {(focused || hovered) && (
         <div
           className="absolute top-full left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"

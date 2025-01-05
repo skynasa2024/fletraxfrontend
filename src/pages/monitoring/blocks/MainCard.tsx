@@ -100,6 +100,16 @@ export const MainCard = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          <button
+            className="btn btn-icon my-auto"
+            type="button"
+            onClick={() => {
+              setSearchQuery('');
+              search(searchTarget, '');
+            }}
+          >
+            <KeenIcon icon="cross" />
+          </button>
         </div>
         <button className="btn btn-info btn-icon size-[34px]" type="submit">
           <img src={toAbsoluteUrl('/media/icons/search.svg')} />
