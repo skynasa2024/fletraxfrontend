@@ -2,7 +2,7 @@
 
 const UserDetailsPage = () => {
   return (
-    <div className="card max-w-4xl mx-auto overflow-hidden">
+    <div className="card max-w-4xl mx-auto hover:shadow-md overflow-hidden">
       <div className="card-body p-8">
         <div className="flex">
           <div className="w-1/3 border-r border-gray-200 pr-8">
