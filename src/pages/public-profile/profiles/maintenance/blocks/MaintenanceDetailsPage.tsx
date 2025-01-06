@@ -8,7 +8,7 @@ const MaintenanceDetails: React.FC = () => {
   return (
     <>
       <Toolbar />
-      <div className="bg-white rounded-lg p-6 max-w-4xl mx-auto">
+      <div className="card hover:shadow-md p-6 max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="flex items-start gap-6 mb-8 border rounded-lg p-4">
           <img
