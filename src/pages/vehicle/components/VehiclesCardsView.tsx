@@ -4,60 +4,152 @@ import Image from '@/components/image/Image';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StatusDropdown } from '../StatusDropdown';
 import { STATUS_OPTIONS } from '../constants';
+import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
+import { Paginated } from '@/api/common.ts';
+
+const COLUMN_COUNT = 3;
+const SCROLLBAR_WIDTH = 20;
 
 type VehiclesCardsViewProps = {
   searchQuery: string;
   refetchStats: () => void;
 };
 
-const PAGE_SIZE = 10;
-
 export default function VehiclesCardsView({ searchQuery, refetchStats }: VehiclesCardsViewProps) {
   const navigate = useNavigate();
-  const [vehicles, setVehicles] = useState<VehicleDetails[]>();
+
+  const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
+  const [offset, setOffset] = useState({ start: 0, end: 10 });
+  const totalCount = vehicles?.totalCount ?? 0;
+
+  const remoteRowCount = useMemo(() => Math.ceil(totalCount / COLUMN_COUNT), [totalCount]);
+
+  const isRowLoaded = ({ index: rowIndex }: { index: number }) => {
+    if (!vehicles?.data) return false;
+    const baseIndex = rowIndex * COLUMN_COUNT;
+    for (let i = 0; i < COLUMN_COUNT; i++) {
+      if (!vehicles.data[baseIndex + i]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const loadMoreRows = async ({
+    startIndex,
+    stopIndex
+  }: {
+    startIndex: number;
+    stopIndex: number;
+  }) => {
+    const itemStart = startIndex * COLUMN_COUNT;
+    const itemStop = stopIndex * COLUMN_COUNT + (COLUMN_COUNT - 1);
+
+    const fetched = await getVehicles({
+      start: itemStart,
+      end: itemStop + 1,
+      filters: [
+        {
+          id: '__any',
+          value: searchQuery
+        }
+      ]
+    });
+
+    setVehicles((prev) => {
+      const oldData = prev?.data ?? [];
+      const newData = [...oldData];
+      fetched.data.forEach((item, idx) => {
+        newData[itemStart + idx] = item;
+      });
+      return {
+        data: newData,
+        totalCount: fetched.totalCount
+      };
+    });
+
+    setOffset({
+      start: itemStart,
+      end: itemStop
+    });
+  };
+
   const handleViewVehicle = () => {
     navigate('view-vehicle');
   };
 
-  const handleGetVehicles = async (searchQuery?: string) => {
-    const vehicles = await getVehicles({
-      pageIndex: 0,
-      pageSize: PAGE_SIZE,
-      filters: searchQuery?.trim().length ? [{ id: '__any', value: searchQuery }] : []
-    });
-
-    setVehicles(vehicles.data);
-  };
-
   useEffect(() => {
-    handleGetVehicles(searchQuery);
+    (async () => {
+      const fetched = await getVehicles({
+        start: 0,
+        end: 10,
+        filters: [{ id: '__any', value: searchQuery }]
+      });
+      setVehicles(fetched);
+      setOffset({ start: 0, end: 10 });
+    })();
   }, [searchQuery]);
 
   return (
-    <div className="w-full">
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
-        {vehicles?.map(
-          (vehicle) =>
-            vehicle && (
-              <VehicleCard
-                key={vehicle.vehicle.plate}
-                vehicle={vehicle}
-                handleViewVehicle={handleViewVehicle}
-                refetchStats={refetchStats}
-                refetchVehicles={handleGetVehicles}
-              />
-            )
-        )}
-      </div>
-    </div>
+    <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={remoteRowCount}>
+      {({ onRowsRendered, registerChild }) => (
+        <div style={{ width: '100%', height: '450px' }}>
+          <AutoSizer>
+            {({ width, height }) => {
+              const widthWithoutScrollBar = width - SCROLLBAR_WIDTH;
+
+              return (
+                <Grid
+                  ref={registerChild}
+                  width={width}
+                  height={height}
+                  columnCount={COLUMN_COUNT}
+                  columnWidth={widthWithoutScrollBar / COLUMN_COUNT}
+                  rowCount={remoteRowCount}
+                  rowHeight={275}
+                  overscanRowCount={2}
+                  onSectionRendered={({ rowOverscanStartIndex, rowOverscanStopIndex }) =>
+                    onRowsRendered({
+                      startIndex: rowOverscanStartIndex,
+                      stopIndex: rowOverscanStopIndex
+                    })
+                  }
+                  cellRenderer={({ key, rowIndex, columnIndex, style }) => {
+                    const itemIndex = rowIndex * COLUMN_COUNT + columnIndex;
+                    const vehicle = vehicles?.data[itemIndex];
+
+                    return (
+                      <div key={key} style={style} className="p-2">
+                        <VehicleCard
+                          vehicle={vehicle}
+                          handleViewVehicle={handleViewVehicle}
+                          refetchVehicles={() =>
+                            getVehicles({
+                              start: offset.start,
+                              end: offset.end,
+                              filters: [{ id: '__any', value: searchQuery }]
+                            }).then(setVehicles)
+                          }
+                          refetchStats={refetchStats}
+                        />
+                      </div>
+                    );
+                  }}
+                />
+              );
+            }}
+          </AutoSizer>
+        </div>
+      )}
+    </InfiniteLoader>
   );
 }
 
 type VehicleCardProps = {
-  vehicle: VehicleDetails;
+  vehicle?: VehicleDetails;
   handleViewVehicle: () => void;
   refetchVehicles: () => void;
   refetchStats: () => void;
@@ -69,8 +161,15 @@ function VehicleCard({
   refetchStats,
   refetchVehicles
 }: VehicleCardProps) {
+  if (!vehicle) {
+    return (
+      <div className="m-2 flex hover:shadow-md h-full w-full flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
+        <div className="h-1 w-full" style={{ backgroundColor: '#212121' }} />
+      </div>
+    );
+  }
   return (
-    <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full hover:shadow-lg transition-shadow duration-200">
+    <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full h-full hover:shadow-lg transition-shadow duration-200">
       <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6 grow">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
