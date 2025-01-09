@@ -46,7 +46,7 @@ const DriverList = () => {
         </button>
       </div>
 
-      <div className="card-body pt-2 px-6 pb-5">
+      <div className="card-body pt-2 px-6 pb-3">
         <AutoSizer disableHeight>
           {({ width }) => (
             <InfiniteLoader
@@ -57,8 +57,8 @@ const DriverList = () => {
               {({ onRowsRendered, registerChild }) => (
                 <Grid
                   ref={registerChild}
-                  className="scrollable-x"
-                  height={281}
+                  className="scrollable-x !overflow-y-hidden"
+                  height={291}
                   width={width}
                   columnCount={drivers?.totalCount ?? 0}
                   columnWidth={402}

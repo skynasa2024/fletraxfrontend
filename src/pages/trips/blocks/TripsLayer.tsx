@@ -7,10 +7,20 @@ import { useEffect, useMemo } from 'react';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { useAnimationContext } from '../providers/AnimationContext';
 import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
+import { getColor } from './PolylineColors';
 
 export const TripsLayer = () => {
   const map = useMap();
-  const { path } = useTripsContext();
+  const { path, selectedTrip } = useTripsContext();
+  const trips = useMemo(() => {
+    if (!selectedTrip) {
+      return [];
+    }
+    if ('trips' in selectedTrip) {
+      return selectedTrip.trips;
+    }
+    return [selectedTrip];
+  }, [selectedTrip]);
   const { current: time, setMetaData } = useAnimationContext();
   const bounds = useMemo(() => {
     if (!path || path.length === 0) {
@@ -38,11 +48,9 @@ export const TripsLayer = () => {
     }
 
     const startTime = path[0].timestamp.getTime();
-    const endTime = path[path.length - 1].timestamp.getTime();
-    const duration = endTime - startTime;
 
     // time is from 0 to 10,000
-    return startTime + (time / 10000) * duration;
+    return startTime + time;
   }, [time, path]);
 
   const interpolatedState = useMemo(() => {
@@ -89,11 +97,14 @@ export const TripsLayer = () => {
 
   return (
     <>
-      <Polyline
-        pathOptions={{ color: '#5271FF' }}
-        positions={path?.map((point) => [point.latitude, point.longitude])}
-      />
-      {latLng && rotation && (
+      {trips.map((trip) => (
+        <Polyline
+          key={trip.id}
+          pathOptions={{ color: getColor(trip.id) }}
+          positions={trip.path.map((point) => [point.latitude, point.longitude])}
+        />
+      ))}
+      {latLng && rotation !== null && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
       )}
     </>

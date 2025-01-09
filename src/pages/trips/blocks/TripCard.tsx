@@ -109,7 +109,8 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {tripGroup.trips.reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0)} Km/h
+              {tripGroup.trips.reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0).toFixed(0)}{' '}
+              Km/h
             </div>
           </div>
         </div>
@@ -172,7 +173,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                   </div>
                   <div className="flex gap-1 items-center">
                     <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-                    {trip.maxSpeed} Km/h
+                    {trip.maxSpeed.toFixed(0)} Km/h
                   </div>
                 </div>
               </div>

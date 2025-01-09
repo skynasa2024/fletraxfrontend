@@ -3,6 +3,7 @@ import 'react-resizable/css/styles.css';
 import { format } from 'date-fns';
 import { toAbsoluteUrl } from '@/utils';
 import TripCard from './TripCard';
+import { TripsSearch } from './TripsSearch';
 
 export const MainCard = () => {
   const {
@@ -18,14 +19,7 @@ export const MainCard = () => {
 
   return (
     <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 h-full">
-      <div className="input input-sm h-[34px] shrink-0">
-        <input
-          type="text"
-          placeholder="Search Devices"
-          value={searchDeviceQuery}
-          onChange={(e) => setSearchDeviceQuery(e.target.value)}
-        />
-      </div>
+      <TripsSearch search={searchDeviceQuery} setSearch={setSearchDeviceQuery} onSearch={search} />
       <div className="grid grid-cols-2 gap-y-2 gap-x-4 shrink-0">
         <div className="flex flex-col gap-2">
           <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">Start Date</div>
@@ -128,7 +122,11 @@ export const MainCard = () => {
           </div>
         </div>
       </div>
-      <button className="btn btn-info justify-center text-xs font-medium shrink-0" onClick={search}>
+      <button
+        className="btn btn-info justify-center text-xs font-medium shrink-0"
+        onClick={search}
+        disabled={!searchDeviceQuery}
+      >
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         Search
       </button>
