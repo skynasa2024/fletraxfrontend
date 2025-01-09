@@ -1,14 +1,14 @@
-import { getVehicles, updateVehicleStatus, VehicleDetails, VehicleStatusValues } from '@/api/cars';
+import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { KeenIcon } from '@/components';
 import Image from '@/components/image/Image';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { toAbsoluteUrl } from '@/utils';
 import { useNavigate } from 'react-router';
 import { useEffect, useMemo, useState } from 'react';
-import { StatusDropdown } from '../StatusDropdown';
 import { STATUS_OPTIONS } from '../constants';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 import { Paginated } from '@/api/common.ts';
+import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 
 const COLUMN_COUNT = 3;
 const SCROLLBAR_WIDTH = 20;
@@ -173,7 +173,7 @@ function VehicleCard({
       <div className="flex flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6 grow">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
-          <StatusDropdown<VehicleStatusValues>
+          <StatusDropdown
             selected={vehicle.status}
             setSelected={async (value) => {
               await updateVehicleStatus(vehicle.vehicle.id, value);

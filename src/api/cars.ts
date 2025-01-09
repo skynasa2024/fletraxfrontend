@@ -8,8 +8,6 @@ import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
 import { toAbsoluteUrl } from '@/utils';
 
-export type VehicleStatusValues = 'unavailable' | 'in_maintenance' | 'available' | 'rented';
-
 export interface CarCountsDTO {
   total: number;
   offline: number;
@@ -42,7 +40,7 @@ export interface VehicleDetails {
   brandName: string;
   type: string;
   mileage: string;
-  status: VehicleStatusValues;
+  status: string;
   deviceName: string;
 }
 
@@ -52,7 +50,7 @@ export interface VehicleDTO {
   image: string | null;
   imageFile: string | null;
   type: string;
-  status: VehicleStatusValues;
+  status: string;
   brand: string;
   model: string;
   modelSeries: string;
@@ -193,10 +191,7 @@ export const updateViolationStatus = async (id: number, status: string): Promise
   });
 };
 
-export const updateVehicleStatus = async (
-  id: number,
-  status: VehicleStatusValues
-): Promise<void> => {
+export const updateVehicleStatus = async (id: number, status: string): Promise<void> => {
   await axios.post(`/api/vehicles/cars/update-status/${id}`, undefined, {
     params: {
       status

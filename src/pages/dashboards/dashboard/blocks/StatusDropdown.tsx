@@ -9,6 +9,7 @@ export interface StatusDropdownProps {
     {
       color: string;
       backgroundColor: string;
+      name?: string;
     }
   >;
 }
@@ -38,7 +39,7 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
             backgroundColor: options[selected]?.backgroundColor ?? 'gray'
           }}
         >
-          {selected}
+          {options[selected]?.name || selected}
           <KeenIcon icon="down" className="!text-inherit !text-xs" />
         </MenuToggle>
         <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
@@ -56,7 +57,7 @@ export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdow
                       color: options.color
                     }}
                   >
-                    {key}
+                    {options.name || key}
                   </div>
                 </MenuTitle>
               </MenuLink>

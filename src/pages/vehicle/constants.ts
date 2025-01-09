@@ -1,7 +1,4 @@
-import { VehicleStatusValues } from '@/api/cars';
-import { DropdownOptions } from './StatusDropdown';
-
-export const STATUS_OPTIONS: DropdownOptions<VehicleStatusValues> = {
+export const STATUS_OPTIONS = {
   unavailable: {
     color: '#F1416C',
     backgroundColor: '#FFF5F8',

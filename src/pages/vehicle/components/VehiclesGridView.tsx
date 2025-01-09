@@ -14,9 +14,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
-import { VehicleStatusValues } from '@/api/cars.ts';
-import { StatusDropdown } from '../StatusDropdown';
 import { STATUS_OPTIONS } from '../constants';
+import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -171,7 +170,7 @@ function GridViewStatusDropdown({ vehicleDetails, refetchStats }: StatusDropdown
   const refetch = useDataGrid().fetchServerSideData;
 
   return (
-    <StatusDropdown<VehicleStatusValues>
+    <StatusDropdown
       selected={vehicleDetails.status}
       setSelected={async (value) => {
         await updateVehicleStatus(vehicleDetails.vehicle.id, value);
