@@ -1,13 +1,19 @@
 import { DataGrid, KeenIcon, TDataGridRequestParams, useDataGrid } from '@/components';
-import { Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components/menu';
+import {
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle
+} from '@/components/menu';
 import Image from '@/components/image/Image';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
-import { MenuIcon } from 'lucide-react';
-import { useNavigate } from 'react-router';
 import { VehicleStatusValues } from '@/api/cars.ts';
 import { StatusDropdown } from '../StatusDropdown';
 import { STATUS_OPTIONS } from '../constants';
@@ -18,12 +24,6 @@ type VehiclesGridViewProps = {
 };
 
 export default function VehiclesGridView({ searchQuery, refetchStats }: VehiclesGridViewProps) {
-  const navigate = useNavigate();
-
-  const handleViewVehicle = () => {
-    navigate('view-vehicle');
-  };
-
   const handleGetVehicles = async (params: TDataGridRequestParams) => {
     return await getVehicles(params);
   };
@@ -34,16 +34,13 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
         header: 'Owner',
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
-            <Image
-              src={row.original.customer.avatar}
-              alt={row.original.customer.name}
-              title={row.original.customer.name}
-              className="size-9 aspect-square object-cover"
-              fallback={
-                <div className="bg-neutral-200 size-9 aspect-square rounded-full flex items-center justify-center">
-                  <KeenIcon style="duotone" icon="user" className="text-black" />
-                </div>
+            <img
+              src={
+                row.original.customer.avatar ||
+                toAbsoluteUrl('/media/avatars/avatar-placeholder.png')
               }
+              alt={row.original.customer.name}
+              className="size-9 aspect-square object-cover rounded-full"
             />
             <div>
               <div className="font-bold text-[#3F4254]">{row.original.customer.name}</div>
@@ -58,7 +55,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <Image
-              src={toAbsoluteUrl(row.original.vehicle.name)}
+              src={toAbsoluteUrl(row.original.vehicle.brandImage)}
               className="size-9 object-cover aspect-square"
               fallback={
                 <div className="bg-neutral-200 size-9 aspect-square rounded-full flex items-center justify-center">
@@ -110,10 +107,10 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         id: 'actions',
         header: 'Actions',
-        cell: () => <ActionsDropdown handleViewVehicle={handleViewVehicle} />
+        cell: () => <ActionsDropdown />
       }
     ],
-    []
+    [refetchStats]
   );
   return (
     <DataGrid
@@ -129,16 +126,11 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-type ActionsDropdownProps = {
-  handleViewVehicle: () => void;
-};
-
-function ActionsDropdown({ handleViewVehicle }: ActionsDropdownProps) {
+function ActionsDropdown() {
   return (
     <div className="flex gap-3 items-center justify-center">
       <a
-        href="#"
-        onClick={handleViewVehicle}
+        href="/vehicles/vehicle/view-vehicle"
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
       >
         <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
@@ -155,14 +147,6 @@ function ActionsDropdown({ handleViewVehicle }: ActionsDropdownProps) {
             <KeenIcon className="text-xl" icon="dots-vertical" />
           </MenuToggle>
           <MenuSub className="menu-default">
-            <MenuItem>
-              <MenuLink>
-                <MenuIcon>
-                  <img src={toAbsoluteUrl('/media/icons/rent-light.svg')} />
-                </MenuIcon>
-                <MenuTitle>Rent</MenuTitle>
-              </MenuLink>
-            </MenuItem>
             <MenuItem>
               <MenuLink>
                 <MenuIcon>

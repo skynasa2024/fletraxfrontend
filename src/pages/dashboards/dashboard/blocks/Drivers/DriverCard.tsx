@@ -1,6 +1,7 @@
 import { DriverDetails } from '@/api/drivers';
 import { StatusDropdown, StatusDropdownProps } from '../StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
+import Image from '@/components/image/Image';
 
 interface DriverCardProps {
   driver?: DriverDetails;

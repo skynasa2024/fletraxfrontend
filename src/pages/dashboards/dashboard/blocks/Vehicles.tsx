@@ -8,7 +8,7 @@ const VehicleList = () => {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
 
   useEffect(() => {
-    getVehicles().then(setVehicles);
+    getVehicles({ start: 0, end: 10 }).then(setVehicles);
   }, []);
 
   return (

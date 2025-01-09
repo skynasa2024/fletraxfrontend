@@ -78,6 +78,7 @@ const defaultLocation: VehicleLocation = {
     speed: 0
   },
   vehicle: {
+    id: 0,
     imei: '',
     name: '',
     brandImage: '',

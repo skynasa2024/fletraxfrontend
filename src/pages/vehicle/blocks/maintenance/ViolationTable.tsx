@@ -2,10 +2,9 @@ import { DataGrid } from '@/components';
 import { getViolations, Violation } from '@/api/cars.ts';
 import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { CarView } from '../CarView.tsx';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
-import { StatusDropdown } from '../StatusDropdown.tsx';
+import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 
 interface ViolationTableProps {
   searchQuery: string;
@@ -79,7 +78,7 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
         cell: (info) => (
           <StatusDropdown
             selected={info.row.original.status}
-            setSelected={() => { }}
+            setSelected={() => {}}
             options={{
               Unpaid: {
                 color: '#F1416C',
@@ -133,11 +132,11 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
       filters={
         searchQuery.trim().length > 2
           ? [
-            {
-              id: '__any',
-              value: searchQuery
-            }
-          ]
+              {
+                id: '__any',
+                value: searchQuery
+              }
+            ]
           : []
       }
       serverSide={true}
