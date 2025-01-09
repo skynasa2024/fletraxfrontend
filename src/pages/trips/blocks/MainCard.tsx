@@ -122,7 +122,11 @@ export const MainCard = () => {
           </div>
         </div>
       </div>
-      <button className="btn btn-info justify-center text-xs font-medium shrink-0" onClick={search}>
+      <button
+        className="btn btn-info justify-center text-xs font-medium shrink-0"
+        onClick={search}
+        disabled={!searchDeviceQuery}
+      >
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         Search
       </button>

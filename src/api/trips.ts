@@ -86,21 +86,23 @@ export const searchTrips = async ({
   return Object.entries(trips.data.result).map(([date, tripGroup]) => ({
     id: date,
     date: new Date(date),
-    trips: tripGroup.map((trip) => ({
-      id: trip.id,
-      imei: trip.ident,
-      startDate: new Date(trip.startTime),
-      endDate: new Date(trip.endTime),
-      mileage: trip.totalDistance,
-      maxSpeed: trip.maxSpeed,
-      path: trip.pointsList.map((point) => ({
-        tripId: trip.id,
-        latitude: point.latitude,
-        longitude: point.longitude,
-        direction: point.direction,
-        speed: point.speed,
-        timestamp: new Date(point.timestamp * 1000)
+    trips: tripGroup
+      .map((trip) => ({
+        id: trip.id,
+        imei: trip.ident,
+        startDate: new Date(trip.startTime),
+        endDate: new Date(trip.endTime),
+        mileage: trip.totalDistance,
+        maxSpeed: trip.maxSpeed,
+        path: trip.pointsList.map((point) => ({
+          tripId: trip.id,
+          latitude: point.latitude,
+          longitude: point.longitude,
+          direction: point.direction,
+          speed: point.speed,
+          timestamp: new Date(point.timestamp * 1000)
+        }))
       }))
-    }))
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
   }));
 };

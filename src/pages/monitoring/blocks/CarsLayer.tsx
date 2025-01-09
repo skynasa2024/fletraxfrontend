@@ -126,29 +126,31 @@ export const CarsLayer = () => {
               )}
             </RotatableMarker>
           )
-        : locations?.map(
-            (location) =>
-              location.lat &&
-              location.long && (
-                <RotatableMarker
-                  key={location.vehicle.imei}
-                  position={[location.lat, location.long]}
-                  rotationAngle={location.angle}
-                  icon={getIcon(location)}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedLocation(location);
-                    }
-                  }}
-                >
-                  {showImei && (
-                    <Tooltip direction="top" offset={[0, -20]} permanent>
-                      {location.vehicle.imei}
-                    </Tooltip>
-                  )}
-                </RotatableMarker>
-              )
-          )}
+        : locations
+            ?.map(
+              (location) =>
+                location.lat &&
+                location.long && (
+                  <RotatableMarker
+                    key={location.vehicle.imei}
+                    position={[location.lat, location.long]}
+                    rotationAngle={location.angle}
+                    icon={getIcon(location)}
+                    eventHandlers={{
+                      click: () => {
+                        setSelectedLocation(location);
+                      }
+                    }}
+                  >
+                    {showImei && (
+                      <Tooltip direction="top" offset={[0, -20]} permanent>
+                        {location.vehicle.imei}
+                      </Tooltip>
+                    )}
+                  </RotatableMarker>
+                )
+            )
+            .filter(Boolean)}
     </MarkerClusterGroup>
   );
 };
