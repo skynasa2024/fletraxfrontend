@@ -22,10 +22,13 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
   const navigate = useNavigate();
 
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
-  const [offset, setOffset] = useState({ start: 0, end: 10 });
-  const totalCount = vehicles?.totalCount ?? 0;
 
-  const remoteRowCount = useMemo(() => Math.ceil(totalCount / COLUMN_COUNT), [totalCount]);
+  const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
+
+  const remoteRowCount = useMemo(() => {
+    const totalCount = vehicles?.totalCount ?? 0;
+    return Math.ceil(totalCount / COLUMN_COUNT);
+  }, [vehicles]);
 
   const isRowLoaded = ({ index: rowIndex }: { index: number }) => {
     if (!vehicles?.data) return false;
@@ -71,15 +74,18 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
       };
     });
 
-    setOffset({
-      start: itemStart,
-      end: itemStop
-    });
+    setMaxLoadedIndex((prevMax) => Math.max(prevMax, itemStop));
   };
 
-  const handleViewVehicle = () => {
-    navigate('view-vehicle');
-  };
+  async function refetchAllLoadedRows() {
+    if (maxLoadedIndex < 0) return;
+    const fetched = await getVehicles({
+      start: 0,
+      end: maxLoadedIndex + 1,
+      filters: [{ id: '__any', value: searchQuery }]
+    });
+    setVehicles(fetched);
+  }
 
   useEffect(() => {
     (async () => {
@@ -89,9 +95,13 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
         filters: [{ id: '__any', value: searchQuery }]
       });
       setVehicles(fetched);
-      setOffset({ start: 0, end: 10 });
+      setMaxLoadedIndex(10);
     })();
   }, [searchQuery]);
+
+  const handleViewVehicle = () => {
+    navigate('view-vehicle');
+  };
 
   return (
     <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={remoteRowCount}>
@@ -126,13 +136,7 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
                         <VehicleCard
                           vehicle={vehicle}
                           handleViewVehicle={handleViewVehicle}
-                          refetchVehicles={() =>
-                            getVehicles({
-                              start: offset.start,
-                              end: offset.end,
-                              filters: [{ id: '__any', value: searchQuery }]
-                            }).then(setVehicles)
-                          }
+                          refetchVehicles={refetchAllLoadedRows}
                           refetchStats={refetchStats}
                         />
                       </div>
@@ -177,7 +181,7 @@ function VehicleCard({
             selected={vehicle.status}
             setSelected={async (value) => {
               await updateVehicleStatus(vehicle.vehicle.id, value);
-              refetchVehicles();
+              await refetchVehicles();
               refetchStats();
             }}
             options={STATUS_OPTIONS}
