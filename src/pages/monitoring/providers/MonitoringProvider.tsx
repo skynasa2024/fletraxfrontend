@@ -174,10 +174,13 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
           [location.userId]: [...(prev[location.userId] || []), location.ident]
         }));
 
-        mqttClient.subscribeAsync(topic, {
-          qos: 1
-        });
+        // mqttClient.subscribeAsync(topic, {
+        //   qos: 1
+        // });
       }
+      mqttClient.subscribeAsync('device/monitoring/+', {
+        qos: 0
+      });
     });
     mqttClient.on('message', (topic, payload) => {
       const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
