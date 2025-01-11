@@ -1,2 +1,2 @@
 export * from './VehicleList.tsx';
-export * from './Toolbar.tsx';
+export * from '../vehicle-details/components/Toolbar.tsx';

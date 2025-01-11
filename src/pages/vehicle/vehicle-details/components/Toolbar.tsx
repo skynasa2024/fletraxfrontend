@@ -1,14 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Settings } from 'lucide-react';
-import {
-  AddGeofenceIcon,
-  DeleteIcon,
-  EditIcon,
-  MaintenanceIcon,
-  RentIcon,
-  ViolationsIcon
-} from './svg';
+import { DeleteIcon, EditIcon, MaintenanceIcon, RentIcon, ViolationsIcon } from '../../blocks/svg';
 
 const Toolbar = () => {
   const { vehicleId } = useParams();
