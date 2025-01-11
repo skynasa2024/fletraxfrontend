@@ -21,9 +21,10 @@ import { toAbsoluteUrl } from '@/utils';
 import { useParams } from 'react-router-dom';
 import BrandLogo from '../blocks/Brand logo.tsx';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import ScratchesPopover from './components/ScratchesPopover.tsx';
+import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
 
 interface TripData {
   distance: string;
@@ -78,38 +79,68 @@ const files = [
 ];
 const VehicleInfo = () => {
   const { id } = useParams();
-  console.log(id);
+  const [vehicle, setVehicle] = useState<VehicleDTO | null>();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (id) {
+          const res = await getVehicleDetails(parseInt(id));
+          setVehicle(res);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [id]);
+
   const vehicleInfo: {
     label: string;
     value: string;
     icon: React.ReactNode;
   }[] = [
-    { label: 'Model', value: 'Corolla', icon: <ModelIcon /> },
-    { label: 'Model Series', value: 'SEDAN', icon: <ModelSeriesIcon /> },
-    { label: 'Model Year', value: '2021', icon: <ModelYearIcon /> },
-    { label: 'Fuel Type', value: 'Benzin', icon: <FuelTypeIcon /> },
-    { label: 'Gear', value: 'Automatic', icon: <GearIcon /> },
-    { label: 'Volume', value: '200', icon: <VolumeIcon /> },
-    { label: 'Power', value: '200', icon: <PowerIcon /> },
-    { label: 'Color', value: 'White', icon: <ColorIcon /> },
-    { label: 'Tayp', value: 'Easy', icon: <TypeIcon /> }
+    { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
+    { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
+    { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
+    { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
+    { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
+    { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
+    { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
+    { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
+    { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
   ];
   const details = [
-    { label: 'Type', value: 'Institutional' },
-    { label: 'Identify Number', value: '05511593891' },
-    { label: 'Chassis Number', value: 'NMTBA3BE20R010542' },
-    { label: 'Engine Number', value: 'M15ABC77721' },
-    { label: 'Registration Number', value: '2024042916093744083' },
-    { label: 'Registration Date', value: '2024-04-29' },
-    { label: 'First Registration Date', value: '2021-03-26' },
-    { label: 'License Serial Number', value: '206234' },
-    { label: 'Price', value: '1.0000' }
+    { label: 'Type', value: vehicle?.type || 'NA' },
+    { label: 'Identify Number', value: vehicle?.identifyNumber || 'NA' },
+    { label: 'Chassis Number', value: vehicle?.chassisNumber || 'NA' },
+    { label: 'Engine Number', value: vehicle?.engineNumber || 'NA' },
+    { label: 'Registration Number', value: vehicle?.registrationNumber || 'NA' },
+    { label: 'Registration Date', value: vehicle?.registrationDate || 'NA' },
+    { label: 'First Registration Date', value: vehicle?.firstRegistrationDate || 'NA' },
+    { label: 'License Serial Number', value: vehicle?.licenseSerialNumber || 'NA' },
+    { label: 'Price', value: vehicle?.price || 'NA' }
   ];
   const items = [
-    { title: 'Inspection', startDate: '2024-04-29', endDate: '2024-05-27' },
-    { title: 'Insurance', startDate: '2024-04-29', endDate: '2024-05-27' },
-    { title: 'Kasko', startDate: '2024-04-29', endDate: '2024-05-27' },
-    { title: 'Exhaust', startDate: '2024-04-29', endDate: '2024-05-27' }
+    {
+      title: 'Inspection',
+      startDate: vehicle?.inspectionStartDate || 'NA',
+      endDate: vehicle?.inspectionEndDate || 'NA'
+    },
+    {
+      title: 'Insurance',
+      startDate: vehicle?.insuranceStartDate || 'NA',
+      endDate: vehicle?.insuranceEndDate || 'NA'
+    },
+    {
+      title: 'Kasko',
+      startDate: vehicle?.kaskoInsuranceStartDate || 'NA',
+      endDate: vehicle?.kaskoInsuranceEndDate || 'NA'
+    },
+    {
+      title: 'Exhaust',
+      startDate: vehicle?.exhaustStartDate || 'NA',
+      endDate: vehicle?.exhaustEndDate || 'NA'
+    }
   ];
 
   return (
@@ -251,8 +282,8 @@ const VehicleInfo = () => {
           <VehicleMetrics
             metrics={{
               engineHours: '300 Hr',
-              mileage: '200 km',
-              fuelConsumption: '12%',
+              mileage: vehicle?.currentMileage?.toString() || '0',
+              fuelConsumption: vehicle?.fuelConsumption?.toString() || '0',
               rentedTimes: '10'
             }}
           />
