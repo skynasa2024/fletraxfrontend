@@ -23,6 +23,7 @@ import BrandLogo from '../blocks/Brand logo.tsx';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
 import React from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
+import ScratchesPopover from './components/ScratchesPopover.tsx';
 
 interface TripData {
   distance: string;
@@ -141,53 +142,26 @@ const VehicleInfo = () => {
               <div className="relative flex p-4 justify-center items-center col-span-full mb-4">
                 <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
                 {/* Corners */}
-                <div className="absolute top-10 left-[200px] w-16 h-20 border-t-2 border-l-2 border-blue-500 rounded-tl-full " />
-                <div
-                  className="absolute top-10 right-[200px] w-16 h-20 border-t-2 border-r-2 border-blue-500 rounded-tr-full "
-                  style={{ boxShadow: '4px 0px 0px 0px rgba(0, 0, 0, 0.1)' }}
-                />
-                <div className="absolute bottom-10 left-[200px] w-16 h-20 border-b-2 border-l-2 border-blue-500 rounded-bl-full shadow-xl" />
-                <div className="absolute bottom-10 right-[200px] w-16 h-20 border-b-2 border-r-2 border-blue-500 rounded-br-full shadow-xl" />
+                <div className="absolute top-10 left-[225px] w-20 h-32 border-t-2 border-l-2 border-info rounded-tl-full " />
+                <div className="absolute top-10 right-[225px] w-20 h-32 border-t-2 border-r-2 border-info rounded-tr-full" />
+                <div className="absolute bottom-10 left-[225px] w-20 h-32 border-b-2 border-l-2 border-info rounded-bl-full" />
+                <div className="absolute bottom-10 right-[225px] w-20 h-32 border-b-2 border-r-2 border-info rounded-br-full" />
                 {/* Top row */}
-                <button className="absolute top-0 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute top-0 left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute top-0 right-1/3 translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
+                <ScratchesPopover className="absolute top-3 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute top-0 left-1/2 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute top-3 right-1/3 translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
                 {/* Middle top row */}
-                <button className="absolute top-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute top-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute top-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
+                <ScratchesPopover className="absolute top-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute top-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute top-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
                 {/* Middle bottom row */}
-                <button className="absolute bottom-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute bottom-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute bottom-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
+                <ScratchesPopover className="absolute bottom-1/4 left-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute bottom-1/4 left-1/2 -translate-x-1/2 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute bottom-1/4 right-1/4 border hover:shadow-md text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center" />
                 {/* Bottom row */}
-                <button className="absolute bottom-4 left-1/3 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute bottom-4 left-1/2 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
-                <button className="absolute bottom-4 right-1/3 translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center">
-                  +
-                </button>
+                <ScratchesPopover className="absolute bottom-7 left-1/3 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute bottom-4 left-1/2 -translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
+                <ScratchesPopover className="absolute bottom-7 right-1/3 translate-x-1/2 border bg-gray-100 hover:shadow-md text-gray-600 rounded-full w-8 h-8 flex items-center justify-center" />
               </div>
             </div>
           </div>
