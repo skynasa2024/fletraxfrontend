@@ -369,6 +369,11 @@ const getVehicle = async (id: number): Promise<Vehicle | null> => {
   };
 };
 
+export const getVehicleDetails = async (id: number): Promise<VehicleDTO | null> => {
+  return (await axios.get<ResponseModel<VehicleDTO | null>>('/api/vehicles/cars/show/' + id)).data
+    .result;
+};
+
 export interface VehicleStatus {
   engineStatus: boolean;
   parkingTime: string;
