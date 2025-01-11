@@ -93,7 +93,7 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
   return (
     <>
       <button className={className} aria-describedby={id} onClick={handleClick}>
-        {scratches ? scratches.length : '+'}
+        {scratches ? scratches.length : '0'}
       </button>
       <Popover
         id={id}
@@ -107,12 +107,16 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
         }}
       >
         <div>
-          {scratches_mock.map((scratch, index) => (
-            <div key={index} className='px-3'>
-              <ScratchDetailCard {...scratch} />
-              {index < scratches_mock.length - 1 && <hr className="border-gray-200" />}
-            </div>
-          ))}
+          {scratches?.length ? (
+            scratches_mock.map((scratch, index) => (
+              <div key={index} className="px-3">
+                <ScratchDetailCard {...scratch} />
+                {index < scratches_mock.length - 1 && <hr className="border-gray-200" />}
+              </div>
+            ))
+          ) : (
+            <p className="p-3 text-center text-gray-500">No scratches found</p>
+          )}
         </div>
       </Popover>
     </>
