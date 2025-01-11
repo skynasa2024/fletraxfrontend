@@ -16,6 +16,7 @@ import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { Link } from 'react-router-dom';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -106,7 +107,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         id: 'actions',
         header: 'Actions',
-        cell: () => <ActionsDropdown />
+        cell: ({ row }) => <ActionsDropdown vehicleId={row.original.vehicle.id} />
       }
     ],
     [refetchStats]
@@ -125,15 +126,15 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown() {
+function ActionsDropdown({ vehicleId }: { vehicleId: number }) {
   return (
     <div className="flex gap-3 items-center justify-center">
-      <a
-        href="/vehicles/vehicle/view-vehicle"
+      <Link
+        to={'/vehicles/vehicle/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
       >
         <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
-      </a>
+      </Link>
       <a
         href="#"
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"

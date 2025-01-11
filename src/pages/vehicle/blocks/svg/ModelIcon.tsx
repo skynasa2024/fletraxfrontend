@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Model: React.FC = () => {
+export default function ModelIcon() {
   return (
     <svg
       width="47"
@@ -8,7 +8,7 @@ const Model: React.FC = () => {
       viewBox="0 0 47 47"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="text-gray-400" 
+      className="text-gray-400"
     >
       <path
         fillRule="evenodd"
@@ -18,6 +18,4 @@ const Model: React.FC = () => {
       />
     </svg>
   );
-};
-
-export default Model;
+}

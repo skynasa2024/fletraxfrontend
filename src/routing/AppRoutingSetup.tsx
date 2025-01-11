@@ -94,7 +94,7 @@ import {
 } from '@/pages/authentication';
 import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
 import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDetailsPage';
-import VehicleDetailsPage from '@/pages/vehicle/blocks/VehicleDetailsPage';
+import VehicleDetailsPage from '@/pages/vehicle/vehicle-details';
 import DriverDetailsPage from '@/pages/public-profile/profiles/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
 import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';

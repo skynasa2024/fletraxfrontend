@@ -1,16 +1,28 @@
-import { MaintenanceViolationTable } from './maintenance/MaintenanceViolation.tsx';
+import { MaintenanceViolationTable } from '../blocks/maintenance/MaintenanceViolation.tsx';
 
-import Toolbar from './Toolbar.tsx';
-import { Model, ModelSeries, ModelYear, FuelType, Gear, Volume, Power, Color, Tayp } from './svg';
+import Toolbar from './components/Toolbar.tsx';
+import {
+  ModelIcon,
+  ModelSeriesIcon,
+  ModelYearIcon,
+  FuelTypeIcon,
+  GearIcon,
+  VolumeIcon,
+  PowerIcon,
+  ColorIcon,
+  TypeIcon
+} from '../blocks/svg/index.ts';
 
-import VehicleMetrics from './details-components/VehicleMetrics.tsx';
-import FileList from './details-components/FileList.tsx';
-import GeofenceList from './details-components/GeofenceList.tsx';
-import TripList from './details-components/TripList.tsx';
+import VehicleMetrics from '../blocks/details-components/VehicleMetrics.tsx';
+import FileList from '../blocks/details-components/FileList.tsx';
+import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
+import TripList from '../blocks/details-components/TripList.tsx';
 import { toAbsoluteUrl } from '@/utils';
 import { useParams } from 'react-router-dom';
-import BrandLogo from './Brand logo.tsx';
+import BrandLogo from '../blocks/Brand logo.tsx';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
+import React from 'react';
+import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 
 interface TripData {
   distance: string;
@@ -63,19 +75,23 @@ const files = [
     type: 'jpg'
   }
 ];
-const VehicleInfoCards = () => {
+const VehicleInfo = () => {
   const { id } = useParams();
   console.log(id);
-  const vehicleInfo = [
-    { label: 'Model', value: 'Corolla', Icon: Model },
-    { label: 'Model Series', value: 'SEDAN', Icon: ModelSeries },
-    { label: 'Model Year', value: '2021', Icon: ModelYear },
-    { label: 'Fuel Type', value: 'Benzin', Icon: FuelType },
-    { label: 'Gear', value: 'Automatic', Icon: Gear },
-    { label: 'Volume', value: '200', Icon: Volume },
-    { label: 'Power', value: '200', Icon: Power },
-    { label: 'Color', value: 'White', Icon: Color },
-    { label: 'Tayp', value: 'Easy', Icon: Tayp }
+  const vehicleInfo: {
+    label: string;
+    value: string;
+    icon: React.ReactNode;
+  }[] = [
+    { label: 'Model', value: 'Corolla', icon: <ModelIcon /> },
+    { label: 'Model Series', value: 'SEDAN', icon: <ModelSeriesIcon /> },
+    { label: 'Model Year', value: '2021', icon: <ModelYearIcon /> },
+    { label: 'Fuel Type', value: 'Benzin', icon: <FuelTypeIcon /> },
+    { label: 'Gear', value: 'Automatic', icon: <GearIcon /> },
+    { label: 'Volume', value: '200', icon: <VolumeIcon /> },
+    { label: 'Power', value: '200', icon: <PowerIcon /> },
+    { label: 'Color', value: 'White', icon: <ColorIcon /> },
+    { label: 'Tayp', value: 'Easy', icon: <TypeIcon /> }
   ];
   const details = [
     { label: 'Type', value: 'Institutional' },
@@ -180,17 +196,9 @@ const VehicleInfoCards = () => {
             <div className="flex flex-col lg:flex-row h-full">
               {/* Vehicle Info Cards */}
               <div className="flex-grow mr-0 lg:mr-4 h-full">
-                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-4 h-full">
-                  {vehicleInfo.map(({ label, value, Icon }, index) => (
-                    <div
-                      key={index}
-                      className="card p-4 rounded-lg hover:shadow-md flex flex-col h-full"
-                      style={{ width: '100%' }}
-                    >
-                      <Icon className="w-6 h-6 text-gray-600" />
-                      <span className="text-sm text-gray-500 font-medium my-2">{label}</span>
-                      <span className="text-lg font-semibold text-gray-900">{value}</span>
-                    </div>
+                <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 h-full">
+                  {vehicleInfo.map(({ label, value, icon }, index) => (
+                    <VehicleInfoCard key={index} label={label} value={value} icon={icon} />
                   ))}
                 </div>
               </div>
@@ -294,4 +302,4 @@ const VehicleInfoCards = () => {
   );
 };
 
-export default VehicleInfoCards;
+export default VehicleInfo;
