@@ -1,14 +1,15 @@
 import { getVehicles, VehicleDetails } from '@/api/cars';
 import { Paginated } from '@/api/common';
+import VehicleCard from '@/pages/vehicle/components/VehicleCard';
 import { toAbsoluteUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
-import VehicleCard from './VehicleCard';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 
 export function VehicleList() {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
   const remoteRowCount = useMemo(() => vehicles?.totalCount ?? 0, [vehicles]);
   const [offset, setOffset] = useState({ start: 0, end: 10 });
+  const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
 
   const isRowLoaded = ({ index }: { index: number }) => !!vehicles?.data[index];
   const loadMoreRows = async ({
@@ -24,6 +25,13 @@ export function VehicleList() {
       totalCount: drivers.totalCount
     }));
     setOffset({ start: startIndex, end: stopIndex });
+
+    setMaxLoadedIndex((prev) => Math.max(prev, stopIndex));
+  };
+
+  const fetchAllLoadedVehicles = async () => {
+    const drivers = await getVehicles({ start: 0, end: maxLoadedIndex + 1 });
+    setVehicles(drivers);
   };
 
   useEffect(() => {
@@ -74,7 +82,10 @@ export function VehicleList() {
                   cellRenderer={({ key, columnIndex: index, style }) =>
                     vehicles && (
                       <div key={key} style={style} className="pr-4">
-                        <VehicleCard vehicle={vehicles.data[index]} />
+                        <VehicleCard
+                          vehicle={vehicles.data[index]}
+                          refetchVehicles={fetchAllLoadedVehicles}
+                        />
                       </div>
                     )
                   }
