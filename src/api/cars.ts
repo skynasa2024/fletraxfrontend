@@ -333,7 +333,7 @@ export const getVehicles = async (
       name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
     },
     customer: {
-      name: 'John Doe',
+      name: vehicle.owner,
       avatar: '',
       email: 'john.doe@example.com'
     },

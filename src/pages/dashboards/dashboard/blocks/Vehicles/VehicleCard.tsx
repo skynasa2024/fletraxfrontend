@@ -48,9 +48,6 @@ export default function VehicleCard({ vehicle }: { vehicle?: VehicleDetails }) {
                 <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[15px] text-ellipsis overflow-hidden">
                   {vehicle.customer.name}
                 </div>
-                <div className="text-[#B5B5C3] font-medium text-2sm text-ellipsis overflow-hidden">
-                  {vehicle.customer.email}
-                </div>
               </div>
             </div>
           </div>

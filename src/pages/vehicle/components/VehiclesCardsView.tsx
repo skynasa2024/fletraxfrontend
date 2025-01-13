@@ -205,9 +205,6 @@ function VehicleCard({
                 <div className="text-[#3F4254] font-bold text-[15px] text-ellipsis overflow-hidden">
                   {vehicle.customer.name}
                 </div>
-                <div className="text-[#B5B5C3] font-medium text-2sm text-ellipsis overflow-hidden">
-                  {vehicle.customer.email}
-                </div>
               </div>
             </div>
           </div>
@@ -239,7 +236,7 @@ function VehicleCard({
           </div>
         </div>
       </div>
-      <div className="text-xs border-t grid grid-cols-4 w-full overflow-hidden rounded-b-2xl">
+      <div className="text-xs border-t grid grid-cols-3 w-full overflow-hidden rounded-b-2xl">
         <a
           href="#"
           onClick={handleViewVehicle}
@@ -251,10 +248,6 @@ function VehicleCard({
         <a href="#" className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
-        </a>
-        <a href="#" className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50">
-          <img src={toAbsoluteUrl('/media/icons/rent-light.svg')} />
-          <span>Rent</span>
         </a>
         <a href="#" className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
