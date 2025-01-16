@@ -1,12 +1,7 @@
 import React, { useRef, useState } from 'react';
-import {
-  Information,
-  Registration,
-  InspectionAndInsurance,
-  CarScratches,
-} from './blocks';
+import { Information, Registration, InspectionAndInsurance, CarScratches, Rent } from './blocks';
 
-type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
+type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches' | 'rent';
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -16,6 +11,7 @@ const AddVehiclePage = () => {
     registration: useRef<HTMLDivElement>(null),
     inspectionAndInsurance: useRef<HTMLDivElement>(null),
     carScratches: useRef<HTMLDivElement>(null),
+    rent: useRef<HTMLDivElement>(null)
   };
 
   const tabConfig = [
@@ -23,6 +19,7 @@ const AddVehiclePage = () => {
     { id: 'registration', label: 'Registration' },
     { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' },
     { id: 'carScratches', label: 'Car Scratches' },
+    { id: 'rent', label: 'Rent' }
   ] as const;
 
   const handleTabClick = (tab: TabType) => {
@@ -30,7 +27,7 @@ const AddVehiclePage = () => {
 
     refs[tab].current?.scrollIntoView({
       behavior: 'smooth',
-      block: 'center',
+      block: 'center'
     });
 
     const header = refs[tab].current?.querySelector('h2, h3') as HTMLElement | null;
@@ -62,6 +59,8 @@ const AddVehiclePage = () => {
         return <InspectionAndInsurance />;
       case 'carScratches':
         return <CarScratches />;
+      case 'rent':
+        return <Rent />;
       default:
         return null;
     }
