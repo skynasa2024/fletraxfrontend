@@ -8,7 +8,6 @@ import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 export function VehicleList() {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
   const remoteRowCount = useMemo(() => vehicles?.totalCount ?? 0, [vehicles]);
-  const [offset, setOffset] = useState({ start: 0, end: 10 });
   const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
 
   const isRowLoaded = ({ index }: { index: number }) => !!vehicles?.data[index];
@@ -19,12 +18,17 @@ export function VehicleList() {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const drivers = await getVehicles({ start: startIndex, end: stopIndex });
-    setVehicles((prev) => ({
-      data: [...(prev?.data ?? []), ...drivers.data],
-      totalCount: drivers.totalCount
-    }));
-    setOffset({ start: startIndex, end: stopIndex });
+    const vehicles = await getVehicles({ start: startIndex, end: stopIndex });
+    setVehicles((prev) => {
+      const data = prev?.data ?? [];
+      vehicles.data.forEach((vehicle, index) => {
+        data[startIndex + index] = vehicle;
+      });
+      return {
+        data,
+        totalCount: vehicles.totalCount
+      };
+    });
 
     setMaxLoadedIndex((prev) => Math.max(prev, stopIndex));
   };
@@ -68,7 +72,7 @@ export function VehicleList() {
                   className="scrollable-x !overflow-y-hidden"
                   height={291}
                   width={width}
-                  columnCount={vehicles?.data.length ?? 0}
+                  columnCount={vehicles?.totalCount ?? 0}
                   columnWidth={402}
                   rowCount={1}
                   rowHeight={271}

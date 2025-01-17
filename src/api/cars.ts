@@ -274,7 +274,7 @@ export const getVehicles = async (
   let vehiclesRes;
   if ('start' in params && 'end' in params) {
     const offset = params.start;
-    const size = params.end - params.start;
+    const size = params.end - params.start + 1;
 
     vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
       params: {

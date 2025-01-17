@@ -55,7 +55,7 @@ export interface DriverDetails {
 
 export const getDrivers = async (params: OffsetBounds): Promise<Paginated<DriverDetails>> => {
   const offset = params.start;
-  const size = params.end - params.start;
+  const size = params.end - params.start + 1;
 
   const drivers = await axios.get<PaginatedResponseModel<DriverDTO>>('/api/drivers/index', {
     params: {

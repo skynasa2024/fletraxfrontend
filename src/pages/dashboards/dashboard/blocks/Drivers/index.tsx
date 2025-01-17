@@ -8,7 +8,6 @@ import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 const DriverList = () => {
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
   const remoteRowCount = useMemo(() => drivers?.totalCount ?? 0, [drivers]);
-  const [offset, setOffset] = useState({ start: 0, end: 10 });
 
   const isRowLoaded = ({ index }: { index: number }) => !!drivers?.data[index];
   const loadMoreRows = async ({
@@ -19,11 +18,16 @@ const DriverList = () => {
     stopIndex: number;
   }) => {
     const drivers = await getDrivers({ start: startIndex, end: stopIndex });
-    setDrivers((prev) => ({
-      data: [...(prev?.data ?? []), ...drivers.data],
-      totalCount: drivers.totalCount
-    }));
-    setOffset({ start: startIndex, end: stopIndex });
+    setDrivers((prev) => {
+      const data = prev?.data ?? [];
+      drivers.data.forEach((driver, index) => {
+        data[startIndex + index] = driver;
+      });
+      return {
+        data,
+        totalCount: drivers.totalCount
+      };
+    });
   };
 
   useEffect(() => {
@@ -76,6 +80,10 @@ const DriverList = () => {
                         <DriverCard
                           driver={drivers.data[index]}
                           onDelete={async () => {
+                            const offset = {
+                              start: Math.max(0, index - 10),
+                              end: index + 10
+                            };
                             await deleteDriver(drivers.data[index].id);
                             const driverRequest = await getDrivers(offset);
                             let newDrivers: Paginated<DriverDetails> = {
