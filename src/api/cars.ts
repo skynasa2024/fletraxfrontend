@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { TDataGridRequestParams } from '@/components';
 import { Paginated } from './common';
 import { Driver } from './drivers';
@@ -96,34 +95,61 @@ export interface VehicleStats {
   inMaintenance: number;
 }
 
+interface CarsMileageAndEngineDTO {
+  id: number;
+  ident: string;
+  date: string;
+  deviceId: number | null;
+  deviceName: string | null;
+  vehiclePlate: string | null;
+  vehicleImage: string | null;
+  formatedDailyExistingKilometers: string;
+  formatedTotalExistingKilometers: string;
+  dailyExistingKilometers: number;
+  totalExistingKilometers: number;
+  formatedDailyParkingTime: string;
+  formatedTotalParkingTime: string;
+  dailyParkingTime: number;
+  totalParkingTime: number;
+  formatedDailyEngineHours: string;
+  formatedTotalEngineHours: string;
+  dailyEngineHours: number;
+  totalEngineHours: number;
+}
+
 export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
   engine: number;
 }
 
-export const getCarsMileageAndEngine = async (cursor?: string): Promise<CarMileageAndEngine[]> => {
-  const LIMIT = 20;
-  let largestMileage = faker.number.float({ min: 10000, max: 10000, fractionDigits: 3 });
-  let largestEngine = faker.number.float({ min: 1000, max: 1000, fractionDigits: 3 });
-
-  return Array(LIMIT)
-    .fill(0)
-    .map(() => {
-      largestMileage -= faker.number.float({ max: 1000, fractionDigits: 3 });
-      largestEngine -= faker.number.float({ max: 100, fractionDigits: 3 });
-      return {
-        vehicle: {
-          brandImage: toAbsoluteUrl('/media/car-brands/audi.png'),
-          id: faker.number.int(1000),
-          imei: faker.phone.imei(),
-          name: faker.vehicle.model(),
-          plate: faker.vehicle.vrm()
-        },
-        mileage: largestMileage,
-        engine: largestEngine
-      };
-    });
+export const getCarsMileageAndEngine = async (
+  offset: OffsetBounded
+): Promise<Paginated<CarMileageAndEngine>> => {
+  const carsMileageAndEngine = await axios.get<PaginatedResponseModel<CarsMileageAndEngineDTO>>(
+    '/api/statistics/counts',
+    {
+      params: {
+        offset: offset.start,
+        size: offset.end - offset.start + 1,
+        sort: 'totalExistingKilometers,desc'
+      }
+    }
+  );
+  return {
+    data: carsMileageAndEngine.data.result.content.map((car) => ({
+      vehicle: {
+        id: car.id,
+        brandImage: car.vehicleImage ?? '',
+        plate: car.vehiclePlate ?? '',
+        imei: car.ident,
+        name: car.vehiclePlate ?? ''
+      },
+      mileage: car.dailyExistingKilometers,
+      engine: car.dailyEngineHours
+    })),
+    totalCount: carsMileageAndEngine.data.result.totalElements
+  };
 };
 
 export interface ViolationDTO {
