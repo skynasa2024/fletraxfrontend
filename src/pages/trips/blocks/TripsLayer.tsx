@@ -1,4 +1,4 @@
-import { Polyline, useMap } from 'react-leaflet';
+import { Marker, Polyline, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
@@ -38,6 +38,24 @@ export const TripsLayer = () => {
         iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
         iconSize: [20, 20],
         iconAnchor: [10, 10]
+      }),
+    []
+  );
+  const iconStartTrip = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/trip-start.svg'),
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      }),
+    []
+  );
+  const iconEndTrip = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/trip-end.svg'),
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
       }),
     []
   );
@@ -104,6 +122,15 @@ export const TripsLayer = () => {
           positions={trip.path.map((point) => [point.latitude, point.longitude])}
         />
       ))}
+      {path && path.length > 1 && (
+        <>
+          <Marker position={[path[0].latitude, path[0].longitude]} icon={iconStartTrip} />
+          <Marker
+            position={[path[path.length - 1].latitude, path[path.length - 1].longitude]}
+            icon={iconEndTrip}
+          />
+        </>
+      )}
       {latLng && rotation !== null && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
       )}
