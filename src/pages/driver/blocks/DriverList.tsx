@@ -13,18 +13,47 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
-        accessorKey: 'owner',
-        header: 'Owner',
+        accessorKey: 'name',
+        header: 'Full Name',
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
-              {'D'}
+              {row.original.driver.name[0]}
             </div>
             <div>
               <div className="font-bold">{row.original.driver.name}</div>
             </div>
           </div>
         )
+      },
+      {
+        accessorKey: 'dateOfBirth',
+        header: 'Birth Date',
+        cell: ({ row }) => <div>{row.original.dateOfBirth}</div>
+      },
+      {
+        accessorKey: 'nationality',
+        header: 'Nationality',
+        cell: ({ row }) => (
+          <span className={'px-3 py-1 rounded-full bg-blue-100 text-blue-800'}>
+            {row.original.nationality}
+          </span>
+        )
+      },
+      {
+        accessorKey: 'idNumber',
+        header: 'ID Number',
+        cell: ({ row }) => <div>{row.original.idNumber}</div>
+      },
+      {
+        accessorKey: 'licenseNumber',
+        header: 'License Number',
+        cell: ({ row }) => <div>{row.original.idNumber}</div>
+      },
+      {
+        accessorKey: 'licenseExpiry',
+        header: 'License Expiry',
+        cell: ({ row }) => <div>{row.original.licenseExpiry}</div>
       },
       {
         accessorKey: 'status',

@@ -5,7 +5,7 @@ import { Device } from '@/pages/public-profile';
 import { User } from '@/pages/public-profile/profiles/user';
 import { Vehicles } from '@/pages/vehicle';
 
-import { Driver } from '@/pages/public-profile/profiles/driver';
+import { Driver } from '@/pages/driver';
 import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
 import { AccountSettingsPlainPage } from '@/pages/account';
@@ -21,7 +21,7 @@ import { ErrorsRouting } from '@/errors';
 import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
 import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDetailsPage';
 import VehicleDetailsPage from '@/pages/vehicle/blocks/VehicleDetailsPage';
-import DriverDetailsPage from '@/pages/public-profile/profiles/driver/DriverDetailsPage';
+import DriverDetailsPage from '@/pages/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
 import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
 import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintenance';

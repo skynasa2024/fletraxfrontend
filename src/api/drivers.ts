@@ -1,6 +1,7 @@
 import { OffsetBounds, Paginated } from './common';
 import { axios } from './axios';
 import { PaginatedResponseModel } from './response';
+import { TDataGridRequestParams } from '@/components';
 
 interface DriverDTO {
   id: number;
@@ -51,17 +52,28 @@ export interface DriverDetails {
   city: string;
   phone: string;
   status: string;
+  dateOfBirth: string;
+  idNumber: string;
+  licenseNumber: string;
+  licenseExpiry: string;
 }
 
-export const getDrivers = async (params: OffsetBounds): Promise<Paginated<DriverDetails>> => {
-  const offset = params.start;
-  const size = params.end - params.start + 1;
+export const getDrivers = async (
+  params: TDataGridRequestParams | OffsetBounds
+): Promise<Paginated<DriverDetails>> => {
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize
+        };
 
   const drivers = await axios.get<PaginatedResponseModel<DriverDTO>>('/api/drivers/index', {
-    params: {
-      size,
-      offset
-    }
+    params: requestParams
   });
 
   return {
@@ -75,7 +87,11 @@ export const getDrivers = async (params: OffsetBounds): Promise<Paginated<Driver
       country: driver.country,
       city: driver.city,
       phone: driver.firstPhone,
-      status: 'Active'
+      status: 'Active',
+      dateOfBirth: driver.dateOfBirth,
+      idNumber: driver.idNumber,
+      licenseNumber: driver.licenseSerialNumber,
+      licenseExpiry: driver.licenseExpiryDate
     })),
     totalCount: drivers.data.result.totalElements,
     offset: drivers.data.result.pageable.offset

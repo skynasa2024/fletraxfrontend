@@ -41,10 +41,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
               alt={row.original.customer.name}
               className="size-9 aspect-square object-cover rounded-full"
             />
-            <div>
-              <div className="font-bold text-[#3F4254]">{row.original.customer.name}</div>
-              <div className="text-[#B5B5C3]">{row.original.customer.email}</div>
-            </div>
+            <div className="font-bold text-[#3F4254]">{row.original.customer.name}</div>
           </div>
         )
       },
@@ -88,7 +85,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'mileage',
-        header: 'Mileage',
+        header: 'Maintenance Mileage',
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />

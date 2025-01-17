@@ -271,58 +271,25 @@ type OffsetBounded = {
 export const getVehicles = async (
   params: TDataGridRequestParams | OffsetBounded
 ): Promise<Paginated<VehicleDetails>> => {
-  let vehiclesRes;
-  if ('start' in params && 'end' in params) {
-    const offset = params.start;
-    const size = params.end - params.start + 1;
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.filters?.[0] && params.filters[0].value
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
 
-    vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
-      params: {
-        offset,
-        size,
-        search: params.filters?.[0] && params.filters[0].value
-      }
-    });
-  } else {
-    vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
-      params: {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value
-      }
-    });
-  }
-
-  const vehicles = vehiclesRes.data.result.content;
-
-  // const fullVehicleDetails: VehicleDetails[] = await Promise.all(
-  //   vehicles.map(async (vehicle) => {
-  //     const [device, user] = await Promise.all([
-  //       getDevice(vehicle.deviceId),
-  //       getUser(vehicle.userId)
-  //     ]);
-
-  //     return {
-  //       vehicle: {
-  //         id: vehicle.id,
-  //         brandImage: vehicle.image ?? '',
-  //         plate: vehicle.plate,
-  //         imei: device.imei,
-  //         name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
-  //       },
-  //       customer: {
-  //         name: user.name,
-  //         avatar: user.avatar ?? '',
-  //         email: user.email
-  //       },
-  //       brandName: vehicle.brand,
-  //       type: vehicle.gear ?? 'NA',
-  //       mileage: vehicle.currentMileage ? vehicle.currentMileage : 'NA',
-  //       status: vehicle.status,
-  //       deviceName: device.name
-  //     };
-  //   })
-  // );
+  const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
+    '/api/vehicles/cars/index',
+    {
+      params: requestParams
+    }
+  );
 
   const fullVehicleDetails: VehicleDetails[] = vehiclesRes.data.result.content.map((vehicle) => ({
     vehicle: {

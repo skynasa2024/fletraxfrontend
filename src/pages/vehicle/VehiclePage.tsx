@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import { VehicleList } from './blocks';
 import UserMiniCards, { MetricData } from './mini-cards/UserMiniCards.tsx';
 import BlocksIcon from './blocks/svg/BlocksIcon.tsx';
@@ -7,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
 
 const VehiclePage = () => {
-  const navigate = useNavigate();
   const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
     total: 0,
     inRent: 0,
@@ -30,14 +28,15 @@ const VehiclePage = () => {
 
   return (
     <div className="grid gap-5 lg:gap-7.5">
-      <h3 className="font-bold text-xl text-gray-800">Vehicle List</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-xl text-gray-800">Vehicle List</h3>
 
-      <button
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto"
-        onClick={() => navigate('/vehicles/add-vehicle')}
-      >
-        New Vehicle
-      </button>
+        <a href="/vehicles/add-vehicle">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
+            New Vehicle
+          </button>
+        </a>
+      </div>
 
       <VehiclesMiniCards stats={vehiclesStats} />
       <VehicleList fetchVehicleStats={handleGetVehiclesStats} />
