@@ -12,6 +12,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { getMonitoringDevices } from '@/api/devices';
 import { useMqttProvider } from '@/providers/MqttProvider';
+import { Buffer } from 'buffer';
 
 interface MqttResponse {
   device_id: number;
@@ -184,109 +185,120 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     [setSearchParams]
   );
 
+  const initCallback = async () => {
+    const availableLocations = await getMonitoringDevices();
+    for (const location of availableLocations) {
+      const topic = `device/monitoring/${location.ident}`;
+      if (memoryMaplocations[topic]) {
+        continue;
+      }
+
+      memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
+      memoryMaplocations[topic].vehicle.imei = location.ident;
+      memoryMaplocations[topic].vehicle.plate = location.vehiclePlate;
+      memoryMaplocations[topic].online = location.status === 'online';
+
+      setClientToLocations((prev) => ({
+        ...prev,
+        [location.userId]: [...(prev[location.userId] || []), location.ident]
+      }));
+
+      // mqttClient.subscribeAsync(topic, {
+      //   qos: 1
+      // });
+    }
+    mqttClient?.subscribeAsync('device/monitoring/+', {
+      qos: 0
+    });
+  };
+
+  const messageHandler = (topic: string, payload: Buffer) => {
+    const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
+
+    type RecursivePartial<T> = {
+      [P in keyof T]?: Partial<T[P]>;
+    };
+    const oldVehicle = memoryMaplocations[topic] || JSON.parse(JSON.stringify(defaultLocation));
+
+    const partialVehicle: RecursivePartial<VehicleLocation> = {
+      online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
+      lat: device.position_latitude,
+      long: device.position_longitude,
+      angle: device.position_direction,
+      status: {
+        parkingTime: device.parking_time,
+        engineStatus:
+          device.engine_ignition_status === 'UNKNOWN'
+            ? undefined
+            : device.engine_ignition_status === 'true',
+        timestamp: new Date(+device.timestamp * 1000),
+        batteryLevel: device.battery_charging_status === true ? 100 : device.battery_level,
+        defenseStatus: device.defense_active_status,
+        engineBlocked: device.engine_blocked_status,
+        existingKilometer: device.existing_kilometers,
+        satellietes: device.position_satellites,
+        signalLevel: device.gsm_signal_level,
+        speed: device.position_speed
+      },
+      vehicle: {
+        imei: device.ident,
+        name: device.device_name
+      }
+    };
+
+    // Remove undefined values from partialVehicle
+    Object.keys(partialVehicle).forEach((key) => {
+      if ((partialVehicle as any)[key] === undefined) {
+        delete (partialVehicle as any)[key];
+      }
+    });
+    if (partialVehicle.status !== undefined) {
+      Object.keys(partialVehicle.status).forEach((key) => {
+        if ((partialVehicle as any).status[key] === undefined) {
+          delete (partialVehicle as any).status[key];
+        }
+      });
+    }
+    if (partialVehicle.vehicle !== undefined) {
+      Object.keys(partialVehicle.vehicle).forEach((key) => {
+        if ((partialVehicle as any).vehicle[key] === undefined) {
+          delete (partialVehicle as any).vehicle[key];
+        }
+      });
+    }
+
+    memoryMaplocations[topic] = {
+      ...oldVehicle,
+      ...partialVehicle,
+      status: {
+        ...oldVehicle.status,
+        ...partialVehicle.status
+      },
+      vehicle: {
+        ...oldVehicle.vehicle,
+        ...partialVehicle.vehicle
+      }
+    };
+  };
+
   useEffect(() => {
     if (!mqttClient) {
       return;
     }
 
-    mqttClient.on('connect', async () => {
-      const availableLocations = await getMonitoringDevices();
-      for (const location of availableLocations) {
-        const topic = `device/monitoring/${location.ident}`;
-        if (memoryMaplocations[topic]) {
-          continue;
-        }
-
-        memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
-        memoryMaplocations[topic].vehicle.imei = location.ident;
-        memoryMaplocations[topic].vehicle.plate = location.vehiclePlate;
-        memoryMaplocations[topic].online = location.status === 'online';
-
-        setClientToLocations((prev) => ({
-          ...prev,
-          [location.userId]: [...(prev[location.userId] || []), location.ident]
-        }));
-
-        // mqttClient.subscribeAsync(topic, {
-        //   qos: 1
-        // });
-      }
-      mqttClient.subscribeAsync('device/monitoring/+', {
-        qos: 0
-      });
-    });
-    mqttClient.on('message', (topic, payload) => {
-      const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
-
-      type RecursivePartial<T> = {
-        [P in keyof T]?: Partial<T[P]>;
-      };
-      const oldVehicle = memoryMaplocations[topic] || JSON.parse(JSON.stringify(defaultLocation));
-
-      const partialVehicle: RecursivePartial<VehicleLocation> = {
-        online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
-        lat: device.position_latitude,
-        long: device.position_longitude,
-        angle: device.position_direction,
-        status: {
-          parkingTime: device.parking_time,
-          engineStatus:
-            device.engine_ignition_status === 'UNKNOWN'
-              ? undefined
-              : device.engine_ignition_status === 'true',
-          timestamp: new Date(+device.timestamp * 1000),
-          batteryLevel: device.battery_charging_status === true ? 100 : device.battery_level,
-          defenseStatus: device.defense_active_status,
-          engineBlocked: device.engine_blocked_status,
-          existingKilometer: device.existing_kilometers,
-          satellietes: device.position_satellites,
-          signalLevel: device.gsm_signal_level,
-          speed: device.position_speed
-        },
-        vehicle: {
-          imei: device.ident,
-          name: device.device_name
-        }
-      };
-
-      // Remove undefined values from partialVehicle
-      Object.keys(partialVehicle).forEach((key) => {
-        if ((partialVehicle as any)[key] === undefined) {
-          delete (partialVehicle as any)[key];
-        }
-      });
-      if (partialVehicle.status !== undefined) {
-        Object.keys(partialVehicle.status).forEach((key) => {
-          if ((partialVehicle as any).status[key] === undefined) {
-            delete (partialVehicle as any).status[key];
-          }
-        });
-      }
-      if (partialVehicle.vehicle !== undefined) {
-        Object.keys(partialVehicle.vehicle).forEach((key) => {
-          if ((partialVehicle as any).vehicle[key] === undefined) {
-            delete (partialVehicle as any).vehicle[key];
-          }
-        });
-      }
-
-      memoryMaplocations[topic] = {
-        ...oldVehicle,
-        ...partialVehicle,
-        status: {
-          ...oldVehicle.status,
-          ...partialVehicle.status
-        },
-        vehicle: {
-          ...oldVehicle.vehicle,
-          ...partialVehicle.vehicle
-        }
-      };
-    });
+    if (mqttClient.connected) {
+      initCallback();
+    } else {
+      mqttClient.on('connect', initCallback);
+    }
+    mqttClient.on('message', messageHandler);
 
     return () => {
       mqttClient.unsubscribeAsync('device/monitoring/+');
+      mqttClient.off('connect', initCallback);
+      mqttClient.off('message', messageHandler);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mqttClient]);
 
   useEffect(() => {

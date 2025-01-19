@@ -18,17 +18,20 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
       return;
     }
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-      clientId: `${auth.currentUser.id}-${(Math.random() * 1000) % 1}`,
+      clientId: `${auth.currentUser.id}-${(Math.random() * 1000).toFixed(0)}`,
       username: 'admin',
       password: 'fletrax159',
       clean: true,
       keepalive: 60,
       protocolVersion: 5
     });
-    setMqttClient(mqttClient);
+    setMqttClient((prev) => {
+      prev?.endAsync();
+      return mqttClient;
+    });
 
     return () => {
-      mqttClient?.end();
+      mqttClient?.endAsync();
     };
   }, [auth.currentUser]);
 
