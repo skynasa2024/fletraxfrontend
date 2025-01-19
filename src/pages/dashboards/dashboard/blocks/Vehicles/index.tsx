@@ -98,7 +98,7 @@ export function VehicleList() {
                   }
                   cellRenderer={({ key, columnIndex: index, style }) =>
                     vehicles && (
-                      <div key={key} style={style} className="pr-4">
+                      <div key={key} style={style} className="pr-4 !h-[271px]">
                         <VehicleCard
                           vehicle={vehicles.data[index]}
                           refetchVehicles={fetchAllLoadedVehicles}
