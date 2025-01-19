@@ -119,6 +119,10 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
                     const itemIndex = rowIndex * COLUMN_COUNT + columnIndex;
                     const vehicle = vehicles?.data[itemIndex];
 
+                    if (itemIndex >= (vehicles?.totalCount ?? 0)) {
+                      return null;
+                    }
+
                     return (
                       <div key={key} style={style} className="p-2">
                         <VehicleCard

@@ -8,7 +8,7 @@ import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
 const VehiclePage = () => {
   const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
     total: 0,
-    inRent: 0,
+    unavailable: 0,
     inMaintenance: 0,
     available: 0
   });
@@ -58,8 +58,8 @@ const VehiclesMiniCards = ({ stats }: VehiclesMiniCardsProps) => {
       icon: <BlocksIcon />
     },
     {
-      value: stats.inRent,
-      label: 'Rented Vehicles',
+      value: stats.unavailable,
+      label: 'Unavailable Vehicles',
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#FF0000" />
     },
@@ -71,7 +71,7 @@ const VehiclesMiniCards = ({ stats }: VehiclesMiniCardsProps) => {
     },
     {
       value: stats.available,
-      label: 'Available For Rent',
+      label: 'Available Vehicles',
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#5271FF" />
     }

@@ -91,7 +91,7 @@ export interface VehicleDTO {
 export interface VehicleStats {
   total: number;
   available: number;
-  inRent: number;
+  unavailable: number;
   inMaintenance: number;
 }
 
