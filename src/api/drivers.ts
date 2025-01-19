@@ -73,11 +73,13 @@ export const getDrivers = async (
     'start' in params
       ? {
           offset: params.start,
-          size: params.end - params.start + 1
+          size: params.end - params.start + 1,
+          search: params.search
         }
       : {
           page: params.pageIndex,
-          size: params.pageSize
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
         };
 
   const drivers = await axios.get<PaginatedResponseModel<DriverDTO>>('/api/drivers/index', {

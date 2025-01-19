@@ -46,12 +46,7 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
     const fetched = await getVehicles({
       start: itemStart,
       end: itemStop + 1,
-      filters: [
-        {
-          id: '__any',
-          value: searchQuery
-        }
-      ]
+      search: searchQuery
     });
 
     setVehicles((prev) => {
@@ -74,7 +69,7 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
     const fetched = await getVehicles({
       start: 0,
       end: maxLoadedIndex + 1,
-      filters: [{ id: '__any', value: searchQuery }]
+      search: searchQuery
     });
     setVehicles(fetched);
   }
@@ -84,7 +79,7 @@ export default function VehiclesCardsView({ searchQuery, refetchStats }: Vehicle
       const fetched = await getVehicles({
         start: 0,
         end: 10,
-        filters: [{ id: '__any', value: searchQuery }]
+        search: searchQuery
       });
       setVehicles(fetched);
       setMaxLoadedIndex(10);

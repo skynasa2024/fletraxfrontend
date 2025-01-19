@@ -1,5 +1,5 @@
 import { TDataGridRequestParams } from '@/components';
-import { Paginated } from './common';
+import { OffsetBounds, Paginated } from './common';
 import { Driver } from './drivers';
 import { User, getUser } from './user';
 import { axios } from './axios';
@@ -126,7 +126,7 @@ export interface CarMileageAndEngine {
 }
 
 export const getCarsMileageAndEngine = async (
-  offset: OffsetBounded
+  offset: OffsetBounds
 ): Promise<Paginated<CarMileageAndEngine>> => {
   const carsMileageAndEngine = await axios.get<PaginatedResponseModel<CarsMileageAndEngineDTO>>(
     '/api/statistics/counts',
@@ -293,21 +293,15 @@ export const updateMaintenanceStatus = async (id: number, status: string): Promi
   });
 };
 
-type OffsetBounded = {
-  start: number;
-  end: number;
-  filters?: { id: string; value: string }[];
-};
-
 export const getVehicles = async (
-  params: TDataGridRequestParams | OffsetBounded
+  params: TDataGridRequestParams | OffsetBounds
 ): Promise<Paginated<VehicleDetails>> => {
   const requestParams =
     'start' in params
       ? {
           offset: params.start,
           size: params.end - params.start + 1,
-          search: params.filters?.[0] && params.filters[0].value
+          search: params.search
         }
       : {
           page: params.pageIndex,
