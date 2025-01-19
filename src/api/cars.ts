@@ -186,7 +186,8 @@ export const getViolations = async (
     {
       params: {
         page: params.pageIndex,
-        size: params.pageSize
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
       }
     }
   );

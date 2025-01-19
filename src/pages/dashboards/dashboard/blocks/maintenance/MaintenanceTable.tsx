@@ -17,13 +17,15 @@ const MaintenanceStatusDropdown = (info: CellContext<Maintenance, unknown>) => {
         reload();
       }}
       options={{
-        'In Maintenance': {
+        ongoing: {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: 'In Maintenance'
         },
-        Completed: {
+        finished: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: 'Completed'
         }
       }}
     />

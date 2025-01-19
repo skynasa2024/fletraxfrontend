@@ -17,21 +17,25 @@ const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
         reload();
       }}
       options={{
-        Unpaid: {
+        unpaid: {
           color: '#F1416C',
-          backgroundColor: '#FFF5F8'
+          backgroundColor: '#FFF5F8',
+          name: 'Unpaid'
         },
-        'Under Review': {
+        under_review: {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: 'Under Review'
         },
-        Recorded: {
+        recorded: {
           color: '#00A3FF',
-          backgroundColor: '#EEF9FF'
+          backgroundColor: '#EEF9FF',
+          name: 'Recorded'
         },
-        Paid: {
+        paid: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: 'Paid'
         }
       }}
     />
