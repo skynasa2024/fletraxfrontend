@@ -4,6 +4,7 @@ import { getDrivers, DriverDetails } from '@/api/drivers';
 import { ColumnDef } from '@tanstack/react-table';
 import { StatusDropdown } from './maintenance/StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
+import { CarView } from '@/pages/vehicle/blocks/CarView';
 
 interface DriverListProps {
   searchQuery?: string;
@@ -48,12 +49,17 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
       {
         accessorKey: 'licenseNumber',
         header: 'License Number',
-        cell: ({ row }) => <div>{row.original.idNumber}</div>
+        cell: ({ row }) => <div>{row.original.licenseNumber}</div>
       },
       {
         accessorKey: 'licenseExpiry',
         header: 'License Expiry',
         cell: ({ row }) => <div>{row.original.licenseExpiry}</div>
+      },
+      {
+        accessorKey: 'vehicle',
+        header: 'Vehicle',
+        cell: ({ row }) => <CarView vehicle={row.original.vehicle} />
       },
       {
         accessorKey: 'status',

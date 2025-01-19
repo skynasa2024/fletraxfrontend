@@ -1,30 +1,40 @@
+import { DriverStats, getDriversStats } from '@/api/drivers';
 import BlocksIcon from '../vehicle/blocks/svg/BlocksIcon';
 import PeopleIcon from '../vehicle/blocks/svg/PeopleIcon';
-import UserMiniCards, { MetricData } from '../vehicle/mini-cards/UserMiniCards';
+import UserMiniCards from '../vehicle/mini-cards/UserMiniCards';
 import { DriverList } from './blocks';
+import { useEffect, useMemo, useState } from 'react';
 
 const DriverPage = () => {
-  const metrics: MetricData[] = [
-    {
-      value: 250,
-      label: 'Total Drivers',
-      textColor: 'text-white',
-      bgColor: 'bg-blue-500',
-      icon: <BlocksIcon />
-    },
-    {
-      value: 100,
-      label: 'Active Drivers',
-      textColor: 'text-gray-800',
-      icon: <PeopleIcon color="#5271FF" />
-    },
-    {
-      value: 150,
-      label: 'Under Review Drivers',
-      textColor: 'text-gray-800',
-      icon: <PeopleIcon color="#FFA800" />
-    }
-  ];
+  const [driversStats, setDriversStats] = useState<DriverStats>();
+  const metrics = useMemo(
+    () => [
+      {
+        value: driversStats?.total || 0,
+        label: 'Total Drivers',
+        textColor: 'text-white',
+        bgColor: 'bg-blue-500',
+        icon: <BlocksIcon />
+      },
+      {
+        value: driversStats?.active || 0,
+        label: 'Active Drivers',
+        textColor: 'text-gray-800',
+        icon: <PeopleIcon color="#5271FF" />
+      },
+      {
+        value: driversStats?.unactive || 0,
+        label: 'Under Review Drivers',
+        textColor: 'text-gray-800',
+        icon: <PeopleIcon color="#FFA800" />
+      }
+    ],
+    [driversStats]
+  );
+
+  useEffect(() => {
+    getDriversStats().then(setDriversStats);
+  }, []);
 
   return (
     <div className="grid gap-5 lg:gap-7.5">

@@ -1,7 +1,8 @@
 import { OffsetBounds, Paginated } from './common';
 import { axios } from './axios';
-import { PaginatedResponseModel } from './response';
+import { PaginatedResponseModel, ResponseModel } from './response';
 import { TDataGridRequestParams } from '@/components';
+import { Vehicle } from './cars';
 
 interface DriverDTO {
   id: number;
@@ -36,6 +37,12 @@ interface DriverDTO {
   address: string;
   archived: boolean;
   userId: number;
+  vehicleBrand: string;
+  vehicleId: number;
+  vehicleImage: string;
+  vehicleModel: string;
+  vehiclePlate: string;
+  status: boolean;
 }
 
 export interface Driver {
@@ -56,6 +63,7 @@ export interface DriverDetails {
   idNumber: string;
   licenseNumber: string;
   licenseExpiry: string;
+  vehicle: Vehicle;
 }
 
 export const getDrivers = async (
@@ -87,11 +95,18 @@ export const getDrivers = async (
       country: driver.country,
       city: driver.city,
       phone: driver.firstPhone,
-      status: 'Active',
+      status: driver.status ? 'Active' : 'Under Review',
       dateOfBirth: driver.dateOfBirth,
       idNumber: driver.idNumber,
       licenseNumber: driver.licenseSerialNumber,
-      licenseExpiry: driver.licenseExpiryDate
+      licenseExpiry: driver.licenseExpiryDate,
+      vehicle: {
+        brandImage: '',
+        id: driver.vehicleId,
+        imei: '',
+        name: '',
+        plate: driver.vehiclePlate
+      }
     })),
     totalCount: drivers.data.result.totalElements,
     offset: drivers.data.result.pageable.offset
@@ -100,4 +115,15 @@ export const getDrivers = async (
 
 export const deleteDriver = (id: number) => {
   return axios.get(`/api/drivers/delete/${id}`);
+};
+
+export interface DriverStats {
+  total: number;
+  active: number;
+  unactive: number;
+}
+
+export const getDriversStats = async (): Promise<DriverStats> => {
+  const stats = await axios.get<ResponseModel<DriverStats>>('/api/drivers/stats');
+  return stats.data.result;
 };
