@@ -10,8 +10,8 @@ import {
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import mqtt from 'mqtt';
 import { getMonitoringDevices } from '@/api/devices';
+import { useMqttProvider } from '@/providers/MqttProvider';
 
 interface MqttResponse {
   device_id: number;
@@ -163,17 +163,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     }
     return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
   }, [locations, filteredLocationsImei]);
-  const mqttClient = useMemo(
-    () =>
-      mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-        username: 'admin',
-        password: 'fletrax159',
-        clean: true,
-        keepalive: 60,
-        protocolVersion: 5
-      }),
-    []
-  );
+  const { mqttClient } = useMqttProvider();
 
   const setSelectedClient = useCallback(
     (client?: User) => {
@@ -195,6 +185,10 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
+    if (!mqttClient) {
+      return;
+    }
+
     mqttClient.on('connect', async () => {
       const availableLocations = await getMonitoringDevices();
       for (const location of availableLocations) {
@@ -289,6 +283,10 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         }
       };
     });
+
+    return () => {
+      mqttClient.unsubscribeAsync('device/monitoring/+');
+    };
   }, [mqttClient]);
 
   useEffect(() => {
