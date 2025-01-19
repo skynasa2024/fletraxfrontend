@@ -7,8 +7,10 @@ import { ButtonRadioGroup } from '@/pages/dashboards/dashboard/blocks/ButtonRadi
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { AutoSizer, List } from 'react-virtualized';
 import { toAbsoluteUrl } from '@/utils';
+import { useSearchParams } from 'react-router-dom';
 
 export const MainCard = () => {
+  const [searchParams] = useSearchParams();
   const {
     clients,
     setSelectedClient,
@@ -18,8 +20,8 @@ export const MainCard = () => {
     setSelectedLocation,
     search
   } = useMonitoringProvider();
-  const [searchTarget, setSearchTarget] = useState('User');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTarget, setSearchTarget] = useState(searchParams.get('target') ?? 'User');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') ?? '');
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
   const onlineLocations = useMemo(() => locations.filter((loc) => loc.online), [locations]);

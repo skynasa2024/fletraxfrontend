@@ -99,22 +99,8 @@ const MonitoringContext = createContext<MonitoringContextProps>({
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clients, setClients] = useState<UserWithDevices[]>([]);
-  const [filteredClientsNames, setFilteredClientsNames] = useState<number[]>();
-  const filteredClients = useMemo(() => {
-    if (!filteredClientsNames) {
-      return clients;
-    }
-    return clients.filter((c) => filteredClientsNames.includes(c.id));
-  }, [clients, filteredClientsNames]);
   const [clientToLocations, setClientToLocations] = useState<Record<number, string[]>>({});
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
-  const [filteredLocationsImei, setFilteredLocationsImei] = useState<string[]>();
-  const filteredLocations = useMemo(() => {
-    if (!filteredLocationsImei) {
-      return locations;
-    }
-    return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
-  }, [locations, filteredLocationsImei]);
   const [showImei, setShowImei] = useState(true);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
@@ -124,6 +110,59 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     () => locations.find((v) => v.vehicle.imei === searchParams.get('location')),
     [locations, searchParams]
   );
+  const searchQuery = useMemo(() => searchParams.get('q') || '', [searchParams]);
+  const setSearchQuery = useCallback(
+    (query: string) => {
+      setSearchParams((params) => {
+        query ? params.set('q', query) : params.delete('q');
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+  const searchTarget = useMemo(() => searchParams.get('target') || 'Vehicle', [searchParams]);
+  const setSearchTarget = useCallback(
+    (target: string) => {
+      setSearchParams((params) => {
+        target ? params.set('target', target) : params.delete('target');
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+  const filteredClientsNames = useMemo(() => {
+    if (!searchQuery || searchTarget !== 'User') {
+      return null;
+    }
+    return clients
+      .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .map((c) => c.id);
+  }, [clients, searchQuery, searchTarget]);
+  const filteredClients = useMemo(() => {
+    if (!filteredClientsNames) {
+      return clients;
+    }
+    return clients.filter((c) => filteredClientsNames.includes(c.id));
+  }, [clients, filteredClientsNames]);
+  const filteredLocationsImei = useMemo(() => {
+    if ((!searchQuery || searchTarget !== 'Vehicle') && !selectedClient) {
+      return null;
+    }
+    return locations
+      .filter(
+        (l) =>
+          l.vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          l.vehicle.imei.includes(searchQuery)
+      )
+      .map((l) => l.vehicle.imei)
+      .filter((l) => (selectedClient ? l in clientToLocations[selectedClient?.id] : true));
+  }, [clientToLocations, locations, searchQuery, searchTarget, selectedClient]);
+  const filteredLocations = useMemo(() => {
+    if (!filteredLocationsImei) {
+      return locations;
+    }
+    return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
+  }, [locations, filteredLocationsImei]);
   const mqttClient = useMemo(
     () =>
       mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
@@ -295,36 +334,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     };
   }, [updateLocations]);
 
-  useEffect(() => {
-    if (selectedClient) {
-      setFilteredLocationsImei(clientToLocations[selectedClient.id] || []);
-    } else {
-      setFilteredLocationsImei(undefined);
-    }
-  }, [clientToLocations, selectedClient, setSelectedLocation]);
-
   const search = async (target: string, query: string) => {
-    if (query === '') {
-      setFilteredLocationsImei(undefined);
-      setFilteredClientsNames(undefined);
-      return;
-    }
-
-    if (target === 'Vehicle') {
-      setFilteredLocationsImei(
-        locations
-          .filter(
-            (l) =>
-              l.vehicle.name.toLowerCase().includes(query.toLowerCase()) ||
-              l.vehicle.imei.includes(query)
-          )
-          .map((l) => l.vehicle.imei)
-      );
-    } else {
-      setFilteredClientsNames(
-        clients.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())).map((c) => c.id)
-      );
-    }
+    setSearchQuery(query);
+    setSearchTarget(target);
   };
 
   return (
