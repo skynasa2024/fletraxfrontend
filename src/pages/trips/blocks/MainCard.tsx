@@ -1,6 +1,5 @@
 import { useTripsContext } from '../providers/TripsContext';
 import 'react-resizable/css/styles.css';
-import { format } from 'date-fns';
 import { toAbsoluteUrl } from '@/utils';
 import TripCard from './TripCard';
 import { TripsSearch } from './TripsSearch';
@@ -13,6 +12,10 @@ export const MainCard = () => {
     setStartDate,
     endDate,
     setEndDate,
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
     search,
     trips
   } = useTripsContext();
@@ -26,22 +29,9 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
-              value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+              value={startDate ? startDate : ''}
               onChange={(e) => {
-                if (!startDate) {
-                  setStartDate(new Date(e.target.value));
-                  return;
-                }
-                const newDate = new Date(e.target.value);
-                setStartDate(
-                  new Date(
-                    newDate.getFullYear(),
-                    newDate.getMonth(),
-                    newDate.getDate(),
-                    startDate.getHours(),
-                    startDate.getMinutes()
-                  )
-                );
+                setStartDate(e.target.value);
               }}
             />
           </div>
@@ -51,22 +41,9 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
-              value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+              value={endDate ? endDate : ''}
               onChange={(e) => {
-                if (!endDate) {
-                  setEndDate(new Date(e.target.value));
-                  return;
-                }
-                const newDate = new Date(e.target.value);
-                setEndDate(
-                  new Date(
-                    newDate.getFullYear(),
-                    newDate.getMonth(),
-                    newDate.getDate(),
-                    endDate.getHours(),
-                    endDate.getMinutes()
-                  )
-                );
+                setEndDate(e.target.value);
               }}
             />
           </div>
@@ -76,22 +53,9 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"
-              value={startDate ? format(startDate, 'HH:mm') : ''}
+              value={startTime ? startTime : ''}
               onChange={(e) => {
-                if (!startDate) {
-                  setStartDate(new Date(e.target.value));
-                  return;
-                }
-                const time = e.target.value.split(':');
-                setStartDate(
-                  new Date(
-                    startDate.getFullYear(),
-                    startDate.getMonth(),
-                    startDate.getDate(),
-                    +time[0],
-                    +time[1]
-                  )
-                );
+                setStartTime(e.target.value);
               }}
             />
           </div>
@@ -101,22 +65,9 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"
-              value={endDate ? format(endDate, 'HH:mm') : ''}
+              value={endTime ? endTime : ''}
               onChange={(e) => {
-                if (!endDate) {
-                  setEndDate(new Date(e.target.value));
-                  return;
-                }
-                const time = e.target.value.split(':');
-                setEndDate(
-                  new Date(
-                    endDate.getFullYear(),
-                    endDate.getMonth(),
-                    endDate.getDate(),
-                    +time[0],
-                    +time[1]
-                  )
-                );
+                setEndTime(e.target.value);
               }}
             />
           </div>

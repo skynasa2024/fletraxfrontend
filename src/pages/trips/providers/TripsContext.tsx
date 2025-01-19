@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -13,12 +14,18 @@ interface TripsContextProps {
   searchDeviceQuery: string;
   // eslint-disable-next-line no-unused-vars
   setSearchDeviceQuery: (query: string) => void;
-  startDate?: Date;
+  startDate?: string;
   // eslint-disable-next-line no-unused-vars
-  setStartDate: (date: Date | undefined) => void;
-  endDate?: Date;
+  setStartDate: (date: string | undefined) => void;
+  endDate?: string;
   // eslint-disable-next-line no-unused-vars
-  setEndDate: (date: Date | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+  startTime?: string;
+  // eslint-disable-next-line no-unused-vars
+  setStartTime: (time: string | undefined) => void;
+  endTime?: string;
+  // eslint-disable-next-line no-unused-vars
+  setEndTime: (time: string | undefined) => void;
   search: () => void;
   trips: TripGroup[];
   selectedTrip?: TripGroup | Trip;
@@ -30,10 +37,14 @@ interface TripsContextProps {
 const TripsContext = createContext<TripsContextProps>({
   searchDeviceQuery: '',
   setSearchDeviceQuery: () => {},
-  startDate: new Date(),
+  startDate: undefined,
   setStartDate: () => {},
-  endDate: new Date(),
+  endDate: undefined,
   setEndDate: () => {},
+  startTime: undefined,
+  setStartTime: () => {},
+  endTime: undefined,
+  setEndTime: () => {},
   search: () => {},
   trips: [],
   setSelectedTrip: () => {}
@@ -57,39 +68,69 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     },
     [setSearchParams]
   );
-  const [startDate, _setStartDate] = useState(() => {
-    const date = searchParams.get('startDate');
-    return date ? new Date(+date) : undefined;
-  });
+  const startDate = useMemo(() => {
+    const date = searchParams.get('startDate') || undefined;
+    return date;
+  }, [searchParams]);
   const setStartDate = useCallback(
-    (date: Date | undefined) => {
-      if (date && isNaN(date?.getTime())) {
-        return;
-      }
-
+    (date: string | undefined) => {
       setSearchParams((params) => {
         if (!date) {
           params.delete('startDate');
           return params;
         }
-        params.set('startDate', date.getTime().toString());
+        params.set('startDate', date);
         return params;
       });
     },
     [setSearchParams]
   );
-  const [endDate, _setEndDate] = useState(() => {
-    const date = searchParams.get('endDate');
-    return date ? new Date(+date) : undefined;
-  });
+  const endDate = useMemo(() => {
+    const date = searchParams.get('endDate') || undefined;
+    return date;
+  }, [searchParams]);
   const setEndDate = useCallback(
-    (date: Date | undefined) => {
+    (date: string | undefined) => {
       setSearchParams((params) => {
         if (!date) {
           params.delete('endDate');
           return params;
         }
-        params.set('endDate', date.getTime().toString());
+        params.set('endDate', date);
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+  const startTime = useMemo(() => {
+    const time = searchParams.get('startTime') || undefined;
+    return time;
+  }, [searchParams]);
+  const setStartTime = useCallback(
+    (time: string | undefined) => {
+      setSearchParams((params) => {
+        if (!time) {
+          params.delete('startTime');
+          return params;
+        }
+        params.set('startTime', time);
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+  const endTime = useMemo(() => {
+    const time = searchParams.get('endTime') || undefined;
+    return time;
+  }, [searchParams]);
+  const setEndTime = useCallback(
+    (time: string | undefined) => {
+      setSearchParams((params) => {
+        if (!time) {
+          params.delete('endTime');
+          return params;
+        }
+        params.set('endTime', time);
         return params;
       });
     },
@@ -98,15 +139,15 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [trips, setTrips] = useState<TripGroup[]>([]);
   const search = useCallback(async () => {
     setSearchDeviceQuery(searchDeviceQuery);
-    setStartDate(startDate);
-    setEndDate(endDate);
     const trips = await searchTrips({
       query: searchDeviceQuery,
       startDate,
-      endDate
+      endDate,
+      startTime,
+      endTime
     });
     setTrips(trips);
-  }, [endDate, searchDeviceQuery, setEndDate, setSearchDeviceQuery, setStartDate, startDate]);
+  }, [endDate, endTime, searchDeviceQuery, setSearchDeviceQuery, startDate, startTime]);
 
   useEffect(() => {
     if (!selectedTrip) {
@@ -136,9 +177,13 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         searchDeviceQuery,
         setSearchDeviceQuery: _setSearchDeviceQuery,
         startDate,
-        setStartDate: _setStartDate,
+        setStartDate,
         endDate,
-        setEndDate: _setEndDate,
+        setEndDate,
+        startTime,
+        setStartTime,
+        endTime,
+        setEndTime,
         search,
         trips,
         selectedTrip,

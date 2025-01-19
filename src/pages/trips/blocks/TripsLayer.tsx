@@ -46,7 +46,7 @@ export const TripsLayer = () => {
       L.icon({
         iconUrl: toAbsoluteUrl('/media/icons/trip-start.svg'),
         iconSize: [30, 30],
-        iconAnchor: [15, 30]
+        iconAnchor: [15, 15]
       }),
     []
   );
@@ -55,7 +55,7 @@ export const TripsLayer = () => {
       L.icon({
         iconUrl: toAbsoluteUrl('/media/icons/trip-end.svg'),
         iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconAnchor: [15, 30]
       }),
     []
   );
