@@ -121,6 +121,8 @@ export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
   engine: number;
+  formattedMilage: string;
+  formattedEngine: string;
 }
 
 export const getCarsMileageAndEngine = async (
@@ -132,7 +134,7 @@ export const getCarsMileageAndEngine = async (
       params: {
         offset: offset.start,
         size: offset.end - offset.start + 1,
-        sort: 'totalExistingKilometers,desc'
+        sort: 'dailyExistingKilometers,desc'
       }
     }
   );
@@ -146,7 +148,9 @@ export const getCarsMileageAndEngine = async (
         name: car.vehiclePlate ?? ''
       },
       mileage: car.dailyExistingKilometers,
-      engine: car.dailyEngineHours
+      engine: car.dailyEngineHours,
+      formattedMilage: car.formatedDailyExistingKilometers,
+      formattedEngine: car.formatedDailyEngineHours
     })),
     totalCount: carsMileageAndEngine.data.result.totalElements
   };

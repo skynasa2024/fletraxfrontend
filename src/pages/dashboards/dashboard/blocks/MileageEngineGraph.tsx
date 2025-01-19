@@ -121,10 +121,10 @@ const MileageEngineGraph = () => {
                           </div>
                           <div className="w-40 flex flex-col justify-center">
                             {(selection === 'Mileage' || selection === 'All') && (
-                              <div className="text-sm">{car.mileage.toFixed(3)} KM</div>
+                              <div className="text-sm">{car.formattedMilage}</div>
                             )}
                             {(selection === 'Engine' || selection === 'All') && (
-                              <div className="text-sm">{car.engine.toFixed(2)} Hours</div>
+                              <div className="text-sm">{car.formattedEngine}</div>
                             )}
                           </div>
                         </div>
