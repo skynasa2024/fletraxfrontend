@@ -32,8 +32,12 @@ const DriverPage = () => {
     [driversStats]
   );
 
-  useEffect(() => {
+  const refetch = () => {
     getDriversStats().then(setDriversStats);
+  };
+
+  useEffect(() => {
+    refetch();
   }, []);
 
   return (
@@ -49,7 +53,7 @@ const DriverPage = () => {
       </div>
 
       <UserMiniCards metrics={metrics} />
-      <DriverList />
+      <DriverList refetch={refetch} />
     </div>
   );
 };

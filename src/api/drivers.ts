@@ -129,3 +129,11 @@ export const getDriversStats = async (): Promise<DriverStats> => {
   const stats = await axios.get<ResponseModel<DriverStats>>('/api/drivers/stats');
   return stats.data.result;
 };
+
+export const updateDriverStatus = async (id: number, status: boolean) => {
+  await axios.patch(`/api/drivers/update-status/${id}`, undefined, {
+    params: {
+      status
+    }
+  });
+};

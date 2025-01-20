@@ -1,7 +1,6 @@
-import { DriverDetails } from '@/api/drivers';
+import { DriverDetails, updateDriverStatus } from '@/api/drivers';
 import { StatusDropdown, StatusDropdownProps } from '../StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
-import Image from '@/components/image/Image';
 
 interface DriverCardProps {
   driver?: DriverDetails;
@@ -40,7 +39,14 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
             src={driver.driver.avatar || toAbsoluteUrl('/media/avatars/avatar-placeholder.png')}
             className="size-12 rounded-[4px]"
           />
-          <StatusDropdown selected={driver.status} setSelected={() => {}} options={options} />
+          <StatusDropdown
+            selected={driver.status}
+            setSelected={async (status) => {
+              await updateDriverStatus(driver.id, status === 'Active');
+              onDelete();
+            }}
+            options={options}
+          />
         </div>
         <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[22px]">
           {driver.driver.name}

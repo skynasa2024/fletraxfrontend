@@ -1,16 +1,43 @@
 import React, { useMemo } from 'react';
-import { DataGrid } from '@/components';
-import { getDrivers, DriverDetails } from '@/api/drivers';
-import { ColumnDef } from '@tanstack/react-table';
-import { StatusDropdown } from './maintenance/StatusDropdown';
+import { DataGrid, useDataGrid } from '@/components';
+import { getDrivers, DriverDetails, updateDriverStatus } from '@/api/drivers';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { CarView } from '@/pages/vehicle/blocks/CarView';
+import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+
+const DriverListDropdown = (
+  info: CellContext<DriverDetails, unknown> & { refetch: () => void }
+) => {
+  const reload = useDataGrid().fetchServerSideData;
+  return (
+    <StatusDropdown
+      selected={info.row.original.status}
+      setSelected={async (status) => {
+        await updateDriverStatus(info.row.original.id, status === 'Active');
+        reload();
+        info.refetch();
+      }}
+      options={{
+        'Under Review': {
+          color: '#FFA800',
+          backgroundColor: '#FFF8EA'
+        },
+        Active: {
+          color: '#50CD89',
+          backgroundColor: '#EEFAF4'
+        }
+      }}
+    />
+  );
+};
 
 interface DriverListProps {
   searchQuery?: string;
+  refetch: () => void;
 }
 
-const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
+const DriverList: React.FC<DriverListProps> = ({ searchQuery = '', refetch }) => {
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
@@ -64,22 +91,7 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
       {
         accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => (
-          <StatusDropdown
-            selected={row.original.status}
-            setSelected={() => {}}
-            options={{
-              'Under Review': {
-                color: '#FFA800',
-                backgroundColor: '#FFF8EA'
-              },
-              Active: {
-                color: '#50CD89',
-                backgroundColor: '#EEFAF4'
-              }
-            }}
-          />
-        )
+        cell: (info) => <DriverListDropdown refetch={refetch} {...info} />
       },
       {
         id: 'actions',
@@ -96,7 +108,7 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '' }) => {
         )
       }
     ],
-    []
+    [refetch]
   );
 
   return (

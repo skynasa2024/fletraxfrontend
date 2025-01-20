@@ -2,10 +2,9 @@ import { DataGrid } from '@/components';
 import { getMaintenance, Maintenance } from '@/api/cars';
 import { useMemo } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
-import { StatusDropdown } from './StatusDropdown';
+import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 
 interface ViolationTableProps {
   searchQuery: string;
@@ -28,7 +27,7 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
           className: 'min-w-36'
         }
       },
-      
+
       {
         accessorFn: (row) => row.type,
         id: 'type',
