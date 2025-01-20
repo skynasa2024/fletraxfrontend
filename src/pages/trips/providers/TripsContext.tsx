@@ -139,6 +139,10 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [trips, setTrips] = useState<TripGroup[]>([]);
   const search = useCallback(async () => {
     setSearchDeviceQuery(searchDeviceQuery);
+    if (!searchDeviceQuery) {
+      setTrips([]);
+      return;
+    }
     const trips = await searchTrips({
       query: searchDeviceQuery,
       startDate,
@@ -148,6 +152,10 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     });
     setTrips(trips);
   }, [endDate, endTime, searchDeviceQuery, setSearchDeviceQuery, startDate, startTime]);
+
+  useEffect(() => {
+    search();
+  }, [search]);
 
   useEffect(() => {
     if (!selectedTrip) {
