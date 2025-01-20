@@ -13,12 +13,16 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
   const [mqttClient, setMqttClient] = useState<mqtt.MqttClient | undefined>();
 
   useEffect(() => {
+    if (!localStorage.getItem('mqtt-suffix')) {
+      localStorage.setItem('mqtt-suffix', (Math.random() * 1000).toFixed(0));
+    }
+    const suffix = localStorage.getItem('mqtt-suffix') ?? '';
     if (!auth.currentUser) {
       setMqttClient(undefined);
       return;
     }
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-      clientId: `${auth.currentUser.id}-${(Math.random() * 1000).toFixed(0)}`,
+      clientId: `${auth.currentUser.id}-${suffix}`,
       username: 'admin',
       password: 'fletrax159',
       clean: true,
