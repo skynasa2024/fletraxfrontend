@@ -10,7 +10,7 @@ import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
 import { AccountSettingsPlainPage } from '@/pages/account';
 import { AddUser } from '@/pages/account/home/add-user';
-import { AddDriver } from '@/pages/account/home/add-driver';
+import { AddDriver } from '@/pages/driver/add-driver';
 import { AddVehicle } from '@/pages/account/home/add-vehicle';
 import DeviceDetailsPage from '@/pages/public-profile/profiles/default/DeviceDetailsPage';
 

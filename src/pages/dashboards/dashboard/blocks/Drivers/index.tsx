@@ -56,10 +56,12 @@ const DriverList = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="btn btn-info px-4">
-            <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-            Add Customer
-          </button>
+          <a href="/drivers/add-driver">
+            <button className="btn btn-info px-4">
+              <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
+              Add Driver
+            </button>
+          </a>
         </div>
       </div>
 

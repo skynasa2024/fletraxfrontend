@@ -45,7 +45,7 @@ const DriverPage = () => {
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-xl text-gray-800">Driver List</h3>
 
-        <a href="/users/add-user">
+        <a href="/drivers/add-driver">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
             New Driver
           </button>
