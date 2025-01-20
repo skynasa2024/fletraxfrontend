@@ -239,7 +239,7 @@ const MenuItemComponent = forwardRef<IMenuItemRef | null, IMenuItemProps>(
       return cloneElement(child);
     };
 
-    const renderSubDropdown = (child: ReactElement) => {
+    const renderSubDropdown = (child: ReactElement<any>) => {
       // Add some props to each child
       const modifiedProps: IMenuSubProps = {
         level: level + 1,

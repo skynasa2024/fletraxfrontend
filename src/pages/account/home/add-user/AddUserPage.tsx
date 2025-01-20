@@ -9,7 +9,7 @@ const AddUserPage = () => {
   const contactRef = useRef<HTMLDivElement>(null);
 
   const handleTabClick = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     tab: 'information' | 'account' | 'contact'
   ) => {
     setActiveTab(tab);
