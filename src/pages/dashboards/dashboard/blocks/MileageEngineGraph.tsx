@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ButtonRadioGroup } from './ButtonRadioGroup';
 import { CarMileageAndEngine, getCarsMileageAndEngine } from '@/api/cars';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Skeleton } from '@mui/material';
 import { Paginated } from '@/api/common';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import Image from '@/components/image/Image';
@@ -82,6 +82,10 @@ const MileageEngineGraph = () => {
                   rowHeight={56}
                   rowRenderer={({ key, index, style }) => {
                     const car = data.data[index];
+
+                    if (!car) {
+                      return <Skeleton key={key} style={style} />;
+                    }
 
                     return (
                       <div key={key} style={style}>
