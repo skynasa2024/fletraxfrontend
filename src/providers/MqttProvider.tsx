@@ -27,7 +27,10 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
       password: 'fletrax159',
       clean: true,
       keepalive: 60,
-      protocolVersion: 5
+      protocolVersion: 5,
+      properties: {
+        sessionExpiryInterval: 600
+      }
     });
     setMqttClient((prev) => {
       prev?.endAsync();
