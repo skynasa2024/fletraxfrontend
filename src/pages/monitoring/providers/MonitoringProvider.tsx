@@ -13,6 +13,7 @@ import { useSearchParams } from 'react-router-dom';
 import { getMonitoringDevices } from '@/api/devices';
 import { useMqttProvider } from '@/providers/MqttProvider';
 import { Buffer } from 'buffer';
+import { useAuthContext } from '@/auth';
 
 interface MqttResponse {
   device_id: number;
@@ -165,6 +166,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
   }, [locations, filteredLocationsImei]);
   const { mqttClient } = useMqttProvider();
+  const { currentUser } = useAuthContext();
 
   const setSelectedClient = useCallback(
     (client?: User) => {
@@ -188,7 +190,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const initCallback = async () => {
     const availableLocations = await getMonitoringDevices();
     for (const location of availableLocations) {
-      const topic = `device/monitoring/${location.ident}`;
+      const topic = `user/monitoring/${currentUser?.id}/${location.ident}`;
       if (memoryMaplocations[topic]) {
         continue;
       }
@@ -202,12 +204,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
         ...prev,
         [location.userId]: [...(prev[location.userId] || []), location.ident]
       }));
-
-      // mqttClient.subscribeAsync(topic, {
-      //   qos: 1
-      // });
     }
-    mqttClient?.subscribeAsync('device/monitoring/+', {
+    mqttClient?.subscribeAsync(`user/monitoring/${currentUser?.id}/+`, {
       qos: 0
     });
   };
@@ -294,7 +292,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     mqttClient.on('message', messageHandler);
 
     return () => {
-      mqttClient.unsubscribeAsync('device/monitoring/+');
+      mqttClient.unsubscribeAsync(`user/monitoring/${currentUser?.id}/+`);
       mqttClient.off('connect', initCallback);
       mqttClient.off('message', messageHandler);
     };
