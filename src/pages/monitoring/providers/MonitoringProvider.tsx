@@ -188,6 +188,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   );
 
   const initCallback = async () => {
+    memoryMaplocations = {};
     const availableLocations = await getMonitoringDevices();
     for (const location of availableLocations) {
       const topic = `user/monitoring/${currentUser?.id}/${location.ident}`;
@@ -292,7 +293,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     mqttClient.on('message', messageHandler);
 
     return () => {
-      mqttClient.unsubscribeAsync(`user/monitoring/${currentUser?.id}/+`);
+      if (mqttClient.connected) {
+        mqttClient.unsubscribeAsync(`user/monitoring/${currentUser?.id}/+`);
+      }
       mqttClient.off('connect', initCallback);
       mqttClient.off('message', messageHandler);
     };
