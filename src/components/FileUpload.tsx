@@ -4,6 +4,7 @@ import { KeenIcon } from './keenicons';
 
 const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
   const [file, setFile] = useState<File | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -14,10 +15,16 @@ const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
 
   return (
     <div
-      className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center"
+      className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center h-full w-full"
       onDragOver={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        setDragOver(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(false);
       }}
       onDrop={(e) => {
         e.preventDefault();
@@ -25,6 +32,7 @@ const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
         if (e.dataTransfer.files) {
           setFile(e.dataTransfer.files[0]);
         }
+        setDragOver(false);
       }}
     >
       <div className="flex flex-col items-center justify-center">
@@ -37,7 +45,12 @@ const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
             className="size-6"
           />
         )}
-        {file ? (
+        {dragOver ? (
+          <>
+            <p className="text-sm text-gray-500">Drop your files here</p>
+            <p className="text-xs text-gray-400">Unlimited files, 5GB total limit</p>
+          </>
+        ) : file ? (
           <p className="my-3 text-sm text-gray-500">
             {file.name} ({(file.size / 1024).toFixed(0)} KB)
           </p>
@@ -50,9 +63,9 @@ const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
         <button
           type="button"
           className="btn btn-primary btn-sm"
+          style={{ display: dragOver ? 'none' : 'block' }}
           onClick={() => inputRef.current?.click()}
         >
-          {/* Or choose files */}
           {file ? 'Change file' : 'or choose files'}
           <input
             {...props}
