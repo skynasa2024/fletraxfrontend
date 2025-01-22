@@ -1,3 +1,8 @@
+import PhoneInput from '@/components/PhoneInput';
+import { Select, Option } from '@/components/Select';
+import { SelectOption } from '@mui/base';
+import { countries, getCountryCode } from 'countries-list';
+
 const Contact = () => {
   return (
     <div className="card pb-2.5">
@@ -6,56 +11,69 @@ const Contact = () => {
       </div>
       <div className="card-body grid gap-5">
         <div className="grid lg:grid-cols-3 gap-5">
-          <div className="grid gap-2.5">
+          <div className="flex flex-col gap-2.5">
             <label className="form-label">Phone</label>
-            <input className="input" placeholder="Phone number" type="phone" value="" />
-          </div>
-          <div className="grid gap-2.5">
-            <label className="form-label">Mail</label>
-            <input
-              className="input"
-              name="email"
-              placeholder="Enter email address"
-              type="text"
-              defaultValue="jason@studio.io"
+            <PhoneInput
+              phoneCodeName="firstPhoneCode"
+              phoneCodeInitialValue="+90"
+              name="firstPhone"
             />
           </div>
           <div className="grid gap-2.5">
+            <label className="form-label">Email</label>
+            <input className="input" name="email" placeholder="Email" type="text" />
+          </div>
+          <div className="grid gap-2.5">
             <label className="form-label">Phone 2</label>
-            <input className="input" placeholder="Phone number" type="phone" value="" />
+            <PhoneInput
+              phoneCodeName="secondPhoneCode"
+              phoneCodeInitialValue="+90"
+              name="secondPhone"
+            />
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-5">
           <div className="grid gap-2.5">
             <label className="form-label">Country</label>
-            <select className="select" name="select">
-              <option value={1}>Option 1</option>
-              <option value={2}>Option 2</option>
-              <option value={3}>Option 3</option>
-            </select>
+            <Select
+              name="country"
+              renderValue={(option) => {
+                if (!option) return null;
+
+                return (
+                  <div className="flex gap-1">
+                    <span
+                      className={`fi fis fi-${(getCountryCode((option as SelectOption<string>).value) as string).toLowerCase()} rounded-full !size-5`}
+                    />
+                    <span>{(option as SelectOption<string>).value}</span>
+                  </div>
+                );
+              }}
+            >
+              {Object.entries(countries).map(([code, country]) => (
+                <Option key={code} value={country.name}>
+                  <div className="flex gap-1">
+                    <span className={`fi fis fi-${code.toLowerCase()} rounded-full !size-5`} />
+                    <span>{country.name}</span>
+                  </div>
+                </Option>
+              ))}
+            </Select>
           </div>
 
           <div className="grid gap-2.5">
             <label className="form-label">City</label>
-            <select className="select" name="select">
-              <option value={1}>Option 1</option>
-              <option value={2}>Option 2</option>
-              <option value={3}>Option 3</option>
-            </select>
+            <input type="text" className="input" placeholder="City" name="city" />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Area</label>
-            <select className="select" name="select">
-              <option value={1}>Option 1</option>
-              <option value={2}>Option 2</option>
-              <option value={3}>Option 3</option>
-            </select>
+            <input type="text" className="input" placeholder="Area" name="state" />
           </div>
         </div>
         <div className="grid gap-2.5">
           <label className="form-label">Address in Detail</label>
-          <input type="text" className="input" placeholder="Address in Detail" />
+          <input type="text" className="input" placeholder="Address in Detail" name="address" />
         </div>
       </div>
     </div>

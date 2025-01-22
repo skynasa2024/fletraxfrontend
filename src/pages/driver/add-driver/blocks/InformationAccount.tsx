@@ -1,30 +1,31 @@
 const InformationAccount = () => {
   return (
     <div className="card pb-2.5">
-      
       <div className="card-header" id="company_settings">
-        
         <h3 className="card-title">Information Account</h3>
       </div>
       <div className="card-body grid gap-5">
-        
-        <div className="grid gap-2.5">
-          
+        <div className="flex flex-col gap-2.5">
           <label className="form-label">User Name</label>
-          <select className="input w-1/2">
-            
-            <option>Name company</option>
-          </select>
+          <input
+            type="text"
+            autoComplete="username"
+            className="input w-1/2"
+            placeholder="User Name"
+            name="username"
+          />
         </div>
-        <div className="grid gap-2.5">
-          
+        <div className="flex flex-col gap-2.5">
           <label className="form-label">Password</label>
-          <input type="text" className="input w-1/2" placeholder="*****" value="" readOnly />
+          <input
+            type="password"
+            autoComplete="new-password"
+            className="input w-1/2"
+            placeholder="Password"
+            name="password"
+          />
         </div>
-        <div className="grid gap-2.5 mb-2.5">
-          
-      
-        </div>
+        <div className="grid gap-2.5 mb-2.5"></div>
       </div>
     </div>
   );

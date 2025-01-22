@@ -85,7 +85,7 @@ const AddDriverPage = () => {
         <InformationAccount />
       </div>
       <div ref={documentRef}>
-        <Documents title="Documents" />
+        <Documents />
       </div>
       <div ref={contactRef}>
         <Contact />

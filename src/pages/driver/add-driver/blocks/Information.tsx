@@ -10,11 +10,11 @@ const Information = () => {
       </div>
       <div className="card-body grid gap-5">
         <div className="grid lg:grid-cols-2 gap-5">
-          <div className="grid gap-2.5">
+          <div className="flex flex-col gap-2.5">
             <label className="form-label">Full Name</label>
             <input type="text" className="input" name="fullName" placeholder="Full Name" />
           </div>
-          <div className="grid gap-2.5">
+          <div className="flex flex-col gap-2.5">
             <label className="form-label">Date Of Birth</label>
             <input
               type="date"
@@ -25,7 +25,7 @@ const Information = () => {
           </div>
         </div>
 
-        <div className="grid gap-2.5">
+        <div className="flex flex-col gap-2.5">
           <label className="form-label">Identity Type</label>
           <div className="grid md:grid-cols-2 gap-4 w-full">
             {['Turkish', 'Foreign'].map((type) => (
@@ -56,14 +56,51 @@ const Information = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-5">
-          <div className="grid gap-2.5">
-            <label className="form-label">Front Photo Of National ID</label>
-            <FileUpload name="frontNationalIdPhotoFile" />
+          <div className="flex flex-col gap-2.5">
+            {selectedType === 'turkish' ? (
+              <>
+                <label className="form-label">Front Photo Of National ID</label>
+                <FileUpload name="frontNationalIdPhotoFile" />
+              </>
+            ) : (
+              <>
+                <label className="form-label">Passport photo</label>
+                <FileUpload name="passportPhotoFile" />
+              </>
+            )}
           </div>
-          <div className="grid gap-2.5">
-            <label className="form-label">National ID Background Image</label>
-            <FileUpload name="backNationalIdPhotoFile" />
+          <div className="flex flex-col gap-2.5">
+            {selectedType === 'turkish' ? (
+              <>
+                <label className="form-label">National ID Background Image</label>
+                <FileUpload name="backNationalIdPhotoFile" />
+              </>
+            ) : (
+              <>
+                <label className="form-label">Photo of the last entry stamp to Turkey</label>
+                <FileUpload name="lastEntryPhotoFile" />
+              </>
+            )}
           </div>
+        </div>
+
+        <div className="flex flex-col gap-2.5">
+          {selectedType === 'turkish' ? (
+            <>
+              <label className="form-label">ID number</label>
+              <input type="text" className="input" name="idNumber" placeholder="ID number" />
+            </>
+          ) : (
+            <>
+              <label className="form-label">Passport number</label>
+              <input
+                type="text"
+                className="input"
+                name="passportNumber"
+                placeholder="Passport number"
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
