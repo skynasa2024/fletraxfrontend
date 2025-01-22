@@ -8,6 +8,7 @@ const InformationAccount = () => {
         <div className="flex flex-col gap-2.5">
           <label className="form-label">User Name</label>
           <input
+            required
             type="text"
             autoComplete="username"
             className="input w-1/2"
@@ -18,6 +19,7 @@ const InformationAccount = () => {
         <div className="flex flex-col gap-2.5">
           <label className="form-label">Password</label>
           <input
+            required
             type="password"
             autoComplete="new-password"
             className="input w-1/2"

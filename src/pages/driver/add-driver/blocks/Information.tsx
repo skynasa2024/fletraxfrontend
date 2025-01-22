@@ -12,11 +12,12 @@ const Information = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Full Name</label>
-            <input type="text" className="input" name="fullName" placeholder="Full Name" />
+            <input required type="text" className="input" name="fullName" placeholder="Full Name" />
           </div>
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Date Of Birth</label>
             <input
+              required
               type="date"
               className="input w-full"
               name="dateOfBirth"
@@ -88,12 +89,19 @@ const Information = () => {
           {selectedType === 'turkish' ? (
             <>
               <label className="form-label">ID number</label>
-              <input type="text" className="input" name="idNumber" placeholder="ID number" />
+              <input
+                required
+                type="text"
+                className="input"
+                name="idNumber"
+                placeholder="ID number"
+              />
             </>
           ) : (
             <>
               <label className="form-label">Passport number</label>
               <input
+                required
                 type="text"
                 className="input"
                 name="passportNumber"

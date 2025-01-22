@@ -137,3 +137,13 @@ export const updateDriverStatus = async (id: number, status: boolean) => {
     }
   });
 };
+
+export const createDriver = async (data: FormData) => {
+  data.set('identityType', data.get('idNumber') ? 'National ID' : 'Passport');
+  data.set('type', "Driver's License");
+  data.set('licenseClass', 'Class D');
+  const response = await axios.post<ResponseModel<DriverDTO>>('/api/drivers/create', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data.result;
+};

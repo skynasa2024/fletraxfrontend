@@ -5,16 +5,16 @@ import { PageNavbar } from '@/pages/account';
 
 import { AddDriverPage } from '.';
 import { useNavigate } from 'react-router';
+import { createDriver } from '@/api/drivers';
 
 const AddDriver = () => {
   const navigate = useNavigate();
 
   return (
     <form
-      action={(data) => {
-        for (const [key, value] of data.entries()) {
-          console.log(`${key}: ${value}`);
-        }
+      action={async (data) => {
+        const response = await createDriver(data);
+        navigate(`/drivers/driver/${response.id}`);
       }}
     >
       <PageNavbar />

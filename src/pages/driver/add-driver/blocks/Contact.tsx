@@ -14,6 +14,7 @@ const Contact = () => {
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Phone</label>
             <PhoneInput
+              required
               phoneCodeName="firstPhoneCode"
               phoneCodeInitialValue="+90"
               name="firstPhone"
@@ -21,11 +22,12 @@ const Contact = () => {
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Email</label>
-            <input className="input" name="email" placeholder="Email" type="text" />
+            <input required className="input" name="email" placeholder="Email" type="text" />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Phone 2</label>
             <PhoneInput
+              required
               phoneCodeName="secondPhoneCode"
               phoneCodeInitialValue="+90"
               name="secondPhone"
@@ -38,6 +40,7 @@ const Contact = () => {
             <label className="form-label">Country</label>
             <Select
               name="country"
+              defaultValue="Turkey"
               renderValue={(option) => {
                 if (!option) return null;
 
@@ -64,16 +67,22 @@ const Contact = () => {
 
           <div className="grid gap-2.5">
             <label className="form-label">City</label>
-            <input type="text" className="input" placeholder="City" name="city" />
+            <input required type="text" className="input" placeholder="City" name="city" />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Area</label>
-            <input type="text" className="input" placeholder="Area" name="state" />
+            <input required type="text" className="input" placeholder="Area" name="state" />
           </div>
         </div>
         <div className="grid gap-2.5">
           <label className="form-label">Address in Detail</label>
-          <input type="text" className="input" placeholder="Address in Detail" name="address" />
+          <input
+            required
+            type="text"
+            className="input"
+            placeholder="Address in Detail"
+            name="address"
+          />
         </div>
       </div>
     </div>

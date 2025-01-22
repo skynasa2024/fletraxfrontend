@@ -11,6 +11,7 @@ const Documents = () => {
           <div className="flex flex-col gap-2.5">
             <label className="form-label">License number</label>
             <input
+              required
               type="text"
               className="input"
               name="licenseSerialNumber"
@@ -19,17 +20,18 @@ const Documents = () => {
           </div>
           <div className="flex flex-col gap-2.5">
             <label className="form-label">License Issue Date</label>
-            <input type="date" className="input w-full" name="licenseIssueDate" />
+            <input required type="date" className="input w-full" name="licenseIssueDate" />
           </div>
           <div className="flex flex-col gap-2.5">
             <label className="form-label">License Expiry Date</label>
-            <input type="date" className="input w-full" name="licenseExpiryDate" />
+            <input required type="date" className="input w-full" name="licenseExpiryDate" />
           </div>
         </div>
 
         <div className="flex flex-col gap-2.5">
           <label className="form-label">Place of issuance of the license</label>
           <input
+            required
             type="text"
             className="input"
             placeholder="Place of issuance of the license"

@@ -46,7 +46,8 @@ const Button = React.forwardRef(function Button<TValue extends {}, Multiple exte
   props: SelectRootSlotProps<TValue, Multiple>,
   ref: React.ForwardedRef<HTMLButtonElement>
 ) {
-  const { ...other } = props;
+  // eslint-disable-next-line no-unused-vars
+  const { ownerState, ...other } = props;
   return (
     <button type="button" {...other} ref={ref}>
       {other.children}

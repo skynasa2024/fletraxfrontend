@@ -9,6 +9,7 @@ export interface PhoneInputProps {
   phoneCodeInitialValue?: string;
   name: string;
   initialValue?: string;
+  required?: boolean;
 }
 
 const PhoneInput = (props: PhoneInputProps) => {
@@ -51,8 +52,8 @@ const PhoneInput = (props: PhoneInputProps) => {
           );
         }}
       >
-        {phoneCodesList.map(([code, phone]) => (
-          <Option key={code} value={phone}>
+        {phoneCodesList.map(([code, phone], index) => (
+          <Option key={index} value={phone}>
             <div className="flex gap-1">
               <span className={`fi fis fi-${code.toLowerCase()} rounded-full !size-5`} />
               <span>{phone}</span>
@@ -61,6 +62,7 @@ const PhoneInput = (props: PhoneInputProps) => {
         ))}
       </Select>
       <input
+        required={props.required}
         placeholder="Phone number"
         type="phone"
         defaultValue={props.initialValue}
