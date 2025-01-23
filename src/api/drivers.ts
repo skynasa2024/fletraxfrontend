@@ -57,13 +57,22 @@ export interface DriverDetails {
   nationality: string;
   country: string;
   city: string;
+  address: string;
   phone: string;
+  phone2: string;
   status: string;
   dateOfBirth: string;
   idNumber: string;
   licenseNumber: string;
   licenseExpiry: string;
   vehicle: Vehicle;
+  identityType: string;
+  frontNationalIdPhoto?: string;
+  backNationalIdPhoto?: string;
+  passportPhoto?: string;
+  lastEntryPhoto?: string;
+  frontDrivingLicensePhoto?: string;
+  backDriverLicensePhoto?: string;
 }
 
 export const getDrivers = async (
@@ -96,12 +105,21 @@ export const getDrivers = async (
       nationality: driver.nationality,
       country: driver.country,
       city: driver.city,
-      phone: driver.firstPhone,
+      address: driver.address,
+      phone: `${driver.firstPhoneCode} ${driver.firstPhone}`,
+      phone2: `${driver.secondPhoneCode} ${driver.secondPhone}`,
       status: driver.status ? 'Active' : 'Under Review',
       dateOfBirth: driver.dateOfBirth,
       idNumber: driver.idNumber,
       licenseNumber: driver.licenseSerialNumber,
       licenseExpiry: driver.licenseExpiryDate,
+      identityType: driver.identityType,
+      frontNationalIdPhoto: driver.frontNationalIdPhoto,
+      backNationalIdPhoto: driver.backNationalIdPhoto,
+      passportPhoto: driver.passportPhoto,
+      lastEntryPhoto: driver.lastEntryPhoto,
+      frontDrivingLicensePhoto: driver.frontDrivingLicensePhoto,
+      backDriverLicensePhoto: driver.backDriverLicensePhoto,
       vehicle: {
         brandImage: '',
         id: driver.vehicleId,
@@ -112,6 +130,42 @@ export const getDrivers = async (
     })),
     totalCount: drivers.data.result.totalElements,
     offset: drivers.data.result.pageable.offset
+  };
+};
+
+export const getDriver = async (id: number): Promise<DriverDetails> => {
+  const driver = await axios.get<ResponseModel<DriverDTO>>(`/api/drivers/show/${id}`);
+  return {
+    id: driver.data.result.id,
+    driver: {
+      name: driver.data.result.fullName,
+      email: driver.data.result.email
+    },
+    nationality: driver.data.result.nationality,
+    country: driver.data.result.country,
+    city: driver.data.result.city,
+    address: driver.data.result.address,
+    phone: `${driver.data.result.firstPhoneCode} ${driver.data.result.firstPhone}`,
+    phone2: `${driver.data.result.secondPhoneCode} ${driver.data.result.secondPhone}`,
+    status: driver.data.result.status ? 'Active' : 'Under Review',
+    dateOfBirth: driver.data.result.dateOfBirth,
+    idNumber: driver.data.result.idNumber,
+    licenseNumber: driver.data.result.licenseSerialNumber,
+    licenseExpiry: driver.data.result.licenseExpiryDate,
+    identityType: driver.data.result.identityType,
+    frontNationalIdPhoto: driver.data.result.frontNationalIdPhoto,
+    backNationalIdPhoto: driver.data.result.backNationalIdPhoto,
+    passportPhoto: driver.data.result.passportPhoto,
+    lastEntryPhoto: driver.data.result.lastEntryPhoto,
+    frontDrivingLicensePhoto: driver.data.result.frontDrivingLicensePhoto,
+    backDriverLicensePhoto: driver.data.result.backDriverLicensePhoto,
+    vehicle: {
+      brandImage: '',
+      id: driver.data.result.vehicleId,
+      imei: '',
+      name: '',
+      plate: driver.data.result.vehiclePlate
+    }
   };
 };
 

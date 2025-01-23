@@ -1,18 +1,18 @@
 import React from 'react';
-import { CalendarIcon, MailIcon, PhoneIcon, MapIcon } from './svg';
-
-import CarBrandImage from '@/components/CarBrandsImage';
+import { CalendarIcon } from './svg';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import Image from '@/components/image/Image';
+import { toAbsoluteUrl } from '@/utils';
 
 type ProfileProps = {
-  profileImage: string;
+  profileImage?: string;
   name: string;
   nationality: string;
-  code: string;
-  company: string;
   dob: string;
+  plate: string;
   email: string;
   phone: string;
+  phone2: string;
   country: string;
   city: string;
   address: string;
@@ -22,20 +22,30 @@ const ProfileCard: React.FC<ProfileProps> = ({
   profileImage,
   name,
   nationality,
-  code,
-  company,
   dob,
+  plate,
   email,
   phone,
+  phone2,
   country,
   city,
   address
 }) => {
   return (
-    <div className="flex items-start space-x-4">
+    <div className="flex items-start space-x-4 p-6">
       {/* Profile Image and Basic Info */}
-      <div className="flex-shrink-0">
-        <img src={profileImage} alt="Profile" className="w-28 h-28 rounded-lg object-cover" />
+      <div className="flex-shrink-0 self-center h-full aspect-square">
+        <Image
+          src={profileImage}
+          alt={name}
+          title={name}
+          className="size-40 rounded-lg object-cover aspect-square"
+          fallback={
+            <div className="bg-neutral-200 size-40 aspect-square rounded-lg overflow-hidden flex items-center justify-center">
+              <img src={toAbsoluteUrl('/media/avatars/avatar-placeholder.png')} />
+            </div>
+          }
+        />
       </div>
 
       <div className="flex-grow">
@@ -46,43 +56,38 @@ const ProfileCard: React.FC<ProfileProps> = ({
             <p className="text-gray-500">{nationality}</p>
           </div>
           <div className="flex items-center space-x-2">
-            <CarPlate plate={'654654'} />
-            <CarBrandImage brandName="Toyota" size="medium" className="mt-2 p-4" />
-           
-            <button className="px-4 py-1 border border-gray-300 rounded-md text-gray-600">
-              Company
-            </button>
+            <CarPlate plate={plate} />
           </div>
         </div>
 
         {/* Contact Info Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-3/4 mb-8">
+        <div className="flex flex-wrap gap-x-6 gap-y-2 w-3/4 mb-8">
           <div className="flex items-center space-x-2 text-gray-600">
             <CalendarIcon />
             <span>{dob}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <MailIcon />
+            <img src={toAbsoluteUrl('/media/icons/email.svg')} />
             <span>{email}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <PhoneIcon />
+            <img src={toAbsoluteUrl('/media/icons/phone.svg')} />
             <span>{phone}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <PhoneIcon />
-            <span>{phone}</span>
+            <img src={toAbsoluteUrl('/media/icons/phone.svg')} />
+            <span>{phone2}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <MapIcon />
+            <img src={toAbsoluteUrl('/media/icons/city.svg')} />
             <span>{country}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <MapIcon />
+            <img src={toAbsoluteUrl('/media/icons/city.svg')} />
             <span>{city}</span>
           </div>
           <div className="flex items-center space-x-2 text-gray-600">
-            <MapIcon />
+            <img src={toAbsoluteUrl('/media/icons/city.svg')} />
             <span>{address}</span>
           </div>
         </div>

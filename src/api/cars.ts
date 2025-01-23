@@ -181,13 +181,24 @@ export interface Violation {
 export const getViolations = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Violation>> => {
+  // Convert filters to map
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
   const violations = await axios.get<PaginatedResponseModel<ViolationDTO>>(
-    '/api/violations/index',
+    filters['vehicleId']
+      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
+      : '/api/violations/index',
     {
       params: {
         page: params.pageIndex,
         size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value
+        search: filters['__any'] && filters['__any'].toString()
       }
     }
   );
@@ -256,12 +267,24 @@ export interface MaintenanceDTO {
 export const getMaintenance = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Maintenance>> => {
+  // Convert filters to map
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
   const maintenances = await axios.get<PaginatedResponseModel<MaintenanceDTO>>(
-    '/api/maintenances/index',
+    filters['vehicleId']
+      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
+      : '/api/maintenances/index',
     {
       params: {
         page: params.pageIndex,
-        size: params.pageSize
+        size: params.pageSize,
+        search: filters['__any'] && filters['__any'].toString()
       }
     }
   );

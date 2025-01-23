@@ -96,9 +96,9 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '', refetch }) =>
       {
         id: 'actions',
         header: 'Actions',
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href="#">
+            <a href={`/drivers/driver/${row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
             <a href="#">

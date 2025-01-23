@@ -1,11 +1,12 @@
-import { MaintenanceViolationTable } from './blocks/maintenance/MaintenanceViolation';
-
 import Toolbar from './Toolbar';
-import FileList from './details-components/FileList';
+import FileList, { FileInfo } from './details-components/FileList';
 import TripList from './details-components/TripList';
 import Card from './details-components/Card';
-import { BillingTable } from './details-components/BillingTable';
 import ProfileCard from './ProfileCard';
+import { useNavigate, useParams } from 'react-router';
+import { useEffect, useMemo, useState } from 'react';
+import { DriverDetails, getDriver } from '@/api/drivers';
+import { MaintenanceViolationTable } from '../dashboards/dashboard/blocks/maintenance/MaintenanceViolation';
 
 interface TripData {
   distance: string;
@@ -28,45 +29,67 @@ const trips: TripData[] = Array(10)
     maxSpeed: Math.floor(Math.random() * 81) + 100
   }));
 
-const files = [
-  {
-    name: 'file-name1.pdf',
-    size: '32mb',
-    version: 'v1.2.2',
-    type: 'pdf'
-  },
-  {
-    name: 'file-name2.JPG',
-    size: '32mb',
-    version: 'v1.2.2',
-    type: 'jpg'
-  },
-  {
-    name: 'file-name3.JPG',
-    size: '32mb',
-    version: 'v1.2.2',
-    type: 'jpg'
-  }
-];
+const DriverDetailsPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-const VehicleInfoCards = () => {
+  const [driver, setDriver] = useState<DriverDetails | null>(null);
+  useEffect(() => {
+    if (!id) return;
+    getDriver(+id)
+      .then((data) => {
+        setDriver(data);
+      })
+      .catch(() => {
+        navigate('/error/404');
+      });
+  }, [id, navigate]);
+
+  const files = useMemo(() => {
+    if (!driver) return [];
+
+    const files: FileInfo[] = [];
+
+    if (driver.identityType === 'National ID') {
+      files.push({ name: 'Front National ID', url: driver.frontNationalIdPhoto });
+      files.push({ name: 'Back National ID', url: driver.backNationalIdPhoto });
+    }
+    if (driver.identityType === 'Passport') {
+      files.push({ name: 'Passport Photo', url: driver.passportPhoto });
+      files.push({ name: 'Last Entry Photo', url: driver.lastEntryPhoto });
+    }
+    files.push({ name: 'Front Driving License', url: driver.frontDrivingLicensePhoto });
+    files.push({ name: 'Back Driving License', url: driver.backDriverLicensePhoto });
+
+    return files;
+  }, [driver]);
+
+  if (!id) {
+    navigate('/error/404');
+    return null;
+  }
+
+  if (!driver) {
+    return null;
+  }
+
   return (
     <>
       <Toolbar />
       <div className="w-full mx-auto px-4 mb-0">
         <div className="hover:shadow-md m-5 px-5 card mb-0">
           <ProfileCard
-            profileImage="/path/to/image.jpg"
-            name="Brad Dennis"
-            nationality="Turkish"
-            code="GL96ABR"
-            company="Toyota"
-            dob="01 / 06 / 1983"
-            email="mail@gmail.com"
-            phone="+90954948849"
-            country="Turkey"
-            city="Istanbul"
-            address="Some address"
+            profileImage={driver.driver.avatar}
+            name={driver.driver.name}
+            nationality={driver.nationality}
+            plate={driver.vehicle.plate}
+            dob={driver.dateOfBirth}
+            email={driver.driver.email}
+            phone={driver.phone}
+            phone2={driver.phone2}
+            country={driver.country}
+            city={driver.city}
+            address={driver.address}
           />
         </div>
 
@@ -104,18 +127,17 @@ const VehicleInfoCards = () => {
           <div className="p-4 card hover:shadow-md w-full">map</div>
         </div>
         <div className="m-5">
-          <MaintenanceViolationTable />
+          <MaintenanceViolationTable id={id} />
         </div>
-        <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8 m-5">
-          <div className="p-4 w-1/2">
-            <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
-            <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
+        <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 m-5">
+          <div className="w-1/2">
+            <h2 className="text-xl font-semibold mb-4">Documents</h2>
+            <FileList files={files} />
           </div>
-          <BillingTable searchQuery={''} />
         </div>
       </div>
     </>
   );
 };
 
-export default VehicleInfoCards;
+export default DriverDetailsPage;
