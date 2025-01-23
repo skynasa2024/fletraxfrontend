@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Information, Registration, InspectionAndInsurance, CarScratches, Rent } from './blocks';
+import { Information, Registration, InspectionAndInsurance, CarScratches } from './blocks';
 
-type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches' | 'rent';
+type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -10,16 +10,14 @@ const AddVehiclePage = () => {
     information: useRef<HTMLDivElement>(null),
     registration: useRef<HTMLDivElement>(null),
     inspectionAndInsurance: useRef<HTMLDivElement>(null),
-    carScratches: useRef<HTMLDivElement>(null),
-    rent: useRef<HTMLDivElement>(null)
+    carScratches: useRef<HTMLDivElement>(null)
   };
 
   const tabConfig = [
     { id: 'information', label: 'Information' },
     { id: 'registration', label: 'Registration' },
     { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' },
-    { id: 'carScratches', label: 'Car Scratches' },
-    { id: 'rent', label: 'Rent' }
+    { id: 'carScratches', label: 'Car Scratches' }
   ] as const;
 
   const handleTabClick = (tab: TabType) => {
@@ -59,8 +57,6 @@ const AddVehiclePage = () => {
         return <InspectionAndInsurance />;
       case 'carScratches':
         return <CarScratches />;
-      case 'rent':
-        return <Rent />;
       default:
         return null;
     }
