@@ -9,7 +9,8 @@ import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
 import { AddUser } from '@/pages/user/add-user';
 import { AddDriver } from '@/pages/driver/add-driver';
-import { AddVehicle } from '@/pages/account/home/add-vehicle';
+import { AddVehicle } from '@/pages/vehicle/add-vehicle';
+import DeviceDetailsPage from '@/pages/public-profile/profiles/default/DeviceDetailsPage';
 
 import { AuthPage } from '@/auth';
 import { RequireAuth } from '@/auth/RequireAuth';
