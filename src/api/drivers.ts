@@ -57,13 +57,24 @@ export interface DriverDetails {
   nationality: string;
   country: string;
   city: string;
+  state: string;
   address: string;
   phone: string;
+  phoneParts: {
+    phone: string;
+    code: string;
+  };
   phone2: string;
+  phone2Parts: {
+    phone: string;
+    code: string;
+  };
   status: string;
   dateOfBirth: string;
-  idNumber: string;
+  idNumber?: string;
+  passportNumber?: string;
   licenseNumber: string;
+  licenseIssueDate: string;
   licenseExpiry: string;
   vehicle: Vehicle;
   identityType: string;
@@ -73,6 +84,8 @@ export interface DriverDetails {
   lastEntryPhoto?: string;
   frontDrivingLicensePhoto?: string;
   backDriverLicensePhoto?: string;
+  licensePlace: string;
+  username: string;
 }
 
 export const getDrivers = async (
@@ -105,13 +118,24 @@ export const getDrivers = async (
       nationality: driver.nationality,
       country: driver.country,
       city: driver.city,
+      state: driver.state,
       address: driver.address,
       phone: `${driver.firstPhoneCode} ${driver.firstPhone}`,
+      phoneParts: {
+        phone: driver.firstPhone,
+        code: driver.firstPhoneCode
+      },
       phone2: `${driver.secondPhoneCode} ${driver.secondPhone}`,
+      phone2Parts: {
+        phone: driver.secondPhone,
+        code: driver.secondPhoneCode
+      },
       status: driver.status ? 'Active' : 'Under Review',
       dateOfBirth: driver.dateOfBirth,
       idNumber: driver.idNumber,
+      passportNumber: driver.passportNumber,
       licenseNumber: driver.licenseSerialNumber,
+      licenseIssueDate: driver.licenseIssueDate,
       licenseExpiry: driver.licenseExpiryDate,
       identityType: driver.identityType,
       frontNationalIdPhoto: driver.frontNationalIdPhoto,
@@ -120,6 +144,8 @@ export const getDrivers = async (
       lastEntryPhoto: driver.lastEntryPhoto,
       frontDrivingLicensePhoto: driver.frontDrivingLicensePhoto,
       backDriverLicensePhoto: driver.backDriverLicensePhoto,
+      licensePlace: driver.licensePlace,
+      username: driver.email,
       vehicle: {
         brandImage: '',
         id: driver.vehicleId,
@@ -144,13 +170,24 @@ export const getDriver = async (id: number): Promise<DriverDetails> => {
     nationality: driver.data.result.nationality,
     country: driver.data.result.country,
     city: driver.data.result.city,
+    state: driver.data.result.state,
     address: driver.data.result.address,
     phone: `${driver.data.result.firstPhoneCode} ${driver.data.result.firstPhone}`,
+    phoneParts: {
+      phone: driver.data.result.firstPhone,
+      code: driver.data.result.firstPhoneCode
+    },
     phone2: `${driver.data.result.secondPhoneCode} ${driver.data.result.secondPhone}`,
+    phone2Parts: {
+      phone: driver.data.result.secondPhone,
+      code: driver.data.result.secondPhoneCode
+    },
     status: driver.data.result.status ? 'Active' : 'Under Review',
     dateOfBirth: driver.data.result.dateOfBirth,
     idNumber: driver.data.result.idNumber,
+    passportNumber: driver.data.result.passportNumber,
     licenseNumber: driver.data.result.licenseSerialNumber,
+    licenseIssueDate: driver.data.result.licenseIssueDate,
     licenseExpiry: driver.data.result.licenseExpiryDate,
     identityType: driver.data.result.identityType,
     frontNationalIdPhoto: driver.data.result.frontNationalIdPhoto,
@@ -159,6 +196,8 @@ export const getDriver = async (id: number): Promise<DriverDetails> => {
     lastEntryPhoto: driver.data.result.lastEntryPhoto,
     frontDrivingLicensePhoto: driver.data.result.frontDrivingLicensePhoto,
     backDriverLicensePhoto: driver.data.result.backDriverLicensePhoto,
+    licensePlace: driver.data.result.licensePlace,
+    username: driver.data.result.email,
     vehicle: {
       brandImage: '',
       id: driver.data.result.vehicleId,
@@ -200,6 +239,28 @@ export const createDriver = async (data: FormData) => {
     data.set('nationality', 'Turkey');
   }
   const response = await axios.post<ResponseModel<DriverDTO>>('/api/drivers/create', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data.result;
+};
+
+export const updateDriver = async (id: number, data: FormData) => {
+  data.set('id', id.toString());
+  data.set('identityType', data.get('idNumber') ? 'National ID' : 'Passport');
+  data.set('type', "Driver's License");
+  data.set('licenseClass', 'Class D');
+  if (data.get('idNumber')) {
+    data.set('nationality', 'Turkey');
+  }
+
+  for (const key of data.keys()) {
+    const value = data.get(key);
+    if (value === null || value === undefined || !value) {
+      data.delete(key);
+    }
+  }
+
+  const response = await axios.put<ResponseModel<DriverDTO>>('/api/drivers/update', data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });
   return response.data.result;

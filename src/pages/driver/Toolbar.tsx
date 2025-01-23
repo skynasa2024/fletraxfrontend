@@ -9,9 +9,11 @@ const Toolbar = () => {
   return (
     <div>
       <div className="flex justify-end items-center gap-2 flex-wrap p-4">
-        <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
-          <EditIcon className="w-4 h-4" /> Edit
-        </button>
+        <a href={`/drivers/edit/${id}`}>
+          <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
+            <EditIcon className="w-4 h-4" /> Edit
+          </button>
+        </a>
 
         <button
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"

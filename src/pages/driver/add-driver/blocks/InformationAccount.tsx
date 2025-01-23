@@ -1,4 +1,6 @@
-const InformationAccount = () => {
+import { AddDriverPageProps } from '../AddDriverPage';
+
+const InformationAccount = ({ driver }: AddDriverPageProps) => {
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
@@ -14,12 +16,13 @@ const InformationAccount = () => {
             className="input w-1/2"
             placeholder="User Name"
             name="username"
+            defaultValue={driver?.username}
           />
         </div>
         <div className="flex flex-col gap-2.5">
           <label className="form-label">Password</label>
           <input
-            required
+            required={!driver}
             type="password"
             autoComplete="new-password"
             className="input w-1/2"

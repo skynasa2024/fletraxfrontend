@@ -76,7 +76,7 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
-        <a href="#" className="px-5 py-2 border-x flex gap-2">
+        <a href={`/drivers/driver/${driver.id}`} className="px-5 py-2 border-x flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
         </a>

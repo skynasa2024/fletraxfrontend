@@ -2,8 +2,9 @@ import PhoneInput from '@/components/PhoneInput';
 import { Select, Option } from '@/components/Select';
 import { SelectOption } from '@mui/base';
 import { countries, getCountryCode } from 'countries-list';
+import { AddDriverPageProps } from '../AddDriverPage';
 
-const Contact = () => {
+const Contact = ({ driver }: AddDriverPageProps) => {
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
@@ -16,21 +17,30 @@ const Contact = () => {
             <PhoneInput
               required
               phoneCodeName="firstPhoneCode"
-              phoneCodeInitialValue="+90"
+              phoneCodeInitialValue={driver?.phoneParts ? driver.phoneParts.code : '+90'}
               name="firstPhone"
+              initialValue={driver?.phoneParts.phone}
             />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Email</label>
-            <input required className="input" name="email" placeholder="Email" type="text" />
+            <input
+              required
+              className="input"
+              name="email"
+              placeholder="Email"
+              type="text"
+              defaultValue={driver?.driver.email}
+            />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Phone 2</label>
             <PhoneInput
               required
               phoneCodeName="secondPhoneCode"
-              phoneCodeInitialValue="+90"
+              phoneCodeInitialValue={driver?.phone2Parts ? driver.phone2Parts.code : '+90'}
               name="secondPhone"
+              initialValue={driver?.phone2Parts.phone}
             />
           </div>
         </div>
@@ -40,7 +50,7 @@ const Contact = () => {
             <label className="form-label">Country</label>
             <Select
               name="country"
-              defaultValue="Turkey"
+              defaultValue={driver?.country ? driver.country : 'Turkey'}
               renderValue={(option) => {
                 if (!option) return null;
 
@@ -67,11 +77,25 @@ const Contact = () => {
 
           <div className="grid gap-2.5">
             <label className="form-label">City</label>
-            <input required type="text" className="input" placeholder="City" name="city" />
+            <input
+              required
+              type="text"
+              className="input"
+              placeholder="City"
+              name="city"
+              defaultValue={driver?.city}
+            />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Area</label>
-            <input required type="text" className="input" placeholder="Area" name="state" />
+            <input
+              required
+              type="text"
+              className="input"
+              placeholder="Area"
+              name="state"
+              defaultValue={driver?.state}
+            />
           </div>
         </div>
         <div className="grid gap-2.5">
@@ -82,6 +106,7 @@ const Contact = () => {
             className="input"
             placeholder="Address in Detail"
             name="address"
+            defaultValue={driver?.address}
           />
         </div>
       </div>

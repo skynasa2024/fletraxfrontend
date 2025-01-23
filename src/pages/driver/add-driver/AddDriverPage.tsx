@@ -1,7 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Information, InformationAccount, Contact, Documents } from './blocks';
+import { DriverDetails } from '@/api/drivers';
 
-const AddDriverPage = () => {
+export interface AddDriverPageProps {
+  driver?: DriverDetails;
+}
+
+const AddDriverPage = ({ driver }: AddDriverPageProps) => {
   const [activeTab, setActiveTab] = useState<'information' | 'account' | 'documents' | 'contact'>(
     'information'
   );
@@ -79,16 +84,16 @@ const AddDriverPage = () => {
       </div>
 
       <div ref={informationRef}>
-        <Information />
+        <Information driver={driver} />
       </div>
       <div ref={accountRef}>
-        <InformationAccount />
+        <InformationAccount driver={driver} />
       </div>
       <div ref={documentRef}>
-        <Documents />
+        <Documents driver={driver} />
       </div>
       <div ref={contactRef}>
-        <Contact />
+        <Contact driver={driver} />
       </div>
     </div>
   );

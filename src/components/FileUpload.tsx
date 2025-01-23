@@ -2,8 +2,11 @@ import { toAbsoluteUrl } from '@/utils';
 import { ChangeEvent, InputHTMLAttributes, useRef, useState } from 'react';
 import { KeenIcon } from './keenicons';
 
-const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
-  const [file, setFile] = useState<File | null>(null);
+const FileUpload = ({
+  isUploaded,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & { isUploaded?: boolean }) => {
+  const [file, setFile] = useState<File | null>(isUploaded ? new File([], '__doc__') : null);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -52,7 +55,9 @@ const FileUpload = (props: InputHTMLAttributes<HTMLInputElement>) => {
           </>
         ) : file ? (
           <p className="my-3 text-sm text-gray-500">
-            {file.name} ({(file.size / 1024).toFixed(0)} KB)
+            {file.name === '__doc__'
+              ? 'Document file'
+              : `${file.name} (${(file.size / 1024).toFixed(0)} KB)`}
           </p>
         ) : (
           <>

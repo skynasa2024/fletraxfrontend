@@ -101,7 +101,7 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '', refetch }) =>
             <a href={`/drivers/driver/${row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
-            <a href="#">
+            <a href={`/drivers/edit/${row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </a>
           </div>

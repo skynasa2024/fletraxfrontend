@@ -1,8 +1,11 @@
 import FileUpload from '@/components/FileUpload';
 import { useState } from 'react';
+import { AddDriverPageProps } from '../AddDriverPage';
 
-const Information = () => {
-  const [selectedType, setSelectedType] = useState('turkish');
+const Information = ({ driver }: AddDriverPageProps) => {
+  const [selectedType, setSelectedType] = useState(
+    driver?.identityType === 'foreign' ? 'foreign' : 'turkish'
+  );
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="general_settings">
@@ -12,7 +15,14 @@ const Information = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Full Name</label>
-            <input required type="text" className="input" name="fullName" placeholder="Full Name" />
+            <input
+              required
+              type="text"
+              className="input"
+              name="fullName"
+              placeholder="Full Name"
+              defaultValue={driver?.driver.name}
+            />
           </div>
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Date Of Birth</label>
@@ -22,6 +32,7 @@ const Information = () => {
               className="input w-full"
               name="dateOfBirth"
               placeholder="DD/MM/YYYY"
+              defaultValue={driver?.dateOfBirth}
             />
           </div>
         </div>
@@ -61,12 +72,15 @@ const Information = () => {
             {selectedType === 'turkish' ? (
               <>
                 <label className="form-label">Front Photo Of National ID</label>
-                <FileUpload name="frontNationalIdPhotoFile" />
+                <FileUpload
+                  name="frontNationalIdPhotoFile"
+                  isUploaded={!!driver?.frontNationalIdPhoto}
+                />
               </>
             ) : (
               <>
                 <label className="form-label">Passport photo</label>
-                <FileUpload name="passportPhotoFile" />
+                <FileUpload name="passportPhotoFile" isUploaded={!!driver?.passportPhoto} />
               </>
             )}
           </div>
@@ -74,12 +88,15 @@ const Information = () => {
             {selectedType === 'turkish' ? (
               <>
                 <label className="form-label">National ID Background Image</label>
-                <FileUpload name="backNationalIdPhotoFile" />
+                <FileUpload
+                  name="backNationalIdPhotoFile"
+                  isUploaded={!!driver?.backNationalIdPhoto}
+                />
               </>
             ) : (
               <>
                 <label className="form-label">Photo of the last entry stamp to Turkey</label>
-                <FileUpload name="lastEntryPhotoFile" />
+                <FileUpload name="lastEntryPhotoFile" isUploaded={!!driver?.lastEntryPhoto} />
               </>
             )}
           </div>
@@ -95,6 +112,7 @@ const Information = () => {
                 className="input"
                 name="idNumber"
                 placeholder="ID number"
+                defaultValue={driver?.idNumber}
               />
             </>
           ) : (
@@ -106,6 +124,7 @@ const Information = () => {
                 className="input"
                 name="passportNumber"
                 placeholder="Passport number"
+                defaultValue={driver?.passportNumber}
               />
             </>
           )}

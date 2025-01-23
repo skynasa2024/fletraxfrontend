@@ -60,6 +60,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/drivers/driver" element={<Driver />} />
           <Route path="/drivers/driver/:id" element={<DriverDetailsPage />} />
           <Route path="/drivers/add-driver" element={<AddDriver />} />
+          <Route path="/drivers/edit/:id" element={<AddDriver />} />
         </Route>
       </Route>
       <Route path="error/*" element={<ErrorsRouting />} />
