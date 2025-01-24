@@ -14,7 +14,7 @@ export default function FormRadioButton({ name, value, label }: FormRadioButtonP
   return (
     <label
       className={clsx(
-        'px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active',
+        'px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active w-full',
         'hover:bg-gray-200 bg-neutral-50 transition-colors',
         'flex items-center gap-2 cursor-pointer',
         {

@@ -13,6 +13,7 @@ export const fuelOptions: Array<FuelType> = [
   'Kerosine',
   'Electric'
 ];
+
 type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
 export const carOptions: Array<CarType> = ['PROMO', 'Pickup', 'COMFORT', 'SUV', 'Bus', 'Van'];
 
@@ -52,12 +53,27 @@ export interface InformationFormField {
   numberOfSeats: number;
 }
 
-type AddVehicleForm = InformationFormField;
+type RegistrationType = 'Individual' | 'Company';
+export const registrationTypeOptions: Array<RegistrationType> = ['Individual', 'Company'];
+
+export interface RegistrationFormField {
+  registrationType: string;
+  identifyNumber: string;
+  chassisNumber: string;
+  engineNumber: string;
+  registrationNumber: string;
+  registrationDate: string;
+  firstRegistrationDate: string;
+  licenseSerialNumber: string;
+  price?: number;
+}
+
+type AddVehicleForm = InformationFormField & RegistrationFormField;
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
 
-  const initialValues: AddVehicleForm = {
+  const informationInitialValues: InformationFormField = {
     brand: '',
     model: '',
     modelSeries: '',
@@ -69,6 +85,23 @@ const AddVehiclePage = () => {
     gearType: 'Automatic',
     color: 'Black',
     numberOfSeats: 4
+  };
+
+  const registrationInitialValues: RegistrationFormField = {
+    registrationType: 'Individual',
+    identifyNumber: '',
+    chassisNumber: '',
+    engineNumber: '',
+    registrationNumber: '',
+    registrationDate: '',
+    firstRegistrationDate: '',
+    licenseSerialNumber: '',
+    price: undefined
+  };
+
+  const initialValues: AddVehicleForm = {
+    ...informationInitialValues,
+    ...registrationInitialValues
   };
 
   const refs = {
