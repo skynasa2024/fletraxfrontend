@@ -1,10 +1,75 @@
 import React, { useRef, useState } from 'react';
 import { Information, Registration, InspectionAndInsurance, CarScratches } from './blocks';
+import { Form, Formik } from 'formik';
 
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
+type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
+export const fuelOptions: Array<FuelType> = [
+  'Hybrid',
+  'Diesel',
+  'Benzin',
+  'LPG',
+  'Kerosine',
+  'Electric'
+];
+type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
+export const carOptions: Array<CarType> = ['PROMO', 'Pickup', 'COMFORT', 'SUV', 'Bus', 'Van'];
+
+type GearType = 'Automatic' | 'Manual';
+export const gearOptions: Array<GearType> = ['Automatic', 'Manual'];
+
+export const colorOptions = [
+  'Black',
+  'White',
+  'Red',
+  'Blue',
+  'Green',
+  'Yellow',
+  'Orange',
+  'Purple',
+  'Pink',
+  'Brown',
+  'Gray',
+  'Silver',
+  'Gold',
+  'Beige'
+];
+
+export const numberOfSeatsOptions = [2, 3, 4, 5, 6, 7, 8];
+
+export interface InformationFormField {
+  brand: string;
+  model: string;
+  modelSeries: string;
+  modelYear: string;
+  volume?: number;
+  power?: number;
+  fuelType: FuelType;
+  carType: CarType;
+  gearType: GearType;
+  color: string;
+  numberOfSeats: number;
+}
+
+type AddVehicleForm = InformationFormField;
+
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
+
+  const initialValues: AddVehicleForm = {
+    brand: '',
+    model: '',
+    modelSeries: '',
+    modelYear: '',
+    volume: undefined,
+    power: undefined,
+    fuelType: 'Hybrid',
+    carType: 'PROMO',
+    gearType: 'Automatic',
+    color: 'Black',
+    numberOfSeats: 4
+  };
 
   const refs = {
     information: useRef<HTMLDivElement>(null),
@@ -89,7 +154,11 @@ const AddVehiclePage = () => {
           {/* Tab Content */}
           <div className="tab-content">
             <div ref={refs[activeTab]} className="focus:outline-none">
-              {renderContent()}
+              <Formik initialValues={initialValues} onSubmit={() => {}}>
+                {(props) => {
+                  return <Form>{renderContent()}</Form>;
+                }}
+              </Formik>
               <div className="mt-5 flex justify-end">
                 {/* Next or Save Button */}
                 {!isLastTab ? (
