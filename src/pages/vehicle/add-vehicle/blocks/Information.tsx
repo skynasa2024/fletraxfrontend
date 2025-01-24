@@ -1,6 +1,5 @@
 import { ImageUploadCard } from './ImageUploadCard';
 import { Field } from 'formik';
-import { KeenIcon } from '@/components';
 import {
   carOptions,
   colorOptions,
@@ -9,6 +8,7 @@ import {
   numberOfSeatsOptions
 } from '../AddVehiclePage';
 import FormRadioButton from '../components/FormRadioButton';
+import CalendarIcon from '../../blocks/svg/CalendarIcon';
 
 interface IGeneralSettingsProps {
   title: string;
@@ -42,7 +42,7 @@ const Information = ({ title }: IGeneralSettingsProps) => {
             <label className="form-label">Model Year</label>
             <div className="input">
               <Field type="text" name="modelYear" placeholder="Model Year" />
-              <KeenIcon icon="calendar" />
+              <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
