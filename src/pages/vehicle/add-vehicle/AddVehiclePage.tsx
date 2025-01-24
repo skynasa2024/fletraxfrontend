@@ -68,7 +68,20 @@ export interface RegistrationFormField {
   price?: number;
 }
 
-type AddVehicleForm = InformationFormField & RegistrationFormField;
+export interface InspectionAndInsuranceFormField {
+  inspectionStartDate: string;
+  inspectionEndDate: string;
+  insuranceStartDate: string;
+  insuranceEndDate: string;
+  kaskoStartDate: string;
+  kaskoEndDate: string;
+  exhaustStartDate: string;
+  exhaustEndDate: string;
+}
+
+type AddVehicleForm = InformationFormField &
+  RegistrationFormField &
+  InspectionAndInsuranceFormField;
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -99,9 +112,21 @@ const AddVehiclePage = () => {
     price: undefined
   };
 
+  const inspectionAndInsuranceInitialValues: InspectionAndInsuranceFormField = {
+    inspectionStartDate: '',
+    inspectionEndDate: '',
+    insuranceStartDate: '',
+    insuranceEndDate: '',
+    kaskoStartDate: '',
+    kaskoEndDate: '',
+    exhaustStartDate: '',
+    exhaustEndDate: ''
+  };
+
   const initialValues: AddVehicleForm = {
     ...informationInitialValues,
-    ...registrationInitialValues
+    ...registrationInitialValues,
+    ...inspectionAndInsuranceInitialValues
   };
 
   const refs = {
