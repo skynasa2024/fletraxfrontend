@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import mqtt from 'mqtt';
 import { useAuthContext } from '@/auth';
+import * as authHelper from '../auth/_helpers';
 
 interface MqttContextProps {
   mqttClient?: mqtt.MqttClient;
@@ -10,6 +11,7 @@ const MqttContext = createContext<MqttContextProps>({});
 
 export const MqttProvider = ({ children }: PropsWithChildren) => {
   const auth = useAuthContext();
+  const token = authHelper.getAuth()?.access_token;
   const [mqttClient, setMqttClient] = useState<mqtt.MqttClient | undefined>();
 
   useEffect(() => {
@@ -23,8 +25,8 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
     }
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
       clientId: `${auth.currentUser.id}-${suffix}`,
-      username: 'admin',
-      password: 'fletrax159',
+      username: auth.currentUser.username,
+      password: token,
       clean: true,
       keepalive: 60,
       protocolVersion: 5,
@@ -40,7 +42,7 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
     return () => {
       mqttClient?.endAsync();
     };
-  }, [auth.currentUser]);
+  }, [auth.currentUser, token]);
 
   return (
     <MqttContext.Provider
