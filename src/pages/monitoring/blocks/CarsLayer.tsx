@@ -144,7 +144,7 @@ export const CarsLayer = () => {
                   >
                     {showImei && (
                       <Tooltip direction="top" offset={[0, -20]} permanent>
-                        {location.vehicle.imei}
+                        {location.vehicle.plate}
                       </Tooltip>
                     )}
                   </RotatableMarker>

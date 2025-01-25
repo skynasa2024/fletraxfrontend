@@ -1,4 +1,3 @@
-import { AttributionControl, MapContainer, TileLayer } from 'react-leaflet';
 import { MainCard } from './blocks/MainCard';
 import { ZoomControl } from '../monitoring/blocks/ZoomControl';
 import { OtherControls } from '../monitoring/blocks/OtherControls';
@@ -9,23 +8,13 @@ import { useTripsContext } from './providers/TripsContext';
 import { SubControl } from '../monitoring/blocks/SubControl';
 import { PlaybackCard } from './blocks/PlaybackCard';
 import { AnimationProvider } from './providers/AnimationContext';
+import AppMap from '@/components/AppMap';
 
 const TripsMap = () => {
   const { path } = useTripsContext();
 
   return (
-    <MapContainer
-      center={[38.9637, 35.2433]}
-      zoom={7}
-      className="size-full"
-      zoomControl={false}
-      attributionControl={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <AttributionControl prefix="Leaflet" />
+    <AppMap>
       <MapControls>
         <ZoomControl />
         <OtherControls />
@@ -41,7 +30,7 @@ const TripsMap = () => {
           </SubControl>
         )}
       </AnimationProvider>
-    </MapContainer>
+    </AppMap>
   );
 };
 
