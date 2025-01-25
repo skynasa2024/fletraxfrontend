@@ -13,7 +13,6 @@ import { useSearchParams } from 'react-router-dom';
 import { getMonitoringDevices } from '@/api/devices';
 import { useMqttProvider } from '@/providers/MqttProvider';
 import { Buffer } from 'buffer';
-import { useAuthContext } from '@/auth';
 
 interface MqttResponse {
   device_id: number;
@@ -165,8 +164,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     }
     return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
   }, [locations, filteredLocationsImei]);
-  const { mqttClient } = useMqttProvider();
-  const { currentUser } = useAuthContext();
+  const { mqttClient, topics } = useMqttProvider();
 
   const setSelectedClient = useCallback(
     (client?: User) => {
@@ -191,33 +189,37 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     memoryMaplocations = {};
     const availableLocations = await getMonitoringDevices();
     for (const location of availableLocations) {
-      const topic = `user/monitoring/${currentUser?.id}/${location.ident}`;
-      if (memoryMaplocations[topic]) {
+      const ident = location.ident;
+      if (memoryMaplocations[ident]) {
         continue;
       }
 
-      memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
-      memoryMaplocations[topic].vehicle.imei = location.ident;
-      memoryMaplocations[topic].vehicle.plate = location.vehiclePlate;
-      memoryMaplocations[topic].online = location.status === 'online';
+      memoryMaplocations[ident] = JSON.parse(JSON.stringify(defaultLocation));
+      memoryMaplocations[ident].vehicle.imei = location.ident;
+      memoryMaplocations[ident].vehicle.plate = location.vehiclePlate;
+      memoryMaplocations[ident].online = location.status === 'online';
 
       setClientToLocations((prev) => ({
         ...prev,
         [location.userId]: [...(prev[location.userId] || []), location.ident]
       }));
     }
-    mqttClient?.subscribeAsync(`user/monitoring/${currentUser?.id}/+`, {
+    if (!topics || !mqttClient) {
+      return;
+    }
+    mqttClient.subscribeAsync(topics.monitoring, {
       qos: 0
     });
   };
 
-  const messageHandler = (topic: string, payload: Buffer) => {
+  const messageHandler = (_: string, payload: Buffer) => {
     const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
 
     type RecursivePartial<T> = {
       [P in keyof T]?: Partial<T[P]>;
     };
-    const oldVehicle = memoryMaplocations[topic] || JSON.parse(JSON.stringify(defaultLocation));
+    const oldVehicle =
+      memoryMaplocations[device.ident] || JSON.parse(JSON.stringify(defaultLocation));
 
     const partialVehicle: RecursivePartial<VehicleLocation> = {
       online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
@@ -266,7 +268,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       });
     }
 
-    memoryMaplocations[topic] = {
+    memoryMaplocations[device.ident] = {
       ...oldVehicle,
       ...partialVehicle,
       status: {
@@ -281,7 +283,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   };
 
   useEffect(() => {
-    if (!mqttClient) {
+    if (!mqttClient || !topics) {
       return;
     }
 
@@ -294,13 +296,13 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
     return () => {
       if (mqttClient.connected) {
-        mqttClient.unsubscribeAsync(`user/monitoring/${currentUser?.id}/+`);
+        mqttClient.unsubscribeAsync(topics.monitoring);
       }
       mqttClient.off('connect', initCallback);
       mqttClient.off('message', messageHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mqttClient]);
+  }, [mqttClient, topics]);
 
   useEffect(() => {
     getUsers().then((clients) => {

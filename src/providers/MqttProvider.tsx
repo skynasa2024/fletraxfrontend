@@ -2,19 +2,24 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import mqtt from 'mqtt';
 import { useAuthContext } from '@/auth';
 import * as authHelper from '../auth/_helpers';
+import { getTopics, Topics } from '@/api/user';
 
 interface MqttContextProps {
   mqttClient?: mqtt.MqttClient;
+  topics?: Topics;
 }
 
 const MqttContext = createContext<MqttContextProps>({});
 
 export const MqttProvider = ({ children }: PropsWithChildren) => {
   const auth = useAuthContext();
-  const token = authHelper.getAuth()?.access_token;
   const [mqttClient, setMqttClient] = useState<mqtt.MqttClient | undefined>();
+  const [topics, setTopics] = useState<Topics | undefined>();
 
   useEffect(() => {
+    if (!topics) {
+      getTopics().then(setTopics);
+    }
     if (!localStorage.getItem('mqtt-suffix')) {
       localStorage.setItem('mqtt-suffix', (Math.random() * 1000).toFixed(0));
     }
@@ -23,6 +28,7 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
       setMqttClient(undefined);
       return;
     }
+    const token = authHelper.getAuth()?.access_token;
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
       clientId: `${auth.currentUser.id}-${suffix}`,
       username: auth.currentUser.username,
@@ -42,12 +48,14 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
     return () => {
       mqttClient?.endAsync();
     };
-  }, [auth.currentUser, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth.currentUser]);
 
   return (
     <MqttContext.Provider
       value={{
-        mqttClient
+        mqttClient,
+        topics
       }}
     >
       {children}

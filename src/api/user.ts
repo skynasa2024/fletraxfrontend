@@ -46,3 +46,13 @@ export const getUser = async (id: number): Promise<User> => {
     email: client.data.result.email
   };
 };
+
+export interface Topics {
+  monitoring: string;
+  notifications: string;
+}
+
+export const getTopics = async (): Promise<Topics> => {
+  const topics = await axios.get<ResponseModel<Topics>>('/api/users/get-user-topics');
+  return topics.data.result;
+};
