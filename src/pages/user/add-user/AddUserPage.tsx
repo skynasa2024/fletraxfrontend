@@ -35,6 +35,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
       <div className="tabs flex " data-tabs="true">
         <button
+          type="button"
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
             activeTab === 'information'
               ? 'text-primary border-primary'
@@ -45,6 +46,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           Information
         </button>
         <button
+          type="button"
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
             activeTab === 'account'
               ? 'text-primary border-primary'
@@ -55,6 +57,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           Account
         </button>
         <button
+          type="button"
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
             activeTab === 'contact'
               ? 'text-primary border-primary'
