@@ -113,3 +113,29 @@ export const updateUserStatus = async (id: number, status: boolean) => {
     }
   });
 };
+
+export const createUser = async (data: FormData) => {
+  const response = await axios.post<ResponseModel<UserModel>>('/api/users/create', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data.result;
+};
+
+export const updateUser = async (id: number, data: FormData) => {
+  data.set('id', id.toString());
+  if (!data.get('status')) {
+    data.set('status', 'false');
+  }
+
+  for (const key of data.keys()) {
+    const value = data.get(key);
+    if (value === null || value === undefined || !value) {
+      data.delete(key);
+    }
+  }
+
+  const response = await axios.put<ResponseModel<UserModel>>('/api/users/update', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data.result;
+};

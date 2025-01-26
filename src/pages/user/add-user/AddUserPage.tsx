@@ -1,7 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { Information, Password, Contact } from './blocks';
+import { Information, Contact, InformationAccount } from './blocks';
+import { UserModel } from '@/api/user';
 
-const AddUserPage = () => {
+export interface AddUserPageProps {
+  user?: UserModel;
+}
+
+const AddUserPage = ({ user }: AddUserPageProps) => {
   const [activeTab, setActiveTab] = useState<'information' | 'account' | 'contact'>('information');
 
   const informationRef = useRef<HTMLDivElement>(null);
@@ -62,13 +67,13 @@ const AddUserPage = () => {
       </div>
 
       <div ref={informationRef}>
-        <Information title="Information" />
+        <Information user={user} />
       </div>
       <div ref={accountRef}>
-        <Password />
+        <InformationAccount user={user} />
       </div>
       <div ref={contactRef}>
-        <Contact />
+        <Contact user={user} />
       </div>
     </div>
   );

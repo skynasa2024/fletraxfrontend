@@ -124,7 +124,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       },
       {
         title: 'Add users',
-        path: '/users/add-users'
+        path: '/users/add-user'
       }
     ]
   },
