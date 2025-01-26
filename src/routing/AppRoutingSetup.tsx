@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { DefaultPage } from '@/pages/dashboards';
 import { Device } from '@/pages/public-profile';
-import { User } from '@/pages/public-profile/profiles/user';
+import { User } from '@/pages/user';
 import { Vehicles } from '@/pages/vehicle';
 
 import { Driver } from '@/pages/driver';
@@ -19,7 +19,7 @@ import { RequireAuth } from '@/auth/RequireAuth';
 import { Demo1Layout } from '@/layouts/demo1';
 import { ErrorsRouting } from '@/errors';
 import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
-import UserDetailsPage from '@/pages/public-profile/profiles/user/blocks/UserDetailsPage';
+import UserDetailsPage from '@/pages/user/blocks/UserDetailsPage';
 import VehicleDetailsPage from '@/pages/vehicle/blocks/VehicleDetailsPage';
 import DriverDetailsPage from '@/pages/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
@@ -53,9 +53,9 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/devices/add-device" element={<AccountSettingsPlainPage />} />
 
           <Route path="/users/user/*" element={<User />} />
-          <Route path="/users/add-users" element={<AddUser />} />
-          <Route path="/users/user/view-user" element={<UserDetailsPage />} />
+          <Route path="/users/user/:id" element={<UserDetailsPage />} />
           <Route path="/users/add-user" element={<AddUser />} />
+          <Route path="/users/edit/:id" element={<AddUser />} />
 
           <Route path="/drivers/driver" element={<Driver />} />
           <Route path="/drivers/driver/:id" element={<DriverDetailsPage />} />

@@ -1,5 +1,5 @@
 import { VehicleLocation } from '@/api/cars';
-import { User, getUsers } from '@/api/user';
+import { User, getMonitoringUsers } from '@/api/user';
 import {
   createContext,
   PropsWithChildren,
@@ -305,7 +305,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   }, [mqttClient, topics]);
 
   useEffect(() => {
-    getUsers().then((clients) => {
+    getMonitoringUsers().then((clients) => {
       setClients(clients);
       return clients;
     });
