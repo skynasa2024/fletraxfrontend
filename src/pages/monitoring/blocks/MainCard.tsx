@@ -126,7 +126,7 @@ export const MainCard = () => {
                 onResize={(_, data) => {
                   setResizableHeight(data.size.height);
                 }}
-                minConstraints={[width, 200]}
+                minConstraints={[width, 60]}
                 maxConstraints={[width, height]}
                 axis="y"
                 className="w-full relative"

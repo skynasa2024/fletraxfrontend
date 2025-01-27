@@ -7,6 +7,7 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { VehicleLocation } from '@/api/cars';
 import { RotatableMarker } from './RotatableMarker';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 export const CarsLayer = () => {
   const map = useMap();
@@ -143,8 +144,13 @@ export const CarsLayer = () => {
                     }}
                   >
                     {showImei && (
-                      <Tooltip direction="top" offset={[0, -20]} permanent>
-                        {location.vehicle.plate}
+                      <Tooltip
+                        direction="top"
+                        offset={[0, -20]}
+                        permanent
+                        className="bg-transparent border-0 shadow-none p-0"
+                      >
+                        <CarPlate plate={location.vehicle.plate} className="shadow-lg" />
                       </Tooltip>
                     )}
                   </RotatableMarker>
