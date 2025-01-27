@@ -345,7 +345,8 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [updateLocations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const search = async (target: string, query: string) => {
     setSearchQuery(query);

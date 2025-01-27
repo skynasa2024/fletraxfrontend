@@ -121,8 +121,23 @@ export const CarsLayer = () => {
               }}
             >
               {showImei && (
-                <Tooltip direction="top" offset={[0, -20]} permanent>
-                  {selectedLocation.vehicle.imei}
+                <Tooltip
+                  direction="top"
+                  offset={[0, -20]}
+                  permanent
+                  className="bg-transparent border-0 shadow-none p-0"
+                  interactive
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation(undefined);
+                    }
+                  }}
+                >
+                  <CarPlate
+                    plate={selectedLocation.vehicle.plate}
+                    className="shadow-lg"
+                    showTooltip={false}
+                  />
                 </Tooltip>
               )}
             </RotatableMarker>
@@ -149,8 +164,18 @@ export const CarsLayer = () => {
                         offset={[0, -20]}
                         permanent
                         className="bg-transparent border-0 shadow-none p-0"
+                        interactive
+                        eventHandlers={{
+                          click: () => {
+                            setSelectedLocation(location);
+                          }
+                        }}
                       >
-                        <CarPlate plate={location.vehicle.plate} className="shadow-lg" />
+                        <CarPlate
+                          plate={location.vehicle.plate}
+                          className="shadow-lg"
+                          showTooltip={false}
+                        />
                       </Tooltip>
                     )}
                   </RotatableMarker>
