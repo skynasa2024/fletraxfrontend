@@ -1,6 +1,17 @@
 import React, { useMemo } from 'react';
-import { DataGrid, useDataGrid } from '@/components';
-import { getDrivers, DriverDetails, updateDriverStatus } from '@/api/drivers';
+import {
+  DataGrid,
+  KeenIcon,
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle,
+  useDataGrid
+} from '@/components';
+import { getDrivers, DriverDetails, updateDriverStatus, deleteDriver } from '@/api/drivers';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { CarView } from '@/pages/vehicle/blocks/CarView';
@@ -104,6 +115,28 @@ const DriverList: React.FC<DriverListProps> = ({ searchQuery = '', refetch }) =>
             <a href={`/drivers/edit/${row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </a>
+            <Menu>
+              <MenuItem toggle="dropdown" trigger="click">
+                <MenuToggle>
+                  <KeenIcon className="text-xl" icon="dots-vertical" />
+                </MenuToggle>
+                <MenuSub className="menu-default">
+                  <MenuItem
+                    onClick={async () => {
+                      await deleteDriver(row.original.id);
+                      refetch();
+                    }}
+                  >
+                    <MenuLink>
+                      <MenuIcon>
+                        <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
+                      </MenuIcon>
+                      <MenuTitle>Delete</MenuTitle>
+                    </MenuLink>
+                  </MenuItem>
+                </MenuSub>
+              </MenuItem>
+            </Menu>
           </div>
         )
       }

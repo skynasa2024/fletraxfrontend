@@ -24,7 +24,7 @@ const UserPage = () => {
       },
       {
         value: usersStats?.unactive || 0,
-        label: 'Under Review Users',
+        label: 'Inactive Users',
         textColor: 'text-gray-800',
         icon: <PeopleIcon color="#FFA800" />
       }

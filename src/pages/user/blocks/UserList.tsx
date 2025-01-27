@@ -1,6 +1,17 @@
 import React, { useMemo } from 'react';
-import { DataGrid, useDataGrid } from '@/components';
-import { getUsers, updateUserStatus, UserModel } from '@/api/user';
+import {
+  DataGrid,
+  KeenIcon,
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle,
+  useDataGrid
+} from '@/components';
+import { getUsers, updateUserStatus, UserModel, deleteUser } from '@/api/user';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
@@ -114,6 +125,28 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '', refetch }) => {
             <a href={`/users/edit/${info.row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
             </a>
+            <Menu>
+              <MenuItem toggle="dropdown" trigger="click">
+                <MenuToggle>
+                  <KeenIcon className="text-xl" icon="dots-vertical" />
+                </MenuToggle>
+                <MenuSub className="menu-default">
+                  <MenuItem
+                    onClick={async () => {
+                      await deleteUser(info.row.original.id);
+                      refetch();
+                    }}
+                  >
+                    <MenuLink>
+                      <MenuIcon>
+                        <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
+                      </MenuIcon>
+                      <MenuTitle>Delete</MenuTitle>
+                    </MenuLink>
+                  </MenuItem>
+                </MenuSub>
+              </MenuItem>
+            </Menu>
           </div>
         ),
         meta: {

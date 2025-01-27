@@ -139,3 +139,7 @@ export const updateUser = async (id: number, data: FormData) => {
   });
   return response.data.result;
 };
+
+export const deleteUser = async (id: number) => {
+  await axios.get(`/api/users/delete/${id}`);
+};
