@@ -1,18 +1,15 @@
 import { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { DefaultPage } from '@/pages/dashboards';
-import { Device } from '@/pages/public-profile';
 import { User } from '@/pages/user';
 import { Vehicles } from '@/pages/vehicle';
 
 import { Driver } from '@/pages/driver';
 import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
-import { AccountSettingsPlainPage } from '@/pages/account';
 import { AddUser } from '@/pages/user/add-user';
 import { AddDriver } from '@/pages/driver/add-driver';
 import { AddVehicle } from '@/pages/account/home/add-vehicle';
-import DeviceDetailsPage from '@/pages/public-profile/profiles/default/DeviceDetailsPage';
 
 import { AuthPage } from '@/auth';
 import { RequireAuth } from '@/auth/RequireAuth';
@@ -26,6 +23,9 @@ import { TripsPage } from '@/pages/trips/TripsPage';
 import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
 import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintenance';
 import { GeofencePage } from '@/pages/geofence/GeofencePage';
+import { Device } from '@/pages/device';
+import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
+import { AddDevicePage } from '@/pages/device/add-device';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -49,8 +49,9 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
 
           <Route path="/devices/device" element={<Device />} />
-          <Route path="/devices/device/view-device" element={<DeviceDetailsPage />} />
-          <Route path="/devices/add-device" element={<AccountSettingsPlainPage />} />
+          <Route path="/devices/device/:id" element={<DeviceDetailsPage />} />
+          <Route path="/devices/add-device" element={<AddDevicePage />} />
+          <Route path="/devices/edit/:id" element={<AddDevicePage />} />
 
           <Route path="/users/user/*" element={<User />} />
           <Route path="/users/user/:id" element={<UserDetailsPage />} />
