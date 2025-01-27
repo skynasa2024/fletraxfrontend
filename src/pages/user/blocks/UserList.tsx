@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   DataGrid,
   KeenIcon,
@@ -15,6 +15,7 @@ import { getUsers, updateUserStatus, UserModel, deleteUser } from '@/api/user';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const reload = useDataGrid().fetchServerSideData;
@@ -43,11 +44,11 @@ const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () 
 };
 
 interface UserListProps {
-  searchQuery?: string;
   refetch: () => void;
 }
 
-const UserList: React.FC<UserListProps> = ({ searchQuery = '', refetch }) => {
+const UserList: React.FC<UserListProps> = ({ refetch }) => {
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const columns = useMemo<ColumnDef<UserModel>[]>(
     () => [
       {
@@ -161,6 +162,18 @@ const UserList: React.FC<UserListProps> = ({ searchQuery = '', refetch }) => {
     <div className="card">
       <div className="flex items-center justify-between p-6 ">
         <h2 className="text-xl font-semibold text-gray-800">Users List</h2>
+        {/* Search Input */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <KeenIcon style="duotone" icon="magnifier" />
+          </div>
+          <DebouncedSearchInput
+            type="search"
+            className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+            placeholder="Search"
+            onDebounce={setSearchQuery}
+          />
+        </div>
       </div>
       <div className="user-table">
         <DataGrid
