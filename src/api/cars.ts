@@ -126,7 +126,8 @@ export interface CarMileageAndEngine {
 }
 
 export const getCarsMileageAndEngine = async (
-  offset: OffsetBounds
+  offset: OffsetBounds,
+  sort: 'kilometers' | 'engine' = 'kilometers'
 ): Promise<Paginated<CarMileageAndEngine>> => {
   const carsMileageAndEngine = await axios.get<PaginatedResponseModel<CarsMileageAndEngineDTO>>(
     '/api/statistics/counts',
@@ -134,7 +135,7 @@ export const getCarsMileageAndEngine = async (
       params: {
         offset: offset.start,
         size: offset.end - offset.start + 1,
-        sort: 'dailyExistingKilometers,desc'
+        sort: sort === 'engine' ? 'dailyEngineHours,desc' : 'dailyExistingKilometers,desc'
       }
     }
   );

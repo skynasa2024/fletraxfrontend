@@ -5,6 +5,7 @@ export interface ButtonRadioGroupProps {
   selections: string[];
   className?: string;
   suffix?: Record<string, string>;
+  disabled?: boolean;
 }
 
 export const ButtonRadioGroup = ({
@@ -12,7 +13,8 @@ export const ButtonRadioGroup = ({
   setSelection,
   selections,
   suffix,
-  className = 'btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear'
+  className = 'btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear',
+  disabled
 }: ButtonRadioGroupProps) => {
   return (
     <div className="flex gap-2">
@@ -22,6 +24,7 @@ export const ButtonRadioGroup = ({
           data-selected={selection === value}
           className={className}
           onClick={() => setSelection(value)}
+          disabled={disabled}
         >
           {value}
           {suffix?.[value] ?? ''}

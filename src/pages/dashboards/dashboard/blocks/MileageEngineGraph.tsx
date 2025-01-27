@@ -9,6 +9,12 @@ import { KeenIcon } from '@/components';
 
 const MileageEngineGraph = () => {
   const [selection, setSelection] = useState('All');
+  const sort: 'kilometers' | 'engine' = useMemo(() => {
+    if (selection === 'Engine') {
+      return 'engine';
+    }
+    return 'kilometers';
+  }, [selection]);
   const [data, setData] = useState<Paginated<CarMileageAndEngine>>();
   const remoteRowCount = useMemo(() => data?.totalCount ?? 0, [data]);
   const [largestMileage, largestEngine] = useMemo(() => {
@@ -29,7 +35,7 @@ const MileageEngineGraph = () => {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const remoteData = await getCarsMileageAndEngine({ start: startIndex, end: stopIndex });
+    const remoteData = await getCarsMileageAndEngine({ start: startIndex, end: stopIndex }, sort);
     setData((prev) => {
       const newData = prev?.data ?? [];
       remoteData.data.forEach((car, index) => {
@@ -43,12 +49,9 @@ const MileageEngineGraph = () => {
   };
 
   useEffect(() => {
-    getCarsMileageAndEngine({ start: 0, end: 10 }).then(setData);
-  }, []);
-
-  if (!data) {
-    return <CircularProgress />;
-  }
+    setData(undefined);
+    getCarsMileageAndEngine({ start: 0, end: 10 }, sort).then(setData);
+  }, [sort]);
 
   return (
     <div className="card hover:shadow-md h-full">
@@ -62,86 +65,93 @@ const MileageEngineGraph = () => {
           selection={selection}
           setSelection={setSelection}
           selections={['Engine', 'Mileage', 'All']}
+          disabled={!data}
         />
       </div>
       <div className="card-body flex flex-col grow px-3 py-3">
-        <AutoSizer>
-          {({ height, width }) => (
-            <InfiniteLoader
-              isRowLoaded={isRowLoaded}
-              loadMoreRows={loadMoreRows}
-              rowCount={remoteRowCount}
-            >
-              {({ onRowsRendered, registerChild }) => (
-                <List
-                  ref={registerChild}
-                  className="scrollable-y !overflow-x-hidden"
-                  height={height}
-                  width={width}
-                  rowCount={remoteRowCount}
-                  rowHeight={56}
-                  rowRenderer={({ key, index, style }) => {
-                    const car = data.data[index];
+        {data ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={loadMoreRows}
+                rowCount={remoteRowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  <List
+                    ref={registerChild}
+                    className="scrollable-y !overflow-x-hidden"
+                    height={height}
+                    width={width}
+                    rowCount={remoteRowCount}
+                    rowHeight={56}
+                    rowRenderer={({ key, index, style }) => {
+                      const car = data.data[index];
 
-                    if (!car) {
-                      return <Skeleton key={key} style={style} />;
-                    }
+                      if (!car) {
+                        return <Skeleton key={key} style={style} />;
+                      }
 
-                    return (
-                      <div key={key} style={style}>
-                        <div className="flex gap-4 py-2">
-                          <Image
-                            src={car.vehicle.brandImage}
-                            className="size-12 object-cover"
-                            fallback={
-                              <div className="bg-neutral-200 size-10 aspect-square rounded-full flex items-center justify-center">
-                                <KeenIcon style="duotone" icon="car" className="text-black" />
+                      return (
+                        <div key={key} style={style}>
+                          <div className="flex gap-4 py-2">
+                            <Image
+                              src={car.vehicle.brandImage}
+                              className="size-12 object-cover"
+                              fallback={
+                                <div className="bg-neutral-200 size-10 aspect-square rounded-full flex items-center justify-center">
+                                  <KeenIcon style="duotone" icon="car" className="text-black" />
+                                </div>
+                              }
+                            />
+                            <div className="w-40">
+                              <div className="font-medium text-sm text-gray-800">
+                                {car.vehicle.plate}
                               </div>
-                            }
-                          />
-                          <div className="w-40">
-                            <div className="font-medium text-sm text-gray-800">
-                              {car.vehicle.plate}
+                              <div className="text-sm text-gray-600">{car.vehicle.imei}</div>
                             </div>
-                            <div className="text-sm text-gray-600">{car.vehicle.imei}</div>
+                            <div className="flex-1 flex flex-col justify-center gap-1">
+                              {(selection === 'Mileage' || selection === 'All') && (
+                                <div
+                                  className="h-2 bg-[#5151F9] rounded-lg"
+                                  style={{
+                                    width: `${(car.mileage / largestMileage) * 100}%`
+                                  }}
+                                />
+                              )}
+                              {(selection === 'Engine' || selection === 'All') && (
+                                <div
+                                  className="h-2 bg-[#FFA800] rounded-lg"
+                                  style={{
+                                    width: `${(car.engine / largestEngine) * 100}%`
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <div className="w-40 flex flex-col justify-center">
+                              {(selection === 'Mileage' || selection === 'All') && (
+                                <div className="text-sm">{car.formattedMilage}</div>
+                              )}
+                              {(selection === 'Engine' || selection === 'All') && (
+                                <div className="text-sm">{car.formattedEngine}</div>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex-1 flex flex-col justify-center gap-1">
-                            {(selection === 'Mileage' || selection === 'All') && (
-                              <div
-                                className="h-2 bg-[#5151F9] rounded-lg"
-                                style={{
-                                  width: `${(car.mileage / largestMileage) * 100}%`
-                                }}
-                              />
-                            )}
-                            {(selection === 'Engine' || selection === 'All') && (
-                              <div
-                                className="h-2 bg-[#FFA800] rounded-lg"
-                                style={{
-                                  width: `${(car.engine / largestEngine) * 100}%`
-                                }}
-                              />
-                            )}
-                          </div>
-                          <div className="w-40 flex flex-col justify-center">
-                            {(selection === 'Mileage' || selection === 'All') && (
-                              <div className="text-sm">{car.formattedMilage}</div>
-                            )}
-                            {(selection === 'Engine' || selection === 'All') && (
-                              <div className="text-sm">{car.formattedEngine}</div>
-                            )}
-                          </div>
+                          <div className="border-b-2 border-dashed" />
                         </div>
-                        <div className="border-b-2 border-dashed" />
-                      </div>
-                    );
-                  }}
-                  onRowsRendered={onRowsRendered}
-                />
-              )}
-            </InfiniteLoader>
-          )}
-        </AutoSizer>
+                      );
+                    }}
+                    onRowsRendered={onRowsRendered}
+                  />
+                )}
+              </InfiniteLoader>
+            )}
+          </AutoSizer>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <CircularProgress />
+          </div>
+        )}
       </div>
     </div>
   );
