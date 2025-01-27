@@ -11,7 +11,7 @@ const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () 
     <StatusDropdown
       selected={info.row.original.status.toString()}
       setSelected={async (status) => {
-        await updateUserStatus(info.row.original.id, status === 'Active');
+        await updateUserStatus(info.row.original.id, status === 'true');
         reload();
         info.refetch();
       }}
