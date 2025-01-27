@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "countries-list": "^3.1.1",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "esbuild-plugin-react-virtualized": "^1.0.4",
     "flag-icons": "^7.3.2",
     "formik": "^2.4.6",
