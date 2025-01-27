@@ -314,21 +314,23 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const updateLocations = useCallback(async () => {
     const locations = Object.values(memoryMaplocations);
     setLocations(locations);
-    let newClients = clients;
-    for (const client of newClients) {
-      client.onlineDevices = 0;
-      client.offlineDevices = 0;
-    }
-    for (const location of locations) {
-      const client = newClients.find((c) =>
-        clientToLocations[c.id]?.includes(location.vehicle.imei)
-      );
-      if (client) {
-        location.online ? client.onlineDevices!++ : client.offlineDevices!++;
+    setClients((clients) => {
+      let newClients = clients;
+      for (const client of newClients) {
+        client.onlineDevices = 0;
+        client.offlineDevices = 0;
       }
-    }
-    setClients([...newClients]);
-  }, [clientToLocations, clients]);
+      for (const location of locations) {
+        const client = newClients.find((c) =>
+          clientToLocations[c.id]?.includes(location.vehicle.imei)
+        );
+        if (client) {
+          location.online ? client.onlineDevices!++ : client.offlineDevices!++;
+        }
+      }
+      return [...newClients];
+    });
+  }, [clientToLocations]);
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -345,8 +347,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [updateLocations]);
 
   const search = async (target: string, query: string) => {
     setSearchQuery(query);
