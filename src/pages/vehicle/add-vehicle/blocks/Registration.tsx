@@ -16,8 +16,13 @@ const Registration = () => {
           <div className="grid gap-2.5">
             <label className="form-label">Type</label>
             <div className="flex w-full gap-4">
-              {registrationTypeOptions.map((type) => (
-                <FormRadioButton name="registrationType" value={type} label={type} />
+              {registrationTypeOptions.map((type, idx) => (
+                <FormRadioButton
+                  key={type + idx}
+                  name="registrationType"
+                  value={type}
+                  label={type}
+                />
               ))}
             </div>
           </div>
