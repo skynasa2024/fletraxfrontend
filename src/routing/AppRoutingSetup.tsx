@@ -48,12 +48,12 @@ const AppRoutingSetup = (): ReactElement => {
           />
           <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
 
-          <Route path="/devices/device" element={<Device />} />
+          <Route path="/devices/device/" element={<Device />} />
           <Route path="/devices/device/:id" element={<DeviceDetailsPage />} />
           <Route path="/devices/add-device" element={<AddDevicePage />} />
           <Route path="/devices/edit/:id" element={<AddDevicePage />} />
 
-          <Route path="/users/user/*" element={<User />} />
+          <Route path="/users/user/" element={<User />} />
           <Route path="/users/user/:id" element={<UserDetailsPage />} />
           <Route path="/users/add-user" element={<AddUser />} />
           <Route path="/users/edit/:id" element={<AddUser />} />

@@ -1,7 +1,8 @@
 import { axios } from './axios';
-import { ResponseModel } from './response';
+import { OffsetBounds, Paginated } from './common';
+import { PaginatedResponseModel, ResponseModel } from './response';
 
-interface DeviceDTO {
+export interface DeviceDTO {
   id: number;
   ident: string;
   name: string;
@@ -28,13 +29,35 @@ export interface Device {
   vehiclePlate: string;
 }
 
-export const getDevice = async (id: number): Promise<Device> => {
+export const getDeviceModel = async (id: number): Promise<DeviceDTO> => {
   const device = await axios.get<ResponseModel<DeviceDTO>>(`/api/devices/show/${id}`);
+  return device.data.result;
+};
+
+export const getDevice = async (id: number): Promise<Device> => {
+  const device = await getDeviceModel(id);
   return {
-    id: device.data.result.id,
-    imei: device.data.result.ident,
-    name: device.data.result.name,
-    vehiclePlate: device.data.result.vehiclePlate
+    id: device.id,
+    imei: device.ident,
+    name: device.name,
+    vehiclePlate: device.vehiclePlate
+  };
+};
+
+export const getDevices = async (params: OffsetBounds): Promise<Paginated<DeviceDTO>> => {
+  const requestParams = {
+    offset: params.start,
+    size: params.end - params.start + 1,
+    search: params.search
+  };
+
+  const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>('/api/devices/index', {
+    params: requestParams
+  });
+
+  return {
+    data: devices.data.result.content,
+    totalCount: devices.data.result.totalElements
   };
 };
 
@@ -51,4 +74,17 @@ export const getMonitoringDevices = async (): Promise<MonitoringDTO[]> => {
   const availableLocations =
     await axios.get<ResponseModel<MonitoringDTO[]>>('api/devices/monitoring');
   return availableLocations.data.result;
+};
+
+export interface DeviceStats {
+  total: number;
+  online: number;
+  offline: number;
+  connected: number;
+  disconnected: number;
+}
+
+export const getDevicesStats = async (): Promise<DeviceStats> => {
+  const stats = await axios.get<ResponseModel<DeviceStats>>('/api/devices/stats');
+  return stats.data.result;
 };

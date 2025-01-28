@@ -1,2 +1,2 @@
-export * from './ProfileDefaultContent';
+export * from './DevicePage';
 export * from './Device';
