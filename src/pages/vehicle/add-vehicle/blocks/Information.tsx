@@ -59,8 +59,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
         <div className="grid gap-2.5">
           <label className="form-label">Fuel Type</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6 gap-4 w-full">
-            {fuelOptions.map((fuel) => (
-              <FormRadioButton name={'fuelType'} value={fuel} label={fuel} />
+            {fuelOptions.map((fuel, idx) => (
+              <FormRadioButton key={fuel + idx} name={'fuelType'} value={fuel} label={fuel} />
             ))}
           </div>
         </div>
@@ -69,8 +69,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
         <div className="grid gap-2.5">
           <label className="form-label">Car Type</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 w-full">
-            {carOptions.map((type) => (
-              <FormRadioButton name={'carType'} value={type} label={type} />
+            {carOptions.map((type, idx) => (
+              <FormRadioButton key={type + idx} name={'carType'} value={type} label={type} />
             ))}
           </div>
         </div>
@@ -82,8 +82,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <div className="grid gap-2.5">
             <label className="form-label">Gear</label>
             <div className="grid  md:grid-cols-2 gap-4 w-full ">
-              {gearOptions.map((gear) => (
-                <FormRadioButton name="gearType" value={gear} label={gear} />
+              {gearOptions.map((gear, idx) => (
+                <FormRadioButton key={gear + idx} name="gearType" value={gear} label={gear} />
               ))}
             </div>
           </div>
@@ -92,8 +92,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <div className="grid gap-2.5 relative">
             <label className="form-label">Color</label>
             <Field as="select" name="color" className="select">
-              {colorOptions.map((color) => (
-                <option key={color} value={color}>
+              {colorOptions.map((color, idx) => (
+                <option key={color + idx} value={color}>
                   {color}
                 </option>
               ))}
@@ -104,8 +104,8 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <div className="grid gap-2.5 relative">
             <label className="form-label">Number of seats</label>
             <Field as="select" name="numberOfSeats" className="select">
-              {numberOfSeatsOptions.map((num) => (
-                <option key={num} value={num}>
+              {numberOfSeatsOptions.map((num, idx) => (
+                <option key={num + idx} value={num}>
                   {num}
                 </option>
               ))}
