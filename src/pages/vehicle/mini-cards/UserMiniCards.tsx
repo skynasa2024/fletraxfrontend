@@ -52,13 +52,13 @@ function MetricCard({ classNames, icon, label, value }: MertricCardProps) {
         classNames?.root
       )}
     >
-      <div className={clsx('w-4 h-4 p-4', classNames?.icon)}>{icon}</div>
-      <div className="p-6 relative">
+      <div className="flex gap-2 items-center">
+        <div className={clsx('p-4 pb-2', classNames?.icon)}>{icon}</div>
+        <p className={clsx('text-2xl font-semibold mt-1', classNames?.value)}>{value}</p>
+      </div>
+      <div className="p-6 py-4 relative">
         <div className="flex items-center justify-between">
-          <div>
-            <p className={clsx('text-2xl font-semibold mt-1', classNames?.value)}>{value}</p>
-            <p className={clsx('text-sm', classNames?.label)}>{label}</p>
-          </div>
+          <p className={clsx('text-sm', classNames?.label)}>{label}</p>
         </div>
       </div>
     </div>
