@@ -298,7 +298,7 @@ const AddVehiclePage = () => {
                   return <Form>{renderContent(props)}</Form>;
                 }}
               </Formik>
-              <div className="mt-5 flex justify-end gap-10">
+              <div className="mt-5 flex justify-end gap-4">
                 {/* Back Button */}
                 {activeTab !== 'information' && (
                   <button
