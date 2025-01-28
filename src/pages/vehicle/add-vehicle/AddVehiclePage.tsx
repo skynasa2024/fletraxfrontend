@@ -1,24 +1,78 @@
 import React, { useRef, useState } from 'react';
 import { Information, Registration, InspectionAndInsurance, CarScratches } from './blocks';
 import { Form, Formik, FormikProps } from 'formik';
+import PromoCarTypeIcon from '../blocks/svg/PromoCarTypeIcon';
+import PickupCarTypeIcon from '../blocks/svg/PickupCarTypeIcon';
+import ComfortCarTypeIcon from '../blocks/svg/ComfortCarTypeIcon';
+import SuvCarTypeIcon from '../blocks/svg/SuvCarTypeIcon';
+import BusCarTypeIcon from '../blocks/svg/BusCarTypeIcon';
+import VanCarTypeIcon from '../blocks/svg/VanCarTypeIcon';
+import ManualGearTypeIcon from '../blocks/svg/ManualGearTypeIcon';
+import AutomaticGearTypeIcon from '../blocks/svg/AutomaticGearTypeIcon';
+import IndividualTypeIcon from '../blocks/svg/IndividualTypeIcon';
+import CompanyTypeIcon from '../blocks/svg/CompanyTypeIcon';
+
+type RadioOption<T> = {
+  label: string;
+  value: T;
+  icon?: React.ReactNode;
+};
 
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
 type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
-export const fuelOptions: Array<FuelType> = [
-  'Hybrid',
-  'Diesel',
-  'Benzin',
-  'LPG',
-  'Kerosine',
-  'Electric'
+export const fuelOptions: Array<RadioOption<FuelType>> = [
+  { label: 'Hybrid', value: 'Hybrid' },
+  { label: 'Diesel', value: 'Diesel' },
+  { label: 'Benzin', value: 'Benzin' },
+  { label: 'LPG', value: 'LPG' },
+  { label: 'Kerosine', value: 'Kerosine' },
+  { label: 'Electric', value: 'Electric' }
 ];
 
 type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
-export const carOptions: Array<CarType> = ['PROMO', 'Pickup', 'COMFORT', 'SUV', 'Bus', 'Van'];
+export const carOptions: Array<RadioOption<CarType>> = [
+  {
+    label: 'PROMO',
+    value: 'PROMO',
+    icon: <PromoCarTypeIcon />
+  },
+  {
+    label: 'Pickup',
+    value: 'Pickup',
+    icon: <PickupCarTypeIcon />
+  },
+  {
+    label: 'COMFORT',
+    value: 'COMFORT',
+    icon: <ComfortCarTypeIcon />
+  },
+  {
+    label: 'SUV',
+    value: 'SUV',
+    icon: <SuvCarTypeIcon />
+  },
+  {
+    label: 'Bus',
+    value: 'Bus',
+    icon: <BusCarTypeIcon />
+  },
+  {
+    label: 'Van',
+    value: 'Van',
+    icon: <VanCarTypeIcon />
+  }
+];
 
 type GearType = 'Automatic' | 'Manual';
-export const gearOptions: Array<GearType> = ['Automatic', 'Manual'];
+export const gearOptions: Array<RadioOption<GearType>> = [
+  { label: 'Automatic', value: 'Automatic', icon: <AutomaticGearTypeIcon /> },
+  {
+    label: 'Manual',
+    value: 'Manual',
+    icon: <ManualGearTypeIcon />
+  }
+];
 
 export const colorOptions = [
   'Black',
@@ -54,7 +108,10 @@ export interface InformationFormField {
 }
 
 type RegistrationType = 'Individual' | 'Company';
-export const registrationTypeOptions: Array<RegistrationType> = ['Individual', 'Company'];
+export const registrationTypeOptions: Array<RadioOption<RegistrationType>> = [
+  { label: 'Individual', value: 'Individual', icon: <IndividualTypeIcon /> },
+  { label: 'Company', value: 'Company', icon: <CompanyTypeIcon /> }
+];
 
 export interface RegistrationFormField {
   registrationType: string;

@@ -18,10 +18,11 @@ const Registration = () => {
             <div className="flex w-full gap-4">
               {registrationTypeOptions.map((type, idx) => (
                 <FormRadioButton
-                  key={type + idx}
+                  key={type.value + idx}
                   name="registrationType"
-                  value={type}
-                  label={type}
+                  value={type.value}
+                  label={type.label}
+                  icon={type.icon}
                 />
               ))}
             </div>

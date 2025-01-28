@@ -60,7 +60,12 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <label className="form-label">Fuel Type</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6 gap-4 w-full">
             {fuelOptions.map((fuel, idx) => (
-              <FormRadioButton key={fuel + idx} name={'fuelType'} value={fuel} label={fuel} />
+              <FormRadioButton
+                key={fuel.value + idx}
+                name={'fuelType'}
+                value={fuel.value}
+                label={fuel.label}
+              />
             ))}
           </div>
         </div>
@@ -70,7 +75,13 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <label className="form-label">Car Type</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 w-full">
             {carOptions.map((type, idx) => (
-              <FormRadioButton key={type + idx} name={'carType'} value={type} label={type} />
+              <FormRadioButton
+                key={type.value + idx}
+                name={'carType'}
+                value={type.value}
+                label={type.label}
+                icon={type.icon}
+              />
             ))}
           </div>
         </div>
@@ -83,7 +94,13 @@ const Information = ({ title }: IGeneralSettingsProps) => {
             <label className="form-label">Gear</label>
             <div className="grid  md:grid-cols-2 gap-4 w-full ">
               {gearOptions.map((gear, idx) => (
-                <FormRadioButton key={gear + idx} name="gearType" value={gear} label={gear} />
+                <FormRadioButton
+                  key={gear.value + idx}
+                  name="gearType"
+                  value={gear.value}
+                  label={gear.label}
+                  icon={gear.icon}
+                />
               ))}
             </div>
           </div>
