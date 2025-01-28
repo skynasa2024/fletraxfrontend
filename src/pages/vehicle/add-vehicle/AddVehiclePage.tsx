@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Information, Registration, InspectionAndInsurance, CarScratches } from './blocks';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikProps } from 'formik';
 
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
@@ -79,9 +79,23 @@ export interface InspectionAndInsuranceFormField {
   exhaustEndDate: string;
 }
 
-type AddVehicleForm = InformationFormField &
+export const scratchPlaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+export interface Scratch {
+  place: number;
+  explanationOf: string;
+  vehicleId: string;
+  image?: File;
+}
+
+export interface CarScratchesFormField {
+  scratches: Array<Scratch>;
+}
+
+export type AddVehicleForm = InformationFormField &
   RegistrationFormField &
-  InspectionAndInsuranceFormField;
+  InspectionAndInsuranceFormField &
+  CarScratchesFormField;
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -123,10 +137,21 @@ const AddVehiclePage = () => {
     exhaustEndDate: ''
   };
 
+  const carScratchesInitialValues: CarScratchesFormField = {
+    scratches: [
+      {
+        place: 1,
+        explanationOf: '',
+        vehicleId: ''
+      }
+    ]
+  };
+
   const initialValues: AddVehicleForm = {
     ...informationInitialValues,
     ...registrationInitialValues,
-    ...inspectionAndInsuranceInitialValues
+    ...inspectionAndInsuranceInitialValues,
+    ...carScratchesInitialValues
   };
 
   const refs = {
@@ -167,10 +192,9 @@ const AddVehiclePage = () => {
 
   const handleSaveClick = () => {
     alert('Vehicle details saved successfully!');
-    // Implement save functionality here
   };
 
-  const renderContent = () => {
+  const renderContent = (formikProps: FormikProps<AddVehicleForm>) => {
     switch (activeTab) {
       case 'information':
         return <Information title="Information" />;
@@ -179,7 +203,7 @@ const AddVehiclePage = () => {
       case 'inspectionAndInsurance':
         return <InspectionAndInsurance />;
       case 'carScratches':
-        return <CarScratches />;
+        return <CarScratches formikProps={formikProps} />;
       default:
         return null;
     }
@@ -214,26 +238,42 @@ const AddVehiclePage = () => {
             <div ref={refs[activeTab]} className="focus:outline-none">
               <Formik initialValues={initialValues} onSubmit={() => {}}>
                 {(props) => {
-                  return <Form>{renderContent()}</Form>;
+                  return <Form>{renderContent(props)}</Form>;
                 }}
               </Formik>
-              <div className="mt-5 flex justify-end">
-                {/* Next or Save Button */}
-                {!isLastTab ? (
+              <div className="mt-5 flex justify-end gap-10">
+                {/* Back Button */}
+                {activeTab !== 'information' && (
                   <button
-                    className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
-                    onClick={handleNextClick}
+                    className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                    onClick={() => {
+                      const currentIndex = tabConfig.findIndex((tab) => tab.id === activeTab);
+                      if (currentIndex > 0) {
+                        handleTabClick(tabConfig[currentIndex - 1].id as TabType);
+                      }
+                    }}
                   >
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg"
-                    onClick={handleSaveClick}
-                  >
-                    Save
+                    Back
                   </button>
                 )}
+                {/* Next or Save Button */}
+                <div>
+                  {!isLastTab ? (
+                    <button
+                      className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
+                      onClick={handleNextClick}
+                    >
+                      Next
+                    </button>
+                  ) : (
+                    <button
+                      className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                      onClick={handleSaveClick}
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
