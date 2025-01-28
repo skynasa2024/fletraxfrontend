@@ -4,6 +4,7 @@ import { DeviceList } from './blocks';
 import BlocksIcon from '../vehicle/blocks/svg/BlocksIcon';
 import { DeviceStats, getDevicesStats } from '@/api/devices';
 import DeviceIcon from './svg/device.svg?react';
+import RoleComponent from '@/components/RoleComponent';
 
 const DevicePage = () => {
   const [deviceStats, setDeviceStats] = useState<DeviceStats>();
@@ -58,11 +59,13 @@ const DevicePage = () => {
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-xl text-gray-800">Devices</h3>
 
-          <a href="/devices/add-device">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
-              New Device
-            </button>
-          </a>
+          <RoleComponent role="admin">
+            <a href="/devices/add-device">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
+                New Device
+              </button>
+            </a>
+          </RoleComponent>
         </div>
       </div>
 

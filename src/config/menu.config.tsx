@@ -110,7 +110,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
       },
       {
         title: 'Add device',
-        path: '/devices/add-device'
+        path: '/devices/add-device',
+        role: 'admin'
       }
     ]
   },

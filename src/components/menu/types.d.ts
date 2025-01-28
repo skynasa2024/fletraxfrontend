@@ -181,6 +181,7 @@ export interface IMenuItemConfig {
   childrenIndex?: number;
   externalIcon?: string;
   fullScreen?: boolean;
+  role?: string | string[];
 }
 
 export type TMenuConfig = IMenuItemConfig[];
