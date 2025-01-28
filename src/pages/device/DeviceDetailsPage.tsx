@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConnectIcon, OnOffIcon, ViewIcon } from './blocks/icons';
 import DeviceCard from './blocks/DeviceCard';
 import DeviceNavigation from './DeviceNavigation';
@@ -31,7 +30,7 @@ const DeviceDetailsPage = () => {
   ];
 
   return (
-    <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full m-5 mb-6">
+    <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full m-5">
       <div className="p-4 w-full">
         <div className="space-y-4">
           <table className="card w-full p-2">

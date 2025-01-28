@@ -1,5 +1,5 @@
 import { useLanguage } from '@/i18n';
-import { Menu, MenuItem, MenuToggle } from '@/components';
+import { Menu, MenuItem } from '@/components';
 import ViewIcon from './icons/viewIcon';
 import ConnectIcon from './icons/ConnectIcon';
 import OnOffIcon from './icons/OnOffIcon';
@@ -57,7 +57,8 @@ const Projects = () => {
         variant: 'progress-primary',
         value: 60
       }
-    },{
+    },
+    {
       name: 'Acme software development',
       team: {
         group: [{ filename: '300-4.png' }, { filename: '300-1.png' }, { filename: '300-2.png' }],
@@ -71,7 +72,7 @@ const Projects = () => {
         variant: 'progress-primary',
         value: 60
       }
-    },
+    }
   ];
 
   const renderDeviceIcon = () => (
@@ -121,8 +122,10 @@ const Projects = () => {
           {/* Messages Progress */}
           <div className="md:col-span-1">
             <div className="space-y-2">
-              <div className="flex justify-between items-center p-6
-              ">
+              <div
+                className="flex justify-between items-center p-6
+              "
+              >
                 <div className="font-bold">Messages</div>
                 <span className="text-sm text-gray-500">56.5 MB / 100 MB</span>
               </div>
@@ -170,9 +173,7 @@ const Projects = () => {
           </MenuItem>
         </Menu>
       </div>
-      <div className="space-y-4">
-        {items.map(renderItem)}
-      </div>
+      <div className="space-y-4">{items.map(renderItem)}</div>
     </div>
   );
 };

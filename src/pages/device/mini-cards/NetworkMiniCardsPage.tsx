@@ -10,10 +10,10 @@ import {
 } from '@/partials/toolbar';
 
 import { DeviceStatus } from '.';
-import { useLayout } from '@/providers'; 
+import { useLayout } from '@/providers';
 
 const NetworkMiniCardsPage = () => {
-  const { currentLayout } = useLayout ();
+  const { currentLayout } = useLayout();
 
   return (
     <Fragment>

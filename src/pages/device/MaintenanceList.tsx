@@ -106,7 +106,7 @@ const MaintenanceList = ({ items = sampleData }) => {
     <div className="">
       {/* Header */}
       <div className="flex justify-between items-center  p-4">
-      <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
         <div className="flex gap-4">
           {/* Filters Button */}
           <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border text-sm">

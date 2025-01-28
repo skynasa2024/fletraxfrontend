@@ -1,5 +1,4 @@
 import { toAbsoluteUrl } from '@/utils/Assets';
-import React from 'react';
 
 const Car = () => {
   return (

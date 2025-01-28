@@ -24,7 +24,7 @@ const CONSTANTS = {
   END_ANGLE: 0,
   WARNING_ZONE_DEGREES: 30,
   POINTER_LENGTH: 90,
-  POINTER_OFFSET: 19.5, 
+  POINTER_OFFSET: 19.5
 } as const;
 
 // [Previous utility functions remain the same]
@@ -45,24 +45,23 @@ const createArc = (start: number, end: number, center: number, radius: number): 
 const calculateTaperedPointer = (angle: number, center: number, length: number): string => {
   const rad = (angle * Math.PI) / 180;
   const baseWidth = 4;
-  const baseRadius = baseWidth / 2;
   const perpRad = rad + Math.PI / 2;
-  
+
   const baseOffsetX = Math.cos(rad) * CONSTANTS.POINTER_OFFSET;
   const baseOffsetY = Math.sin(rad) * CONSTANTS.POINTER_OFFSET;
   const baseCenter = {
     x: center + baseOffsetX,
     y: center + baseOffsetY
   };
-  
+
   const tipX = center + length * Math.cos(rad);
   const tipY = center + length * Math.sin(rad);
-  
+
   const leftBaseX = baseCenter.x + baseWidth * Math.cos(perpRad);
   const leftBaseY = baseCenter.y + baseWidth * Math.sin(perpRad);
   const rightBaseX = baseCenter.x - baseWidth * Math.cos(perpRad);
   const rightBaseY = baseCenter.y - baseWidth * Math.sin(perpRad);
-  
+
   return `
     M ${leftBaseX} ${leftBaseY}
     A ${baseWidth} ${baseWidth} 0 0 1 ${rightBaseX} ${rightBaseY}
@@ -119,12 +118,11 @@ const SpeedGauge: React.FC = () => {
 
   return (
     <div className="card flex flex-col max-w-sm p-8">
-      <svg 
-        viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`} 
+      <svg
+        viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`}
         className="mx-auto"
-        style={{ marginBottom: '-110px' }} 
+        style={{ marginBottom: '-110px' }}
       >
-     
         <defs>
           <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
@@ -157,7 +155,12 @@ const SpeedGauge: React.FC = () => {
 
         {/* Warning zone */}
         <path
-          d={createArc(CONSTANTS.END_ANGLE - CONSTANTS.WARNING_ZONE_DEGREES, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
+          d={createArc(
+            CONSTANTS.END_ANGLE - CONSTANTS.WARNING_ZONE_DEGREES,
+            CONSTANTS.END_ANGLE,
+            center,
+            CONSTANTS.RADIUS
+          )}
           fill="none"
           stroke="#ef4444"
           strokeWidth={CONSTANTS.STROKE_WIDTH}
@@ -172,7 +175,13 @@ const SpeedGauge: React.FC = () => {
         />
 
         {/* Center text */}
-        <text x={center} y={center + 15} textAnchor="middle" className="text-4xl font-bold" fill="black">
+        <text
+          x={center}
+          y={center + 15}
+          textAnchor="middle"
+          className="text-4xl font-bold"
+          fill="black"
+        >
           {props.value}
         </text>
         <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">

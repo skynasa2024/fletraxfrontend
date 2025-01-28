@@ -1,5 +1,4 @@
 import React, { Fragment, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface CardProps {
   children: ReactNode;
@@ -20,8 +19,7 @@ const Card: React.FC<CardProps> = ({ children, className }) => (
   <div className={`card ${className ?? ''}`}>{children}</div>
 );
 
-const DeviceStatus: React.FC = () => 
-{  const navigate = useNavigate();
+const DeviceStatus: React.FC = () => {
   const stats: StatItem[] = [
     {
       title: 'Total Devices',

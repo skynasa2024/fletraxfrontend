@@ -16,13 +16,15 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
   icon1Count,
   icon2Count,
   icon3Count,
-  icon4Count,
+  icon4Count
 }) => {
   return (
     <div className="device-card p-4">
       {/* Device Info Section */}
       <div className="device-name text-start font-semibold text-xl">{deviceName}</div>
-      <div className="device-status text-start text-sm text-gray-500">Last active: {lastActive}</div>
+      <div className="device-status text-start text-sm text-gray-500">
+        Last active: {lastActive}
+      </div>
 
       {/* Icon and Count Section */}
       <div className="flex items-center space-x-3 mt-4">
