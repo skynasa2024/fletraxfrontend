@@ -5,7 +5,7 @@ import { TDataGridRequestParams } from '@/components';
 import { Vehicle } from './cars';
 
 interface DriverDTO {
-  id: number;
+  id: string;
   fullName: string;
   dateOfBirth: string;
   placeOfBirth: string;
@@ -36,9 +36,9 @@ interface DriverDTO {
   city: string;
   address: string;
   archived: boolean;
-  userId: number;
+  userId: string;
   vehicleBrand: string;
-  vehicleId: number;
+  vehicleId: string;
   vehicleImage: string;
   vehicleModel: string;
   vehiclePlate: string;
@@ -52,7 +52,7 @@ export interface Driver {
 }
 
 export interface DriverDetails {
-  id: number;
+  id: string;
   driver: Driver;
   nationality: string;
   country: string;
@@ -94,15 +94,15 @@ export const getDrivers = async (
   const requestParams =
     'start' in params
       ? {
-          offset: params.start,
-          size: params.end - params.start + 1,
-          search: params.search
-        }
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
       : {
-          page: params.pageIndex,
-          size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
-        };
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
+      };
 
   const drivers = await axios.get<PaginatedResponseModel<DriverDTO>>('/api/drivers/index', {
     params: requestParams
@@ -159,7 +159,7 @@ export const getDrivers = async (
   };
 };
 
-export const getDriver = async (id: number): Promise<DriverDetails> => {
+export const getDriver = async (id: string): Promise<DriverDetails> => {
   const driver = await axios.get<ResponseModel<DriverDTO>>(`/api/drivers/show/${id}`);
   return {
     id: driver.data.result.id,
@@ -208,7 +208,7 @@ export const getDriver = async (id: number): Promise<DriverDetails> => {
   };
 };
 
-export const deleteDriver = (id: number) => {
+export const deleteDriver = (id: string) => {
   return axios.get(`/api/drivers/delete/${id}`);
 };
 
@@ -223,7 +223,7 @@ export const getDriversStats = async (): Promise<DriverStats> => {
   return stats.data.result;
 };
 
-export const updateDriverStatus = async (id: number, status: boolean) => {
+export const updateDriverStatus = async (id: string, status: boolean) => {
   await axios.patch(`/api/drivers/update-status/${id}`, undefined, {
     params: {
       status
@@ -244,7 +244,7 @@ export const createDriver = async (data: FormData) => {
   return response.data.result;
 };
 
-export const updateDriver = async (id: number, data: FormData) => {
+export const updateDriver = async (id: string, data: FormData) => {
   data.set('id', id.toString());
   data.set('identityType', data.get('idNumber') ? 'National ID' : 'Passport');
   data.set('type', "Driver's License");

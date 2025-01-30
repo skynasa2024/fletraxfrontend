@@ -15,7 +15,7 @@ const AddUser = () => {
 
   useEffect(() => {
     if (id) {
-      getUserModel(+id).then(setUser);
+      getUserModel(id).then(setUser);
     }
   }, [id]);
 

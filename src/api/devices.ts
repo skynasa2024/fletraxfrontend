@@ -3,7 +3,7 @@ import { OffsetBounds, Paginated } from './common';
 import { PaginatedResponseModel, ResponseModel } from './response';
 
 export interface DeviceDTO {
-  id: number;
+  id: string;
   ident: string;
   name: string;
   vehiclePlate: string;
@@ -16,25 +16,25 @@ export interface DeviceDTO {
   motionStatus: string;
   subscriptionStartDate: string;
   subscriptionEndDate: string;
-  userId: number;
-  skynasaDeviceId: number;
-  protocolId: number;
-  typeId: number;
+  userId: string;
+  skynasaDeviceId: string;
+  protocolId: string;
+  typeId: string;
 }
 
 export interface Device {
-  id: number;
+  id: string;
   imei: string;
   name: string;
   vehiclePlate: string;
 }
 
-export const getDeviceModel = async (id: number): Promise<DeviceDTO> => {
+export const getDeviceModel = async (id: string): Promise<DeviceDTO> => {
   const device = await axios.get<ResponseModel<DeviceDTO>>(`/api/devices/show/${id}`);
   return device.data.result;
 };
 
-export const getDevice = async (id: number): Promise<Device> => {
+export const getDevice = async (id: string): Promise<Device> => {
   const device = await getDeviceModel(id);
   return {
     id: device.id,
@@ -65,7 +65,7 @@ export interface MonitoringDTO {
   ident: string;
   status: string;
   motionStatus: string;
-  userId: number;
+  userId: string;
   vehiclePlate: string;
   vehicleImage: string | null;
 }

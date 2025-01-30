@@ -11,7 +11,7 @@ const UserDetailsPage = () => {
   const [user, setUser] = useState<UserModel | null>(null);
   useEffect(() => {
     if (!id) return;
-    getUserModel(+id)
+    getUserModel(id)
       .then((data) => {
         setUser(data);
       })

@@ -26,7 +26,7 @@ export const getCarCount = async (): Promise<Record<string, number>> => {
 };
 
 export interface Vehicle {
-  id: number;
+  id: string;
   brandImage: string;
   plate: string;
   imei: string;
@@ -44,7 +44,7 @@ export interface VehicleDetails {
 }
 
 export interface VehicleDTO {
-  id: number;
+  id: string;
   plate: string;
   image: string | null;
   imageFile: string | null;
@@ -82,9 +82,9 @@ export interface VehicleDTO {
   fuelConsumption: number;
   licenseImage: string;
   owner: string;
-  userId: number;
-  deviceId: number;
-  vehicleId: number;
+  userId: string;
+  deviceId: string;
+  vehicleId: string;
   scratches: any[];
 }
 
@@ -96,10 +96,10 @@ export interface VehicleStats {
 }
 
 interface CarsMileageAndEngineDTO {
-  id: number;
+  id: string;
   ident: string;
   date: string;
-  deviceId: number | null;
+  deviceId: string | null;
   deviceName: string | null;
   vehiclePlate: string | null;
   vehicleImage: string | null;
@@ -158,19 +158,19 @@ export const getCarsMileageAndEngine = async (
 };
 
 export interface ViolationDTO {
-  id: number;
+  id: string;
   type: string;
   description: string;
   startDate: string;
   endDate: string;
   status: string;
   amount: number;
-  userId: number;
-  vehicleId: number;
+  userId: string;
+  vehicleId: string;
 }
 
 export interface Violation {
-  id: number;
+  id: string;
   vehicle: Vehicle | null;
   date: Date;
   user: User;
@@ -226,7 +226,7 @@ export const getViolations = async (
   };
 };
 
-export const updateViolationStatus = async (id: number, status: string): Promise<void> => {
+export const updateViolationStatus = async (id: string, status: string): Promise<void> => {
   await axios.patch(`/api/violations/update-status/${id}`, undefined, {
     params: {
       status
@@ -234,7 +234,7 @@ export const updateViolationStatus = async (id: number, status: string): Promise
   });
 };
 
-export const updateVehicleStatus = async (id: number, status: string): Promise<void> => {
+export const updateVehicleStatus = async (id: string, status: string): Promise<void> => {
   await axios.post(`/api/vehicles/cars/update-status/${id}`, undefined, {
     params: {
       status
@@ -243,7 +243,7 @@ export const updateVehicleStatus = async (id: number, status: string): Promise<v
 };
 
 export interface Maintenance {
-  id: number;
+  id: string;
   date: Date;
   vehicle: Vehicle | null;
   type: string;
@@ -253,7 +253,7 @@ export interface Maintenance {
 }
 
 export interface MaintenanceDTO {
-  id: number;
+  id: string;
   type: string;
   description: string;
   supplier: string;
@@ -261,8 +261,8 @@ export interface MaintenanceDTO {
   endDate: string;
   status: string;
   amount: number;
-  vehicleId: number;
-  userId: number;
+  vehicleId: string;
+  userId: string;
 }
 
 export const getMaintenance = async (
@@ -309,7 +309,7 @@ export const getMaintenance = async (
   };
 };
 
-export const updateMaintenanceStatus = async (id: number, status: string): Promise<void> => {
+export const updateMaintenanceStatus = async (id: string, status: string): Promise<void> => {
   await axios.patch(`/api/maintenances/update-status/${id}`, undefined, {
     params: {
       status
@@ -323,15 +323,15 @@ export const getVehicles = async (
   const requestParams =
     'start' in params
       ? {
-          offset: params.start,
-          size: params.end - params.start + 1,
-          search: params.search
-        }
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
       : {
-          page: params.pageIndex,
-          size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
-        };
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
+      };
 
   const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/index',
@@ -366,7 +366,7 @@ export const getVehicles = async (
   };
 };
 
-const getVehicle = async (id: number): Promise<Vehicle | null> => {
+const getVehicle = async (id: string): Promise<Vehicle | null> => {
   const vehicle = await axios.get<ResponseModel<VehicleDTO | null>>(
     `/api/vehicles/cars/find-by-vehicle-id/${id}`
   );

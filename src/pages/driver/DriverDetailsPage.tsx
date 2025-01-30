@@ -36,7 +36,7 @@ const DriverDetailsPage = () => {
   const [driver, setDriver] = useState<DriverDetails | null>(null);
   useEffect(() => {
     if (!id) return;
-    getDriver(+id)
+    getDriver(id)
       .then((data) => {
         setDriver(data);
       })

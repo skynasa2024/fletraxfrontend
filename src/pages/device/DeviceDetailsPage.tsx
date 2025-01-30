@@ -18,7 +18,7 @@ const DeviceDetailsPage = () => {
   const [device, setDevice] = useState<DeviceDTO | null>(null);
   useEffect(() => {
     if (!id) return;
-    getDeviceModel(+id)
+    getDeviceModel(id)
       .then((data) => {
         setDevice(data);
       })

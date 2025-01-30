@@ -4,10 +4,10 @@ import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 import { ButtonRadioGroup } from '@/pages/dashboards/dashboard/blocks/ButtonRadioGroup';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { AutoSizer, List } from 'react-virtualized';
 import { toAbsoluteUrl } from '@/utils';
 import { useSearchParams } from 'react-router-dom';
+import { CarView } from '@/pages/dashboards/dashboard/blocks/CarView';
 
 export const MainCard = () => {
   const [searchParams] = useSearchParams();
@@ -221,25 +221,18 @@ export const MainCard = () => {
                         }}
                       >
                         <div className="flex justify-between">
-                          <CarPlate plate={location.vehicle.plate} />
+                          <CarView vehicle={location.vehicle} showBrand={false} />
+                          <img
+                            src={toAbsoluteUrl(
+                              `/media/icons/${getBatteryIcon(location.status.batteryLevel)}.svg`
+                            )}
+                          />
                           <div
                             data-online={location.online}
                             className="rounded-md font-medium text-xs bg-[#F1416C]/10 text-[#F1416C] data-[online=true]:bg-[#50CD89]/10 data-[online=true]:text-[#50CD89] px-[10px] py-[6px] self-center"
                           >
                             {location.online ? 'Online' : 'Offline'}
                           </div>
-                        </div>
-                        <div className="border-b-2 border-[#E4E6EF] dark:border-gray-400 border-dashed" />
-                        <div className="flex justify-between font-semibold text-xs">
-                          <div>
-                            <div>{location.vehicle.name}</div>
-                            <div>{location.vehicle.imei}</div>
-                          </div>
-                          <img
-                            src={toAbsoluteUrl(
-                              `/media/icons/${getBatteryIcon(location.status.batteryLevel)}.svg`
-                            )}
-                          />
                         </div>
                         <div className="border-b-2 border-[#E4E6EF] dark:border-gray-400 border-dashed" />
                         <div className="flex gap-[10px] text-[10px] font-semibold justify-evenly">
@@ -293,7 +286,7 @@ export const MainCard = () => {
                   );
                 }}
                 rowCount={activeLocations.length}
-                rowHeight={192}
+                rowHeight={164}
                 height={height - resizableHeight - 50}
                 width={width}
                 className="scrollable-y"

@@ -15,7 +15,7 @@ const AddDriver = () => {
 
   useEffect(() => {
     if (id) {
-      getDriver(+id).then(setDriver);
+      getDriver(id).then(setDriver);
     }
   }, [id]);
 

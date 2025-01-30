@@ -7,7 +7,7 @@ interface TripGroupsDTO {
 }
 
 interface TripDTO {
-  id: number;
+  id: string;
   ident: string;
   intervalType: string;
   startTime: string;
@@ -35,7 +35,7 @@ interface TripPoint {
 }
 
 export interface Trip {
-  id: number;
+  id: string;
   imei: string;
   startDate: Date;
   endDate: Date;
@@ -45,7 +45,7 @@ export interface Trip {
 }
 
 export interface TripPath {
-  tripId: number;
+  tripId: string;
   latitude: number;
   longitude: number;
   direction: number;
@@ -82,7 +82,8 @@ export const searchTrips = async ({
       endDate: endDate,
       startTime: startTime,
       endTime: endTime,
-      sort: 'startTime,desc'
+      sort: 'startTime,desc',
+      size: 2
     }
   });
 

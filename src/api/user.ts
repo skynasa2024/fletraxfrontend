@@ -4,7 +4,7 @@ import { PaginatedResponseModel, ResponseModel } from './response';
 import { OffsetBounds, Paginated } from './common';
 
 export interface UserModel {
-  id: number;
+  id: string;
   name: string;
   identifyNumber: string;
   username: string;
@@ -25,12 +25,12 @@ export interface UserModel {
   subscriptionStartDate: string;
   timezone: string;
   locale: string;
-  parentId: number | null;
+  parentId: string | null;
   keycloakUserId: string;
 }
 
 export interface User {
-  id: number;
+  id: string;
   name: string;
   avatar?: string;
   email: string;
@@ -71,12 +71,12 @@ export const getUsers = async (
   };
 };
 
-export const getUserModel = async (id: number): Promise<UserModel> => {
+export const getUserModel = async (id: string): Promise<UserModel> => {
   const client = await axios.get<ResponseModel<UserModel>>(`/api/users/show/${id}`);
   return client.data.result;
 };
 
-export const getUser = async (id: number): Promise<User> => {
+export const getUser = async (id: string): Promise<User> => {
   const client = await getUserModel(id);
   return {
     id: client.id,
@@ -106,7 +106,7 @@ export const getUserStats = async (): Promise<UserStats> => {
   return stats.data.result;
 };
 
-export const updateUserStatus = async (id: number, status: boolean) => {
+export const updateUserStatus = async (id: string, status: boolean) => {
   await axios.patch(`/api/users/update-status/${id}`, undefined, {
     params: {
       status
@@ -121,7 +121,7 @@ export const createUser = async (data: FormData) => {
   return response.data.result;
 };
 
-export const updateUser = async (id: number, data: FormData) => {
+export const updateUser = async (id: string, data: FormData) => {
   data.set('id', id.toString());
   if (!data.get('status')) {
     data.set('status', 'false');
@@ -140,6 +140,6 @@ export const updateUser = async (id: number, data: FormData) => {
   return response.data.result;
 };
 
-export const deleteUser = async (id: number) => {
+export const deleteUser = async (id: string) => {
   await axios.get(`/api/users/delete/${id}`);
 };

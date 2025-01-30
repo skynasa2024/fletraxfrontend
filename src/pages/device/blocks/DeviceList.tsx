@@ -11,6 +11,7 @@ import { CircularProgress, Skeleton } from '@mui/material';
 import DeviceIcon from '../svg/device.svg?react';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { KeenIcon } from '@/components';
+import RoleComponent from '@/components/RoleComponent';
 
 type DeviceListProps = {
   refetchStats: () => void;
@@ -119,24 +120,24 @@ const DeviceList = ({ refetchStats }: DeviceListProps) => {
                       return (
                         <div key={key} style={style} className="pb-2">
                           <div className="card hover:shadow-lg p-2 px-8">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="flex justify-between gap-4">
                               {/* Device Info */}
                               <div className="flex items-center gap-4">
                                 <DeviceIcon color="#5151F9" className="size-12 min-w-12" />
                                 <div>
-                                  <h4 className="font-bold text-gray-900">{device.name}</h4>
-                                  <p className="text-sm text-gray-500">{device.ident}</p>
-                                  <p className="text-sm">
-                                    {device.phoneCode} {device.phone}
-                                  </p>
+                                  <p className="text-lg text-gray-700">{device.ident}</p>
                                 </div>
+                              </div>
+
+                              <div className="flex items-center justify-center">
+                                <CarPlate className="w-auto" plate={device.vehiclePlate} />
                               </div>
 
                               {/* Device Card */}
                               <div className="md:col-span-1">
                                 <DeviceCard
-                                  deviceName="Jimi IoT"
-                                  lastActive="16 minutes ago"
+                                  deviceName="Protocol"
+                                  lastActive="Type"
                                   icon1Count={2}
                                   icon2Count={5}
                                   icon3Count={8}
@@ -144,8 +145,19 @@ const DeviceList = ({ refetchStats }: DeviceListProps) => {
                                 />
                               </div>
 
-                              <div className="flex items-center justify-center">
-                                <CarPlate className="w-auto" plate={device.vehiclePlate} />
+                              {/* Device Card */}
+                              <div className="md:col-span-1">
+                                <DeviceCard
+                                  deviceName="Subscription start date"
+                                  lastActive="Subscription end date"
+                                  icon1Count={2}
+                                  icon2Count={5}
+                                  icon3Count={8}
+                                  icon4Count={4}
+                                />
+                              </div>
+                              <div>
+                                Time zone
                               </div>
 
                               {/* Actions */}
@@ -155,12 +167,16 @@ const DeviceList = ({ refetchStats }: DeviceListProps) => {
                                     <ViewIcon />
                                   </button>
                                 </a>
+                                <RoleComponent role="admin">
                                 <button className="w-12 h-12 rounded-lg hover:bg-gray-100">
                                   <ConnectIcon />
+                                  delete
                                 </button>
                                 <button className="w-12 h-12 rounded-lg hover:bg-gray-100">
                                   <OnOffIcon />
+                                  edit
                                 </button>
+                                </RoleComponent>
                               </div>
                             </div>
                           </div>
