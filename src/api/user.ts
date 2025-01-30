@@ -86,8 +86,8 @@ export const getUser = async (id: string): Promise<User> => {
 };
 
 export interface Topics {
-  monitoring: string;
-  notifications: string;
+  monitoring: string[];
+  notifications: string[];
 }
 
 export const getTopics = async (): Promise<Topics> => {

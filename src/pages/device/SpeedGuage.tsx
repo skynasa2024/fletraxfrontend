@@ -1,19 +1,11 @@
 import React from 'react';
 
-// [Previous interfaces and constants remain the same]
-interface LocationInfo {
-  place: string;
-  timestamp: string;
-}
-
 interface GaugeProps {
-  value: number;
-  maxValue: number;
-  unit: string;
-  distance: string;
-  speed: number;
-  startLocation: LocationInfo;
-  endLocation: LocationInfo;
+  value?: number;
+  maxValue?: number;
+  unit?: string;
+  parkingTime?: string;
+  existingKilometers?: string;
 }
 
 const CONSTANTS = {
@@ -70,54 +62,19 @@ const calculateTaperedPointer = (angle: number, center: number, length: number):
   `;
 };
 
-const LocationPoint: React.FC<{ info: LocationInfo }> = ({ info }) => (
-  <div className="flex items-center">
-    <div className="w-3 h-3 rounded-full bg-white border-2 border-blue-600" />
-    <div className="ml-2">
-      <div className="text-sm font-semibold text-gray-800">{info.place}</div>
-      <div className="text-xs text-gray-500">{info.timestamp}</div>
-    </div>
-  </div>
-);
-
-const SpeedIndicator: React.FC<{ speed: number }> = ({ speed }) => (
-  <div className="relative mt-2">
-    <div className="w-20 h-20 rounded-full border-4 border-gray-200" />
-    <div
-      className="absolute inset-0 w-20 h-20 rounded-full border-4 border-yellow-400"
-      style={{
-        clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)'
-      }}
-    />
-    <div className="absolute inset-2 flex items-center justify-center text-sm font-bold text-gray-700">
-      km/h {speed}
-    </div>
-  </div>
-);
-
-const SpeedGauge: React.FC = () => {
-  const props: GaugeProps = {
-    value: 45,
-    maxValue: 100,
-    unit: 'km',
-    distance: '4.92 KM',
-    speed: 75,
-    startLocation: {
-      place: 'Başakşehir/İstanbul',
-      timestamp: '2024-04-29 12:35:35'
-    },
-    endLocation: {
-      place: 'Fatih/İstanbul',
-      timestamp: '2024-04-29 12:35:35'
-    }
-  };
-
+const SpeedGauge: React.FC<GaugeProps> = ({
+  maxValue = 100,
+  unit = 'km/h',
+  value,
+  existingKilometers,
+  parkingTime
+}: GaugeProps) => {
   const center = CONSTANTS.VIEW_BOX_SIZE / 2;
   const angleRange = CONSTANTS.END_ANGLE - CONSTANTS.START_ANGLE;
-  const valueAngle = CONSTANTS.START_ANGLE + angleRange * (props.value / props.maxValue);
+  const valueAngle = CONSTANTS.START_ANGLE + angleRange * (value ?? 0 / maxValue);
 
   return (
-    <div className="card flex flex-col max-w-sm p-8">
+    <div className="card flex flex-col max-w-sm p-8 w-96 h-[454px]">
       <svg
         viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`}
         className="mx-auto"
@@ -182,25 +139,19 @@ const SpeedGauge: React.FC = () => {
           className="text-4xl font-bold"
           fill="black"
         >
-          {props.value}
+          {value ?? '?'}
         </text>
         <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">
-          {props.unit}
+          {unit}
         </text>
       </svg>
-
-      <div className="bg-gray-50 p-8 rounded-lg">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <div className="text-lg font-semibold text-gray-800">{props.distance}</div>
-            <SpeedIndicator speed={props.speed} />
-          </div>
-
-          <div className="ml-4 flex flex-col align-items-center">
-            <LocationPoint info={props.startLocation} />
-            <div className="ml-1 h-6 border-l border-gray-300" />
-            <LocationPoint info={props.endLocation} />
-          </div>
+      <div className="flex flex-col gap-4 justify-center mt-4">
+        <div>
+          <span className="font-bold">Existing kilometers:</span>{' '}
+          <span>{existingKilometers ?? '?'}</span>
+        </div>
+        <div>
+          <span className="font-bold">Parking time:</span> <span>{parkingTime ?? '?'}</span>
         </div>
       </div>
     </div>

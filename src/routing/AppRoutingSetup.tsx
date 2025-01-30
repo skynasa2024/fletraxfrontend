@@ -27,6 +27,7 @@ import { Device } from '@/pages/device';
 import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
 import { AddDevicePage } from '@/pages/device/add-device';
 import { RequireRole } from '@/auth/RequireRole';
+import Telemetry from '@/pages/device/blocks/Telemetry';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -50,7 +51,10 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
 
           <Route path="/devices/device/" element={<Device />} />
-          <Route path="/devices/device/:id" element={<DeviceDetailsPage />} />
+          <Route path="/devices/device/:id" element={<DeviceDetailsPage />}>
+            <Route index element={<Navigate to="telemetry" />} />
+            <Route path="telemetry" element={<Telemetry />} />
+          </Route>
           <Route element={<RequireRole role="admin" />}>
             <Route path="/devices/add-device" element={<AddDevicePage />} />
             <Route path="/devices/edit/:id" element={<AddDevicePage />} />

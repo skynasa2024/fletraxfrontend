@@ -1,3 +1,4 @@
+import { TDataGridRequestParams } from '@/components';
 import { axios } from './axios';
 import { OffsetBounds, Paginated } from './common';
 import { PaginatedResponseModel, ResponseModel } from './response';
@@ -44,12 +45,21 @@ export const getDevice = async (id: string): Promise<Device> => {
   };
 };
 
-export const getDevices = async (params: OffsetBounds): Promise<Paginated<DeviceDTO>> => {
-  const requestParams = {
-    offset: params.start,
-    size: params.end - params.start + 1,
-    search: params.search
-  };
+export const getDevices = async (
+  params: TDataGridRequestParams | OffsetBounds
+): Promise<Paginated<DeviceDTO>> => {
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
 
   const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>('/api/devices/index', {
     params: requestParams
@@ -87,4 +97,50 @@ export interface DeviceStats {
 export const getDevicesStats = async (): Promise<DeviceStats> => {
   const stats = await axios.get<ResponseModel<DeviceStats>>('/api/devices/stats');
   return stats.data.result;
+};
+
+export const deleteDevice = async (id: string): Promise<void> => {
+  await axios.get(`/api/devices/delete/${id}`);
+};
+
+interface ProtocolDTO {
+  id: string;
+  name: string;
+  skynasaProtocolId: string;
+}
+
+export const getProtocols = async (): Promise<Record<string, string>> => {
+  const protocols = await axios.get<PaginatedResponseModel<ProtocolDTO>>(
+    '/api/devices/protocols/index',
+    {
+      params: { size: 100 }
+    }
+  );
+  return protocols.data.result.content.reduce(
+    (acc, protocol) => ({
+      ...acc,
+      [protocol.id]: protocol.name
+    }),
+    {}
+  );
+};
+
+interface TypeDTO {
+  id: string;
+  name: string;
+  protocolId: string;
+  skynasaTypeId: string;
+}
+
+export const getTypes = async (): Promise<Record<string, string>> => {
+  const types = await axios.get<PaginatedResponseModel<TypeDTO>>('/api/devices/types/index', {
+    params: { size: 100 }
+  });
+  return types.data.result.content.reduce(
+    (acc, type) => ({
+      ...acc,
+      [type.id]: type.name
+    }),
+    {}
+  );
 };
