@@ -52,7 +52,7 @@ const Telemetry = () => {
 
   return (
     <div className="flex flex-col space-y-4 overflow-hidden">
-      <div className="flex justify-between p-2">
+      <div className="flex justify-between gap-4 p-2">
         {/* Speed Gauge */}
         <div className="flex items-center justify-start">
           <SpeedGauge
@@ -63,13 +63,33 @@ const Telemetry = () => {
         </div>
 
         {/* Map */}
-        <div className="flex items-center justify-center">
-          <Map />
+        <div className="flex flex-1 items-center justify-center">
+          <Map
+            location={
+              parameters['position_latitude']?.data &&
+              parameters['position_longitude']?.data && {
+                lat: parameters['position_latitude']?.data,
+                lng: parameters['position_longitude']?.data
+              }
+            }
+            direction={parameters['position_direction']?.data}
+            engineStatus={parameters['engine_ignition_status']?.data}
+            online={parameters['status']?.data === 'online'}
+          />
         </div>
 
         {/* Car */}
         <div className="flex items-center justify-end">
-          <Car />
+          <Car
+            satalites={parameters['position_satellites']?.data}
+            signalStrength={parameters['gsm_signal_level']?.data}
+            battery={
+              parameters['battery_charging_status']?.data === true
+                ? 100
+                : parameters['battery_level']?.data
+            }
+            direction={parameters['position_direction']?.data}
+          />
         </div>
       </div>
 

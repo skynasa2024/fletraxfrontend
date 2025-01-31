@@ -1,6 +1,13 @@
 import { toAbsoluteUrl } from '@/utils/Assets';
 
-const Car = () => {
+interface CarProps {
+  satalites?: number;
+  signalStrength?: number;
+  battery?: number;
+  direction?: number;
+}
+
+const Car = ({ satalites, signalStrength, battery, direction }: CarProps) => {
   return (
     <div className="card flex flex-col justify-center h-full p-8 ">
       <div className="flex w-full justify-center gap-8 mb-8 p-4">
@@ -113,7 +120,7 @@ const Car = () => {
               </defs>
             </svg>
           </div>
-          <span className="text-gray-700">5</span>
+          <span className="text-gray-700">{satalites ?? '?'}</span>
         </div>
 
         {/* Signal Strength Icon */}
@@ -144,7 +151,7 @@ const Car = () => {
               />
             </svg>
           </div>
-          <span className="text-gray-700">25%</span>
+          <span className="text-gray-700">{signalStrength ?? '?'}%</span>
         </div>
 
         {/* Battery Icon */}
@@ -163,10 +170,13 @@ const Car = () => {
               />
             </svg>
           </div>
-          <span className="text-gray-700">60%</span>
+          <span className="text-gray-700">{battery ?? '?'}%</span>
         </div>
       </div>
-      <div className="relative w-64 h-64 mx-auto rotate-[-30deg]">
+      <div
+        className="relative w-64 h-64 mx-auto"
+        style={{ transform: `rotate(${direction ?? 0}deg)` }}
+      >
         {/* Rotating circles background */}
         <div className="absolute inset-0 animate-spin duration-3000 opacity-30">
           {/* Upper Circle (Larger than the borders) */}

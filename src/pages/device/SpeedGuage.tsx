@@ -71,7 +71,7 @@ const SpeedGauge: React.FC<GaugeProps> = ({
 }: GaugeProps) => {
   const center = CONSTANTS.VIEW_BOX_SIZE / 2;
   const angleRange = CONSTANTS.END_ANGLE - CONSTANTS.START_ANGLE;
-  const valueAngle = CONSTANTS.START_ANGLE + angleRange * (value ?? 0 / maxValue);
+  const valueAngle = CONSTANTS.START_ANGLE + angleRange * ((value ?? 0) / maxValue);
 
   return (
     <div className="card flex flex-col max-w-sm p-8 w-96 h-[454px]">
