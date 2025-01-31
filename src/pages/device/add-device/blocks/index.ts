@@ -1,2 +1,2 @@
 export * from './Information';
-export * from './Company';
+export * from './User';

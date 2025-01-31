@@ -36,7 +36,7 @@ const PhoneInput = (props: PhoneInputProps) => {
   return (
     <div className="input !pl-0">
       <Select
-        className="border-0 border-r"
+        className="border-0 border-r max-w-28"
         name={props.phoneCodeName}
         defaultValue={props.phoneCodeInitialValue}
         renderValue={(option) => {
@@ -67,6 +67,7 @@ const PhoneInput = (props: PhoneInputProps) => {
         type="phone"
         defaultValue={props.initialValue}
         name={props.name}
+        className="w-full"
       />
     </div>
   );

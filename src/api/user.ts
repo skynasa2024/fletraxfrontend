@@ -143,3 +143,31 @@ export const updateUser = async (id: string, data: FormData) => {
 export const deleteUser = async (id: string) => {
   await axios.get(`/api/users/delete/${id}`);
 };
+
+export const getUsersUnderParent = async (
+  parentId: string,
+  params: TDataGridRequestParams | OffsetBounds
+): Promise<Paginated<UserModel>> => {
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
+  const clients = await axios.get<PaginatedResponseModel<UserModel>>(
+    `/api/users/get-by-parent-id/${parentId}`,
+    {
+      params: requestParams
+    }
+  );
+  return {
+    data: clients.data.result.content,
+    totalCount: clients.data.result.totalElements
+  };
+};

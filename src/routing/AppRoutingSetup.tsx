@@ -25,7 +25,7 @@ import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintena
 import { GeofencePage } from '@/pages/geofence/GeofencePage';
 import { Device } from '@/pages/device';
 import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
-import { AddDevicePage } from '@/pages/device/add-device';
+import { AddDevice } from '@/pages/device/add-device';
 import { RequireRole } from '@/auth/RequireRole';
 import Telemetry from '@/pages/device/blocks/Telemetry';
 
@@ -56,8 +56,8 @@ const AppRoutingSetup = (): ReactElement => {
             <Route path="telemetry" element={<Telemetry />} />
           </Route>
           <Route element={<RequireRole role="admin" />}>
-            <Route path="/devices/add-device" element={<AddDevicePage />} />
-            <Route path="/devices/edit/:id" element={<AddDevicePage />} />
+            <Route path="/devices/add-device" element={<AddDevice />} />
+            <Route path="/devices/edit/:id" element={<AddDevice />} />
           </Route>
 
           <Route path="/users/user/" element={<User />} />

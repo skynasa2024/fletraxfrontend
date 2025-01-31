@@ -132,15 +132,29 @@ interface TypeDTO {
   skynasaTypeId: string;
 }
 
-export const getTypes = async (): Promise<Record<string, string>> => {
+export const getTypes = async (): Promise<Record<string, { name: string; protocolId: string }>> => {
   const types = await axios.get<PaginatedResponseModel<TypeDTO>>('/api/devices/types/index', {
     params: { size: 100 }
   });
   return types.data.result.content.reduce(
     (acc, type) => ({
       ...acc,
-      [type.id]: type.name
+      [type.id]: {
+        name: type.name,
+        protocolId: type.protocolId
+      }
     }),
     {}
   );
+};
+
+export const updateDevice = async (id: string, data: FormData): Promise<DeviceDTO> => {
+  data.set('id', id);
+  const device = await axios.put<ResponseModel<DeviceDTO>>('/api/devices/update', data);
+  return device.data.result;
+};
+
+export const createDevice = async (data: FormData): Promise<DeviceDTO> => {
+  const device = await axios.post<ResponseModel<DeviceDTO>>('/api/devices/create', data);
+  return device.data.result;
 };
