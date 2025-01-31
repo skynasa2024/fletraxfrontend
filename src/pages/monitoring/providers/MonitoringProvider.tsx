@@ -15,7 +15,7 @@ import { useMqttProvider } from '@/providers/MqttProvider';
 import { Buffer } from 'buffer';
 
 interface MqttResponse {
-  device_id: number;
+  device_id: string;
   device_name: string;
   engine_ignition_status: string;
   existing_kilometers: string;
@@ -79,7 +79,7 @@ const defaultLocation: VehicleLocation = {
     speed: 0
   },
   vehicle: {
-    id: 0,
+    id: '',
     imei: '',
     name: '',
     brandImage: '',
@@ -100,7 +100,7 @@ const MonitoringContext = createContext<MonitoringContextProps>({
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clients, setClients] = useState<UserWithDevices[]>([]);
-  const [clientToLocations, setClientToLocations] = useState<Record<number, string[]>>({});
+  const [clientToLocations, setClientToLocations] = useState<Record<string, string[]>>({});
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
   const [showImei, setShowImei] = useState(true);
   const selectedClient = useMemo(
@@ -290,7 +290,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     if (mqttClient.connected) {
       initCallback();
     } else {
-      mqttClient.on('connect', initCallback);
+      mqttClient.once('connect', initCallback);
     }
     mqttClient.on('message', messageHandler);
 
@@ -298,7 +298,6 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       if (mqttClient.connected) {
         mqttClient.unsubscribeAsync(topics.monitoring);
       }
-      mqttClient.off('connect', initCallback);
       mqttClient.off('message', messageHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

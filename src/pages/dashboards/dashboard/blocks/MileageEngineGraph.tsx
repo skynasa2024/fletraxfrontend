@@ -4,8 +4,7 @@ import { CarMileageAndEngine, getCarsMileageAndEngine } from '@/api/cars';
 import { CircularProgress, Skeleton } from '@mui/material';
 import { Paginated } from '@/api/common';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
-import Image from '@/components/image/Image';
-import { KeenIcon } from '@/components';
+import { CarView } from './CarView';
 
 const MileageEngineGraph = () => {
   const [selection, setSelection] = useState('All');
@@ -84,7 +83,7 @@ const MileageEngineGraph = () => {
                     height={height}
                     width={width}
                     rowCount={remoteRowCount}
-                    rowHeight={56}
+                    rowHeight={82}
                     rowRenderer={({ key, index, style }) => {
                       const car = data.data[index];
 
@@ -95,21 +94,7 @@ const MileageEngineGraph = () => {
                       return (
                         <div key={key} style={style}>
                           <div className="flex gap-4 py-2">
-                            <Image
-                              src={car.vehicle.brandImage}
-                              className="size-12 object-cover"
-                              fallback={
-                                <div className="bg-neutral-200 size-10 aspect-square rounded-full flex items-center justify-center">
-                                  <KeenIcon style="duotone" icon="car" className="text-black" />
-                                </div>
-                              }
-                            />
-                            <div className="w-40">
-                              <div className="font-medium text-sm text-gray-800">
-                                {car.vehicle.plate}
-                              </div>
-                              <div className="text-sm text-gray-600">{car.vehicle.imei}</div>
-                            </div>
+                            <CarView vehicle={car.vehicle} />
                             <div className="flex-1 flex flex-col justify-center gap-1">
                               {(selection === 'Mileage' || selection === 'All') && (
                                 <div

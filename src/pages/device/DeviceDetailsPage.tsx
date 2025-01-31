@@ -1,26 +1,34 @@
-import { ConnectIcon, OnOffIcon, ViewIcon } from './blocks/icons';
-import DeviceCard from './blocks/DeviceCard';
 import DeviceNavigation from './DeviceNavigation';
-import SpeedGauge from './SpeedGuage';
-import Car from './Car';
-import Map from './Map';
-import MaintenanceList from './MaintenanceList';
 import DeviceIcon from './svg/device.svg?react';
-import { useNavigate, useParams } from 'react-router';
+import { Outlet, useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { DeviceDTO, getDeviceModel } from '@/api/devices';
+import { deleteDevice, DeviceDTO, getDeviceModel } from '@/api/devices';
 import { CarPlate } from '../dashboards/dashboard/blocks/CarPlate';
+import { useDeviceProvider } from '@/providers/DeviceProvider';
+import {
+  KeenIcon,
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle
+} from '@/components';
+import RoleComponent from '@/components/RoleComponent';
+import { toAbsoluteUrl } from '@/utils';
 
 const DeviceDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getProtocolName, getTypeName } = useDeviceProvider();
 
-  const [device, setDevice] = useState<DeviceDTO | null>(null);
+  const [device, sedivevice] = useState<DeviceDTO | null>(null);
   useEffect(() => {
     if (!id) return;
-    getDeviceModel(+id)
+    getDeviceModel(id)
       .then((data) => {
-        setDevice(data);
+        sedivevice(data);
       })
       .catch(() => {
         navigate('/error/404');
@@ -40,75 +48,58 @@ const DeviceDetailsPage = () => {
     <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full m-5">
       <div className="p-4 w-full">
         <div className="space-y-4">
-          <table className="card w-full p-2">
-            <tbody>
-              <tr className="w-full grid grid-cols-4 gap-6 items-center">
-                <td className="text-start flex items-center">
-                  <div className="flex items-center gap-4">
-                    <DeviceIcon color="#5151F9" className="size-12 min-w-12" />
-                    <a href="#" className="text-sm font-medium text-gray-900 hover:text-primary">
-                      <div className="font-bold">{device.name}</div>
-                      <div className="font-sm text-gray-500">{device.ident}</div>
-                      <div className="font-sm">
-                        {device.phoneCode} {device.phone}
-                      </div>
-                    </a>
-                  </div>
-                </td>
-                <td className="flex-1">
-                  <div className="w-full">
-                    <DeviceCard
-                      deviceName="Jimi IoT"
-                      lastActive="16 minutes ago"
-                      icon1Count={2}
-                      icon2Count={5}
-                      icon3Count={8}
-                      icon4Count={4}
-                    />
-                  </div>
-                </td>
-                <td className="flex-1">
-                  <div className="flex items-center justify-center">
-                    <CarPlate className="w-auto" plate={device.vehiclePlate} />
-                  </div>
-                </td>
-                <td>
-                  <div className="flex justify-end gap-2">
-                    <div className="flex justify-center items-center w-12 h-12 rounded-lg hover:bg-gray-100">
-                      <ViewIcon />
-                    </div>
-                    <div className="flex justify-center items-center w-12 h-12 rounded-lg hover:bg-gray-100">
-                      <ConnectIcon />
-                    </div>
-                    <div className="flex justify-center items-center w-12 h-12 rounded-lg hover:bg-gray-100">
-                      <OnOffIcon />
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <DeviceNavigation />
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <div className="grid grid-cols-3 p-2">
-            {/* Speed Gauge */}
-            <div className="flex items-center justify-start">
-              <SpeedGauge />
+          <div className="card w-full p-2">
+            <div className="w-full flex justify-between gap-6 items-center py-2">
+              <div className="flex items-center gap-4">
+                <DeviceIcon color="#5151F9" className="size-12 min-w-12" />
+                <p className="text-lg text-gray-700">{device.ident}</p>
+              </div>
+              <CarPlate className="w-auto" plate={device.vehiclePlate} />
+              <div className="flex flex-col gap-2">
+                <span>Protocol: {getProtocolName(device.protocolId)}</span>
+                <span>Type: {getTypeName(device.typeId)}</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span>Start: {device.subscriptionStartDate}</span>
+                <span>End: {device.subscriptionEndDate}</span>
+              </div>
+              <div className="flex gap-3">
+                <a href={`/devices/device/${device.id}`}>
+                  <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+                </a>
+                <RoleComponent role="admin">
+                  <a href={`/devices/edit/${device.id}`}>
+                    <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+                  </a>
+                  <Menu>
+                    <MenuItem toggle="dropdown" trigger="click">
+                      <MenuToggle>
+                        <KeenIcon className="text-xl" icon="dots-vertical" />
+                      </MenuToggle>
+                      <MenuSub className="menu-default">
+                        <MenuItem
+                          onClick={async () => {
+                            await deleteDevice(device.id);
+                            navigate('/devices/device');
+                          }}
+                        >
+                          <MenuLink>
+                            <MenuIcon>
+                              <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
+                            </MenuIcon>
+                            <MenuTitle>Delete</MenuTitle>
+                          </MenuLink>
+                        </MenuItem>
+                      </MenuSub>
+                    </MenuItem>
+                  </Menu>
+                </RoleComponent>
+              </div>
             </div>
-
-            {/* Map */}
-            <div className="flex items-center justify-center">
-              <Map />
-            </div>
-
-            {/* Car */}
-            <div className="flex items-center justify-end">
-              <Car />
-            </div>
+            <DeviceNavigation />
           </div>
 
-          <MaintenanceList />
+          <Outlet context={{ device }} />
         </div>
       </div>
     </div>

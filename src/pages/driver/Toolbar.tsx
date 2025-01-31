@@ -19,7 +19,7 @@ const Toolbar = () => {
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
           onClick={async () => {
             if (!id) return;
-            await deleteDriver(+id);
+            await deleteDriver(id);
             navigate('/drivers/driver');
           }}
         >

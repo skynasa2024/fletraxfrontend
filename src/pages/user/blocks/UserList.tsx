@@ -52,12 +52,6 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
   const columns = useMemo<ColumnDef<UserModel>[]>(
     () => [
       {
-        accessorKey: 'id',
-        header: 'ID',
-        enableSorting: true,
-        cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.id}</span>
-      },
-      {
         accessorKey: 'username',
         header: 'Username',
         enableSorting: true,

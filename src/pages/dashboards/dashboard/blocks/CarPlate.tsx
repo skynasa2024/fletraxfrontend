@@ -7,14 +7,14 @@ export interface CarPlateProps {
   showTooltip?: boolean;
 }
 
-export const CarPlate = ({ plate, className, showTooltip = true }: CarPlateProps) => {
+export const CarPlate = ({ plate, className, showTooltip = false }: CarPlateProps) => {
   return (
-    <div className={clsx('flex font-medium w-full', className)}>
+    <div className={clsx('flex font-medium font-sans w-36', className)}>
       <div className="flex items-center justify-center rounded-s-lg py-2 px-2 bg-[#5271FF] text-white">
         TR
       </div>
       <DefaultTooltip title={plate} placement="right" open={!showTooltip ? false : undefined}>
-        <div className="max-w-30 truncate rounded-e-lg py-2 px-2 text-[1.1rem] text-gray-700 font-bold border-e border-t border-b border-[#F1F1F4] bg-white dark:bg-black dark:border-gray-200 dark:text-gray-50 text-nowrap">
+        <div className="w-full truncate rounded-e-lg py-2 px-2 text-[1rem] text-gray-700 font-bold border-e border-t border-b border-[#F1F1F4] bg-white dark:bg-black dark:border-gray-200 dark:text-gray-50 text-nowrap">
           {plate}
         </div>
       </DefaultTooltip>

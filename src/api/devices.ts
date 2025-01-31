@@ -1,9 +1,10 @@
+import { TDataGridRequestParams } from '@/components';
 import { axios } from './axios';
 import { OffsetBounds, Paginated } from './common';
 import { PaginatedResponseModel, ResponseModel } from './response';
 
 export interface DeviceDTO {
-  id: number;
+  id: string;
   ident: string;
   name: string;
   vehiclePlate: string;
@@ -16,25 +17,25 @@ export interface DeviceDTO {
   motionStatus: string;
   subscriptionStartDate: string;
   subscriptionEndDate: string;
-  userId: number;
-  skynasaDeviceId: number;
-  protocolId: number;
-  typeId: number;
+  userId: string;
+  skynasaDeviceId: string;
+  protocolId: string;
+  typeId: string;
 }
 
 export interface Device {
-  id: number;
+  id: string;
   imei: string;
   name: string;
   vehiclePlate: string;
 }
 
-export const getDeviceModel = async (id: number): Promise<DeviceDTO> => {
+export const getDeviceModel = async (id: string): Promise<DeviceDTO> => {
   const device = await axios.get<ResponseModel<DeviceDTO>>(`/api/devices/show/${id}`);
   return device.data.result;
 };
 
-export const getDevice = async (id: number): Promise<Device> => {
+export const getDevice = async (id: string): Promise<Device> => {
   const device = await getDeviceModel(id);
   return {
     id: device.id,
@@ -44,12 +45,21 @@ export const getDevice = async (id: number): Promise<Device> => {
   };
 };
 
-export const getDevices = async (params: OffsetBounds): Promise<Paginated<DeviceDTO>> => {
-  const requestParams = {
-    offset: params.start,
-    size: params.end - params.start + 1,
-    search: params.search
-  };
+export const getDevices = async (
+  params: TDataGridRequestParams | OffsetBounds
+): Promise<Paginated<DeviceDTO>> => {
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
 
   const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>('/api/devices/index', {
     params: requestParams
@@ -65,7 +75,7 @@ export interface MonitoringDTO {
   ident: string;
   status: string;
   motionStatus: string;
-  userId: number;
+  userId: string;
   vehiclePlate: string;
   vehicleImage: string | null;
 }
@@ -87,4 +97,64 @@ export interface DeviceStats {
 export const getDevicesStats = async (): Promise<DeviceStats> => {
   const stats = await axios.get<ResponseModel<DeviceStats>>('/api/devices/stats');
   return stats.data.result;
+};
+
+export const deleteDevice = async (id: string): Promise<void> => {
+  await axios.get(`/api/devices/delete/${id}`);
+};
+
+interface ProtocolDTO {
+  id: string;
+  name: string;
+  skynasaProtocolId: string;
+}
+
+export const getProtocols = async (): Promise<Record<string, string>> => {
+  const protocols = await axios.get<PaginatedResponseModel<ProtocolDTO>>(
+    '/api/devices/protocols/index',
+    {
+      params: { size: 100 }
+    }
+  );
+  return protocols.data.result.content.reduce(
+    (acc, protocol) => ({
+      ...acc,
+      [protocol.id]: protocol.name
+    }),
+    {}
+  );
+};
+
+interface TypeDTO {
+  id: string;
+  name: string;
+  protocolId: string;
+  skynasaTypeId: string;
+}
+
+export const getTypes = async (): Promise<Record<string, { name: string; protocolId: string }>> => {
+  const types = await axios.get<PaginatedResponseModel<TypeDTO>>('/api/devices/types/index', {
+    params: { size: 100 }
+  });
+  return types.data.result.content.reduce(
+    (acc, type) => ({
+      ...acc,
+      [type.id]: {
+        name: type.name,
+        protocolId: type.protocolId
+      }
+    }),
+    {}
+  );
+};
+
+export const updateDevice = async (id: string, data: FormData): Promise<DeviceDTO> => {
+  data.set('id', id);
+  const device = await axios.put<ResponseModel<DeviceDTO>>('/api/devices/update', data);
+  return device.data.result;
+};
+
+export const createDevice = async (data: FormData): Promise<DeviceDTO> => {
+  const device = await axios.post<ResponseModel<DeviceDTO>>('/api/devices/create', data);
+  return device.data.result;
 };

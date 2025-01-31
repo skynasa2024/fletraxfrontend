@@ -1,17 +1,17 @@
 import { Vehicle } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import Image from '@/components/image/Image';
-import { toAbsoluteUrl } from '@/utils';
 import { KeenIcon } from '@/components';
 
 export interface CarViewProps {
   vehicle: Vehicle;
+  showBrand?: boolean;
 }
 
-export const CarView = ({ vehicle }: CarViewProps) => {
+export const CarView = ({ vehicle, showBrand = true }: CarViewProps) => {
   return (
-    <div className="flex flex-col gap-1 px-2">
-      <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center">
+      {showBrand && (
         <Image
           src={vehicle.brandImage}
           alt={vehicle.name}
@@ -23,9 +23,11 @@ export const CarView = ({ vehicle }: CarViewProps) => {
             </div>
           }
         />
+      )}
+      <div className="flex flex-col gap-1">
         <CarPlate plate={vehicle.plate} />
+        <div className="text-gray-600 text-2sm pl-2">{vehicle.imei}</div>
       </div>
-      <div className="text-gray-600 text-2sm">{vehicle.imei}</div>
     </div>
   );
 };

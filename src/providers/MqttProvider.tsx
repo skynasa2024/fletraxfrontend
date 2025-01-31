@@ -30,7 +30,7 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
     }
     const token = authHelper.getAuth()?.access_token;
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-      clientId: `${auth.currentUser.id}-${suffix}`,
+      clientId: `${auth.currentUser.username}-${suffix}`,
       username: auth.currentUser.username,
       password: token,
       clean: true,
@@ -41,7 +41,11 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
       }
     });
     setMqttClient((prev) => {
-      prev?.endAsync();
+      if (prev) {
+        if (!prev.disconnecting) {
+          prev.endAsync();
+        }
+      }
       return mqttClient;
     });
 
