@@ -7,7 +7,7 @@ import {
   linkDevice,
   unlinkDevice
 } from '@/api/devices';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CircularProgress, Skeleton } from '@mui/material';
 import { KeenIcon } from '@/components';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
@@ -19,6 +19,8 @@ const Device = ({ user }: AddUserPageProps) => {
   const [unlinkedDevicesSearch, setUnlinkedDevicesSearch] = useState<string>('');
   const [linkedDevices, setLinkedDevices] = useState<Paginated<DeviceDTO>>();
   const [unlinkedDevices, setUnlinkedDevices] = useState<Paginated<DeviceDTO>>();
+  const [lastLinkedDevices, setLastLinkedDevices] = useState(10);
+  const [lastUnlinkedDevices, setLastUnlinkedDevices] = useState(10);
 
   useEffect(() => {
     getUnlinkedDevices({ start: 0, end: 10, search: unlinkedDevicesSearch }).then(
@@ -36,6 +38,20 @@ const Device = ({ user }: AddUserPageProps) => {
     );
   }, [linkedDevicesSearch, user]);
 
+  const update = useCallback(() => {
+    if (!user) {
+      return;
+    }
+    getUnlinkedDevices({ start: 0, end: lastUnlinkedDevices, search: unlinkedDevicesSearch }).then(
+      setUnlinkedDevices
+    );
+    getLinkedDevices(user.id, {
+      start: 0,
+      end: lastLinkedDevices,
+      search: linkedDevicesSearch
+    }).then(setLinkedDevices);
+  }, [linkedDevicesSearch, unlinkedDevicesSearch, user, lastLinkedDevices, lastUnlinkedDevices]);
+
   return (
     <div className="card pb-2.5">
       <div className="card-header">
@@ -46,7 +62,7 @@ const Device = ({ user }: AddUserPageProps) => {
           <div className="card-header gap-6">
             <div>
               <h3 className="card-title text-nowrap">Unlinked Devices</h3>
-              {unlinkedDevices?.totalCount && (
+              {unlinkedDevices?.totalCount !== undefined && (
                 <h5 className="text-sm text-gray-400">{unlinkedDevices?.totalCount} Devices</h5>
               )}
             </div>
@@ -65,7 +81,7 @@ const Device = ({ user }: AddUserPageProps) => {
               </div>
             )}
           </div>
-          <div className="card-body">
+          <div className="card-body p-0">
             {unlinkedDevices ? (
               <AutoSizer>
                 {({ height, width }) => (
@@ -81,6 +97,7 @@ const Device = ({ user }: AddUserPageProps) => {
                         data: [...(prev?.data ?? []), ...data.data],
                         totalCount: data.totalCount
                       }));
+                      setLastUnlinkedDevices(stopIndex);
                     }}
                     rowCount={unlinkedDevices.totalCount}
                   >
@@ -109,8 +126,7 @@ const Device = ({ user }: AddUserPageProps) => {
                                   className="btn btn-lg btn-icon btn-outline btn-success"
                                   onClick={async () => {
                                     await linkDevice(user!.id, device.ident);
-                                    setLinkedDevices(undefined);
-                                    setUnlinkedDevices(undefined);
+                                    update();
                                   }}
                                 >
                                   <KeenIcon icon="plus" />
@@ -136,7 +152,7 @@ const Device = ({ user }: AddUserPageProps) => {
           <div className="card-header gap-6">
             <div>
               <h3 className="card-title text-nowrap">Linked Devices</h3>
-              {linkedDevices?.totalCount && (
+              {linkedDevices?.totalCount !== undefined && (
                 <h5 className="text-sm text-gray-400">{linkedDevices?.totalCount} Devices</h5>
               )}
             </div>
@@ -171,6 +187,7 @@ const Device = ({ user }: AddUserPageProps) => {
                         data: [...(prev?.data ?? []), ...data.data],
                         totalCount: data.totalCount
                       }));
+                      setLastLinkedDevices(stopIndex);
                     }}
                     rowCount={linkedDevices.totalCount}
                   >
@@ -199,8 +216,7 @@ const Device = ({ user }: AddUserPageProps) => {
                                   className="btn btn-lg btn-icon btn-outline btn-warning"
                                   onClick={async () => {
                                     await unlinkDevice(user!.id, device.ident);
-                                    setLinkedDevices(undefined);
-                                    setUnlinkedDevices(undefined);
+                                    update();
                                   }}
                                 >
                                   <KeenIcon icon="minus" />
