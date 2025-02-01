@@ -1,5 +1,5 @@
 import { toAbsoluteUrl } from '@/utils';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import React, { useMemo } from 'react';
 
 export interface FileInfo {
@@ -47,9 +47,15 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
               {file.url ? 'View' : 'No File'}
             </button>
           </a>
-          <div className="flex items-center justify-center w-5 h-5 bg-green-500 rounded-full">
-            <Check className="w-4 h-4 text-white" />
-          </div>
+          {file.url ? (
+            <div className="flex items-center justify-center w-5 h-5 bg-green-500 rounded-full">
+              <Check className="w-4 h-4 text-white" />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center w-5 h-5 bg-red-500 rounded-full">
+              <X className="w-4 h-4 text-white" />
+            </div>
+          )}
         </div>
       </div>
     </div>
