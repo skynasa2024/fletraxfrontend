@@ -11,10 +11,17 @@ interface UserSearchProps {
   setSearch?: (value: string) => void;
   parentId?: string;
   // eslint-disable-next-line no-unused-vars
-  onSelectUserId?: (userId: string) => void;
+  onSelectUserId?: (userId: string, name: string) => void;
+  initialSearch?: string;
 }
-export const UserSearch = ({ search, setSearch, parentId, onSelectUserId }: UserSearchProps) => {
-  const [privateSearch, setPrivateSearch] = useState(search);
+export const UserSearch = ({
+  search,
+  setSearch,
+  parentId,
+  onSelectUserId,
+  initialSearch
+}: UserSearchProps) => {
+  const [privateSearch, setPrivateSearch] = useState(initialSearch ?? '');
   const [users, setUsers] = useState<Paginated<UserModel>>();
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -53,6 +60,10 @@ export const UserSearch = ({ search, setSearch, parentId, onSelectUserId }: User
     }
   }, [parentId, privateSearch, search]);
 
+  useEffect(() => {
+    if (initialSearch) setPrivateSearch(initialSearch);
+  }, [initialSearch]);
+
   return (
     <div className="input input-sm h-[34px] shrink-0 relative">
       <input
@@ -68,7 +79,7 @@ export const UserSearch = ({ search, setSearch, parentId, onSelectUserId }: User
         type="button"
         onClick={() => {
           setSearch ? setSearch('') : setPrivateSearch('');
-          onSelectUserId?.('');
+          onSelectUserId?.('', '');
         }}
       >
         <KeenIcon icon="cross" />
@@ -113,7 +124,7 @@ export const UserSearch = ({ search, setSearch, parentId, onSelectUserId }: User
                               } else {
                                 setPrivateSearch(user.name);
                               }
-                              onSelectUserId?.(user.id);
+                              onSelectUserId?.(user.id, user.name);
                               setHovered(false);
                             }}
                           >
