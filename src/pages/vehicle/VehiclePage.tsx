@@ -4,6 +4,7 @@ import BlocksIcon from './blocks/svg/BlocksIcon.tsx';
 import PeopleIcon from './blocks/svg/PeopleIcon.tsx';
 import { useEffect, useState } from 'react';
 import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
+import { Link } from 'react-router-dom';
 
 const VehiclePage = () => {
   const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
@@ -31,11 +32,11 @@ const VehiclePage = () => {
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-xl text-gray-800">Vehicle List</h3>
 
-        <a href="/vehicles/add-vehicle">
+        <Link to="/vehicles/add-vehicle">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
             New Vehicle
           </button>
-        </a>
+        </Link>
       </div>
 
       <VehiclesMiniCards stats={vehiclesStats} />

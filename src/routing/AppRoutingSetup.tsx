@@ -9,7 +9,7 @@ import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
 
 import { AddUser } from '@/pages/user/add-user';
 import { AddDriver } from '@/pages/driver/add-driver';
-import { AddVehicle } from '@/pages/account/home/add-vehicle';
+import { AddVehicle } from '@/pages/vehicle/add-vehicle';
 
 import { AuthPage } from '@/auth';
 import { RequireAuth } from '@/auth/RequireAuth';
@@ -42,6 +42,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
           <Route path="/vehicles/vehicle/:id" element={<VehicleDetailsPage />} />
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
+          <Route path="/vehicles/edit/:id" element={<AddVehicle />} />
 
           <Route path="/maintenance/maintenance" element={<Maintenance />} />
           <Route
