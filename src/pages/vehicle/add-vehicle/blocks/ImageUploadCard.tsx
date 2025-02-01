@@ -1,6 +1,6 @@
 const ImageUploadCard = () => {
   return (
-    <div className="grid grid-cols-3 gap-5 p-3">
+    <div className="flex flex-col gap-5 p-3">
       <div className="p-4 card grid gap-2.5 overflow-auto p-6">
         <label className="form-label card-title">Vehicle Image</label>
         <div className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center">
@@ -76,7 +76,7 @@ const ImageUploadCard = () => {
 
           <div className="flex font-medium">
             <div className="rounded-s-lg py-2 px-2 bg-[#5271FF] text-white">TR</div>
-            <input type="text" className="input" placeholder="TR 56084684" />
+            <input type="text" className="input rounded-s-none" placeholder="TR 56084684" />
           </div>
         </div>
       </div>

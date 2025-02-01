@@ -1,5 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { Information, Registration, InspectionAndInsurance, CarScratches } from './blocks';
+import {
+  Information,
+  Registration,
+  InspectionAndInsurance,
+  CarScratches,
+  ImageUploadCard
+} from './blocks';
 import { Form, Formik, FormikProps } from 'formik';
 import PromoCarTypeIcon from '../blocks/svg/PromoCarTypeIcon';
 import PickupCarTypeIcon from '../blocks/svg/PickupCarTypeIcon';
@@ -19,6 +25,17 @@ type RadioOption<T> = {
 };
 
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
+
+interface AdditionalVehicleInfo {
+  vehicleImage?: File;
+  plate: string;
+  status: string;
+  hgsNumber: string;
+  currentMileage: number;
+  maintenanceMileage: number;
+  fuelConsumption: number;
+  documents?: File[];
+}
 
 type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
 export const fuelOptions: Array<RadioOption<FuelType>> = [
@@ -149,13 +166,25 @@ export interface CarScratchesFormField {
   scratches: Array<Scratch>;
 }
 
-export type AddVehicleForm = InformationFormField &
+export type AddVehicleForm = AdditionalVehicleInfo &
+  InformationFormField &
   RegistrationFormField &
   InspectionAndInsuranceFormField &
   CarScratchesFormField;
 
 const AddVehiclePage = () => {
   const [activeTab, setActiveTab] = useState<TabType>('information');
+
+  const additionalVehicleInfoInitialValues: AdditionalVehicleInfo = {
+    currentMileage: 0,
+    fuelConsumption: 0,
+    hgsNumber: '',
+    maintenanceMileage: 0,
+    plate: '',
+    documents: undefined,
+    vehicleImage: undefined,
+    status: ''
+  };
 
   const informationInitialValues: InformationFormField = {
     brand: '',
@@ -208,7 +237,8 @@ const AddVehiclePage = () => {
     ...informationInitialValues,
     ...registrationInitialValues,
     ...inspectionAndInsuranceInitialValues,
-    ...carScratchesInitialValues
+    ...carScratchesInitialValues,
+    ...additionalVehicleInfoInitialValues
   };
 
   const refs = {
@@ -269,74 +299,86 @@ const AddVehiclePage = () => {
   const isLastTab = activeTab === tabConfig[tabConfig.length - 1].id;
 
   return (
-    <div className="grid gap-5 lg:gap-7.5 xl:w-[85rem] mx-auto">
-      <div className="flex">
-        {/* Main Content */}
-        <div className="w-full align-center">
-          {/* Tabs Navigation */}
-          <div className="tabs flex flex-wrap border-b mb-4" data-tabs="true">
-            {tabConfig.map(({ id, label }) => (
-              <button
-                key={id}
-                className={`tab px-4 py-2 font-medium text-lg border-b-4 -mb-[1px] ${
-                  activeTab === id
-                    ? 'text-primary border-primary'
-                    : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-                }`}
-                onClick={() => handleTabClick(id as TabType)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+    <Formik initialValues={initialValues} onSubmit={() => {}}>
+      {(props) => {
+        return (
+          <Form>
+            <div className="grid grid-cols-4 gap-5">
+              <div className="col-span-1">
+                <ImageUploadCard />
+              </div>
+              <div className="grid gap-5 lg:gap-7.5 mx-auto w-full col-span-3">
+                <div className="flex">
+                  {/* Main Content */}
+                  <div className="w-full align-center">
+                    {/* Tabs Navigation */}
+                    <div className="tabs flex flex-wrap border-b mb-4" data-tabs="true">
+                      {tabConfig.map(({ id, label }) => (
+                        <button
+                          key={id}
+                          className={`tab px-4 py-2 font-medium text-lg border-b-4 -mb-[1px] ${
+                            activeTab === id
+                              ? 'text-primary border-primary'
+                              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                          }`}
+                          onClick={() => handleTabClick(id as TabType)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
 
-          {/* Tab Content */}
-          <div className="tab-content">
-            <div ref={refs[activeTab]} className="focus:outline-none">
-              <Formik initialValues={initialValues} onSubmit={() => {}}>
-                {(props) => {
-                  return <Form>{renderContent(props)}</Form>;
-                }}
-              </Formik>
-              <div className="mt-5 flex justify-end gap-4">
-                {/* Back Button */}
-                {activeTab !== 'information' && (
-                  <button
-                    className="px-4 py-2 bg-gray-500 text-white rounded-lg"
-                    onClick={() => {
-                      const currentIndex = tabConfig.findIndex((tab) => tab.id === activeTab);
-                      if (currentIndex > 0) {
-                        handleTabClick(tabConfig[currentIndex - 1].id as TabType);
-                      }
-                    }}
-                  >
-                    Back
-                  </button>
-                )}
-                {/* Next or Save Button */}
-                <div>
-                  {!isLastTab ? (
-                    <button
-                      className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
-                      onClick={handleNextClick}
-                    >
-                      Next
-                    </button>
-                  ) : (
-                    <button
-                      className="px-4 py-2 bg-green-500 text-white rounded-lg"
-                      onClick={handleSaveClick}
-                    >
-                      Save
-                    </button>
-                  )}
+                    {/* Tab Content */}
+                    <div className="tab-content">
+                      <div ref={refs[activeTab]} className="focus:outline-none">
+                        {renderContent(props)}
+                      </div>
+
+                      <div className="mt-5 flex justify-end gap-4">
+                        {/* Back Button */}
+                        {activeTab !== 'information' && (
+                          <button
+                            className="px-4 py-2 bg-gray-500 text-white rounded-lg"
+                            onClick={() => {
+                              const currentIndex = tabConfig.findIndex(
+                                (tab) => tab.id === activeTab
+                              );
+                              if (currentIndex > 0) {
+                                handleTabClick(tabConfig[currentIndex - 1].id as TabType);
+                              }
+                            }}
+                          >
+                            Back
+                          </button>
+                        )}
+                        {/* Next or Save Button */}
+                        <div>
+                          {!isLastTab ? (
+                            <button
+                              className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
+                              onClick={handleNextClick}
+                            >
+                              Next
+                            </button>
+                          ) : (
+                            <button
+                              className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                              onClick={handleSaveClick}
+                            >
+                              Save
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 

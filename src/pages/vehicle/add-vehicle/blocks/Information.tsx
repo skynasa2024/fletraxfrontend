@@ -129,8 +129,6 @@ const Information = ({ title }: IGeneralSettingsProps) => {
             </Field>
           </div>
         </div>
-        {/* Image Upload Card */}
-        <ImageUploadCard />
       </div>
     </div>
   );
