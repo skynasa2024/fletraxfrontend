@@ -1,23 +1,8 @@
-import { Field, useField } from 'formik';
+import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
-import { TripsSearch } from '@/pages/trips/blocks/TripsSearch';
-import { useState } from 'react';
-import { MonitoringDTO } from '@/api/devices';
 
 const AdditionalVehicleInfo = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [field] = useField('deviceId');
-
-  const handleSelectDevice = (device: MonitoringDTO) => {
-    field.onChange({
-      target: {
-        name: 'deviceId',
-        value: device.ident
-      }
-    });
-  };
-
   return (
     <div className="flex flex-col gap-5 p-3">
       <div className="p-4 card grid gap-2.5 overflow-auto">
@@ -29,12 +14,7 @@ const AdditionalVehicleInfo = () => {
 
         <div className="flex font-medium">
           <div className="rounded-s-lg py-2 px-2 bg-[#5271FF] text-white">TR</div>
-          <Field
-            type="text"
-            className="input rounded-s-none"
-            name="plateNumber"
-            placeholder="56084684"
-          />
+          <Field type="text" className="input rounded-s-none" name="plate" placeholder="56084684" />
         </div>
       </div>
       <div className="card p-4 gap-4">
@@ -52,15 +32,6 @@ const AdditionalVehicleInfo = () => {
       <div className="card p-4 gap-4">
         <h3 className="card-title">HGS Number</h3>
         <Field type="text" className="input" name="hgsNumber" placeholder="HGS Number" />
-      </div>
-
-      <div className="card p-4 gap-4">
-        <h3 className="card-title">Linked Device</h3>
-        <TripsSearch
-          search={searchQuery}
-          setSearch={setSearchQuery}
-          onSelectDevice={handleSelectDevice}
-        />
       </div>
 
       {/* Performance Metrics Card */}
@@ -98,7 +69,7 @@ const AdditionalVehicleInfo = () => {
       </div>
       <div className="card p-4 grid gap-2.5 overflow-auto">
         <label className="form-label card-title">Documents</label>
-        <FormikFileUpload name="documents" />
+        <FormikFileUpload name="licenseImageFile" />
       </div>
     </div>
   );

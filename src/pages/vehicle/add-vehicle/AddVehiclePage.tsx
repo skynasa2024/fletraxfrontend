@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Information,
   Registration,
@@ -17,7 +17,16 @@ import ManualGearTypeIcon from '../blocks/svg/ManualGearTypeIcon';
 import AutomaticGearTypeIcon from '../blocks/svg/AutomaticGearTypeIcon';
 import IndividualTypeIcon from '../blocks/svg/IndividualTypeIcon';
 import CompanyTypeIcon from '../blocks/svg/CompanyTypeIcon';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import {
+  createScratches,
+  createVehicle,
+  getVehicleDetails,
+  updateVehicle,
+  VehicleDTO
+} from '@/api/cars';
+import { CircularProgress } from '@mui/material';
+import clsx from 'clsx';
 
 type RadioOption<T> = {
   label: string;
@@ -28,18 +37,17 @@ type RadioOption<T> = {
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
 interface AdditionalVehicleInfo {
-  vehicleImage?: File;
+  vehicleImage?: File | string;
   plate: string;
   status: string;
   hgsNumber: string;
-  currentMileage: number;
-  maintenanceMileage: number;
+  currentMileage: string;
+  maintenanceMileage: string;
   fuelConsumption: number;
-  documents?: File;
-  deviceId: string;
+  licenseImageFile?: File | string;
 }
 
-type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
+export type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
 export const fuelOptions: Array<RadioOption<FuelType>> = [
   { label: 'Hybrid', value: 'Hybrid' },
   { label: 'Diesel', value: 'Diesel' },
@@ -49,7 +57,7 @@ export const fuelOptions: Array<RadioOption<FuelType>> = [
   { label: 'Electric', value: 'Electric' }
 ];
 
-type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
+export type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
 export const carOptions: Array<RadioOption<CarType>> = [
   {
     label: 'PROMO',
@@ -83,7 +91,7 @@ export const carOptions: Array<RadioOption<CarType>> = [
   }
 ];
 
-type GearType = 'Automatic' | 'Manual';
+export type GearType = 'Automatic' | 'Manual';
 export const gearOptions: Array<RadioOption<GearType>> = [
   { label: 'Automatic', value: 'Automatic', icon: <AutomaticGearTypeIcon /> },
   {
@@ -116,9 +124,9 @@ export interface InformationFormField {
   brand: string;
   model: string;
   modelSeries: string;
-  modelYear: string;
-  volume?: number;
-  power?: number;
+  modelYear: number;
+  volume: string;
+  power: string;
   fuelType: FuelType;
   carType: CarType;
   gearType: GearType;
@@ -126,14 +134,14 @@ export interface InformationFormField {
   numberOfSeats: number;
 }
 
-type RegistrationType = 'Individual' | 'Company';
+export type RegistrationType = 'Individual' | 'Company';
 export const registrationTypeOptions: Array<RadioOption<RegistrationType>> = [
   { label: 'Individual', value: 'Individual', icon: <IndividualTypeIcon /> },
   { label: 'Company', value: 'Company', icon: <CompanyTypeIcon /> }
 ];
 
 export interface RegistrationFormField {
-  registrationType: string;
+  registrationType: RegistrationType;
   identifyNumber: string;
   chassisNumber: string;
   engineNumber: string;
@@ -141,7 +149,7 @@ export interface RegistrationFormField {
   registrationDate: string;
   firstRegistrationDate: string;
   licenseSerialNumber: string;
-  price?: number;
+  price: number;
 }
 
 export interface InspectionAndInsuranceFormField {
@@ -175,28 +183,74 @@ export type AddVehicleForm = AdditionalVehicleInfo &
   CarScratchesFormField;
 
 const AddVehiclePage = () => {
-  const {id: vehicleId} = useParams();
+  const { id: carId } = useParams();
+  const [currentVehicle, setCurrentVehicle] = useState<VehicleDTO | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('information');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSave, setIsLoadingSave] = useState(false);
+  const navigate = useNavigate();
+
+  const currentVehicleInitialValues: AddVehicleForm = {
+    ...currentVehicle,
+    status: currentVehicle?.status || 'unavailable',
+    fuelType: currentVehicle?.fuelType || 'Hybrid',
+    carType: currentVehicle?.carType || 'PROMO',
+    gearType: currentVehicle?.gear || 'Automatic',
+    color: currentVehicle?.color || 'Black',
+    numberOfSeats: currentVehicle?.numberOfSeats || 4,
+    registrationType: currentVehicle?.type || 'Individual',
+    scratches: (currentVehicle?.scratches as any[]) || [
+      { place: 1, explanationOf: '', vehicleId: '' }
+    ],
+    price: currentVehicle?.price || 0,
+    volume: currentVehicle?.volume || '',
+    power: currentVehicle?.power || '',
+    identifyNumber: currentVehicle?.identifyNumber || '',
+    chassisNumber: currentVehicle?.chassisNumber || '',
+    engineNumber: currentVehicle?.engineNumber || '',
+    registrationNumber: currentVehicle?.registrationNumber || '',
+    registrationDate: currentVehicle?.registrationDate || '',
+    firstRegistrationDate: currentVehicle?.firstRegistrationDate || '',
+    licenseSerialNumber: currentVehicle?.licenseSerialNumber || '',
+    inspectionStartDate: currentVehicle?.inspectionStartDate || '',
+    inspectionEndDate: currentVehicle?.inspectionEndDate || '',
+    insuranceStartDate: currentVehicle?.insuranceStartDate || '',
+    insuranceEndDate: currentVehicle?.insuranceEndDate || '',
+    kaskoStartDate: currentVehicle?.kaskoInsuranceStartDate || '',
+    kaskoEndDate: currentVehicle?.kaskoInsuranceEndDate || '',
+    exhaustStartDate: currentVehicle?.exhaustStartDate || '',
+    exhaustEndDate: currentVehicle?.exhaustEndDate || '',
+    currentMileage: currentVehicle?.currentMileage || '',
+    maintenanceMileage: currentVehicle?.maintenanceMileage || '',
+    fuelConsumption: currentVehicle?.fuelConsumption || 0,
+    hgsNumber: currentVehicle?.hgsNumber || '',
+    plate: currentVehicle?.plate || '',
+    vehicleImage: currentVehicle?.imageFile || undefined,
+    licenseImageFile: currentVehicle?.licenseImageFile || undefined,
+    brand: currentVehicle?.brand || '',
+    model: currentVehicle?.model || '',
+    modelSeries: currentVehicle?.modelSeries || '',
+    modelYear: currentVehicle?.modelYear || 0
+  };
 
   const additionalVehicleInfoInitialValues: AdditionalVehicleInfo = {
-    currentMileage: 0,
+    currentMileage: '',
     fuelConsumption: 0,
     hgsNumber: '',
-    maintenanceMileage: 0,
+    maintenanceMileage: '',
     plate: '',
-    documents: undefined,
+    licenseImageFile: undefined,
     vehicleImage: undefined,
-    status: 'unavailable',
-    deviceId: ''
+    status: 'unavailable'
   };
 
   const informationInitialValues: InformationFormField = {
     brand: '',
     model: '',
     modelSeries: '',
-    modelYear: '',
-    volume: undefined,
-    power: undefined,
+    modelYear: 0,
+    volume: '',
+    power: '',
     fuelType: 'Hybrid',
     carType: 'PROMO',
     gearType: 'Automatic',
@@ -213,7 +267,7 @@ const AddVehiclePage = () => {
     registrationDate: '',
     firstRegistrationDate: '',
     licenseSerialNumber: '',
-    price: undefined
+    price: 0
   };
 
   const inspectionAndInsuranceInitialValues: InspectionAndInsuranceFormField = {
@@ -274,15 +328,76 @@ const AddVehiclePage = () => {
     }
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const currentIndex = tabConfig.findIndex((tab) => tab.id === activeTab);
     if (currentIndex < tabConfig.length - 1) {
       handleTabClick(tabConfig[currentIndex + 1].id as TabType);
     }
   };
 
-  const handleSaveClick = (values: AddVehicleForm) => {
-    console.log(values);
+  const handleSaveClick = async (values: AddVehicleForm) => {
+    const { scratches, ...vehicle } = values;
+
+    setIsLoadingSave(true);
+    try {
+      if (carId && currentVehicle) {
+        const updatedVehicle: VehicleDTO = {
+          ...vehicle,
+          vehicleId: currentVehicle.vehicleId,
+          id: currentVehicle.id,
+          deviceId: currentVehicle.deviceId,
+          owner: currentVehicle.owner,
+          userId: currentVehicle.userId,
+          deviceIdent: currentVehicle.deviceIdent,
+          type: vehicle.registrationType,
+          gear: vehicle.gearType,
+          kaskoInsuranceEndDate: vehicle.kaskoEndDate,
+          kaskoInsuranceStartDate: vehicle.kaskoStartDate,
+          scratches: currentVehicle.scratches,
+          licenseImage: '',
+          image: ''
+        };
+
+        if (vehicle.vehicleImage) {
+          updatedVehicle.imageFile = vehicle.vehicleImage as File;
+        }
+
+        if (vehicle.licenseImageFile) {
+          updatedVehicle.licenseImageFile = vehicle.licenseImageFile as File;
+        }
+
+        await updateVehicle(updatedVehicle);
+
+        await createScratches(scratches);
+      } else {
+        const vehicleData: Partial<VehicleDTO> = {
+          ...vehicle,
+          type: vehicle.registrationType,
+          gear: vehicle.gearType,
+          kaskoInsuranceEndDate: vehicle.kaskoEndDate,
+          kaskoInsuranceStartDate: vehicle.kaskoStartDate,
+          licenseImage: '',
+          image: ''
+        };
+
+        if (vehicle.vehicleImage) {
+          vehicleData.imageFile = vehicle.vehicleImage as File;
+        }
+
+        if (vehicle.licenseImageFile) {
+          vehicleData.licenseImageFile = vehicle.licenseImageFile as File;
+        }
+        await createVehicle(vehicleData);
+        await createScratches(scratches);
+      }
+      navigate(`/vehicles/vehicle`);
+    } catch (error) {
+      console.error('Error saving vehicle:', error);
+    } finally {
+      setIsLoadingSave(false);
+    }
   };
 
   const renderContent = (formikProps: FormikProps<AddVehicleForm>) => {
@@ -302,8 +417,34 @@ const AddVehiclePage = () => {
 
   const isLastTab = activeTab === tabConfig[tabConfig.length - 1].id;
 
+  useEffect(() => {
+    (async () => {
+      if (!carId) return;
+      setIsLoading(true);
+      try {
+        const vehicle = await getVehicleDetails(carId);
+        setCurrentVehicle(vehicle);
+      } catch (error) {
+        console.error('Error fetching vehicle details:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [carId]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <CircularProgress size={48} />
+      </div>
+    );
+  }
+
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSaveClick}>
+    <Formik
+      initialValues={carId ? currentVehicleInitialValues : initialValues}
+      onSubmit={handleSaveClick}
+    >
       {(props) => {
         return (
           <Form>
@@ -319,6 +460,7 @@ const AddVehiclePage = () => {
                     <div className="tabs flex flex-wrap border-b mb-4" data-tabs="true">
                       {tabConfig.map(({ id, label }) => (
                         <button
+                          type="button"
                           key={id}
                           className={`tab px-4 py-2 font-medium text-lg border-b-4 -mb-[1px] ${
                             activeTab === id
@@ -342,6 +484,7 @@ const AddVehiclePage = () => {
                         {/* Back Button */}
                         {activeTab !== 'information' && (
                           <button
+                            type="button"
                             className="px-4 py-2 bg-gray-500 text-white rounded-lg"
                             onClick={() => {
                               const currentIndex = tabConfig.findIndex(
@@ -361,14 +504,20 @@ const AddVehiclePage = () => {
                             <button
                               className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
                               onClick={handleNextClick}
+                              type="button"
                             >
                               Next
                             </button>
                           ) : (
                             <button
-                              className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                              className={clsx(
+                                'px-4 py-2 bg-success text-white rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center gap-3',
+                                { 'w-32': isLoadingSave, 'w-auto': !isLoadingSave }
+                              )}
                               type="submit"
+                              disabled={isLoadingSave}
                             >
+                              {isLoadingSave && <CircularProgress size={14} color="success" />}
                               Save
                             </button>
                           )}
