@@ -127,7 +127,7 @@ const DriverDetailsPage = () => {
           <div className="p-4 card hover:shadow-md w-full">map</div>
         </div>
         <div className="m-5">
-          <MaintenanceViolationTable id={id} />
+          <MaintenanceViolationTable id={driver.vehicle.id} />
         </div>
         <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 m-5">
           <div className="w-1/2">
