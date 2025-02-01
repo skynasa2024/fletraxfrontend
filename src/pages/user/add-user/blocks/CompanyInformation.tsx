@@ -15,7 +15,7 @@ const CompanyInformation = ({ user }: AddUserPageProps) => {
               required
               type="text"
               className="input"
-              name="companyTaxNumber"
+              name="company_tax_number"
               placeholder="Tax Number"
               defaultValue={user?.companyTaxNumber ?? ''}
             />
