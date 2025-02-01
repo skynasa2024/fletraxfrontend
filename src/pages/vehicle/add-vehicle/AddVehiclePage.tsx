@@ -4,7 +4,7 @@ import {
   Registration,
   InspectionAndInsurance,
   CarScratches,
-  ImageUploadCard
+  AdditionalVehicleInfo as AdditionalVehicleInfoBlock
 } from './blocks';
 import { Form, Formik, FormikProps } from 'formik';
 import PromoCarTypeIcon from '../blocks/svg/PromoCarTypeIcon';
@@ -305,7 +305,7 @@ const AddVehiclePage = () => {
           <Form>
             <div className="grid grid-cols-4 gap-5">
               <div className="col-span-1">
-                <ImageUploadCard />
+                <AdditionalVehicleInfoBlock />
               </div>
               <div className="grid gap-5 lg:gap-7.5 mx-auto w-full col-span-3">
                 <div className="flex">

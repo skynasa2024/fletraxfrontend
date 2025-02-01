@@ -2,7 +2,7 @@ import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
 
-const ImageUploadCard = () => {
+const AdditionalVehicleInfo = () => {
   return (
     <div className="flex flex-col gap-5 p-3">
       <div className="p-4 card grid gap-2.5 overflow-auto">
@@ -80,4 +80,4 @@ const ImageUploadCard = () => {
   );
 };
 
-export { ImageUploadCard };
+export { AdditionalVehicleInfo };
