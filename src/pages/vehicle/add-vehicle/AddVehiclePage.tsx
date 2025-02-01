@@ -35,6 +35,7 @@ interface AdditionalVehicleInfo {
   maintenanceMileage: number;
   fuelConsumption: number;
   documents?: File;
+  deviceId: string;
 }
 
 type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
@@ -183,7 +184,8 @@ const AddVehiclePage = () => {
     plate: '',
     documents: undefined,
     vehicleImage: undefined,
-    status: 'unavailable'
+    status: 'unavailable',
+    deviceId: ''
   };
 
   const informationInitialValues: InformationFormField = {
