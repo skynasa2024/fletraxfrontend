@@ -1,4 +1,3 @@
-import { ImageUploadCard } from './ImageUploadCard';
 import { Field } from 'formik';
 import {
   carOptions,

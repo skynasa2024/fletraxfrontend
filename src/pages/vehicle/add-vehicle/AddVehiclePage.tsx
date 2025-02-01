@@ -183,7 +183,7 @@ const AddVehiclePage = () => {
     plate: '',
     documents: undefined,
     vehicleImage: undefined,
-    status: ''
+    status: 'unavailable'
   };
 
   const informationInitialValues: InformationFormField = {
@@ -277,8 +277,8 @@ const AddVehiclePage = () => {
     }
   };
 
-  const handleSaveClick = () => {
-    alert('Vehicle details saved successfully!');
+  const handleSaveClick = (values: AddVehicleForm) => {
+    console.log(values);
   };
 
   const renderContent = (formikProps: FormikProps<AddVehicleForm>) => {
@@ -299,7 +299,7 @@ const AddVehiclePage = () => {
   const isLastTab = activeTab === tabConfig[tabConfig.length - 1].id;
 
   return (
-    <Formik initialValues={initialValues} onSubmit={() => {}}>
+    <Formik initialValues={initialValues} onSubmit={handleSaveClick}>
       {(props) => {
         return (
           <Form>
@@ -363,7 +363,7 @@ const AddVehiclePage = () => {
                           ) : (
                             <button
                               className="px-4 py-2 bg-green-500 text-white rounded-lg"
-                              onClick={handleSaveClick}
+                              type="submit"
                             >
                               Save
                             </button>

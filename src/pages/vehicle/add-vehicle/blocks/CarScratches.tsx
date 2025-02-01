@@ -274,7 +274,7 @@ function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
       <div className="flex gap-4 items-center justify-between grow">
         <div className="flex gap-4 items-center">
           <UploadedFileIcon fileExtension={file.type.split('/')[1]} />
-          <span className="max-w-56 text-ellipsis truncate">{file.name}</span>
+          <span className="max-w-44 text-ellipsis truncate">{file.name}</span>
         </div>
 
         <button
