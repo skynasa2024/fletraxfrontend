@@ -53,6 +53,18 @@ export const getDevice = async (id: string): Promise<Device> => {
 export const getDevices = async (
   params: TDataGridRequestParams | OffsetBounds
 ): Promise<Paginated<DeviceDTO>> => {
+  // Convert filters to map
+  const filters =
+    'filters' in params
+      ? (params.filters?.reduce(
+          (acc, filter) => {
+            acc[filter.id] = filter.value;
+            return acc;
+          },
+          {} as Record<string, unknown>
+        ) ?? {})
+      : {};
+
   const requestParams =
     'start' in params
       ? {
@@ -63,12 +75,15 @@ export const getDevices = async (
       : {
           page: params.pageIndex,
           size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
+          search: filters['__any'] && filters['__any'].toString()
         };
 
-  const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>('/api/devices/index', {
-    params: requestParams
-  });
+  const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>(
+    filters['userId'] ? `/api/devices/get-by-user-id/${filters['userId']}` : '/api/devices/index',
+    {
+      params: requestParams
+    }
+  );
 
   return {
     data: devices.data.result.content,

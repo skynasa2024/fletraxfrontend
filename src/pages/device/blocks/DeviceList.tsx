@@ -20,10 +20,11 @@ import { toAbsoluteUrl } from '@/utils';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 
 type DeviceListProps = {
-  refetchStats: () => void;
+  refetchStats?: () => void;
+  userId?: string;
 };
 
-const DeviceList = ({ refetchStats: refetch }: DeviceListProps) => {
+const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
@@ -86,7 +87,7 @@ const DeviceList = ({ refetchStats: refetch }: DeviceListProps) => {
                     <MenuItem
                       onClick={async () => {
                         await deleteDevice(row.original.id);
-                        refetch();
+                        refetch?.();
                       }}
                     >
                       <MenuLink>
@@ -130,7 +131,10 @@ const DeviceList = ({ refetchStats: refetch }: DeviceListProps) => {
           data={[]}
           serverSide={true}
           onFetchData={getDevices}
-          filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
+          filters={[
+            ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []),
+            ...(userId ? [{ id: 'userId', value: userId }] : [])
+          ]}
         />
       </div>
     </div>
