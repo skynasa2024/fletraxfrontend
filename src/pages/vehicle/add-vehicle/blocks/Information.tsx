@@ -40,7 +40,7 @@ const Information = ({ title }: IGeneralSettingsProps) => {
           <div className="grid gap-2.5">
             <label className="form-label">Model Year</label>
             <div className="input">
-              <Field type="text" name="modelYear" placeholder="Model Year" />
+              <Field type="number" step="1" name="modelYear" placeholder="Model Year" />
               <CalendarIcon />
             </div>
           </div>

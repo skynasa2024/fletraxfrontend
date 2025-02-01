@@ -69,15 +69,40 @@ const Registration = () => {
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2.5">
             <label className="form-label">Registration Date</label>
-            <div className="input">
-              <Field type="text" name="registrationDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="registrationDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
+
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">First Registration Date</label>
-            <div className="input">
-              <Field type="text" name="firstRegistrationDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="firstRegistrationDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>

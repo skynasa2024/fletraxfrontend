@@ -12,18 +12,37 @@ const InspectionAndInsurance = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
             <label className="form-label">Inspection Start Date</label>
-            <div className="input">
-              <Field type="text" name="inspectionStartDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="inspectionStartDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Inspection End Date</label>
-            <div className="input">
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
               <Field
-                type="text"
-                className="input"
+                type="date"
                 name="inspectionEndDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
                 placeholder="DD/MM/YYYY"
               />
               <CalendarIcon />
@@ -35,15 +54,39 @@ const InspectionAndInsurance = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
             <label className="form-label">Insurance Start Date</label>
-            <div className="input">
-              <Field type="text" name="insuranceStartDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="insuranceStartDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Insurance End Date</label>
-            <div className="input">
-              <Field type="text" name="insuranceEndDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="insuranceEndDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
@@ -53,15 +96,39 @@ const InspectionAndInsurance = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
             <label className="form-label">Kasko Start Date</label>
-            <div className="input">
-              <Field type="text" name="kaskoStartDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="kaskoStartDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Kasko End Date</label>
-            <div className="input">
-              <Field type="text" name="kaskoEndDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="kaskoEndDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
@@ -71,15 +138,39 @@ const InspectionAndInsurance = () => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
             <label className="form-label">Exhaust Start Date</label>
-            <div className="input">
-              <Field type="text" name="exhaustStartDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="exhaustStartDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Exhaust End Date</label>
-            <div className="input">
-              <Field type="text" name="exhaustEndDate" placeholder="DD/MM/YYYY" />
+            <div
+              className="input"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                (e.currentTarget.children[0] as HTMLInputElement).showPicker();
+              }}
+            >
+              <Field
+                type="date"
+                name="exhaustEndDate"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+                placeholder="DD/MM/YYYY"
+              />
               <CalendarIcon />
             </div>
           </div>
