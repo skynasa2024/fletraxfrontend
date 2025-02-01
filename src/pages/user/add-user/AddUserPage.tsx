@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Information, Contact, InformationAccount } from './blocks';
 import { UserModel } from '@/api/user';
 import { CompanyInformation } from './blocks/CompanyInformation';
+import { Device } from './blocks/Device';
 
 export interface AddUserPageProps {
   user?: UserModel;
@@ -9,17 +10,18 @@ export interface AddUserPageProps {
 
 const AddUserPage = ({ user }: AddUserPageProps) => {
   const [activeTab, setActiveTab] = useState<
-    'information' | 'account' | 'contact' | 'company info'
+    'information' | 'account' | 'contact' | 'company info' | 'device'
   >('information');
 
   const informationRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
   const contactRef = useRef<HTMLDivElement>(null);
   const companyInformationRef = useRef<HTMLDivElement>(null);
+  const deviceRef = useRef<HTMLDivElement>(null);
 
   const handleTabClick = (
     ref: React.RefObject<HTMLDivElement | null>,
-    tab: 'information' | 'account' | 'contact' | 'company info'
+    tab: 'information' | 'account' | 'contact' | 'company info' | 'device'
   ) => {
     setActiveTab(tab);
 
@@ -82,6 +84,17 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
         >
           Company Information
         </button>
+        <button
+          type="button"
+          className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
+            activeTab === 'device'
+              ? 'text-primary border-primary'
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+          }`}
+          onClick={() => handleTabClick(deviceRef, 'device')}
+        >
+          Device
+        </button>
       </div>
 
       <div ref={informationRef}>
@@ -95,6 +108,9 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       </div>
       <div ref={companyInformationRef}>
         <CompanyInformation user={user} />
+      </div>
+      <div ref={deviceRef}>
+        <Device user={user} />
       </div>
     </div>
   );

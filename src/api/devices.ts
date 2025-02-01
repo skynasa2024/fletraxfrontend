@@ -163,3 +163,50 @@ export const createDevice = async (data: FormData): Promise<DeviceDTO> => {
   const device = await axios.post<ResponseModel<DeviceDTO>>('/api/devices/create', data);
   return device.data.result;
 };
+
+export const getUnlinkedDevices = async (offset: OffsetBounds): Promise<Paginated<DeviceDTO>> => {
+  const requestParams = {
+    offset: offset.start,
+    size: offset.end - offset.start + 1,
+    search: offset.search
+  };
+  const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>(
+    '/api/devices/get-unlinked-devices',
+    {
+      params: requestParams
+    }
+  );
+  return {
+    data: devices.data.result.content,
+    totalCount: devices.data.result.totalElements
+  };
+};
+
+export const getLinkedDevices = async (
+  userId: string,
+  offset: OffsetBounds
+): Promise<Paginated<DeviceDTO>> => {
+  const requestParams = {
+    offset: offset.start,
+    size: offset.end - offset.start + 1,
+    search: offset.search
+  };
+  const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>(
+    `/api/devices/get-by-user-id/${userId}`,
+    {
+      params: requestParams
+    }
+  );
+  return {
+    data: devices.data.result.content,
+    totalCount: devices.data.result.totalElements
+  };
+};
+
+export const linkDevice = async (userId: string, imei: string | string[]): Promise<void> => {
+  await axios.post(`/api/devices/link-devices/${userId}`, [imei].flat().map(Number));
+};
+
+export const unlinkDevice = async (userId: string, imei: string | string[]): Promise<void> => {
+  await axios.post(`/api/devices/unlink-devices/${userId}`, [imei].flat().map(Number));
+};
