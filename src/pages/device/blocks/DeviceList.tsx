@@ -70,7 +70,7 @@ const DeviceList = ({ refetchStats: refetch }: DeviceListProps) => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href={`/devices/device/${row.original.id}`}>
+            <a href={`/devices/device/${row.original.ident}`}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
             <RoleComponent role="admin">

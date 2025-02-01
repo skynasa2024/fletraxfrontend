@@ -57,6 +57,7 @@ const Telemetry = () => {
         <div className="flex items-center justify-start">
           <SpeedGauge
             value={parameters['position_speed']?.data}
+            maxValue={160}
             existingKilometers={parameters['existing_kilometers']?.data}
             parkingTime={parameters['parking_time']?.data}
           />

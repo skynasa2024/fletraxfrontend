@@ -1,9 +1,9 @@
 import AppMap from '@/components/AppMap';
 import { toAbsoluteUrl } from '@/utils';
-import { CircularProgress } from '@mui/material';
 import L from 'leaflet';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import { RotatableMarker } from '../monitoring/blocks/RotatableMarker';
+import { useMap } from 'react-leaflet';
 
 interface MapProps {
   location?: {
@@ -49,9 +49,8 @@ const Map = ({ location, direction, online, engineStatus }: MapProps) => {
   }, [engineStatus, icon.gray, icon.green, icon.red, online]);
   if (!location || !direction) {
     return (
-      <div className="w-full h-full flex flex-col gap-2 justify-center items-center">
-        <CircularProgress />
-        <span>Waiting for device to report location</span>
+      <div className="w-full h-full rounded-lg overflow-hidden shadow-lg">
+        <AppMap zoom={13} dragging={false}></AppMap>
       </div>
     );
   }
@@ -63,9 +62,20 @@ const Map = ({ location, direction, online, engineStatus }: MapProps) => {
           rotationAngle={direction}
           icon={getIcon()}
         />
+        <Center location={[location.lat, location.lng]} />
       </AppMap>
     </div>
   );
 };
 
 export default Map;
+
+const Center = ({ location }: { location: [number, number] }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.flyTo(location);
+  }, [location, map]);
+
+  return <></>;
+};

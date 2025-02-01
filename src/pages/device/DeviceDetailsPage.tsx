@@ -2,7 +2,7 @@ import DeviceNavigation from './DeviceNavigation';
 import DeviceIcon from './svg/device.svg?react';
 import { Outlet, useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { deleteDevice, DeviceDTO, getDeviceModel } from '@/api/devices';
+import { deleteDevice, DeviceDTO, getDeviceModelByImei } from '@/api/devices';
 import { CarPlate } from '../dashboards/dashboard/blocks/CarPlate';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import {
@@ -26,7 +26,7 @@ const DeviceDetailsPage = () => {
   const [device, sedivevice] = useState<DeviceDTO | null>(null);
   useEffect(() => {
     if (!id) return;
-    getDeviceModel(id)
+    getDeviceModelByImei(id)
       .then((data) => {
         sedivevice(data);
       })

@@ -35,6 +35,11 @@ export const getDeviceModel = async (id: string): Promise<DeviceDTO> => {
   return device.data.result;
 };
 
+export const getDeviceModelByImei = async (imei: string): Promise<DeviceDTO> => {
+  const device = await axios.get<ResponseModel<DeviceDTO>>(`/api/devices/find-by-ident/${imei}`);
+  return device.data.result;
+};
+
 export const getDevice = async (id: string): Promise<Device> => {
   const device = await getDeviceModel(id);
   return {

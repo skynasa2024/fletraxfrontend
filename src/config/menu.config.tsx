@@ -18,25 +18,25 @@ export const MENU_SIDEBAR: TMenuConfig = [
     path: '/trips',
     fullScreen: true
   },
-  {
-    title: 'Geofence',
-    externalIcon: 'geofence',
-    children: [
-      {
-        title: 'Geofence',
-        path: '/geofences',
-        fullScreen: true
-      },
-      {
-        title: 'Linked Geofence',
-        path: '/geofence/linked'
-      },
-      {
-        title: 'Add Geofence',
-        path: '/geofence/add'
-      }
-    ]
-  },
+  // {
+  //   title: 'Geofence',
+  //   externalIcon: 'geofence',
+  //   children: [
+  //     {
+  //       title: 'Geofence',
+  //       path: '/geofences',
+  //       fullScreen: true
+  //     },
+  //     {
+  //       title: 'Linked Geofence',
+  //       path: '/geofence/linked'
+  //     },
+  //     {
+  //       title: 'Add Geofence',
+  //       path: '/geofence/add'
+  //     }
+  //   ]
+  // },
   {
     title: 'Vehicle',
     externalIcon: 'vehicle',
@@ -86,20 +86,20 @@ export const MENU_SIDEBAR: TMenuConfig = [
     ]
 
   }, */
-  {
-    title: 'Maintenance',
-    externalIcon: 'maintenance',
-    children: [
-      {
-        title: 'Maintenance',
-        path: '/maintenance/maintenance'
-      },
-      {
-        title: 'Add Maintenance',
-        path: '/maintenance/add-maintenance'
-      }
-    ]
-  },
+  // {
+  //   title: 'Maintenance',
+  //   externalIcon: 'maintenance',
+  //   children: [
+  //     {
+  //       title: 'Maintenance',
+  //       path: '/maintenance/maintenance'
+  //     },
+  //     {
+  //       title: 'Add Maintenance',
+  //       path: '/maintenance/add-maintenance'
+  //     }
+  //   ]
+  // },
   {
     title: 'Device',
     externalIcon: 'device',

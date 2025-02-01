@@ -323,15 +323,15 @@ export const getVehicles = async (
   const requestParams =
     'start' in params
       ? {
-        offset: params.start,
-        size: params.end - params.start + 1,
-        search: params.search
-      }
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
       : {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value
-      };
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
 
   const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/index',
