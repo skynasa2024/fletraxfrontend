@@ -14,6 +14,7 @@ const FileUpload = ({
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
+    props.onChange?.(e);
   };
 
   return (

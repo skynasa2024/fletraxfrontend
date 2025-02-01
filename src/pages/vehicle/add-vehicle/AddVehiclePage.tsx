@@ -34,7 +34,7 @@ interface AdditionalVehicleInfo {
   currentMileage: number;
   maintenanceMileage: number;
   fuelConsumption: number;
-  documents?: File[];
+  documents?: File;
 }
 
 type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
