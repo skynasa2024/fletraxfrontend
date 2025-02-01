@@ -10,8 +10,15 @@ export interface UserModel {
   username: string;
   password: string | null;
   email: string;
-  photo: string | null;
-  photoFile: string | null;
+  frontPhotoNationalId: string | null;
+  frontPhotoNationalIdFile: string | null;
+  nationalIdBackground: string | null;
+  nationalIdBackgroundFile: string | null;
+  contractPdf: string | null;
+  contractPdfFile: string | null;
+  taxPlate: string | null;
+  taxPlateFile: string | null;
+  companyTaxNumber: string | null;
   phoneCode: string;
   phone: string;
   secondaryPhoneCode: string;
@@ -24,9 +31,11 @@ export interface UserModel {
   address: string;
   subscriptionStartDate: string;
   timezone: string;
-  locale: string;
+  locale: string | null;
   parentId: string | null;
   keycloakUserId: string;
+  createdAt: string | null;
+  updatedAt: string;
 }
 
 export interface User {

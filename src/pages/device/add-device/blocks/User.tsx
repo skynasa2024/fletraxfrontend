@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { AddDevicePageProps } from '../AddDevicePage';
 import { UserSearch } from './UserSearch';
 import { getUser, getUserModel, getUsersUnderParent, UserModel } from '@/api/user';
+import { CircularProgress } from '@mui/material';
 
 const User = ({ device }: AddDevicePageProps) => {
+  const [loading, setLoading] = useState(false);
   const [userTree, setUserTree] = useState<({ name: string; id: string } | null)[]>([null]);
   useEffect(() => {
     const lastUser = userTree[userTree.length - 1];
@@ -41,7 +43,10 @@ const User = ({ device }: AddDevicePageProps) => {
     if (!device?.userId) {
       return;
     }
-    getParents(device.userId).then(setUserTree);
+    setLoading(true);
+    getParents(device.userId)
+      .then(setUserTree)
+      .then(() => setLoading(false));
   }, [device, getParents]);
 
   return (
@@ -49,37 +54,43 @@ const User = ({ device }: AddDevicePageProps) => {
       <div className="card-header" id="company_settings">
         <h3 className="card-title">User</h3>
       </div>
-      <div className="card-body grid grid-cols-3 gap-5">
-        <div className="grid gap-2.5">
-          <label className="form-label">User</label>
-          <UserSearch
-            onSelectUserId={(id, name) => {
-              setUserTree((prev) => {
-                const newTree = prev.slice(0, 0);
-                newTree.push({ id, name });
-                return newTree;
-              });
-            }}
-            initialSearch={userTree[0]?.name}
-          />
+      {loading ? (
+        <div className="flex justify-center items-center h-16">
+          <CircularProgress />
         </div>
-        {userTree.slice(1).map((_, index) => (
-          <div key={index} className="grid gap-2.5">
-            <label className="form-label">Subuser {index + 1}</label>
+      ) : (
+        <div className="card-body grid grid-cols-3 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">User</label>
             <UserSearch
-              parentId={userTree[index]?.id}
               onSelectUserId={(id, name) => {
                 setUserTree((prev) => {
-                  const newTree = prev.slice(0, index + 1);
+                  const newTree = prev.slice(0, 0);
                   newTree.push({ id, name });
                   return newTree;
                 });
               }}
-              initialSearch={userTree[index + 1]?.name}
+              initialSearch={userTree[0]?.name}
             />
           </div>
-        ))}
-      </div>
+          {userTree.slice(1).map((_, index) => (
+            <div key={index} className="grid gap-2.5">
+              <label className="form-label">Subuser {index + 1}</label>
+              <UserSearch
+                parentId={userTree[index]?.id}
+                onSelectUserId={(id, name) => {
+                  setUserTree((prev) => {
+                    const newTree = prev.slice(0, index + 1);
+                    newTree.push({ id, name });
+                    return newTree;
+                  });
+                }}
+                initialSearch={userTree[index + 1]?.name}
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <input type="hidden" name="userId" value={userTree[userTree.length - 1]?.id} />
     </div>
   );

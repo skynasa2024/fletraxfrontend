@@ -1,21 +1,25 @@
 import React, { useRef, useState } from 'react';
 import { Information, Contact, InformationAccount } from './blocks';
 import { UserModel } from '@/api/user';
+import { CompanyInformation } from './blocks/CompanyInformation';
 
 export interface AddUserPageProps {
   user?: UserModel;
 }
 
 const AddUserPage = ({ user }: AddUserPageProps) => {
-  const [activeTab, setActiveTab] = useState<'information' | 'account' | 'contact'>('information');
+  const [activeTab, setActiveTab] = useState<
+    'information' | 'account' | 'contact' | 'company info'
+  >('information');
 
   const informationRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
   const contactRef = useRef<HTMLDivElement>(null);
+  const companyInformationRef = useRef<HTMLDivElement>(null);
 
   const handleTabClick = (
     ref: React.RefObject<HTMLDivElement | null>,
-    tab: 'information' | 'account' | 'contact'
+    tab: 'information' | 'account' | 'contact' | 'company info'
   ) => {
     setActiveTab(tab);
 
@@ -67,6 +71,17 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
         >
           Contact
         </button>
+        <button
+          type="button"
+          className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
+            activeTab === 'company info'
+              ? 'text-primary border-primary'
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+          }`}
+          onClick={() => handleTabClick(companyInformationRef, 'company info')}
+        >
+          Company Information
+        </button>
       </div>
 
       <div ref={informationRef}>
@@ -77,6 +92,9 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       </div>
       <div ref={contactRef}>
         <Contact user={user} />
+      </div>
+      <div ref={companyInformationRef}>
+        <CompanyInformation user={user} />
       </div>
     </div>
   );
