@@ -17,6 +17,7 @@ import ManualGearTypeIcon from '../blocks/svg/ManualGearTypeIcon';
 import AutomaticGearTypeIcon from '../blocks/svg/AutomaticGearTypeIcon';
 import IndividualTypeIcon from '../blocks/svg/IndividualTypeIcon';
 import CompanyTypeIcon from '../blocks/svg/CompanyTypeIcon';
+import { useParams } from 'react-router';
 
 type RadioOption<T> = {
   label: string;
@@ -174,6 +175,7 @@ export type AddVehicleForm = AdditionalVehicleInfo &
   CarScratchesFormField;
 
 const AddVehiclePage = () => {
+  const {id: vehicleId} = useParams();
   const [activeTab, setActiveTab] = useState<TabType>('information');
 
   const additionalVehicleInfoInitialValues: AdditionalVehicleInfo = {

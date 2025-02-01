@@ -16,6 +16,7 @@ import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { Link } from 'react-router';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -103,7 +104,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         id: 'actions',
         header: 'Actions',
-        cell: () => <ActionsDropdown />
+        cell: ({ row }) => <ActionsDropdown vehicleId={row.original.vehicle.id} />
       }
     ],
     [refetchStats]
@@ -122,7 +123,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown() {
+function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
   return (
     <div className="flex gap-3 items-center justify-center">
       <a
@@ -131,12 +132,12 @@ function ActionsDropdown() {
       >
         <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
       </a>
-      <a
-        href="#"
+      <Link
+        to={'/vehicles/edit/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
       >
         <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
-      </a>
+      </Link>
       <Menu>
         <MenuItem toggle="dropdown" trigger="click">
           <MenuToggle>
