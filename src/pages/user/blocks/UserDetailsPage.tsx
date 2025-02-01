@@ -34,7 +34,7 @@ const UserDetailsPage = () => {
         <div className="flex">
           <div className="w-1/3 border-r border-gray-200 pr-8">
             <Image
-              src={user.photoFile ?? undefined}
+              // src={user.photoFile ?? undefined}
               alt={user.name}
               title={user.name}
               className="w-full rounded-lg object-cover mb-4"
