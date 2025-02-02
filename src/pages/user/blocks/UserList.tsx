@@ -16,8 +16,11 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
+import { useSettings } from '@/providers';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
+  const { settings } = useSettings();
+
   const reload = useDataGrid().fetchServerSideData;
   return (
     <StatusDropdown
@@ -30,12 +33,12 @@ const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () 
       options={{
         true: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4',
+          backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
           name: 'Active'
         },
         false: {
           color: '#F1416C',
-          backgroundColor: '#FFF5F8',
+          backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
           name: 'Inactive'
         }
       }}
@@ -48,6 +51,7 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ refetch }) => {
+  const { settings } = useSettings();
   const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -117,14 +121,18 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           <div className="flex gap-3">
             <button onClick={() => updateUsersStack(info.row.original)}>
               <div className="flex justify-center items-center w-7.5 h-7.5 bg-gray-200 rounded-full">
-                <KeenIcon icon="users" />
+                <KeenIcon icon="users" className={settings.themeMode == 'dark' ? 'text-white' : 'text-black'} />
               </div>
             </button>
             <a href={`/users/user/${info.row.original.id}`}>
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} />
+              <div className="flex justify-center items-center w-7.5 h-7.5 bg-blue-900 rounded-full">
+                <KeenIcon icon="eye" className="text-white" />
+              </div>
             </a>
             <a href={`/users/edit/${info.row.original.id}`}>
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
+              <div className="flex justify-center items-center w-7.5 h-7.5 bg-green-900 rounded-full">
+                <KeenIcon icon="pencil" className="text-white" />
+              </div>
             </a>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
@@ -186,7 +194,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           </div>
           <DebouncedSearchInput
             type="search"
-            className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+            className={`w-64 pl-10 pr-4 py-2 ${settings.themeMode == 'dark' ? 'bg-gray-950' : 'bg-gray-200'} text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info`}
             placeholder="Search"
             onDebounce={setSearchQuery}
           />
