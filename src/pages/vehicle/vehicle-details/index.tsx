@@ -151,7 +151,7 @@ const VehicleInfo = () => {
             <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
-                <CarPlate plate="5484555" />
+                <CarPlate plate={vehicle?.plate || 'NA'} />
               </div>
 
               {/* Brand logo */}
@@ -163,7 +163,7 @@ const VehicleInfo = () => {
               <div className="flex items-center space-x-2">
                 <div className="bg-blue-100 p-4 rounded-full"></div>
                 <div>
-                  <span className="text-lg font-medium">41643739</span>
+                  <span className="text-lg font-medium">{vehicle?.deviceIdent || 'NA'}</span>
                   <p className="text-sm text-gray-500">Device</p>
                 </div>
               </div>
