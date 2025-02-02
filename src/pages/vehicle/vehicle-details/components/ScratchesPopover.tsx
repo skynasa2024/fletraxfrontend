@@ -1,3 +1,4 @@
+import { ScratchDTO } from '@/api/cars';
 import { KeenIcon } from '@/components';
 import { Popover } from '@mui/material';
 import React from 'react';
@@ -10,72 +11,8 @@ export type Scratch = {
 
 type ScratchesPopoverProps = {
   className?: string;
-  scratches?: Scratch[];
+  scratches?: ScratchDTO[];
 };
-
-const scratches_mock: Scratch[] = [
-  {
-    date: '2021-09-01',
-    description: 'Scratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-01',
-    description: 'Scratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-01',
-    description: 'Scratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-01',
-    description: 'Scratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-01',
-    description:
-      'Scratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumperScratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-01',
-    description: 'Scratch on the front bumper',
-    image: 'https://placehold.co/500'
-  },
-  {
-    date: '2021-09-02',
-    description: 'Scratch on the rear bumper',
-    image: 'https://placehold.co/500'
-  }
-];
 
 export default function ScratchesPopover({ className, scratches }: ScratchesPopoverProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -108,10 +45,10 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
       >
         <div>
           {scratches?.length ? (
-            scratches_mock.map((scratch, index) => (
+            scratches.map((scratch, index) => (
               <div key={index} className="px-3">
                 <ScratchDetailCard {...scratch} />
-                {index < scratches_mock.length - 1 && <hr className="border-gray-200" />}
+                {index < scratches.length - 1 && <hr className="border-gray-200" />}
               </div>
             ))
           ) : (
@@ -123,26 +60,31 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
   );
 }
 
-type ScratchDetailCardProps = {
-  date: string;
-  description: string;
-  image: string;
-};
+function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
+  const formattedUpdatedAt = updatedAt
+    ? new Date(updatedAt).toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
+    : 'Invalid date';
 
-function ScratchDetailCard({ date, description, image }: ScratchDetailCardProps) {
   return (
     <div className="flex gap-4 py-3 justify-start items-start">
       <div className="w-32 h-32 rounded-md overflow-hidden">
-        <img src={image} alt="scratch" className="object-cover" />
+        <img src={image as string} alt="scratch" className="object-cover" />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-start justify-start">
           <span className="bg-gray-100 p-2 h-10 w-10 flex items-center justify-center rounded-lg">
             <KeenIcon icon="calendar" className="text-info text-2xl" />
           </span>
-          <p className="text-sm">{date}</p>
+          <p className="text-sm">{formattedUpdatedAt}</p>
         </div>
-        <p className="text-gray-700 text-md max-w-96">{description}</p>
+        <p className="text-gray-700 text-md max-w-96">{explanationOf}</p>
       </div>
     </div>
   );

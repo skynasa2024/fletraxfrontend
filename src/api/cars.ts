@@ -477,3 +477,19 @@ export const createScratches = async (scratches: ScratchDTO[]): Promise<ScratchD
   );
   return newScratch.data.result;
 };
+
+export const getScratches = async (
+  vehicleId: string,
+  params: OffsetBounds
+): Promise<ScratchDTO[]> => {
+  const scratches = await axios.get<PaginatedResponseModel<ScratchDTO[]>>(
+    `/api/vehicles/scratches/get-by-vehicle-id/${vehicleId}`,
+    {
+      params: {
+        offset: params.start,
+        size: params.end - params.start + 1
+      }
+    }
+  );
+  return scratches.data.result.content.flat();
+};
