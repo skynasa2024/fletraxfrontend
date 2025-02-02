@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import FileList, { FileInfo } from '@/pages/driver/details-components/FileList';
 import { DeviceList } from '@/pages/device/blocks';
+import Toolbar from './Toolbar';
 
 const UserDetailsPage = () => {
   const { id } = useParams();
@@ -58,6 +59,7 @@ const UserDetailsPage = () => {
 
   return (
     <Container className="mb-10 flex flex-col gap-6">
+      <Toolbar />
       <div className="grid md:grid-cols-2 gap-6">
         <div className="card bg-white shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8">
