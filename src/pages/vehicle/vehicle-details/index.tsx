@@ -25,6 +25,7 @@ import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/m
 import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
+import Map from '@/pages/device/Map.tsx';
 
 interface TripData {
   distance: string;
@@ -230,7 +231,9 @@ const VehicleInfo = () => {
         </div>
         <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
           <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
-          <div className="p-4 card hover:shadow-md  w-full">map</div>
+          <div className="p-4 card hover:shadow-md  w-full">
+            <Map />
+          </div>
         </div>
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
