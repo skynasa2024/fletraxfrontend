@@ -28,6 +28,7 @@ export interface Device {
   imei: string;
   name: string;
   vehiclePlate: string;
+  ident: string;
 }
 
 export const getDeviceModel = async (id: string): Promise<DeviceDTO> => {
@@ -46,7 +47,8 @@ export const getDevice = async (id: string): Promise<Device> => {
     id: device.id,
     imei: device.ident,
     name: device.name,
-    vehiclePlate: device.vehiclePlate
+    vehiclePlate: device.vehiclePlate,
+    ident: device.ident
   };
 };
 

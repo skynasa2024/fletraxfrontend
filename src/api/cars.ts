@@ -84,6 +84,7 @@ export interface VehicleDTO {
   owner: string;
   userId: string;
   deviceId: string;
+  deviceIdent: string | null;
   vehicleId: string;
   scratches: any[];
 }

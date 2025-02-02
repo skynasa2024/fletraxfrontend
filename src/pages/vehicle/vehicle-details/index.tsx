@@ -24,6 +24,7 @@ import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import ScratchesPopover from './components/ScratchesPopover.tsx';
 import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
 import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/maintenance/MaintenanceViolation.tsx';
+import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 
 interface TripData {
   distance: string;
@@ -208,12 +209,8 @@ const VehicleInfo = () => {
               </div>
 
               {/* Details */}
-              <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col h-full">
-                <img
-                  className="w-full rounded-lg object-cover h-40 mb-4"
-                  src="https://via.placeholder.com/150"
-                  alt="Map"
-                />
+              <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col gap-4 h-full">
+                <VehicleCurrentLocation deviceId={vehicle?.deviceId} />
                 <div className="flex-grow">
                   {details.map(({ label, value }, index) => (
                     <div key={index} className="flex items-start mb-2">
