@@ -119,7 +119,10 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
             <div className="text-gray-400 text-md">{trip.endDate.toLocaleTimeString()}</div>
           </div>
         </div>
-        <SpeedIndicator speed={trip.maxSpeed || 1} maxSpeed={trip.maxSpeed || 1} />
+        <SpeedIndicator
+          speed={Math.round(trip.maxSpeed) || 1}
+          maxSpeed={Math.round(trip.maxSpeed) || 1}
+        />
       </div>
     );
   };

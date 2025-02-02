@@ -37,14 +37,14 @@ type RadioOption<T> = {
 type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
 
 interface AdditionalVehicleInfo {
-  vehicleImage?: File | string;
+  vehicleImage?: string;
   plate: string;
   status: string;
   hgsNumber: string;
   currentMileage: string;
   maintenanceMileage: string;
   fuelConsumption: number;
-  licenseImageFile?: File | string;
+  licenseImageFile?: string;
 }
 
 export type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
@@ -169,7 +169,7 @@ export interface Scratch {
   place: number;
   explanationOf: string;
   vehicleId: string;
-  image?: File;
+  image?: string;
 }
 
 export interface CarScratchesFormField {
@@ -282,13 +282,7 @@ const AddVehiclePage = () => {
   };
 
   const carScratchesInitialValues: CarScratchesFormField = {
-    scratches: [
-      {
-        place: 1,
-        explanationOf: '',
-        vehicleId: ''
-      }
-    ]
+    scratches: []
   };
 
   const initialValues: AddVehicleForm = {
@@ -342,6 +336,7 @@ const AddVehiclePage = () => {
 
     setIsLoadingSave(true);
     try {
+      let newId: string;
       if (carId && currentVehicle) {
         const updatedVehicle: VehicleDTO = {
           ...vehicle,
@@ -361,16 +356,19 @@ const AddVehiclePage = () => {
         };
 
         if (vehicle.vehicleImage) {
-          updatedVehicle.imageFile = vehicle.vehicleImage as File;
+          updatedVehicle.imageFile = vehicle.vehicleImage;
         }
 
         if (vehicle.licenseImageFile) {
-          updatedVehicle.licenseImageFile = vehicle.licenseImageFile as File;
+          updatedVehicle.licenseImageFile = vehicle.licenseImageFile;
         }
 
-        await updateVehicle(updatedVehicle);
+        const newVehicle = await updateVehicle(updatedVehicle);
+        newId = newVehicle.vehicleId;
 
-        await createScratches(scratches);
+        if (scratches.length > 0) {
+          await createScratches(scratches);
+        }
       } else {
         const vehicleData: Partial<VehicleDTO> = {
           ...vehicle,
@@ -383,16 +381,19 @@ const AddVehiclePage = () => {
         };
 
         if (vehicle.vehicleImage) {
-          vehicleData.imageFile = vehicle.vehicleImage as File;
+          vehicleData.imageFile = vehicle.vehicleImage;
         }
 
         if (vehicle.licenseImageFile) {
-          vehicleData.licenseImageFile = vehicle.licenseImageFile as File;
+          vehicleData.licenseImageFile = vehicle.licenseImageFile;
         }
-        await createVehicle(vehicleData);
-        await createScratches(scratches);
+        const newVehicle = await createVehicle(vehicleData);
+        newId = newVehicle.vehicleId;
+        if (scratches.length > 0) {
+          await createScratches(scratches);
+        }
       }
-      navigate(`/vehicles/vehicle`);
+      navigate(`/vehicles/vehicle/${newId}`);
     } catch (error) {
       console.error('Error saving vehicle:', error);
     } finally {

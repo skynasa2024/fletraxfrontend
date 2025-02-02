@@ -5,7 +5,8 @@ interface UploadedFileIconProps {
 }
 
 const UploadedFileIcon: React.FC<UploadedFileIconProps> = ({ fileExtension }) => {
-  const getColorForExtension = (extension: string) => {
+  const getColorForExtension = (extension?: string) => {
+    if (!extension) return '#9FA5B2';
     switch (extension.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
@@ -45,7 +46,7 @@ const UploadedFileIcon: React.FC<UploadedFileIconProps> = ({ fileExtension }) =>
           fill="white"
           dominantBaseline="middle"
         >
-          {fileExtension.toUpperCase()}
+          {fileExtension ? fileExtension.toUpperCase() : 'File'}
         </text>
       </svg>
     </div>

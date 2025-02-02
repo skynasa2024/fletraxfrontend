@@ -1,17 +1,20 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Settings } from 'lucide-react';
-import { DeleteIcon, EditIcon, MaintenanceIcon, RentIcon, ViolationsIcon } from '../../blocks/svg';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { DeleteIcon, EditIcon, MaintenanceIcon, ViolationsIcon } from '../../blocks/svg';
+import { Container } from '@/components';
+import { deleteVehicle } from '@/api/cars';
 
 const Toolbar = () => {
-  const { vehicleId } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
-    <div>
+    <Container>
       <div className="flex justify-end items-center gap-2 flex-wrap p-4">
-        <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
-          <EditIcon className="w-4 h-4" /> Edit
-        </button>
+        <Link to={`/vehicles/edit/${id}`}>
+          <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
+            <EditIcon className="w-4 h-4" /> Edit
+          </button>
+        </Link>
 
         <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-purple-500 rounded-md">
           <EditIcon className="w-4 h-4" color="#6B46C1" />
@@ -28,21 +31,19 @@ const Toolbar = () => {
           Violations
         </button>
 
-        <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-yellow-500 rounded-md">
-          <RentIcon className="w-4 h-4" />
-          Rent
-        </button>
-
-        <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md">
+        <button
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
+          onClick={async () => {
+            if (!id) return;
+            await deleteVehicle(id);
+            navigate('/vehicles/vehicle');
+          }}
+        >
           <DeleteIcon className="w-4 h-4" />
           Delete
         </button>
-
-        <button className="inline-flex items-center justify-center w-10 h-10 border-2 border-blue-500 bg-blue-500 rounded-md">
-          <Settings className="w-4 h-4 text-white" />
-        </button>
       </div>
-    </div>
+    </Container>
   );
 };
 

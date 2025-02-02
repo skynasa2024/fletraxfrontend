@@ -48,7 +48,7 @@ export interface VehicleDTO {
   id: string;
   plate: string;
   image: string | null;
-  imageFile?: File | string | null;
+  imageFile?: string | null;
   type: RegistrationType;
   status: string;
   brand: string;
@@ -82,8 +82,8 @@ export interface VehicleDTO {
   currentMileage: string;
   maintenanceMileage: string;
   fuelConsumption: number;
-  licenseImage: File | string;
-  licenseImageFile?: File | string;
+  licenseImage?: string;
+  licenseImageFile?: string;
   owner: string;
   userId: string;
   deviceId: string;
@@ -95,8 +95,8 @@ export interface VehicleDTO {
 export interface ScratchDTO {
   id?: string;
   place: number;
-  image?: File | string | null;
-  imageFile?: File | null;
+  image?: string | null;
+  imageFile?: string | null;
   explanationOf: string;
   vehicleId: string;
   createdAt?: string;
@@ -357,7 +357,7 @@ export const getVehicles = async (
 
   const fullVehicleDetails: VehicleDetails[] = vehiclesRes.data.result.content.map((vehicle) => ({
     vehicle: {
-      id: vehicle.id,
+      id: vehicle.vehicleId,
       brandImage: vehicle.image ?? '',
       plate: vehicle.plate,
       imei: 'imei',
@@ -492,4 +492,8 @@ export const getScratches = async (
     }
   );
   return scratches.data.result.content.flat();
+};
+
+export const deleteVehicle = async (id: string): Promise<void> => {
+  await axios.get(`/api/vehicles/cars/delete/${id}`);
 };

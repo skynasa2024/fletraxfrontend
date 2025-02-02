@@ -12,7 +12,7 @@ import Image from '@/components/image/Image';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
-import { getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
+import { deleteVehicle, getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
@@ -124,6 +124,8 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
 }
 
 function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
+  const reload = useDataGrid().fetchServerSideData;
+
   return (
     <div className="flex gap-3 items-center justify-center">
       <Link
@@ -144,7 +146,12 @@ function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
             <KeenIcon className="text-xl" icon="dots-vertical" />
           </MenuToggle>
           <MenuSub className="menu-default">
-            <MenuItem>
+            <MenuItem
+              onClick={async () => {
+                await deleteVehicle(vehicleId);
+                reload();
+              }}
+            >
               <MenuLink>
                 <MenuIcon>
                   <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />

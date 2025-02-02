@@ -24,7 +24,7 @@ interface VehicleMetricsProps {
 
 const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, percentage, color }) => {
   const numericValue = typeof value === 'string' ? value.split(' ')[0] : value;
-  
+
   return (
     <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center">
       <div className="mb-2">
@@ -40,46 +40,47 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
             pathColor: color,
             textColor: '#374151',
             trailColor: '#E5E7EB',
-            pathTransitionDuration: 0.5,
+            pathTransitionDuration: 0.5
           })}
         />
       </div>
-     
     </div>
   );
 };
 
-const VehicleMetrics: React.FC<VehicleMetricsProps> = ({ metrics = {
-  engineHours: '250 Hr',
-  mileage: '157 km',
-  fuelConsumption: '9%',
-  rentedTimes: '7'
-} }) => {
+const VehicleMetrics: React.FC<VehicleMetricsProps> = ({
+  metrics = {
+    engineHours: '250 Hr',
+    mileage: '157 km',
+    fuelConsumption: '9%',
+    rentedTimes: '7'
+  }
+}) => {
   const metricConfigs: MetricCardProps[] = [
-    { 
-      icon: EngineHours, 
-      label: 'Engine Hours', 
+    {
+      icon: EngineHours,
+      label: 'Engine Hours',
       value: metrics.engineHours,
       percentage: 70,
       color: '#F87171'
     },
-    { 
-      icon: Mileage, 
-      label: 'Mileage', 
+    {
+      icon: Mileage,
+      label: 'Mileage',
       value: metrics.mileage,
       percentage: 80,
       color: '#60A5FA'
     },
-    { 
-      icon: FuelConsumption, 
-      label: 'Fuel Consumption', 
+    {
+      icon: FuelConsumption,
+      label: 'Fuel Consumption',
       value: metrics.fuelConsumption,
       percentage: 25,
       color: '#A78BFA'
     },
-    { 
-      icon: RentedTimes, 
-      label: 'Rented times', 
+    {
+      icon: RentedTimes,
+      label: 'Rented times',
       value: metrics.rentedTimes,
       percentage: 50,
       color: '#FBBF24'

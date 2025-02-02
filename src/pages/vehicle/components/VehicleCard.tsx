@@ -1,4 +1,4 @@
-import { updateVehicleStatus, VehicleDetails } from '@/api/cars';
+import { deleteVehicle, updateVehicleStatus, VehicleDetails } from '@/api/cars';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import Image from '@/components/image/Image';
@@ -86,18 +86,29 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
         </div>
       </div>
       <div className="text-xs border-t grid grid-cols-3 w-full overflow-hidden rounded-b-2xl">
-        <a href="#" className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50">
+        <Link
+          to={'/vehicles/vehicle/' + vehicle.vehicle.id}
+          className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50"
+        >
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
-        </a>
+        </Link>
         <Link
-          to={'vehicles/edit/' + vehicle.vehicle.id}
+          to={'/vehicles/edit/' + vehicle.vehicle.id}
           className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50"
         >
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
         </Link>
-        <a href="#" className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50">
+        <a
+          href="#"
+          onClick={async (e) => {
+            e.preventDefault();
+            await deleteVehicle(vehicle.vehicle.id);
+            refetchVehicles();
+          }}
+          className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50"
+        >
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
           <span>Delete</span>
         </a>

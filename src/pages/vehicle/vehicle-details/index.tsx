@@ -10,15 +10,13 @@ import {
   ColorIcon,
   TypeIcon
 } from '../blocks/svg/index.ts';
-
+import FileList, { FileInfo } from '@/pages/driver/details-components/FileList.tsx';
 import VehicleMetrics from '../blocks/details-components/VehicleMetrics.tsx';
-import FileList from '../blocks/details-components/FileList.tsx';
 import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
 import TripList from '../blocks/details-components/TripList.tsx';
 import { useParams } from 'react-router-dom';
-import BrandLogo from '../blocks/Brand logo.tsx';
 import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
 import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/maintenance/MaintenanceViolation.tsx';
@@ -28,26 +26,6 @@ import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
 import Map from '@/pages/device/Map.tsx';
 import { Device, getDevice } from '@/api/devices.ts';
 
-interface TripData {
-  distance: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  speed: number;
-}
-
-const trips: TripData[] = Array(10)
-  .fill(null)
-  .map(() => ({
-    distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`,
-    date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
-      .toISOString()
-      .split('T')[0],
-    startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-    endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-    speed: Math.floor(Math.random() * 101) + 50,
-    maxSpeed: Math.floor(Math.random() * 81) + 100
-  }));
 const geofences = [
   'ISTANBUL',
   'ANKARA',
@@ -59,25 +37,6 @@ const geofences = [
   'ANKARA',
   'IZMIR',
   'ANTALYA'
-];
-const getScoreColor = (score: number) => {
-  if (score <= 50) return 'text-orange-500';
-  if (score <= 100) return 'text-yellow-500';
-  return 'text-green-500';
-};
-const files = [
-  {
-    name: 'file-name1.pdf',
-    size: '32mb',
-    version: 'v1.2.2',
-    type: 'pdf'
-  },
-  {
-    name: 'file-name2.JPG',
-    size: '32mb',
-    version: 'v1.2.2',
-    type: 'jpg'
-  }
 ];
 const VehicleInfo = () => {
   const { id } = useParams();
@@ -146,6 +105,16 @@ const VehicleInfo = () => {
     }
   ];
 
+  const files = useMemo(() => {
+    if (!vehicle) return [];
+
+    const files: FileInfo[] = [];
+
+    files.push({ name: 'License', url: (vehicle?.licenseImageFile as string) ?? undefined });
+
+    return files;
+  }, [vehicle]);
+
   useEffect(() => {
     (async () => {
       if (vehicle?.deviceId) {
@@ -160,16 +129,11 @@ const VehicleInfo = () => {
       <Toolbar />
       <div className="px-10">
         <div className="flex flex-col lg:flex-row">
-          <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2">
-            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3">
+          <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2 p-4">
+            <div className="flex justify-between">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
                 <CarPlate plate={vehicle?.plate || 'NA'} />
-              </div>
-
-              {/* Brand logo */}
-              <div className="flex items-center justify-center">
-                <BrandLogo brand="toyota" size="lg" />
               </div>
 
               {/* Device Section */}
@@ -180,10 +144,9 @@ const VehicleInfo = () => {
                   <p className="text-sm text-gray-500">Device</p>
                 </div>
               </div>
-
-              {/* Image Section */}
-              <VehicleScratchesDisplay vehicleId={vehicle?.vehicleId} />
             </div>
+            {/* Image Section */}
+            <VehicleScratchesDisplay vehicleId={vehicle?.vehicleId} />
           </div>
           <div className="container px-2 mx-auto pl-5 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}
@@ -248,8 +211,8 @@ const VehicleInfo = () => {
         </div>
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
-            <h2 className="text-xl font-semibold mb-4 ps-4">Performance Metrics</h2>
-            <FileList files={files} onView={(file) => console.log('Viewing file:', file.name)} />
+            <h2 className="text-xl font-semibold mb-4 ps-4">Documents</h2>
+            <FileList files={files} />
           </div>
           <VehicleMetrics
             metrics={{
@@ -262,13 +225,13 @@ const VehicleInfo = () => {
         </div>
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
-            <GeofenceList
+            {/* <GeofenceList
               items={geofences}
               title="Geofences"
               className="mx-2"
               onItemClick={(item) => console.log(`Selected: ${item}`)}
               searchPlaceholder="Search..."
-            />
+            /> */}
           </div>
           <div className="w-2/3">
             <MaintenanceViolationTable id={vehicle?.vehicleId} />

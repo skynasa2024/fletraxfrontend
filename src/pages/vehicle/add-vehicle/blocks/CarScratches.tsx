@@ -13,7 +13,7 @@ interface CarScratchesProps {
 
 const CarScratches: React.FC<CarScratchesProps> = ({ formikProps }) => {
   const { values } = formikProps;
-  const [selectedPlace, setSelectedPlace] = useState<string>('8');
+  const [selectedPlace, setSelectedPlace] = useState<string>('1');
 
   const handleAddPlace = (arrayHelpers: ArrayHelpers) => {
     const placeNumber = parseInt(selectedPlace, 10);
@@ -201,7 +201,11 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
               >
                 {scratch.image ? (
                   <div className="flex items-center justify-center gap-2 border border-gray-600 p-4 h-16 rounded-lg">
-                    <UploadedFilePreview file={scratch.image} />
+                    <UploadedFilePreview
+                      file={
+                        typeof scratch.image === 'string' ? new File([], 'file') : scratch.image
+                      }
+                    />
                     <button
                       type="button"
                       onClick={(e) => {
@@ -255,7 +259,7 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
 };
 
 type UploadedFilePreviewProps = {
-  file: File;
+  file?: File;
 };
 
 function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
@@ -269,11 +273,15 @@ function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
     setIsPreviewOpen(false);
   };
 
+  if (!file) {
+    return null;
+  }
+
   return (
     <>
       <div className="flex gap-4 items-center justify-between grow">
         <div className="flex gap-4 items-center">
-          <UploadedFileIcon fileExtension={file.type.split('/')[1]} />
+          <UploadedFileIcon fileExtension={file.type?.split('/')?.[1]} />
           <span className="max-w-44 text-ellipsis truncate">{file.name}</span>
         </div>
 

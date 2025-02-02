@@ -6,5 +6,5 @@ export const getColor = (index: string) => {
   for (let i = 0; i < index.length; i++) {
     hash = index.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return PolylineColors[hash % PolylineColors.length];
+  return PolylineColors[Math.abs(hash) % PolylineColors.length];
 };
