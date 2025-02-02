@@ -1,5 +1,3 @@
-import { MaintenanceViolationTable } from '../blocks/maintenance/MaintenanceViolation.tsx';
-
 import Toolbar from './components/Toolbar.tsx';
 import {
   ModelIcon,
@@ -25,6 +23,7 @@ import React, { useEffect, useState } from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import ScratchesPopover from './components/ScratchesPopover.tsx';
 import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
+import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/maintenance/MaintenanceViolation.tsx';
 
 interface TripData {
   distance: string;
@@ -85,7 +84,7 @@ const VehicleInfo = () => {
     (async () => {
       try {
         if (id) {
-          const res = await getVehicleDetails(parseInt(id));
+          const res = await getVehicleDetails(id);
           setVehicle(res);
         }
       } catch (err) {
@@ -299,7 +298,7 @@ const VehicleInfo = () => {
             />
           </div>
           <div className="w-2/3">
-            <MaintenanceViolationTable />
+            <MaintenanceViolationTable id={vehicle?.vehicleId} />
           </div>
         </div>
       </div>

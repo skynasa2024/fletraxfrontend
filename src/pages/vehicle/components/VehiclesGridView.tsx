@@ -123,7 +123,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown({ vehicleId }: { vehicleId: number }) {
+function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
   return (
     <div className="flex gap-3 items-center justify-center">
       <Link
