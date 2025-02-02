@@ -2,16 +2,13 @@ import Map from '@/pages/device/Map';
 import { useMqttProvider } from '@/providers/MqttProvider';
 import { useEffect, useState } from 'react';
 import { Buffer } from 'buffer';
-import { Device, getDevice } from '@/api/devices';
 
-export default function VehicleCurrentLocation({ deviceId }: { deviceId?: string | null }) {
+export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: string | null }) {
   const { mqttClient } = useMqttProvider();
 
   const [parameters, setParameters] = useState<
     Record<string, { data: any; timestamp: Date; latest: boolean }>
   >({});
-
-  const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
 
   const onMessage = (topic: string, message: Buffer) => {
     const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
@@ -29,7 +26,7 @@ export default function VehicleCurrentLocation({ deviceId }: { deviceId?: string
   useEffect(() => {
     if (!mqttClient) return;
 
-    const topic = `user/monitoring/+/${currentDevice?.ident}`;
+    const topic = `user/monitoring/+/${deviceIdent}`;
     if (!topic) return;
     if (mqttClient.connected) {
       mqttClient.subscribeAsync(topic);
@@ -46,16 +43,7 @@ export default function VehicleCurrentLocation({ deviceId }: { deviceId?: string
       mqttClient.unsubscribeAsync(topic);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDevice?.ident, mqttClient]);
-
-  useEffect(() => {
-    (async () => {
-      if (deviceId) {
-        const res = await getDevice(deviceId);
-        setCurrentDevice(res);
-      }
-    })();
-  }, [deviceId]);
+  }, [deviceIdent, mqttClient]);
 
   return (
     <Map

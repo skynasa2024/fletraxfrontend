@@ -26,6 +26,7 @@ import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
 import Map from '@/pages/device/Map.tsx';
+import { Device, getDevice } from '@/api/devices.ts';
 
 interface TripData {
   distance: string;
@@ -81,6 +82,7 @@ const files = [
 const VehicleInfo = () => {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState<VehicleDTO | null>();
+  const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -144,6 +146,15 @@ const VehicleInfo = () => {
     }
   ];
 
+  useEffect(() => {
+    (async () => {
+      if (vehicle?.deviceId) {
+        const res = await getDevice(vehicle.deviceId);
+        setCurrentDevice(res);
+      }
+    })();
+  }, [vehicle]);
+
   return (
     <>
       <Toolbar />
@@ -165,7 +176,7 @@ const VehicleInfo = () => {
               <div className="flex items-center space-x-2">
                 <div className="bg-blue-100 p-4 rounded-full"></div>
                 <div>
-                  <span className="text-lg font-medium">{vehicle?.deviceIdent || 'NA'}</span>
+                  <span className="text-lg font-medium">{currentDevice?.ident || 'NA'}</span>
                   <p className="text-sm text-gray-500">Device</p>
                 </div>
               </div>
@@ -188,7 +199,7 @@ const VehicleInfo = () => {
 
               {/* Details */}
               <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col gap-4 h-full">
-                <VehicleCurrentLocation deviceId={vehicle?.deviceId} />
+                <VehicleCurrentLocation deviceIdent={currentDevice?.ident} />
                 <div className="flex-grow">
                   {details.map(({ label, value }, index) => (
                     <div key={index} className="flex items-start mb-2">
@@ -230,7 +241,7 @@ const VehicleInfo = () => {
           </div>
         </div>
         <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
-          <TripList trips={trips} totalTrips={450} className="sm:w-full mt-4" title="Trips" />
+          <TripList deviceIdent={currentDevice?.ident} />
           <div className="p-4 card hover:shadow-md  w-full">
             <Map />
           </div>

@@ -1,28 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import MapPin from '../svg/MapPin.tsx';
-
-interface Trip {
-  distance: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  speed: number;
-  maxSpeed?: number;
-}
+import { List, AutoSizer, InfiniteLoader } from 'react-virtualized';
+import MapPin from '../svg/MapPin';
+import { searchTrips, Trip } from '@/api/trips';
 
 interface TripListProps {
-  trips: Trip[];
-  totalTrips?: number;
-  className?: string;
-  title?: string;
-  data?: {
-    currentPage?: number;
-    totalPages?: number;
-    itemsPerPage?: number;
-  };
-  onPageChange?: (page: number) => void;
+  deviceIdent?: string;
 }
 
 const SpeedIndicator = ({ speed, maxSpeed = 280 }: { speed: number; maxSpeed?: number }) => (
@@ -32,84 +16,147 @@ const SpeedIndicator = ({ speed, maxSpeed = 280 }: { speed: number; maxSpeed?: n
       maxValue={maxSpeed}
       text={`${speed}`}
       styles={{
-        path: {
-          stroke: speed > 120 ? 'red' : '#FFB200' // Set color to red if speed > 120
-        },
-        text: {
-          fontSize: '24px',
-          fill: '#000',
-          dominantBaseline: 'middle',
-          textAnchor: 'middle'
-        },
-        trail: {
-          stroke: '#F5F5F5'
-        }
+        path: { stroke: speed > 120 ? 'red' : '#FFB200' },
+        text: { fontSize: '24px', fill: '#000', dominantBaseline: 'middle', textAnchor: 'middle' },
+        trail: { stroke: '#F5F5F5' }
       }}
     />
     <div className="text-center text-xs mt-1">kmh</div>
   </div>
 );
 
-const TripList: React.FC<TripListProps> = ({
-  trips,
-  totalTrips,
-  className = '',
-  title = 'Trips',
-  data,
-  onPageChange
-}) => {
-  return (
-    <div className={`p-4 card hover:shadow-md  lg:w-1/2 ${className}`}>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">{title}</h2>
-        <span className="text-gray-500 text-sm">{totalTrips || trips.length} Trips</span>
-      </div>
+const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [paginationMarker, setPaginationMarker] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-      <div className="space-y-3 max-h-96 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        {trips.map((trip, index) => (
-          <div
-            key={index}
-            className="p-4 rounded-lg flex justify-between items-center transition-colors duration-200"
-          >
-            <div className="flex items-center gap-4 w-full">
-              <div className="w-1/3 flex items-center space-x-4">
-                <div className="text-lg font-medium">{trip.distance}</div>
-                <MapPin />
-              </div>
-              <div className="w-1/3 text-gray-800 text-lg">
-                {trip.date}
-                <br />
-                <div className="text-gray-400 text-md">{trip.startTime}</div>
-              </div>
-              <div className="w-1/3 text-gray-800 text-lg">
-                {trip.date}
-                <br />
-                <div className="text-gray-400 text-md">{trip.endTime}</div>
-              </div>
-            </div>
-            <SpeedIndicator speed={trip.speed} maxSpeed={trip.maxSpeed} />
-          </div>
-        ))}
+  useEffect(() => {
+    if (!deviceIdent) return;
+    (async () => {
+      const groups = await searchTrips({ query: deviceIdent });
+      const newTrips = groups.map((group) => group.trips).flat();
+      setTrips(newTrips);
+      if (groups.length < 2) {
+        setHasMore(false);
+      } else {
+        const lastGroup = groups[groups.length - 1];
+        setPaginationMarker(lastGroup.id);
+      }
+    })();
+  }, [deviceIdent]);
 
-        {trips.length === 0 && (
-          <div className="text-center text-gray-500 py-4">No trips available</div>
-        )}
-      </div>
+  const loadMoreRows = async () => {
+    if (!deviceIdent || loading || !hasMore) return;
+    setLoading(true);
+    const params: any = { query: deviceIdent };
+    if (paginationMarker) {
+      params.endDate = paginationMarker;
+    }
+    const groups = await searchTrips(params);
+    const newTrips = groups.map((group) => group.trips).flat();
+    if (newTrips.length === 0) {
+      setHasMore(false);
+    } else {
+      setTrips((prev) => [...prev, ...newTrips]);
+      const lastGroup = groups[groups.length - 1];
+      setPaginationMarker(lastGroup.id);
+      if (groups.length < 2) {
+        setHasMore(false);
+      }
+    }
+    setLoading(false);
+  };
 
-      {data && data.totalPages && data.totalPages > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
-          {[...Array(data.totalPages)].map((_, i) => (
-            <button
-              key={i}
-              onClick={() => onPageChange?.(i + 1)}
-              className={`w-8 h-8 rounded-full ${
-                data.currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+  const loadMoreRowsWrapper = ({
+    startIndex,
+    stopIndex
+  }: {
+    startIndex: number;
+    stopIndex: number;
+  }) => {
+    return loadMoreRows();
+  };
+
+  const isRowLoaded = ({ index }: { index: number }) => index < trips.length;
+
+  const rowRenderer = ({
+    index,
+    key,
+    style
+  }: {
+    index: number;
+    key: string;
+    style: React.CSSProperties;
+  }) => {
+    if (!isRowLoaded({ index })) {
+      return (
+        <div key={key} style={style} className="p-4 text-center text-gray-500">
+          Loading...
         </div>
+      );
+    }
+    const trip = trips[index];
+    return (
+      <div
+        key={key}
+        style={style}
+        className="p-4 rounded-lg flex justify-between items-center border-b border-gray-200"
+      >
+        <div className="flex items-center gap-4 w-full">
+          <div className="flex items-center space-x-4 grow">
+            <div className="text-lg font-medium w-16">{trip.mileage.toFixed(3)} KM</div>
+            <MapPin />
+          </div>
+          <div className="w-1/3 text-gray-800 text-lg">
+            {trip.startDate.toLocaleDateString()}
+            <br />
+            <div className="text-gray-400 text-md">{trip.startDate.toLocaleTimeString()}</div>
+          </div>
+          <div className="w-1/3 text-gray-800 text-lg">
+            {trip.endDate.toLocaleDateString()}
+            <br />
+            <div className="text-gray-400 text-md">{trip.endDate.toLocaleTimeString()}</div>
+          </div>
+        </div>
+        <SpeedIndicator speed={trip.maxSpeed || 1} maxSpeed={trip.maxSpeed || 1} />
+      </div>
+    );
+  };
+
+  const rowCount = hasMore ? trips.length + 1 : trips.length;
+
+  return (
+    <div className="p-4 card hover:shadow-md lg:w-1/2 mt-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Trips</h2>
+        <span className="text-gray-500 text-sm">{trips.length} Trips</span>
+      </div>
+      {trips.length === 0 && !hasMore ? (
+        <div className="text-center text-gray-500 py-4">No trips available</div>
+      ) : (
+        <InfiniteLoader
+          isRowLoaded={isRowLoaded}
+          loadMoreRows={loadMoreRowsWrapper}
+          rowCount={rowCount}
+          threshold={2}
+        >
+          {({ onRowsRendered, registerChild }) => (
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  height={400}
+                  onRowsRendered={onRowsRendered}
+                  ref={registerChild}
+                  rowCount={rowCount}
+                  rowHeight={100}
+                  rowRenderer={rowRenderer}
+                  width={width}
+                />
+              )}
+            </AutoSizer>
+          )}
+        </InfiniteLoader>
       )}
     </div>
   );
