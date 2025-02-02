@@ -1,6 +1,5 @@
 import { getUserModel, UserModel } from '@/api/user';
 import { Container } from '@/components';
-import Image from '@/components/image/Image';
 import { toAbsoluteUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -63,23 +62,12 @@ const UserDetailsPage = () => {
         <div className="card bg-white shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8">
             <div className="flex gap-3 items-center">
-              <Image
-                // src={user.photoFile ?? undefined}
-                alt={user.name}
-                title={user.name}
-                className="rounded-lg object-cover mb-4 size-[160px]"
-                fallback={
-                  <div className="rounded-lg object-cover mb-4 size-[160px ] bg-neutral-200 overflow-hidden flex items-center justify-center">
-                    <img src={toAbsoluteUrl('/media/avatars/avatar-placeholder.png')} />
-                  </div>
-                }
-              />
               <div>
                 <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
                 <p className="text-gray-400">{user.country}</p>
               </div>
             </div>
-            <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4 m-5">
+            <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4 mt-4">
               <h2 className="text-xl font-semibold mb-4">Documents</h2>
               <FileList files={files} />
             </div>

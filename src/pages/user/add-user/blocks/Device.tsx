@@ -215,7 +215,7 @@ const Device = ({ user }: AddUserPageProps) => {
                                   type="button"
                                   className="btn btn-lg btn-icon btn-outline btn-warning"
                                   onClick={async () => {
-                                    await unlinkDevice(user!.id, device.ident);
+                                    await unlinkDevice(user!.parentId || 'null', device.ident);
                                     update();
                                   }}
                                 >
