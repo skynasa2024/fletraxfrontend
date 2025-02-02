@@ -97,6 +97,9 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
       if (data && totalCount) {
         setData(data);
         setTotalRows(totalCount);
+      } else {
+        setData([]);
+        setTotalRows(0);
       }
     } catch (error) {
       setLoading(false);
@@ -190,13 +193,13 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
   }, [table.getState().pagination]);
 
   // Handle data loading (trigger loading when data is being fetched)
-  useEffect(() => {
-    if (data.length === 0) {
-      setLoading(true);
-    } else {
-      setLoading(false); // Data loaded
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data.length === 0) {
+  //     setLoading(true);
+  //   } else {
+  //     setLoading(false); // Data loaded
+  //   }
+  // }, [data]);
 
   useEffect(() => {
     const allRowIds = table.getRowModel().rows.map((row) => row.id);
