@@ -17,7 +17,7 @@ import { Demo1Layout } from '@/layouts/demo1';
 import { ErrorsRouting } from '@/errors';
 import { MonitoringPage } from '@/pages/monitoring/MonitoringPage';
 import UserDetailsPage from '@/pages/user/blocks/UserDetailsPage';
-import VehicleDetailsPage from '@/pages/vehicle/blocks/VehicleDetailsPage';
+import VehicleDetailsPage from '@/pages/vehicle/vehicle-details';
 import DriverDetailsPage from '@/pages/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
 import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
