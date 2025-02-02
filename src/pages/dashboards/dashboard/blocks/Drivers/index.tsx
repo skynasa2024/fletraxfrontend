@@ -4,11 +4,12 @@ import { toAbsoluteUrl } from '@/utils';
 import { deleteDriver, DriverDetails, getDrivers } from '@/api/drivers';
 import { DriverCard } from './DriverCard';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
+import { KeenIcon } from '@/components';
 
 const DriverList = () => {
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
   const remoteRowCount = useMemo(() => drivers?.totalCount ?? 0, [drivers]);
-  const [offset, setOffset] = useState({ start: 0, end: 10 });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isRowLoaded = ({ index }: { index: number }) => !!drivers?.data[index];
   const loadMoreRows = async ({
@@ -19,16 +20,21 @@ const DriverList = () => {
     stopIndex: number;
   }) => {
     const drivers = await getDrivers({ start: startIndex, end: stopIndex });
-    setDrivers((prev) => ({
-      data: [...(prev?.data ?? []), ...drivers.data],
-      totalCount: drivers.totalCount
-    }));
-    setOffset({ start: startIndex, end: stopIndex });
+    setDrivers((prev) => {
+      const data = prev?.data ?? [];
+      drivers.data.forEach((driver, index) => {
+        data[startIndex + index] = driver;
+      });
+      return {
+        data,
+        totalCount: drivers.totalCount
+      };
+    });
   };
 
   useEffect(() => {
-    getDrivers({ start: 0, end: 10 }).then(setDrivers);
-  }, []);
+    getDrivers({ start: 0, end: 10, search: searchQuery }).then(setDrivers);
+  }, [searchQuery]);
 
   return (
     <div className="card">
@@ -40,10 +46,23 @@ const DriverList = () => {
             {(drivers?.totalCount ?? 0 > 1) ? 'customers' : 'customer'}
           </h4>
         </div>
-        <button className="btn btn-info px-4">
-          <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-          Add Customer
-        </button>
+        <div className="flex gap-7 items-center">
+          <div className="input max-w-48">
+            <KeenIcon icon="magnifier" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <a href="/drivers/add-driver">
+            <button className="btn btn-info px-4">
+              <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
+              Add Driver
+            </button>
+          </a>
+        </div>
       </div>
 
       <div className="card-body pt-2 px-6 pb-3">
@@ -63,7 +82,7 @@ const DriverList = () => {
                   columnCount={drivers?.totalCount ?? 0}
                   columnWidth={402}
                   rowCount={1}
-                  rowHeight={271}
+                  rowHeight={291}
                   onSectionRendered={({ columnOverscanStartIndex, columnOverscanStopIndex }) =>
                     onRowsRendered({
                       startIndex: columnOverscanStartIndex,
@@ -76,6 +95,10 @@ const DriverList = () => {
                         <DriverCard
                           driver={drivers.data[index]}
                           onDelete={async () => {
+                            const offset = {
+                              start: Math.max(0, index - 10),
+                              end: index + 10
+                            };
                             await deleteDriver(drivers.data[index].id);
                             const driverRequest = await getDrivers(offset);
                             let newDrivers: Paginated<DriverDetails> = {

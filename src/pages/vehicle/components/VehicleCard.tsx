@@ -5,7 +5,6 @@ import Image from '@/components/image/Image';
 import { KeenIcon } from '@/components';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
-// import { useNavigate } from 'react-router';
 
 type VehicleCardProps = {
   vehicle?: VehicleDetails;
@@ -14,11 +13,6 @@ type VehicleCardProps = {
 };
 
 export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: VehicleCardProps) {
-  // const navigate = useNavigate();
-  const handleViewVehicle = () => {
-    // navigate(`/vehicle/${vehicle?.vehicle.id}`);
-  };
-
   if (!vehicle) {
     return (
       <div className="m-2 flex hover:shadow-md h-full w-full flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
@@ -91,11 +85,7 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
         </div>
       </div>
       <div className="text-xs border-t grid grid-cols-3 w-full overflow-hidden rounded-b-2xl">
-        <a
-          href="#"
-          onClick={handleViewVehicle}
-          className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50"
-        >
+        <a href="#" className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>

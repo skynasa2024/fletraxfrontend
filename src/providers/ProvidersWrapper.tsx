@@ -11,6 +11,8 @@ import {
   TranslationProvider
 } from '@/providers';
 import { HelmetProvider } from 'react-helmet-async';
+import { MqttProvider } from './MqttProvider';
+import { DeviceProvider } from './DeviceProvider';
 
 const queryClient = new QueryClient();
 
@@ -24,7 +26,11 @@ const ProvidersWrapper = ({ children }: PropsWithChildren) => {
               <HelmetProvider>
                 <LayoutProvider>
                   <LoadersProvider>
-                    <MenusProvider>{children}</MenusProvider>
+                    <DeviceProvider>
+                      <MqttProvider>
+                        <MenusProvider>{children}</MenusProvider>
+                      </MqttProvider>
+                    </DeviceProvider>
                   </LoadersProvider>
                 </LayoutProvider>
               </HelmetProvider>

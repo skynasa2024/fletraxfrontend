@@ -12,27 +12,34 @@ const AppRouting = (): ReactElement => {
   const path = location.pathname.trim();
 
   const init = async () => {
-    setProgressBarLoader(true);
-
     try {
       if (verify) {
         await verify();
       }
     } catch {
       throw new Error('Something went wrong!');
-    } finally {
-      setPreviousLocation(path);
+    }
+  };
 
-      if (path === previousLocation) {
-        setPreviousLocation('');
-      }
+  const initLocation = async () => {
+    setProgressBarLoader(true);
+
+    setPreviousLocation(path);
+
+    if (path === previousLocation) {
+      setPreviousLocation('');
     }
   };
 
   useEffect(() => {
-    init();
+    initLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
+
+  useEffect(() => {
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setProgressBarLoader(false);

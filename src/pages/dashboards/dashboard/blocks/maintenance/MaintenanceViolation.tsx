@@ -4,7 +4,11 @@ import { ButtonRadioGroup } from '../ButtonRadioGroup';
 import { ViolationTable } from './ViolationTable';
 import { MaintenanceTable } from './MaintenanceTable';
 
-const MaintenanceViolationTable = () => {
+export interface MaintenanceViolationTableProps {
+  id?: string;
+}
+
+const MaintenanceViolationTable = ({ id }: MaintenanceViolationTableProps) => {
   const [selection, setSelection] = useState('Maintenance');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -31,8 +35,8 @@ const MaintenanceViolationTable = () => {
       </div>
 
       <div className="card-body h-full">
-        {selection === 'Violation' && <ViolationTable searchQuery={searchQuery} />}
-        {selection === 'Maintenance' && <MaintenanceTable searchQuery={searchQuery} />}
+        {selection === 'Violation' && <ViolationTable searchQuery={searchQuery} id={id} />}
+        {selection === 'Maintenance' && <MaintenanceTable searchQuery={searchQuery} id={id} />}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
-import { format, formatRelative } from 'date-fns';
+import { formatRelative } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { toAbsoluteUrl } from '@/utils';
 import { TripGroup } from '@/api/trips';
 import { enGB } from 'date-fns/locale/en-GB';
@@ -7,6 +8,7 @@ import { Collapse } from '@mui/material';
 import { KeenIcon } from '@/components';
 import { useTripsContext } from '../providers/TripsContext';
 import { useAnimationContext } from '../providers/AnimationContext';
+import { useAuthContext } from '@/auth';
 
 interface TripCardProps {
   tripGroup: TripGroup;
@@ -30,6 +32,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { setSelectedTrip, selectedTrip } = useTripsContext();
   const { play, playing, stop } = useAnimationContext();
+  const { currentUser } = useAuthContext();
 
   return (
     <div
@@ -87,7 +90,11 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {format(tripGroup.trips[0].startDate, 'yyyy/MM/dd')}
+              {formatInTimeZone(
+                new Date(+tripGroup.trips[0].startDate * 1000),
+                currentUser!.timezone,
+                'yyyy/MM/dd'
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -161,11 +168,19 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex gap-1 items-center">
                     <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-                    {format(trip.startDate, 'yyyy/MM/dd HH:mm:ss')}
+                    {formatInTimeZone(
+                      new Date(+trip.startDate * 1000),
+                      currentUser!.timezone,
+                      'yyyy/MM/dd HH:mm:ss'
+                    )}
                   </div>
                   <div className="flex gap-1 items-center">
                     <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
-                    {format(trip.endDate, 'yyyy/MM/dd HH:mm:ss')}
+                    {formatInTimeZone(
+                      new Date(+trip.endDate * 1000),
+                      currentUser!.timezone,
+                      'yyyy/MM/dd HH:mm:ss'
+                    )}
                   </div>
                   <div className="flex gap-1 items-center">
                     <img src={toAbsoluteUrl('/media/icons/meter.svg')} />

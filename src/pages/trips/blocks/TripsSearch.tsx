@@ -8,8 +8,9 @@ interface TripsSearchProps {
   // eslint-disable-next-line no-unused-vars
   setSearch: (value: string) => void;
   onSearch?: () => void;
+  onSelectDevice?: (device: MonitoringDTO) => void;
 }
-export const TripsSearch = ({ search, setSearch, onSearch }: TripsSearchProps) => {
+export const TripsSearch = ({ search, setSearch, onSearch, onSelectDevice }: TripsSearchProps) => {
   const [devices, setDevices] = useState<MonitoringDTO[]>();
   const filteredDevices = useMemo(() => {
     return devices?.filter(
@@ -63,6 +64,7 @@ export const TripsSearch = ({ search, setSearch, onSearch }: TripsSearchProps) =
               onClick={() => {
                 setSearch(device.ident);
                 setHovered(false);
+                onSelectDevice?.(device);
               }}
             >
               <CarPlate plate={device.vehiclePlate} />

@@ -7,7 +7,7 @@ type Props = MarkerProps & RefAttributes<L.Marker<any>>;
 // see https://github.com/bbecquet/Leaflet.RotatedMarker/issues/23#issuecomment-1011836375
 export const RotatableMarker = forwardRef(
   ({ children, ...props }: Props, forwardRef: ForwardedRef<any>) => {
-    const markerRef = useRef<L.Marker>();
+    const markerRef = useRef<L.Marker>(null);
 
     const { rotationAngle, rotationOrigin } = props;
     useEffect(() => {

@@ -1,5 +1,5 @@
 import { VehicleLocation } from '@/api/cars';
-import { User, getUsers } from '@/api/user';
+import { User, getMonitoringUsers } from '@/api/user';
 import {
   createContext,
   PropsWithChildren,
@@ -10,11 +10,12 @@ import {
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import mqtt from 'mqtt';
 import { getMonitoringDevices } from '@/api/devices';
+import { useMqttProvider } from '@/providers/MqttProvider';
+import { Buffer } from 'buffer';
 
 interface MqttResponse {
-  device_id: number;
+  device_id: string;
   device_name: string;
   engine_ignition_status: string;
   existing_kilometers: string;
@@ -78,7 +79,7 @@ const defaultLocation: VehicleLocation = {
     speed: 0
   },
   vehicle: {
-    id: 0,
+    id: '',
     imei: '',
     name: '',
     brandImage: '',
@@ -99,22 +100,8 @@ const MonitoringContext = createContext<MonitoringContextProps>({
 export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [clients, setClients] = useState<UserWithDevices[]>([]);
-  const [filteredClientsNames, setFilteredClientsNames] = useState<number[]>();
-  const filteredClients = useMemo(() => {
-    if (!filteredClientsNames) {
-      return clients;
-    }
-    return clients.filter((c) => filteredClientsNames.includes(c.id));
-  }, [clients, filteredClientsNames]);
-  const [clientToLocations, setClientToLocations] = useState<Record<number, string[]>>({});
+  const [clientToLocations, setClientToLocations] = useState<Record<string, string[]>>({});
   const [locations, setLocations] = useState<VehicleLocation[]>([]);
-  const [filteredLocationsImei, setFilteredLocationsImei] = useState<string[]>();
-  const filteredLocations = useMemo(() => {
-    if (!filteredLocationsImei) {
-      return locations;
-    }
-    return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
-  }, [locations, filteredLocationsImei]);
   const [showImei, setShowImei] = useState(true);
   const selectedClient = useMemo(
     () => clients.find((c) => c.name === searchParams.get('client')),
@@ -124,17 +111,60 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     () => locations.find((v) => v.vehicle.imei === searchParams.get('location')),
     [locations, searchParams]
   );
-  const mqttClient = useMemo(
-    () =>
-      mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-        username: 'admin',
-        password: 'fletrax159',
-        clean: true,
-        keepalive: 60,
-        protocolVersion: 5
-      }),
-    []
+  const searchQuery = useMemo(() => searchParams.get('q') || '', [searchParams]);
+  const setSearchQuery = useCallback(
+    (query: string) => {
+      setSearchParams((params) => {
+        query ? params.set('q', query) : params.delete('q');
+        return params;
+      });
+    },
+    [setSearchParams]
   );
+  const searchTarget = useMemo(() => searchParams.get('target') || 'Vehicle', [searchParams]);
+  const setSearchTarget = useCallback(
+    (target: string) => {
+      setSearchParams((params) => {
+        target ? params.set('target', target) : params.delete('target');
+        return params;
+      });
+    },
+    [setSearchParams]
+  );
+  const filteredClientsNames = useMemo(() => {
+    if (!searchQuery || searchTarget !== 'User') {
+      return null;
+    }
+    return clients
+      .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      .map((c) => c.id);
+  }, [clients, searchQuery, searchTarget]);
+  const filteredClients = useMemo(() => {
+    if (!filteredClientsNames) {
+      return clients;
+    }
+    return clients.filter((c) => filteredClientsNames.includes(c.id));
+  }, [clients, filteredClientsNames]);
+  const filteredLocationsImei = useMemo(() => {
+    if ((!searchQuery || searchTarget !== 'Vehicle') && !selectedClient) {
+      return null;
+    }
+    return locations
+      .filter(
+        (l) =>
+          l.vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          l.vehicle.imei.includes(searchQuery)
+      )
+      .map((l) => l.vehicle.imei)
+      .filter((l) => (selectedClient ? clientToLocations[selectedClient?.id].includes(l) : true));
+  }, [clientToLocations, locations, searchQuery, searchTarget, selectedClient]);
+  const filteredLocations = useMemo(() => {
+    if (!filteredLocationsImei) {
+      return locations;
+    }
+    return locations.filter((l) => filteredLocationsImei.includes(l.vehicle.imei));
+  }, [locations, filteredLocationsImei]);
+  const { mqttClient, topics } = useMqttProvider();
 
   const setSelectedClient = useCallback(
     (client?: User) => {
@@ -155,105 +185,126 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     [setSearchParams]
   );
 
-  useEffect(() => {
-    mqttClient.on('connect', async () => {
-      const availableLocations = await getMonitoringDevices();
-      for (const location of availableLocations) {
-        const topic = `device/monitoring/${location.ident}`;
-        if (memoryMaplocations[topic]) {
-          continue;
-        }
-
-        memoryMaplocations[topic] = JSON.parse(JSON.stringify(defaultLocation));
-        memoryMaplocations[topic].vehicle.imei = location.ident;
-        memoryMaplocations[topic].vehicle.plate = location.vehiclePlate;
-        memoryMaplocations[topic].online = location.status === 'online';
-
-        setClientToLocations((prev) => ({
-          ...prev,
-          [location.userId]: [...(prev[location.userId] || []), location.ident]
-        }));
-
-        // mqttClient.subscribeAsync(topic, {
-        //   qos: 1
-        // });
+  const initCallback = async () => {
+    memoryMaplocations = {};
+    const availableLocations = await getMonitoringDevices();
+    for (const location of availableLocations) {
+      const ident = location.ident;
+      if (memoryMaplocations[ident]) {
+        continue;
       }
-      mqttClient.subscribeAsync('device/monitoring/+', {
-        qos: 0
-      });
+
+      memoryMaplocations[ident] = JSON.parse(JSON.stringify(defaultLocation));
+      memoryMaplocations[ident].vehicle.imei = location.ident;
+      memoryMaplocations[ident].vehicle.plate = location.vehiclePlate;
+      memoryMaplocations[ident].online = location.status === 'online';
+
+      setClientToLocations((prev) => ({
+        ...prev,
+        [location.userId]: [...(prev[location.userId] || []), location.ident]
+      }));
+    }
+    if (!topics || !mqttClient) {
+      return;
+    }
+    mqttClient.subscribeAsync(topics.monitoring, {
+      qos: 0
     });
-    mqttClient.on('message', (topic, payload) => {
-      const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
+  };
 
-      type RecursivePartial<T> = {
-        [P in keyof T]?: Partial<T[P]>;
-      };
-      const oldVehicle = memoryMaplocations[topic] || JSON.parse(JSON.stringify(defaultLocation));
+  const messageHandler = (_: string, payload: Buffer) => {
+    const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
 
-      const partialVehicle: RecursivePartial<VehicleLocation> = {
-        online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
-        lat: device.position_latitude,
-        long: device.position_longitude,
-        angle: device.position_direction,
-        status: {
-          parkingTime: device.parking_time,
-          engineStatus:
-            device.engine_ignition_status === 'UNKNOWN'
-              ? undefined
-              : device.engine_ignition_status === 'true',
-          timestamp: new Date(+device.timestamp * 1000),
-          batteryLevel: device.battery_charging_status === true ? 100 : device.battery_level,
-          defenseStatus: device.defense_active_status,
-          engineBlocked: device.engine_blocked_status,
-          existingKilometer: device.existing_kilometers,
-          satellietes: device.position_satellites,
-          signalLevel: device.gsm_signal_level,
-          speed: device.position_speed
-        },
-        vehicle: {
-          imei: device.ident,
-          name: device.device_name
-        }
-      };
+    type RecursivePartial<T> = {
+      [P in keyof T]?: Partial<T[P]>;
+    };
+    const oldVehicle =
+      memoryMaplocations[device.ident] || JSON.parse(JSON.stringify(defaultLocation));
 
-      // Remove undefined values from partialVehicle
-      Object.keys(partialVehicle).forEach((key) => {
-        if ((partialVehicle as any)[key] === undefined) {
-          delete (partialVehicle as any)[key];
+    const partialVehicle: RecursivePartial<VehicleLocation> = {
+      online: device.status === 'online' ? true : device.status === 'offline' ? false : undefined,
+      lat: device.position_latitude,
+      long: device.position_longitude,
+      angle: device.position_direction,
+      status: {
+        parkingTime: device.parking_time,
+        engineStatus:
+          device.engine_ignition_status === 'UNKNOWN'
+            ? undefined
+            : device.engine_ignition_status === 'true',
+        timestamp: new Date(+device.timestamp * 1000),
+        batteryLevel: device.battery_charging_status === true ? 100 : device.battery_level,
+        defenseStatus: device.defense_active_status,
+        engineBlocked: device.engine_blocked_status,
+        existingKilometer: device.existing_kilometers,
+        satellietes: device.position_satellites,
+        signalLevel: device.gsm_signal_level,
+        speed: device.position_speed
+      },
+      vehicle: {
+        imei: device.ident,
+        name: device.device_name
+      }
+    };
+
+    // Remove undefined values from partialVehicle
+    Object.keys(partialVehicle).forEach((key) => {
+      if ((partialVehicle as any)[key] === undefined) {
+        delete (partialVehicle as any)[key];
+      }
+    });
+    if (partialVehicle.status !== undefined) {
+      Object.keys(partialVehicle.status).forEach((key) => {
+        if ((partialVehicle as any).status[key] === undefined) {
+          delete (partialVehicle as any).status[key];
         }
       });
-      if (partialVehicle.status !== undefined) {
-        Object.keys(partialVehicle.status).forEach((key) => {
-          if ((partialVehicle as any).status[key] === undefined) {
-            delete (partialVehicle as any).status[key];
-          }
-        });
-      }
-      if (partialVehicle.vehicle !== undefined) {
-        Object.keys(partialVehicle.vehicle).forEach((key) => {
-          if ((partialVehicle as any).vehicle[key] === undefined) {
-            delete (partialVehicle as any).vehicle[key];
-          }
-        });
-      }
-
-      memoryMaplocations[topic] = {
-        ...oldVehicle,
-        ...partialVehicle,
-        status: {
-          ...oldVehicle.status,
-          ...partialVehicle.status
-        },
-        vehicle: {
-          ...oldVehicle.vehicle,
-          ...partialVehicle.vehicle
+    }
+    if (partialVehicle.vehicle !== undefined) {
+      Object.keys(partialVehicle.vehicle).forEach((key) => {
+        if ((partialVehicle as any).vehicle[key] === undefined) {
+          delete (partialVehicle as any).vehicle[key];
         }
-      };
-    });
-  }, [mqttClient]);
+      });
+    }
+
+    memoryMaplocations[device.ident] = {
+      ...oldVehicle,
+      ...partialVehicle,
+      status: {
+        ...oldVehicle.status,
+        ...partialVehicle.status
+      },
+      vehicle: {
+        ...oldVehicle.vehicle,
+        ...partialVehicle.vehicle
+      }
+    };
+  };
 
   useEffect(() => {
-    getUsers().then((clients) => {
+    if (!mqttClient || !topics) {
+      return;
+    }
+
+    if (mqttClient.connected) {
+      initCallback();
+    } else {
+      mqttClient.once('connect', initCallback);
+    }
+    mqttClient.on('message', messageHandler);
+
+    return () => {
+      if (mqttClient.connected) {
+        mqttClient.unsubscribeAsync(topics.monitoring);
+      }
+      mqttClient.off('message', messageHandler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mqttClient, topics]);
+
+  useEffect(() => {
+    getMonitoringUsers().then((clients) => {
       setClients(clients);
       return clients;
     });
@@ -262,21 +313,23 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
   const updateLocations = useCallback(async () => {
     const locations = Object.values(memoryMaplocations);
     setLocations(locations);
-    let newClients = clients;
-    for (const client of newClients) {
-      client.onlineDevices = 0;
-      client.offlineDevices = 0;
-    }
-    for (const location of locations) {
-      const client = newClients.find((c) =>
-        clientToLocations[c.id]?.includes(location.vehicle.imei)
-      );
-      if (client) {
-        location.online ? client.onlineDevices!++ : client.offlineDevices!++;
+    setClients((clients) => {
+      let newClients = clients;
+      for (const client of newClients) {
+        client.onlineDevices = 0;
+        client.offlineDevices = 0;
       }
-    }
-    setClients([...newClients]);
-  }, [clientToLocations, clients]);
+      for (const location of locations) {
+        const client = newClients.find((c) =>
+          clientToLocations[c.id]?.includes(location.vehicle.imei)
+        );
+        if (client) {
+          location.online ? client.onlineDevices!++ : client.offlineDevices!++;
+        }
+      }
+      return [...newClients];
+    });
+  }, [clientToLocations]);
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -295,36 +348,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
     };
   }, [updateLocations]);
 
-  useEffect(() => {
-    if (selectedClient) {
-      setFilteredLocationsImei(clientToLocations[selectedClient.id] || []);
-    } else {
-      setFilteredLocationsImei(undefined);
-    }
-  }, [clientToLocations, selectedClient, setSelectedLocation]);
-
   const search = async (target: string, query: string) => {
-    if (query === '') {
-      setFilteredLocationsImei(undefined);
-      setFilteredClientsNames(undefined);
-      return;
-    }
-
-    if (target === 'Vehicle') {
-      setFilteredLocationsImei(
-        locations
-          .filter(
-            (l) =>
-              l.vehicle.name.toLowerCase().includes(query.toLowerCase()) ||
-              l.vehicle.imei.includes(query)
-          )
-          .map((l) => l.vehicle.imei)
-      );
-    } else {
-      setFilteredClientsNames(
-        clients.filter((c) => c.name.toLowerCase().includes(query.toLowerCase())).map((c) => c.id)
-      );
-    }
+    setSearchQuery(query);
+    setSearchTarget(target);
   };
 
   return (

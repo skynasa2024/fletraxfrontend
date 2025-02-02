@@ -7,7 +7,7 @@ const AddMaintenancePage = () => {
   const maintenanceRef = useRef<HTMLDivElement>(null);
 
   const handleTabClick = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     tab: 'maintenance'
   ) => {
     setActiveTab(tab);

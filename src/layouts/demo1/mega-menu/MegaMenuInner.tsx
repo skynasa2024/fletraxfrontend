@@ -1,15 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useResponsive } from '@/hooks';
 import { KeenIcon } from '@/components';
-import { TMenuConfig, MenuItem, MenuLink, MenuTitle, MenuArrow, Menu } from '@/components/menu';
-import {
-  MegaMenuSubProfiles,
-  MegaMenuSubAccount,
-  MegaMenuSubNetwork,
-  MegaMenuSubAuth,
-  MegaMenuSubHelp
-} from '@/partials/menu/mega-menu';
-import { ModalSearch } from '@/partials/modals/search/ModalSearch';
+import { TMenuConfig, MenuArrow, Menu } from '@/components/menu';
 
 import { useDemo1Layout } from '../Demo1LayoutProvider';
 import { MENU_MEGA } from '@/config';
@@ -53,23 +45,7 @@ const MegaMenuInner = () => {
       'menu-link text-sm text-gray-700 font-medium menu-link-hover:text-primary menu-item-active:text-gray-900 menu-item-show:text-primary menu-item-here:text-gray-900';
     const titleClass = 'text-nowrap';
 
-    return (
-      <Fragment>
-        <div className="flex space-x-2 items-center">
-          {/* Add Button */}
-          <button className="flex items-center bg-gray-100 text-blue-600 py-2 px-4 rounded-l hover:bg-blue-100 border border-transparent hover:bg-blue-200">
-            <i className="ki-filled ki-plus"></i>
-            add
-          </button>
-
-          {/* Search Button */}
-          <div className="input input-xl">
-            <i className="ki-filled ki-magnifier" />
-            <input type="text" placeholder="Search" defaultValue="" />
-          </div>
-        </div>
-      </Fragment>
-    );
+    return <Fragment></Fragment>;
   };
 
   const buildArrow = () => {

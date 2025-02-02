@@ -6,7 +6,7 @@ export const getMenuLinkPath = (children: ReactNode): string => {
   let path = '';
 
   Children.forEach(children, (child) => {
-    if (isValidElement(child) && child.type === MenuLink && child.props.path) {
+    if (isValidElement<{ path: string }>(child) && child.type === MenuLink && child.props.path) {
       path = child.props.path; // Assign the path when found
     }
   });
@@ -18,7 +18,7 @@ export const hasMenuActiveChild = (path: string, children: ReactNode): boolean =
   const childrenArray: ReactNode[] = Children.toArray(children);
 
   for (const child of childrenArray) {
-    if (isValidElement(child)) {
+    if (isValidElement<{ path: string; children: ReactNode }>(child)) {
       if (child.type === MenuLink && child.props.path) {
         if (path === '/') {
           if (child.props.path === path) {

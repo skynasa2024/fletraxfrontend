@@ -10,7 +10,7 @@ const DashboardPage = () => {
     <Fragment>
       <Container>
         <Toolbar>
-          <ToolbarHeading title="Dashboard" description="Dashboard / Dashboard" />
+          <ToolbarHeading title="Dashboard" description="" />
         </Toolbar>
       </Container>
 

@@ -1,18 +1,13 @@
 import { Fragment } from 'react';
 import { Container } from '@/components/container';
 
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarHeading,
-  ToolbarPageTitle
-} from '@/partials/toolbar';
+import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarPageTitle } from '@/partials/toolbar';
 import { PageNavbar } from '@/pages/account';
 
 import { AddDevice } from '.';
 import { useLayout } from '@/providers';
 
-const AccountSettingsPlainPage = () => {
+const AddDevicePage = () => {
   const { currentLayout } = useLayout();
 
   return (
@@ -56,4 +51,4 @@ const AccountSettingsPlainPage = () => {
   );
 };
 
-export { AccountSettingsPlainPage };
+export { AddDevicePage };

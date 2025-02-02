@@ -6,6 +6,7 @@ import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
+import { MaintenanceViolationTableProps } from './MaintenanceViolation';
 
 const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
   const reload = useDataGrid().fetchServerSideData;
@@ -17,32 +18,36 @@ const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
         reload();
       }}
       options={{
-        Unpaid: {
+        unpaid: {
           color: '#F1416C',
-          backgroundColor: '#FFF5F8'
+          backgroundColor: '#FFF5F8',
+          name: 'Unpaid'
         },
-        'Under Review': {
+        under_review: {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: 'Under Review'
         },
-        Recorded: {
+        recorded: {
           color: '#00A3FF',
-          backgroundColor: '#EEF9FF'
+          backgroundColor: '#EEF9FF',
+          name: 'Recorded'
         },
-        Paid: {
+        paid: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: 'Paid'
         }
       }}
     />
   );
 };
 
-interface ViolationTableProps {
+interface ViolationTableProps extends MaintenanceViolationTableProps {
   searchQuery: string;
 }
 
-const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
+const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
   const columns = useMemo<ColumnDef<Violation>[]>(
     () => [
       {
@@ -151,16 +156,17 @@ const ViolationTable = ({ searchQuery }: ViolationTableProps) => {
   return (
     <DataGrid
       columns={columns}
-      filters={
-        searchQuery.trim().length > 2
+      filters={[
+        ...(searchQuery.trim().length > 2
           ? [
               {
                 id: '__any',
                 value: searchQuery
               }
             ]
-          : []
-      }
+          : []),
+        ...(id ? [{ id: 'vehicleId', value: id }] : [])
+      ]}
       serverSide={true}
       onFetchData={getViolations}
       pagination={{ sizes: [], size: 4 }}

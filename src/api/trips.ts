@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import { axios } from './axios';
 import { OffsetBounds } from './common';
 import { ResponseModel } from './response';
@@ -8,7 +7,7 @@ interface TripGroupsDTO {
 }
 
 interface TripDTO {
-  id: number;
+  id: string;
   ident: string;
   intervalType: string;
   startTime: string;
@@ -36,7 +35,7 @@ interface TripPoint {
 }
 
 export interface Trip {
-  id: number;
+  id: string;
   imei: string;
   startDate: Date;
   endDate: Date;
@@ -46,7 +45,7 @@ export interface Trip {
 }
 
 export interface TripPath {
-  tripId: number;
+  tripId: string;
   latitude: number;
   longitude: number;
   direction: number;
@@ -62,24 +61,29 @@ export interface TripGroup {
 
 export interface SearchTripsParams {
   query: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
+  startTime?: string;
+  endTime?: string;
   offset?: OffsetBounds;
 }
 
 export const searchTrips = async ({
   query,
   startDate,
-  endDate
+  endDate,
+  startTime,
+  endTime
 }: SearchTripsParams): Promise<TripGroup[]> => {
   const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
     params: {
       ident: query,
-      startDate: startDate && format(startDate, 'yyyy-MM-dd'),
-      endDate: endDate && format(endDate, 'yyyy-MM-dd'),
-      startTime: startDate && format(startDate, 'HH:mm:ss'),
-      endTime: endDate && format(endDate, 'HH:mm:ss'),
-      sort: 'startTime,desc'
+      startDate: startDate,
+      endDate: endDate,
+      startTime: startTime,
+      endTime: endTime,
+      sort: 'startTime,desc',
+      size: 2
     }
   });
 

@@ -1,5 +1,6 @@
 import { getVehicles, VehicleDetails } from '@/api/cars';
 import { Paginated } from '@/api/common';
+import { KeenIcon } from '@/components';
 import VehicleCard from '@/pages/vehicle/components/VehicleCard';
 import { toAbsoluteUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -8,8 +9,8 @@ import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 export function VehicleList() {
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
   const remoteRowCount = useMemo(() => vehicles?.totalCount ?? 0, [vehicles]);
-  const [offset, setOffset] = useState({ start: 0, end: 10 });
   const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isRowLoaded = ({ index }: { index: number }) => !!vehicles?.data[index];
   const loadMoreRows = async ({
@@ -19,12 +20,17 @@ export function VehicleList() {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const drivers = await getVehicles({ start: startIndex, end: stopIndex });
-    setVehicles((prev) => ({
-      data: [...(prev?.data ?? []), ...drivers.data],
-      totalCount: drivers.totalCount
-    }));
-    setOffset({ start: startIndex, end: stopIndex });
+    const vehicles = await getVehicles({ start: startIndex, end: stopIndex });
+    setVehicles((prev) => {
+      const data = prev?.data ?? [];
+      vehicles.data.forEach((vehicle, index) => {
+        data[startIndex + index] = vehicle;
+      });
+      return {
+        data,
+        totalCount: vehicles.totalCount
+      };
+    });
 
     setMaxLoadedIndex((prev) => Math.max(prev, stopIndex));
   };
@@ -35,8 +41,8 @@ export function VehicleList() {
   };
 
   useEffect(() => {
-    getVehicles({ start: 0, end: 10 }).then(setVehicles);
-  }, []);
+    getVehicles({ start: 0, end: 10, search: searchQuery }).then(setVehicles);
+  }, [searchQuery]);
 
   return (
     <div className="card">
@@ -48,10 +54,21 @@ export function VehicleList() {
             {(vehicles?.totalCount ?? 0 > 1) ? 'vehicles' : 'vehicle'}
           </h4>
         </div>
-        <button className="btn btn-info px-8">
-          <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-          Add Car
-        </button>
+        <div className="flex gap-7 items-center">
+          <div className="input max-w-48">
+            <KeenIcon icon="magnifier" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button className="btn btn-info px-8">
+            <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
+            Add Car
+          </button>
+        </div>
       </div>
 
       <div className="card-body pt-2 px-6 pb-3">
@@ -68,10 +85,10 @@ export function VehicleList() {
                   className="scrollable-x !overflow-y-hidden"
                   height={291}
                   width={width}
-                  columnCount={vehicles?.data.length ?? 0}
+                  columnCount={vehicles?.totalCount ?? 0}
                   columnWidth={402}
                   rowCount={1}
-                  rowHeight={271}
+                  rowHeight={291}
                   overscanColumnCount={20}
                   onSectionRendered={({ columnOverscanStartIndex, columnOverscanStopIndex }) =>
                     onRowsRendered({
@@ -81,7 +98,7 @@ export function VehicleList() {
                   }
                   cellRenderer={({ key, columnIndex: index, style }) =>
                     vehicles && (
-                      <div key={key} style={style} className="pr-4">
+                      <div key={key} style={style} className="pr-4 !h-[271px]">
                         <VehicleCard
                           vehicle={vehicles.data[index]}
                           refetchVehicles={fetchAllLoadedVehicles}

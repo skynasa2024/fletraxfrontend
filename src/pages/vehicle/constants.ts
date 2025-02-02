@@ -13,10 +13,5 @@ export const STATUS_OPTIONS = {
     color: '#50CD89',
     backgroundColor: '#EEFAF4',
     name: 'Available'
-  },
-  rented: {
-    color: '#00A3FF',
-    backgroundColor: '#E5F7FF',
-    name: 'Rented'
   }
 };

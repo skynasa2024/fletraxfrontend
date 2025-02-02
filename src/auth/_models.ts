@@ -8,7 +8,7 @@ export interface AuthModel {
 }
 
 export interface UserModel {
-  id: number;
+  id: string;
   name: string;
   identifyNumber: string;
   username: string;
@@ -22,5 +22,5 @@ export interface UserModel {
   subscriptionStartDate: string;
   timezone: string;
   locale: TLanguageCode;
-  parentId: number | null;
+  parentId: string | null;
 }

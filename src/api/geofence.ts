@@ -2,17 +2,17 @@ import { axios } from './axios';
 import { PaginatedResponseModel } from './response';
 
 export interface GeofenceDTO {
-  id: number;
+  id: string;
   name: string;
   type: string;
   latitude: number;
   longitude: number;
   radius: number;
-  userId: number;
+  userId: string;
 }
 
 export interface Geofence {
-  id: number;
+  id: string;
   name: string;
   type: string;
   latitude: number;
@@ -32,6 +32,6 @@ export const getGeofences = async () => {
   }));
 };
 
-export const deleteGeofence = async (id: number) => {
+export const deleteGeofence = async (id: string) => {
   return await axios.get(`/api/geofences/delete/${id}`);
 };

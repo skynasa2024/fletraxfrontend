@@ -6,6 +6,7 @@ import { CarView } from '../CarView';
 import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
+import { MaintenanceViolationTableProps } from './MaintenanceViolation';
 
 const MaintenanceStatusDropdown = (info: CellContext<Maintenance, unknown>) => {
   const reload = useDataGrid().fetchServerSideData;
@@ -17,24 +18,26 @@ const MaintenanceStatusDropdown = (info: CellContext<Maintenance, unknown>) => {
         reload();
       }}
       options={{
-        'In Maintenance': {
+        ongoing: {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: 'In Maintenance'
         },
-        Completed: {
+        finished: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: 'Completed'
         }
       }}
     />
   );
 };
 
-interface ViolationTableProps {
+interface ViolationTableProps extends MaintenanceViolationTableProps {
   searchQuery: string;
 }
 
-const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
+const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
   const columns = useMemo<ColumnDef<Maintenance>[]>(
     () => [
       {
@@ -134,16 +137,17 @@ const MaintenanceTable = ({ searchQuery }: ViolationTableProps) => {
   return (
     <DataGrid
       columns={columns}
-      filters={
-        searchQuery.trim().length > 2
+      filters={[
+        ...(searchQuery.trim().length > 2
           ? [
               {
                 id: '__any',
                 value: searchQuery
               }
             ]
-          : []
-      }
+          : []),
+        ...(id ? [{ id: 'vehicleId', value: id }] : [])
+      ]}
       serverSide={true}
       onFetchData={getMaintenance}
       pagination={{ sizes: [], size: 4 }}

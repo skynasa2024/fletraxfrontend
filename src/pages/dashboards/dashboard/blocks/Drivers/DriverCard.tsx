@@ -1,7 +1,6 @@
-import { DriverDetails } from '@/api/drivers';
+import { DriverDetails, updateDriverStatus } from '@/api/drivers';
 import { StatusDropdown, StatusDropdownProps } from '../StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
-import Image from '@/components/image/Image';
 
 interface DriverCardProps {
   driver?: DriverDetails;
@@ -40,7 +39,14 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
             src={driver.driver.avatar || toAbsoluteUrl('/media/avatars/avatar-placeholder.png')}
             className="size-12 rounded-[4px]"
           />
-          <StatusDropdown selected={driver.status} setSelected={() => {}} options={options} />
+          <StatusDropdown
+            selected={driver.status}
+            setSelected={async (status) => {
+              await updateDriverStatus(driver.id, status === 'Active');
+              onDelete();
+            }}
+            options={options}
+          />
         </div>
         <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[22px]">
           {driver.driver.name}
@@ -66,11 +72,11 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
         </div>
       </div>
       <div className="text-xs border-t flex justify-center">
-        <a href="#" className="px-5 py-2 flex gap-2">
+        <a href={`/drivers/driver/${driver.id}`} className="px-5 py-2 flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
-        <a href="#" className="px-5 py-2 border-x flex gap-2">
+        <a href={`/drivers/driver/${driver.id}`} className="px-5 py-2 border-x flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
         </a>

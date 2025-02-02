@@ -3,6 +3,7 @@ import { Slider } from '@mui/material';
 import { useAnimationContext } from '../providers/AnimationContext';
 import clsx from 'clsx';
 import { FaPause, FaPlay } from 'react-icons/fa';
+import { useAuthContext } from '@/auth';
 
 const MultiplierOptions = [1, 2, 3, 5, 10, 0.25, 0.5];
 
@@ -18,6 +19,7 @@ export const PlaybackCard = () => {
     setMultiplier,
     duration
   } = useAnimationContext();
+  const { currentUser } = useAuthContext();
 
   return (
     <div className="card">
@@ -40,8 +42,12 @@ export const PlaybackCard = () => {
           />
           {metaData && (
             <div className="flex justify-between">
-              <div>{new Date(metaData?.timestamp).toLocaleString()}</div>
-              <div>{metaData?.speed?.toFixed()} km/h</div>
+              <div>
+                {new Date(metaData.timestamp).toLocaleString('en-UK', {
+                  timeZone: currentUser?.timezone
+                })}
+              </div>
+              <div>{metaData.speed?.toFixed()} km/h</div>
             </div>
           )}
           <div className="flex justify-between mt-[10px]">

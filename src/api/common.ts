@@ -7,4 +7,5 @@ export type Paginated<T> = {
 export interface OffsetBounds {
   start: number;
   end: number;
+  search?: string;
 }

@@ -7,6 +7,7 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { VehicleLocation } from '@/api/cars';
 import { RotatableMarker } from './RotatableMarker';
+import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 
 export const CarsLayer = () => {
   const map = useMap();
@@ -120,8 +121,23 @@ export const CarsLayer = () => {
               }}
             >
               {showImei && (
-                <Tooltip direction="top" offset={[0, -20]} permanent>
-                  {selectedLocation.vehicle.imei}
+                <Tooltip
+                  direction="top"
+                  offset={[0, -20]}
+                  permanent
+                  className="bg-transparent border-0 shadow-none p-0"
+                  interactive
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation(undefined);
+                    }
+                  }}
+                >
+                  <CarPlate
+                    plate={selectedLocation.vehicle.plate}
+                    className="shadow-lg"
+                    showTooltip={false}
+                  />
                 </Tooltip>
               )}
             </RotatableMarker>
@@ -143,8 +159,23 @@ export const CarsLayer = () => {
                     }}
                   >
                     {showImei && (
-                      <Tooltip direction="top" offset={[0, -20]} permanent>
-                        {location.vehicle.imei}
+                      <Tooltip
+                        direction="top"
+                        offset={[0, -20]}
+                        permanent
+                        className="bg-transparent border-0 shadow-none p-0"
+                        interactive
+                        eventHandlers={{
+                          click: () => {
+                            setSelectedLocation(location);
+                          }
+                        }}
+                      >
+                        <CarPlate
+                          plate={location.vehicle.plate}
+                          className="shadow-lg"
+                          showTooltip={false}
+                        />
                       </Tooltip>
                     )}
                   </RotatableMarker>

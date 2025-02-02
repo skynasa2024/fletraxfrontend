@@ -28,7 +28,7 @@ const HeaderTopbar = () => {
 
   return (
     <div className="flex items-center gap-2 lg:gap-3.5">
-      <button
+      {/* <button
         onClick={handleOpen}
         className="btn btn-icon btn-icon-lg size-9 rounded-full hover:bg-primary-light hover:text-primary text-gray-500"
       >
@@ -255,6 +255,7 @@ const HeaderTopbar = () => {
         </MenuItem>
       </Menu>
 
+      */}
       <Menu>
         <MenuItem
           ref={itemUserRef}
@@ -275,7 +276,7 @@ const HeaderTopbar = () => {
           <MenuToggle className="btn btn-icon rounded-full">
             <img
               className="size-9 rounded-full border-2 border-success shrink-0"
-              src={toAbsoluteUrl('/media/avatars/300-2.png')}
+              src={toAbsoluteUrl('/media/avatars/avatar-placeholder.png')}
               alt=""
             />
           </MenuToggle>

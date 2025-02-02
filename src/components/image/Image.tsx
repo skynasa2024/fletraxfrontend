@@ -12,7 +12,7 @@ const Image: React.FC<ImageProps> = ({ fallback, title, onError, ...restProps })
   };
 
   return (() => {
-    if (isError) {
+    if (isError || !restProps.src) {
       if (fallback) {
         return <>{fallback}</>;
       }

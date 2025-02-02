@@ -18,6 +18,7 @@ import {
 
 import { useMenus } from '@/providers';
 import { toAbsoluteUrl } from '@/utils';
+import RoleComponent from '@/components/RoleComponent';
 
 const SidebarMenu = () => {
   const linkPl = 'ps-[10px]';
@@ -68,23 +69,70 @@ const SidebarMenu = () => {
   const buildMenuItemRoot = (item: IMenuItemConfig, index: number) => {
     if (item.children) {
       return (
-        <MenuItem
-          key={index}
-          {...(item.toggle && { toggle: item.toggle })}
-          {...(item.trigger && { trigger: item.trigger })}
-          open
-        >
-          <MenuLink
-            className={clsx(
-              'flex items-center grow cursor-pointer border border-transparent',
-              accordionLinkGap[0],
-              linkPl,
-              linkPr,
-              linkPy
-            )}
+        <RoleComponent key={index} role={item.role}>
+          <MenuItem
+            {...(item.toggle && { toggle: item.toggle })}
+            {...(item.trigger && { trigger: item.trigger })}
+            open
           >
-            <MenuIcon className={clsx('items-start text-gray-500 dark:text-gray-400', iconWidth)}>
-              <>
+            <MenuLink
+              className={clsx(
+                'flex items-center grow cursor-pointer border border-transparent',
+                accordionLinkGap[0],
+                linkPl,
+                linkPr,
+                linkPy
+              )}
+            >
+              <MenuIcon className={clsx('items-start text-gray-500 dark:text-gray-400', iconWidth)}>
+                <>
+                  {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
+                  {item.externalIcon && (
+                    <img
+                      src={toAbsoluteUrl(`/media/menu-icons/${item.externalIcon}.svg`)}
+                      className={iconSize}
+                    />
+                  )}
+                </>
+              </MenuIcon>
+              <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
+                {item.title}
+              </MenuTitle>
+              {buildMenuArrow()}
+            </MenuLink>
+            <MenuSub
+              className={clsx(
+                'relative before:absolute before:top-0 before:bottom-0 before:border-s before:border-gray-200',
+                itemsGap,
+                accordionBorderLeft[0],
+                accordionPl[0]
+              )}
+            >
+              {buildMenuItemChildren(item.children, index, 1)}
+            </MenuSub>
+          </MenuItem>
+        </RoleComponent>
+      );
+    } else {
+      return (
+        <RoleComponent key={index} role={item.role}>
+          <MenuItem>
+            <MenuLink
+              path={item.path}
+              className={clsx(
+                'border border-transparent menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg',
+                accordionLinkGap[0],
+                linkPy,
+                linkPl,
+                linkPr
+              )}
+            >
+              <MenuIcon
+                className={clsx(
+                  'items-start text-gray-600 dark:text-gray-500 menu-item-active:text-primary menu-link-hover:!text-primary',
+                  iconWidth
+                )}
+              >
                 {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
                 {item.externalIcon && (
                   <img
@@ -92,57 +140,13 @@ const SidebarMenu = () => {
                     className={iconSize}
                   />
                 )}
-              </>
-            </MenuIcon>
-            <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
-              {item.title}
-            </MenuTitle>
-            {buildMenuArrow()}
-          </MenuLink>
-          <MenuSub
-            className={clsx(
-              'relative before:absolute before:top-0 before:bottom-0 before:border-s before:border-gray-200',
-              itemsGap,
-              accordionBorderLeft[0],
-              accordionPl[0]
-            )}
-          >
-            {buildMenuItemChildren(item.children, index, 1)}
-          </MenuSub>
-        </MenuItem>
-      );
-    } else {
-      return (
-        <MenuItem key={index}>
-          <MenuLink
-            path={item.path}
-            className={clsx(
-              'border border-transparent menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg',
-              accordionLinkGap[0],
-              linkPy,
-              linkPl,
-              linkPr
-            )}
-          >
-            <MenuIcon
-              className={clsx(
-                'items-start text-gray-600 dark:text-gray-500 menu-item-active:text-primary menu-link-hover:!text-primary',
-                iconWidth
-              )}
-            >
-              {item.icon && <KeenIcon icon={item.icon} className={iconSize} />}
-              {item.externalIcon && (
-                <img
-                  src={toAbsoluteUrl(`/media/menu-icons/${item.externalIcon}.svg`)}
-                  className={iconSize}
-                />
-              )}
-            </MenuIcon>
-            <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
-              {item.title}
-            </MenuTitle>
-          </MenuLink>
-        </MenuItem>
+              </MenuIcon>
+              <MenuTitle className="text-sm font-medium text-gray-800 menu-item-active:text-primary menu-link-hover:!text-primary">
+                {item.title}
+              </MenuTitle>
+            </MenuLink>
+          </MenuItem>
+        </RoleComponent>
       );
     }
   };
@@ -177,69 +181,72 @@ const SidebarMenu = () => {
   const buildMenuItemChild = (item: IMenuItemConfig, index: number, level: number = 0) => {
     if (item.children) {
       return (
-        <MenuItem
-          key={index}
-          {...(item.toggle && { toggle: item.toggle })}
-          {...(item.trigger && { trigger: item.trigger })}
-          className={clsx(item.collapse && 'flex-col-reverse')}
-        >
-          <MenuLink
-            className={clsx(
-              'border border-transparent grow cursor-pointer',
-              accordionLinkGap[level],
-              accordionLinkPl,
-              linkPr,
-              subLinkPy
-            )}
+        <RoleComponent key={index} role={item.role}>
+          <MenuItem
+            {...(item.toggle && { toggle: item.toggle })}
+            {...(item.trigger && { trigger: item.trigger })}
+            className={clsx(item.collapse && 'flex-col-reverse')}
           >
-            {buildMenuBullet()}
+            <MenuLink
+              className={clsx(
+                'border border-transparent grow cursor-pointer',
+                accordionLinkGap[level],
+                accordionLinkPl,
+                linkPr,
+                subLinkPy
+              )}
+            >
+              {buildMenuBullet()}
 
-            {item.collapse ? (
-              <MenuTitle className="text-2sm font-normal text-gray-600 dark:text-gray-500">
-                <span className="hidden menu-item-show:!flex">{item.collapseTitle}</span>
-                <span className="flex menu-item-show:hidden">{item.expandTitle}</span>
-              </MenuTitle>
-            ) : (
-              <MenuTitle className="text-2sm font-normal me-1 text-gray-800 menu-item-active:text-primary menu-item-active:font-medium menu-link-hover:!text-primary">
-                {item.title}
-              </MenuTitle>
-            )}
+              {item.collapse ? (
+                <MenuTitle className="text-2sm font-normal text-gray-600 dark:text-gray-500">
+                  <span className="hidden menu-item-show:!flex">{item.collapseTitle}</span>
+                  <span className="flex menu-item-show:hidden">{item.expandTitle}</span>
+                </MenuTitle>
+              ) : (
+                <MenuTitle className="text-2sm font-normal me-1 text-gray-800 menu-item-active:text-primary menu-item-active:font-medium menu-link-hover:!text-primary">
+                  {item.title}
+                </MenuTitle>
+              )}
 
-            {buildMenuArrow()}
-          </MenuLink>
-          <MenuSub
-            className={clsx(
-              !item.collapse &&
-                'relative before:absolute before:top-0 before:bottom-0 before:border-s before:border-gray-200',
-              itemsGap,
-              !item.collapse && accordionBorderLeft[level],
-              !item.collapse && accordionPl[level],
-              !item.collapse && 'relative before:absolute'
-            )}
-          >
-            {buildMenuItemChildren(item.children, index, item.collapse ? level : level + 1)}
-          </MenuSub>
-        </MenuItem>
+              {buildMenuArrow()}
+            </MenuLink>
+            <MenuSub
+              className={clsx(
+                !item.collapse &&
+                  'relative before:absolute before:top-0 before:bottom-0 before:border-s before:border-gray-200',
+                itemsGap,
+                !item.collapse && accordionBorderLeft[level],
+                !item.collapse && accordionPl[level],
+                !item.collapse && 'relative before:absolute'
+              )}
+            >
+              {buildMenuItemChildren(item.children, index, item.collapse ? level : level + 1)}
+            </MenuSub>
+          </MenuItem>
+        </RoleComponent>
       );
     } else {
       return (
-        <MenuItem key={index}>
-          <MenuLink
-            path={item.path}
-            className={clsx(
-              'border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg',
-              accordionLinkGap[level],
-              accordionLinkPl,
-              linkPr,
-              subLinkPy
-            )}
-          >
-            {buildMenuBullet()}
-            <MenuTitle className="text-2sm font-normal text-gray-800 menu-item-active:text-primary menu-item-active:font-semibold menu-link-hover:!text-primary">
-              {item.title}
-            </MenuTitle>
-          </MenuLink>
-        </MenuItem>
+        <RoleComponent key={index} role={item.role}>
+          <MenuItem>
+            <MenuLink
+              path={item.path}
+              className={clsx(
+                'border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg',
+                accordionLinkGap[level],
+                accordionLinkPl,
+                linkPr,
+                subLinkPy
+              )}
+            >
+              {buildMenuBullet()}
+              <MenuTitle className="text-2sm font-normal text-gray-800 menu-item-active:text-primary menu-item-active:font-semibold menu-link-hover:!text-primary">
+                {item.title}
+              </MenuTitle>
+            </MenuLink>
+          </MenuItem>
+        </RoleComponent>
       );
     }
   };

@@ -1,6 +1,5 @@
-import { faker } from '@faker-js/faker';
 import { TDataGridRequestParams } from '@/components';
-import { Paginated } from './common';
+import { OffsetBounds, Paginated } from './common';
 import { Driver } from './drivers';
 import { User, getUser } from './user';
 import { axios } from './axios';
@@ -27,7 +26,7 @@ export const getCarCount = async (): Promise<Record<string, number>> => {
 };
 
 export interface Vehicle {
-  id: number;
+  id: string;
   brandImage: string;
   plate: string;
   imei: string;
@@ -45,7 +44,7 @@ export interface VehicleDetails {
 }
 
 export interface VehicleDTO {
-  id: number;
+  id: string;
   plate: string;
   image: string | null;
   imageFile: string | null;
@@ -83,63 +82,95 @@ export interface VehicleDTO {
   fuelConsumption: number;
   licenseImage: string;
   owner: string;
-  userId: number;
-  deviceId: number;
-  vehicleId: number;
+  userId: string;
+  deviceId: string;
+  vehicleId: string;
   scratches: any[];
 }
 
 export interface VehicleStats {
   total: number;
   available: number;
-  inRent: number;
+  unavailable: number;
   inMaintenance: number;
+}
+
+interface CarsMileageAndEngineDTO {
+  id: string;
+  ident: string;
+  date: string;
+  deviceId: string | null;
+  deviceName: string | null;
+  vehiclePlate: string | null;
+  vehicleImage: string | null;
+  formatedDailyExistingKilometers: string;
+  formatedTotalExistingKilometers: string;
+  dailyExistingKilometers: number;
+  totalExistingKilometers: number;
+  formatedDailyParkingTime: string;
+  formatedTotalParkingTime: string;
+  dailyParkingTime: number;
+  totalParkingTime: number;
+  formatedDailyEngineHours: string;
+  formatedTotalEngineHours: string;
+  dailyEngineHours: number;
+  totalEngineHours: number;
 }
 
 export interface CarMileageAndEngine {
   vehicle: Vehicle;
   mileage: number;
   engine: number;
+  formattedMilage: string;
+  formattedEngine: string;
 }
 
-export const getCarsMileageAndEngine = async (cursor?: string): Promise<CarMileageAndEngine[]> => {
-  const LIMIT = 20;
-  let largestMileage = faker.number.float({ min: 10000, max: 10000, fractionDigits: 3 });
-  let largestEngine = faker.number.float({ min: 1000, max: 1000, fractionDigits: 3 });
-
-  return Array(LIMIT)
-    .fill(0)
-    .map(() => {
-      largestMileage -= faker.number.float({ max: 1000, fractionDigits: 3 });
-      largestEngine -= faker.number.float({ max: 100, fractionDigits: 3 });
-      return {
-        vehicle: {
-          brandImage: toAbsoluteUrl('/media/car-brands/audi.png'),
-          id: faker.number.int(1000),
-          imei: faker.phone.imei(),
-          name: faker.vehicle.model(),
-          plate: faker.vehicle.vrm()
-        },
-        mileage: largestMileage,
-        engine: largestEngine
-      };
-    });
+export const getCarsMileageAndEngine = async (
+  offset: OffsetBounds,
+  sort: 'kilometers' | 'engine' = 'kilometers'
+): Promise<Paginated<CarMileageAndEngine>> => {
+  const carsMileageAndEngine = await axios.get<PaginatedResponseModel<CarsMileageAndEngineDTO>>(
+    '/api/statistics/counts',
+    {
+      params: {
+        offset: offset.start,
+        size: offset.end - offset.start + 1,
+        sort: sort === 'engine' ? 'dailyEngineHours,desc' : 'dailyExistingKilometers,desc'
+      }
+    }
+  );
+  return {
+    data: carsMileageAndEngine.data.result.content.map((car) => ({
+      vehicle: {
+        id: car.id,
+        brandImage: car.vehicleImage ?? '',
+        plate: car.vehiclePlate ?? '',
+        imei: car.ident,
+        name: car.vehiclePlate ?? ''
+      },
+      mileage: car.dailyExistingKilometers,
+      engine: car.dailyEngineHours,
+      formattedMilage: car.formatedDailyExistingKilometers,
+      formattedEngine: car.formatedDailyEngineHours
+    })),
+    totalCount: carsMileageAndEngine.data.result.totalElements
+  };
 };
 
 export interface ViolationDTO {
-  id: number;
+  id: string;
   type: string;
   description: string;
   startDate: string;
   endDate: string;
   status: string;
   amount: number;
-  userId: number;
-  vehicleId: number;
+  userId: string;
+  vehicleId: string;
 }
 
 export interface Violation {
-  id: number;
+  id: string;
   vehicle: Vehicle | null;
   date: Date;
   user: User;
@@ -151,12 +182,24 @@ export interface Violation {
 export const getViolations = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Violation>> => {
+  // Convert filters to map
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
   const violations = await axios.get<PaginatedResponseModel<ViolationDTO>>(
-    '/api/violations/index',
+    filters['vehicleId']
+      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
+      : '/api/violations/index',
     {
       params: {
         page: params.pageIndex,
-        size: params.pageSize
+        size: params.pageSize,
+        search: filters['__any'] && filters['__any'].toString()
       }
     }
   );
@@ -183,7 +226,7 @@ export const getViolations = async (
   };
 };
 
-export const updateViolationStatus = async (id: number, status: string): Promise<void> => {
+export const updateViolationStatus = async (id: string, status: string): Promise<void> => {
   await axios.patch(`/api/violations/update-status/${id}`, undefined, {
     params: {
       status
@@ -191,7 +234,7 @@ export const updateViolationStatus = async (id: number, status: string): Promise
   });
 };
 
-export const updateVehicleStatus = async (id: number, status: string): Promise<void> => {
+export const updateVehicleStatus = async (id: string, status: string): Promise<void> => {
   await axios.post(`/api/vehicles/cars/update-status/${id}`, undefined, {
     params: {
       status
@@ -200,7 +243,7 @@ export const updateVehicleStatus = async (id: number, status: string): Promise<v
 };
 
 export interface Maintenance {
-  id: number;
+  id: string;
   date: Date;
   vehicle: Vehicle | null;
   type: string;
@@ -210,7 +253,7 @@ export interface Maintenance {
 }
 
 export interface MaintenanceDTO {
-  id: number;
+  id: string;
   type: string;
   description: string;
   supplier: string;
@@ -218,19 +261,31 @@ export interface MaintenanceDTO {
   endDate: string;
   status: string;
   amount: number;
-  vehicleId: number;
-  userId: number;
+  vehicleId: string;
+  userId: string;
 }
 
 export const getMaintenance = async (
   params: TDataGridRequestParams
 ): Promise<Paginated<Maintenance>> => {
+  // Convert filters to map
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
   const maintenances = await axios.get<PaginatedResponseModel<MaintenanceDTO>>(
-    '/api/maintenances/index',
+    filters['vehicleId']
+      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
+      : '/api/maintenances/index',
     {
       params: {
         page: params.pageIndex,
-        size: params.pageSize
+        size: params.pageSize,
+        search: filters['__any'] && filters['__any'].toString()
       }
     }
   );
@@ -254,7 +309,7 @@ export const getMaintenance = async (
   };
 };
 
-export const updateMaintenanceStatus = async (id: number, status: string): Promise<void> => {
+export const updateMaintenanceStatus = async (id: string, status: string): Promise<void> => {
   await axios.patch(`/api/maintenances/update-status/${id}`, undefined, {
     params: {
       status
@@ -262,67 +317,28 @@ export const updateMaintenanceStatus = async (id: number, status: string): Promi
   });
 };
 
-type OffsetBounded = {
-  start: number;
-  end: number;
-  filters?: { id: string; value: string }[];
-};
-
 export const getVehicles = async (
-  params: TDataGridRequestParams | OffsetBounded
+  params: TDataGridRequestParams | OffsetBounds
 ): Promise<Paginated<VehicleDetails>> => {
-  let vehiclesRes;
-  if ('start' in params && 'end' in params) {
-    const offset = params.start;
-    const size = params.end - params.start;
+  const requestParams =
+    'start' in params
+      ? {
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
+      : {
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value
+        };
 
-    vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
-      params: {
-        offset,
-        size,
-        search: params.filters?.[0] && params.filters[0].value
-      }
-    });
-  } else {
-    vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>('/api/vehicles/cars/index', {
-      params: {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value
-      }
-    });
-  }
-
-  const vehicles = vehiclesRes.data.result.content;
-
-  // const fullVehicleDetails: VehicleDetails[] = await Promise.all(
-  //   vehicles.map(async (vehicle) => {
-  //     const [device, user] = await Promise.all([
-  //       getDevice(vehicle.deviceId),
-  //       getUser(vehicle.userId)
-  //     ]);
-
-  //     return {
-  //       vehicle: {
-  //         id: vehicle.id,
-  //         brandImage: vehicle.image ?? '',
-  //         plate: vehicle.plate,
-  //         imei: device.imei,
-  //         name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
-  //       },
-  //       customer: {
-  //         name: user.name,
-  //         avatar: user.avatar ?? '',
-  //         email: user.email
-  //       },
-  //       brandName: vehicle.brand,
-  //       type: vehicle.gear ?? 'NA',
-  //       mileage: vehicle.currentMileage ? vehicle.currentMileage : 'NA',
-  //       status: vehicle.status,
-  //       deviceName: device.name
-  //     };
-  //   })
-  // );
+  const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
+    '/api/vehicles/cars/index',
+    {
+      params: requestParams
+    }
+  );
 
   const fullVehicleDetails: VehicleDetails[] = vehiclesRes.data.result.content.map((vehicle) => ({
     vehicle: {
@@ -350,7 +366,7 @@ export const getVehicles = async (
   };
 };
 
-const getVehicle = async (id: number): Promise<Vehicle | null> => {
+const getVehicle = async (id: string): Promise<Vehicle | null> => {
   const vehicle = await axios.get<ResponseModel<VehicleDTO | null>>(
     `/api/vehicles/cars/find-by-vehicle-id/${id}`
   );
