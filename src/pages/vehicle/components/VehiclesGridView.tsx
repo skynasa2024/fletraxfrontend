@@ -132,12 +132,12 @@ function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
       >
         <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
       </Link>
-      <a
-        href="#"
+      <Link
+        to={'/vehicles/edit/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
       >
         <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
-      </a>
+      </Link>
       <Menu>
         <MenuItem toggle="dropdown" trigger="click">
           <MenuToggle>

@@ -5,7 +5,8 @@ import { User, getUser } from './user';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
-import { toAbsoluteUrl } from '@/utils';
+import { arrayToFormData, objectToFormData, toAbsoluteUrl } from '@/utils';
+import { CarType, FuelType, GearType, RegistrationType } from '@/pages/vehicle/add-vehicle';
 
 export interface CarCountsDTO {
   total: number;
@@ -47,8 +48,8 @@ export interface VehicleDTO {
   id: string;
   plate: string;
   image: string | null;
-  imageFile: string | null;
-  type: string;
+  imageFile?: File | string | null;
+  type: RegistrationType;
   status: string;
   brand: string;
   model: string;
@@ -56,10 +57,11 @@ export interface VehicleDTO {
   modelYear: number;
   volume: string;
   power: string;
-  fuelType: string;
-  carType: string;
-  gear: string;
+  fuelType: FuelType;
+  carType: CarType;
+  gear: GearType;
   color: string;
+  numberOfSeats: number;
   identifyNumber: string;
   chassisNumber: string;
   engineNumber: string;
@@ -80,13 +82,25 @@ export interface VehicleDTO {
   currentMileage: string;
   maintenanceMileage: string;
   fuelConsumption: number;
-  licenseImage: string;
+  licenseImage: File | string;
+  licenseImageFile?: File | string;
   owner: string;
   userId: string;
   deviceId: string;
-  deviceIdent: string | null;
+  deviceIdent: string;
   vehicleId: string;
-  scratches: any[];
+  scratches: ScratchDTO[];
+}
+
+export interface ScratchDTO {
+  id?: string;
+  place: number;
+  image?: File | string | null;
+  imageFile?: File | null;
+  explanationOf: string;
+  vehicleId: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface VehicleStats {
@@ -419,4 +433,47 @@ export interface VehicleLocation {
 export const getVehiclesStats = async (): Promise<VehicleStats> => {
   const stats = await axios.get<ResponseModel<VehicleStats>>('api/vehicles/cars/stats');
   return stats.data.result;
+};
+
+export const createVehicle = async (vehicle: Partial<VehicleDTO>): Promise<VehicleDTO> => {
+  const formData = objectToFormData(vehicle);
+  const newVehicle = await axios.post<ResponseModel<VehicleDTO>>(
+    '/api/vehicles/cars/create',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return newVehicle.data.result;
+};
+
+export const updateVehicle = async (vehicle: VehicleDTO): Promise<VehicleDTO> => {
+  const formData = objectToFormData(vehicle);
+  console.log(formData);
+  const updatedVehicle = await axios.put<ResponseModel<VehicleDTO>>(
+    `/api/vehicles/cars/update`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return updatedVehicle.data.result;
+};
+
+export const createScratches = async (scratches: ScratchDTO[]): Promise<ScratchDTO> => {
+  const formData = arrayToFormData(scratches, 'scratches');
+  const newScratch = await axios.post<ResponseModel<ScratchDTO>>(
+    '/api/vehicles/scratches/create',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return newScratch.data.result;
 };

@@ -5,6 +5,7 @@ import Image from '@/components/image/Image';
 import { KeenIcon } from '@/components';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { Link } from 'react-router';
 
 type VehicleCardProps = {
   vehicle?: VehicleDetails;
@@ -89,10 +90,13 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>View</span>
         </a>
-        <a href="#" className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50">
+        <Link
+          to={'vehicles/edit/' + vehicle.vehicle.id}
+          className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50"
+        >
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>Edit</span>
-        </a>
+        </Link>
         <a href="#" className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50">
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
           <span>Delete</span>
