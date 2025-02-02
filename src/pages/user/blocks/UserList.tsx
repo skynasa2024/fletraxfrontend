@@ -11,7 +11,7 @@ import {
   MenuToggle,
   useDataGrid
 } from '@/components';
-import { getUsers, updateUserStatus, UserModel, deleteUser } from '@/api/user';
+import { deleteUser, getUsersByParentId, updateUserStatus, User, UserModel } from '@/api/user';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
@@ -48,7 +48,9 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ refetch }) => {
+  const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
   const columns = useMemo<ColumnDef<UserModel>[]>(
     () => [
       {
@@ -108,12 +110,16 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           className: 'min-w-44'
         }
       },
-
       {
         id: 'actions',
         header: () => 'Actions',
         cell: (info) => (
           <div className="flex gap-3">
+            <button onClick={() => updateUsersStack(info.row.original)}>
+              <div className="flex justify-center items-center w-7.5 h-7.5 bg-gray-200 rounded-full">
+                <KeenIcon icon="users" />
+              </div>
+            </button>
             <a href={`/users/user/${info.row.original.id}`}>
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
             </a>
@@ -152,11 +158,28 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
     [refetch]
   );
 
+  const updateUsersStack = (user: User) => {
+    setUsersStack((prevStack) => {
+      if (prevStack.length > 0 && prevStack[prevStack.length - 1].id === user.id) {
+        return prevStack;
+      }
+      const userIndex = prevStack.findIndex((u) => u.id === user.id);
+      if (userIndex !== -1) {
+        return prevStack.slice(0, userIndex + 1);
+      } else {
+        return [...prevStack, user];
+      }
+    });
+  };
+
+  const removeUsersStack = () => {
+    setUsersStack([]);
+  };
+
   return (
     <div className="card">
-      <div className="flex items-center justify-between p-6 ">
+      <div className="flex items-center justify-between p-6">
         <h2 className="text-xl font-semibold text-gray-800">Users List</h2>
-        {/* Search Input */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <KeenIcon style="duotone" icon="magnifier" />
@@ -169,13 +192,41 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           />
         </div>
       </div>
+      <div className="flex items-center justify-start px-16 pb-6">
+        <div className="flex items-center gap-4 text-sm text-gray-700 flex-wrap">
+          {usersStack.length > 0 && (
+            <React.Fragment>
+              <button
+                onClick={() => removeUsersStack()}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                Users
+              </button>
+              <span className="text-gray-500">/</span>
+            </React.Fragment>
+          )}
+          {usersStack.map((user, index) => (
+            <React.Fragment key={user.id}>
+              <button
+                onClick={() => updateUsersStack(user)}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                {user.name}
+              </button>
+              {index < usersStack.length - 1 && (
+                <span className="text-gray-500">/</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
       <div className="user-table">
         <DataGrid
-          columns={columns}
           data={[]}
+          columns={columns}
           serverSide={true}
-          onFetchData={getUsers}
           filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
+          onFetchData={(params) => getUsersByParentId(params, usersStack.length > 0 ? usersStack[usersStack.length - 1].id : null)}
         />
       </div>
     </div>

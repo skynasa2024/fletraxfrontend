@@ -62,21 +62,54 @@ export const getUsers = async (
   const requestParams =
     'start' in params
       ? {
-          offset: params.start,
-          size: params.end - params.start + 1,
-          search: params.search
-        }
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
       : {
-          page: params.pageIndex,
-          size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
-        };
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
+      };
   const clients = await axios.get<PaginatedResponseModel<UserModel>>('/api/users/index', {
     params: requestParams
   });
   return {
     data: clients.data.result.content,
     totalCount: clients.data.result.totalElements
+  };
+};
+
+export const getUsersByParentId = async (
+  params: TDataGridRequestParams | OffsetBounds, userId: string | null
+): Promise<Paginated<UserModel>> => {
+  const requestParams =
+    'start' in params
+      ? {
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
+      : {
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
+      };
+
+  let client;
+  if (userId != null) {
+    client = await axios.get<PaginatedResponseModel<UserModel>>(`/api/users/get-by-parent-id/${userId}`, {
+      params: requestParams
+    });
+  } else {
+    client = await axios.get<PaginatedResponseModel<UserModel>>('/api/users/index', {
+      params: requestParams
+    });
+  }
+
+  return {
+    data: client.data.result.content,
+    totalCount: client.data.result.totalElements
   };
 };
 
@@ -160,15 +193,15 @@ export const getUsersUnderParent = async (
   const requestParams =
     'start' in params
       ? {
-          offset: params.start,
-          size: params.end - params.start + 1,
-          search: params.search
-        }
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
       : {
-          page: params.pageIndex,
-          size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
-        };
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value
+      };
   const clients = await axios.get<PaginatedResponseModel<UserModel>>(
     `/api/users/get-by-parent-id/${parentId}`,
     {
