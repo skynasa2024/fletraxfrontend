@@ -57,8 +57,6 @@ export default function VehicleCurrentLocation({ deviceId }: { deviceId?: string
     })();
   }, [deviceId]);
 
-  console.log(currentDevice);
-
   return (
     <Map
       location={
