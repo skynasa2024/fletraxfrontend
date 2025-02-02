@@ -193,7 +193,7 @@ export const getViolations = async (
     ) ?? {};
   const violations = await axios.get<PaginatedResponseModel<ViolationDTO>>(
     filters['vehicleId']
-      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
+      ? `/api/violations/get-by-vehicle-id/${filters['vehicleId']}`
       : '/api/violations/index',
     {
       params: {
@@ -385,9 +385,12 @@ const getVehicle = async (id: string): Promise<Vehicle | null> => {
   };
 };
 
-export const getVehicleDetails = async (id: number): Promise<VehicleDTO | null> => {
-  return (await axios.get<ResponseModel<VehicleDTO | null>>('/api/vehicles/cars/show/' + id)).data
-    .result;
+export const getVehicleDetails = async (vehicleId: string): Promise<VehicleDTO | null> => {
+  return (
+    await axios.get<ResponseModel<VehicleDTO | null>>(
+      '/api/vehicles/cars/find-by-vehicle-id/' + vehicleId
+    )
+  ).data.result;
 };
 
 export interface VehicleStatus {
