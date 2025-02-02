@@ -120,19 +120,15 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
         cell: (info) => (
           <div className="flex gap-3">
             <button onClick={() => updateUsersStack(info.row.original)}>
-              <div className="flex justify-center items-center w-7.5 h-7.5 bg-gray-200 rounded-full">
+              <div className="flex justify-center items-center size-7.5 bg-gray-200 rounded-full">
                 <KeenIcon icon="users" className={settings.themeMode == 'dark' ? 'text-white' : 'text-black'} />
               </div>
             </button>
-            <a href={`/users/user/${info.row.original.id}`}>
-              <div className="flex justify-center items-center w-7.5 h-7.5 bg-blue-900 rounded-full">
-                <KeenIcon icon="eye" className="text-white" />
-              </div>
+            <a href={`/users/user/${info.row.original.id}`} className="size-7.5">
+              <img src={toAbsoluteUrl('/media/icons/view.svg')} />
             </a>
-            <a href={`/users/edit/${info.row.original.id}`}>
-              <div className="flex justify-center items-center w-7.5 h-7.5 bg-green-900 rounded-full">
-                <KeenIcon icon="pencil" className="text-white" />
-              </div>
+            <a href={`/users/edit/${info.row.original.id}`} className="size-7.5">
+              <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
             </a>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
