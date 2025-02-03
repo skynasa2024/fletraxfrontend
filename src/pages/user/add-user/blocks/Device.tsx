@@ -1,12 +1,6 @@
 import { AddUserPageProps } from '../AddUserPage';
 import { Paginated } from '@/api/common';
-import {
-  DeviceDTO,
-  getLinkedDevices,
-  getUnlinkedDevices,
-  linkDevice,
-  unlinkDevice
-} from '@/api/devices';
+import { DeviceDTO, getLinkedDevices, getUnlinkedDevices, unlinkLinkDevice } from '@/api/devices';
 import { useCallback, useEffect, useState } from 'react';
 import { CircularProgress, Skeleton } from '@mui/material';
 import { KeenIcon } from '@/components';
@@ -125,7 +119,7 @@ const Device = ({ user }: AddUserPageProps) => {
                                   type="button"
                                   className="btn btn-lg btn-icon btn-outline btn-success"
                                   onClick={async () => {
-                                    await linkDevice(user!.id, device.ident);
+                                    await unlinkLinkDevice(user!.id, device.ident);
                                     update();
                                   }}
                                 >
@@ -215,7 +209,7 @@ const Device = ({ user }: AddUserPageProps) => {
                                   type="button"
                                   className="btn btn-lg btn-icon btn-outline btn-warning"
                                   onClick={async () => {
-                                    await unlinkDevice(user!.parentId || 'null', device.ident);
+                                    await unlinkLinkDevice(user!.parentId || 'null', device.ident);
                                     update();
                                   }}
                                 >

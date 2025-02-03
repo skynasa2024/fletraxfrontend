@@ -220,10 +220,8 @@ export const getLinkedDevices = async (
   };
 };
 
-export const linkDevice = async (userId: string, imei: string | string[]): Promise<void> => {
-  await axios.post(`/api/devices/link-devices/${userId}`, [imei].flat().map(Number));
-};
-
-export const unlinkDevice = async (userId: string, imei: string | string[]): Promise<void> => {
-  await axios.post(`/api/devices/unlink-devices/${userId}`, [imei].flat().map(Number));
+export const unlinkLinkDevice = async (userId: string, imei: string | string[]): Promise<void> => {
+  await axios.post(`/api/devices/link-unlink-devices`, [imei].flat().map(Number), {
+    params: { userId }
+  });
 };
