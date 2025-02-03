@@ -1,7 +1,7 @@
 import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { EngineHours, Mileage, FuelConsumption, RentedTimes } from '../svg';
+import { EngineHours, Mileage, FuelConsumption } from '../svg';
 
 interface MetricCardProps {
   icon: React.ComponentType;
@@ -15,7 +15,6 @@ interface Metrics {
   engineHours: string;
   mileage: string;
   fuelConsumption: string;
-  rentedTimes: string;
 }
 
 interface VehicleMetricsProps {
@@ -26,7 +25,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
   const numericValue = typeof value === 'string' ? value.split(' ')[0] : value;
 
   return (
-    <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center">
+    <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center flex-1">
       <div className="mb-2">
         <Icon />
       </div>
@@ -77,18 +76,11 @@ const VehicleMetrics: React.FC<VehicleMetricsProps> = ({
       value: metrics.fuelConsumption,
       percentage: 25,
       color: '#A78BFA'
-    },
-    {
-      icon: RentedTimes,
-      label: 'Rented times',
-      value: metrics.rentedTimes,
-      percentage: 50,
-      color: '#FBBF24'
     }
   ];
 
   return (
-    <div className=" w-2/3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="flex gap-4 w-2/3">
       {metricConfigs.map((config, index) => (
         <MetricCard key={index} {...config} />
       ))}

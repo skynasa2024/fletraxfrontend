@@ -110,6 +110,7 @@ const VehicleInfo = () => {
 
     const files: FileInfo[] = [];
 
+    files.push({ name: 'Image', url: (vehicle?.imageFile as string) ?? undefined });
     files.push({ name: 'License', url: (vehicle?.licenseImageFile as string) ?? undefined });
 
     return files;
@@ -218,8 +219,7 @@ const VehicleInfo = () => {
             metrics={{
               engineHours: '300 Hr',
               mileage: vehicle?.currentMileage?.toString() || '0',
-              fuelConsumption: vehicle?.fuelConsumption?.toString() || '0',
-              rentedTimes: '10'
+              fuelConsumption: vehicle?.fuelConsumption?.toString() || '0'
             }}
           />
         </div>
