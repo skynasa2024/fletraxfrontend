@@ -204,7 +204,7 @@ const HeaderTopbar = () => {
           }}
         >
           <MenuToggle
-            className="btn btn-icon btn-icon-lg size-9 rounded-full hover:bg-primary-light hover:text-primary dropdown-open:bg-primary-light dropdown-open:text-primary text-gray-500">
+            className="btn btn-icon btn-icon-lg size-9 rounded-full bg-[#0D0E12] hover:bg-primary-light hover:text-primary dropdown-open:bg-primary-light dropdown-open:text-primary text-gray-500">
             <img src={toAbsoluteUrl('/media/icons/notifications.svg')} alt="notifications" />
           </MenuToggle>
           {NotificationsDropdown({ menuItemRef: itemNotificationsRef })}

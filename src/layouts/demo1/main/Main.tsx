@@ -53,6 +53,7 @@ const Main = () => {
 
       {menuItem?.fullScreen ? (
         <main className="grow content wrapper !py-0" role="content">
+          <Header floating={true} />
           <Outlet />
         </main>
       ) : (

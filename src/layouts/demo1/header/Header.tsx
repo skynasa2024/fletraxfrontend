@@ -1,12 +1,13 @@
-import clsx from 'clsx';
 import { useEffect } from 'react';
 import { Container } from '@/components/container';
 import { MegaMenu } from '../mega-menu';
 import { HeaderLogo, HeaderTopbar } from './';
 import { Breadcrumbs, useDemo1Layout } from '../';
 import { useLocation } from 'react-router';
+import { IHeaderProps } from '@/layouts/demo1/header/types.tsx';
+import clsx from 'clsx';
 
-const Header = () => {
+const Header = ({ floating = false }: IHeaderProps) => {
   const { headerSticky } = useDemo1Layout();
   const { pathname } = useLocation();
 
@@ -21,7 +22,7 @@ const Header = () => {
   return (
     <header
       className={clsx(
-        'header fixed top-0 z-10 start-0 end-0 flex items-stretch shrink-0 bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark]',
+        `header fixed top-0 z-10 start-0 end-0 flex items-stretch shrink-0 ${!floating && 'bg-[--tw-page-bg] dark:bg-[--tw-page-bg-dark]'}`,
         headerSticky && 'shadow-sm'
       )}
     >
