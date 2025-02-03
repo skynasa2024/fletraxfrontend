@@ -9,8 +9,11 @@ import { Buffer } from 'buffer';
 import { useMqttNotifications } from '@/layouts/demo1/header/notifications/useMqttNotifications.tsx';
 import { NotificationItem } from '@/layouts/demo1/header/notifications/NotificationItem.tsx';
 import { formatTimeAgo } from '@/utils/Date.ts';
+import { useSnackbar } from 'notistack';
+import { NotificationSnackbar } from '@/layouts/demo1/header/notifications/NotificationSnackbar.tsx';
 
 const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const headerRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
@@ -35,14 +38,32 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
 
   const onMessage = (topic: string, payload: Buffer) => {
     try {
-      const parsedNotification: INotification = JSON.parse(payload.toString());
-      setNotifications((prevNotifications) => [
-        parsedNotification,
-        ...prevNotifications
-      ]);
+      if (topic.includes("user/notifications")) {
+        const parsedNotification: INotification = JSON.parse(payload.toString());
+        setNotifications((prevNotifications) => [
+          parsedNotification,
+          ...prevNotifications
+        ]);
+        showNotificationSnackbar(parsedNotification);
+      }
     } catch (error) {
       console.error('Error parsing notification:', error);
     }
+  };
+
+  const showNotificationSnackbar = (notification: INotification) => {
+    enqueueSnackbar(notification.text, {
+      variant: 'default',
+      content: (key) => (
+        <NotificationSnackbar
+          key={key}
+          user={notification.userId}
+          text={notification.text}
+          date={formatTimeAgo(notification.createdAt)}
+          info={notification.type}
+        />
+      )
+    });
   };
 
   const { mqttClient } = useMqttProvider();

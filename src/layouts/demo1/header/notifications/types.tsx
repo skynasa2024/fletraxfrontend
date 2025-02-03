@@ -10,6 +10,13 @@ export interface INotificationItemProps {
   badgeColor: string;
 }
 
+export interface INotificationSnackbarProps {
+  user: string;
+  text: string;
+  date: string;
+  info: string;
+}
+
 export interface INotification {
   id: string;
   type: string;
