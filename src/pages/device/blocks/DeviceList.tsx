@@ -44,7 +44,16 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
       {
         accessorKey: 'vehiclePlate',
         header: 'Vehicle Plate',
-        cell: ({ row }) => <CarPlate className="w-auto" plate={row.original.vehiclePlate} />
+        cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
+      },
+      {
+        accessorKey: 'phone',
+        header: 'Phone',
+        cell: ({ row }) => (
+          <span>
+            {row.original.phoneCode} {row.original.phone}
+          </span>
+        )
       },
       {
         accessorKey: 'protocol',
