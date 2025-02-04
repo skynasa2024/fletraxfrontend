@@ -468,8 +468,7 @@ export const updateVehicle = async (vehicle: VehicleDTO): Promise<VehicleDTO> =>
   return updatedVehicle.data.result;
 };
 
-export const createScratches = async (scratches: ScratchDTO[]): Promise<ScratchDTO> => {
-  const formData = arrayToFormData(scratches, 'scratches');
+export const createScratch = async (formData: FormData): Promise<ScratchDTO> => {
   const newScratch = await axios.post<ResponseModel<ScratchDTO>>(
     '/api/vehicles/scratches/create',
     formData,
@@ -482,11 +481,24 @@ export const createScratches = async (scratches: ScratchDTO[]): Promise<ScratchD
   return newScratch.data.result;
 };
 
+export const updateScratch = async (formData: FormData): Promise<ScratchDTO> => {
+  const updatedScratch = await axios.put<ResponseModel<ScratchDTO>>(
+    '/api/vehicles/scratches/update',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+  return updatedScratch.data.result;
+}
+
 export const getScratches = async (
   vehicleId: string,
   params: OffsetBounds
 ): Promise<ScratchDTO[]> => {
-  const scratches = await axios.get<PaginatedResponseModel<ScratchDTO[]>>(
+  const scratches = await axios.get<PaginatedResponseModel<ScratchDTO>>(
     `/api/vehicles/scratches/get-by-vehicle-id/${vehicleId}`,
     {
       params: {
@@ -495,7 +507,11 @@ export const getScratches = async (
       }
     }
   );
-  return scratches.data.result.content.flat();
+  return scratches.data.result.content;
+};
+
+export const deleteScratch = async (id: string): Promise<void> => {
+  await axios.get(`/api/vehicles/scratches/delete/${id}`);
 };
 
 export const deleteVehicle = async (id: string): Promise<void> => {

@@ -16,10 +16,12 @@ const Toolbar = () => {
           </button>
         </Link>
 
-        <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-purple-500 rounded-md">
-          <EditIcon className="w-4 h-4" color="#6B46C1" />
-          Add scratch
-        </button>
+        <Link to={`/vehicles/edit-scratches/${id}`}>
+          <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-purple-500 rounded-md">
+            <EditIcon className="w-4 h-4" color="#6B46C1" />
+            Add scratch
+          </button>
+        </Link>
 
         <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-[#1BC5BD] rounded-md">
           <MaintenanceIcon className="w-4 h-4" />

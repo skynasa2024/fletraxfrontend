@@ -156,17 +156,6 @@ export interface InspectionAndInsuranceFormField {
   exhaustEndDate: string;
 }
 
-export interface Scratch {
-  place: number;
-  explanationOf: string;
-  vehicleId: string;
-  image?: string;
-}
-
-export interface CarScratchesFormField {
-  scratches: Array<Scratch>;
-}
-
 export type AddVehicleForm = AdditionalVehicleInfo &
   InformationFormField &
   RegistrationFormField &
@@ -366,7 +355,7 @@ const AddVehiclePage = () => {
         const newVehicle = await createVehicle(vehicleData);
         newId = newVehicle.vehicleId;
       }
-      navigate(`/vehicles/vehicle/${newId}`);
+      navigate(`/vehicles/edit-scratches/${newId}`);
     } catch (error) {
       console.error('Error saving vehicle:', error);
     } finally {

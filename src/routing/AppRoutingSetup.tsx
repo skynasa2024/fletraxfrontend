@@ -29,6 +29,7 @@ import { AddDevice } from '@/pages/device/add-device';
 import { RequireRole } from '@/auth/RequireRole';
 import Telemetry from '@/pages/device/blocks/Telemetry';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
+import { AddVehicleScratches } from '@/pages/vehicle/add-vehicle/AddVehicleScratches';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -44,6 +45,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/vehicles/vehicle/:id" element={<VehicleDetailsPage />} />
           <Route path="/vehicles/add-vehicle" element={<AddVehicle />} />
           <Route path="/vehicles/edit/:id" element={<AddVehicle />} />
+          <Route path="/vehicles/edit-scratches/:id" element={<AddVehicleScratches />} />
 
           <Route path="/maintenance/maintenance" element={<Maintenance />} />
           <Route
