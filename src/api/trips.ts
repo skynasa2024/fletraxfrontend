@@ -83,7 +83,7 @@ export const searchTrips = async ({
       startTime: startTime,
       endTime: endTime,
       sort: 'startTime,desc',
-      size: 2
+      size: 10
     }
   });
 

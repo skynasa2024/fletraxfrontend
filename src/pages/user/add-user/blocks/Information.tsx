@@ -1,9 +1,12 @@
 import FileUpload from '@/components/FileUpload';
 import { AddUserPageProps } from '../AddUserPage';
 import { useEffect, useState } from 'react';
+import { useAuthContext } from '@/auth';
+import RoleComponent from '@/components/RoleComponent';
 
 const Information = ({ user }: AddUserPageProps) => {
-  const [status, setStatus] = useState<boolean>(false);
+  const { currentUser } = useAuthContext();
+  const [status, setStatus] = useState<boolean>(currentUser?.role === 'admin');
 
   useEffect(() => {
     if (user?.status) {
@@ -66,18 +69,23 @@ const Information = ({ user }: AddUserPageProps) => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col gap-2.5">
-            <label className="form-label">Role</label>
-            <select
-              required
-              className="select"
-              name="role"
-              defaultValue={user?.role ? user.role : 'user'}
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+          <RoleComponent role="admin">
+            <div className="flex flex-col gap-2.5">
+              <label className="form-label">Role</label>
+              <select
+                required
+                className="select"
+                name="role"
+                defaultValue={user?.role ? user.role : 'user'}
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </RoleComponent>
+          <RoleComponent role="user">
+            <input type="hidden" name="role" value="user" />
+          </RoleComponent>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-5">
@@ -96,22 +104,27 @@ const Information = ({ user }: AddUserPageProps) => {
             />
           </div>
         </div>
-        <div className="grid gap-2.5">
-          <label className="form-label">Status</label>
-          <div className="flex items-center">
-            <div className="flex items-center gap-2.5">
-              <div className="switch switch-sm">
-                <input
-                  name="status"
-                  type="checkbox"
-                  value="true"
-                  checked={status}
-                  onChange={() => setStatus((s) => !s)}
-                />
+        <RoleComponent role="admin">
+          <div className="grid gap-2.5">
+            <label className="form-label">Status</label>
+            <div className="flex items-center">
+              <div className="flex items-center gap-2.5">
+                <div className="switch switch-sm">
+                  <input
+                    name="status"
+                    type="checkbox"
+                    value="true"
+                    checked={status}
+                    onChange={() => setStatus((s) => !s)}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </RoleComponent>
+        <RoleComponent role="user">
+          <input type="hidden" name="status" value="false" />
+        </RoleComponent>
       </div>
     </div>
   );
