@@ -28,6 +28,7 @@ import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
 import { AddDevice } from '@/pages/device/add-device';
 import { RequireRole } from '@/auth/RequireRole';
 import Telemetry from '@/pages/device/blocks/Telemetry';
+import PrivacyPolicyPage from '@/pages/privacy-policy';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -72,6 +73,8 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/drivers/edit/:id" element={<AddDriver />} />
         </Route>
       </Route>
+      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+      <Route path="/hedef-privacy-policy" element={<PrivacyPolicyPage />} />
       <Route path="error/*" element={<ErrorsRouting />} />
       <Route path="auth/*" element={<AuthPage />} />
       <Route path="*" element={<Navigate to="/error/404" />} />
