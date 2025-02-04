@@ -14,7 +14,7 @@ export const CarPlate = ({ plate, className, showTooltip = false }: CarPlateProp
         TR
       </div>
       <DefaultTooltip title={plate} placement="right" open={!showTooltip ? false : undefined}>
-        <div className="w-full truncate rounded-e-lg py-2 px-2 text-[1rem] text-gray-700 font-bold border-e border-t border-b border-[#F1F1F4] bg-white dark:bg-black dark:border-gray-200 dark:text-gray-50 text-nowrap">
+        <div className="w-full truncate font-monospace rounded-e-lg py-2 px-2 text-[1rem] text-gray-700 font-bold border-e border-t border-b border-[#F1F1F4] bg-white dark:bg-black dark:border-gray-200 dark:text-gray-50 text-nowrap">
           {plate}
         </div>
       </DefaultTooltip>

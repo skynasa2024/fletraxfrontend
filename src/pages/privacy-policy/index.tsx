@@ -8,7 +8,7 @@ interface PrivacyPolicyPageProps {
 
 const PrivacyPolicyPage = ({ productName = 'Fletrax' }: PrivacyPolicyPageProps) => {
   return (
-    <div className="w-full">
+    <div className="w-full privacy-policy">
       <nav className="bg-coal-600 p-4 flex items-center justify-between">
         <Link to="/" className="shrink-0">
           <img

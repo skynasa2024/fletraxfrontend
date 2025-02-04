@@ -26,7 +26,7 @@ export const CarView = ({ vehicle, showBrand = true }: CarViewProps) => {
       )}
       <div className="flex flex-col gap-1">
         <CarPlate plate={vehicle.plate} />
-        <div className="text-gray-600 text-2sm pl-2">{vehicle.imei}</div>
+        <div className="text-gray-600 text-2sm pl-2 font-monospace">{vehicle.imei}</div>
       </div>
     </div>
   );

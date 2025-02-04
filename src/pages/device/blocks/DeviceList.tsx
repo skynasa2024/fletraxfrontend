@@ -36,7 +36,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
           <div className="flex items-center gap-4">
             <DeviceIcon color="#5151F9" className="size-12 min-w-12" />
             <div>
-              <p className="text-lg text-gray-700">{row.original.ident}</p>
+              <p className="text-lg text-gray-700 font-monospace">{row.original.ident}</p>
             </div>
           </div>
         )

@@ -198,7 +198,8 @@ module.exports = {
       fontFamily: {
         sans: ['Poppins', 'system-ui', 'sans-serif'],
         "dm-sans": ['DM Sans', 'system-ui', 'sans-serif'],
-        "roboto": ['Roboto', 'system-ui', 'sans-serif']
+        "roboto": ['Roboto', 'system-ui', 'sans-serif'],
+        "monospace": ['Courier Prime', 'monospace']
       },
       colors: {
         gray: {
