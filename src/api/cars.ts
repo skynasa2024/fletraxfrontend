@@ -451,7 +451,11 @@ export const createVehicle = async (vehicle: Partial<VehicleDTO>): Promise<Vehic
 
 export const updateVehicle = async (vehicle: VehicleDTO): Promise<VehicleDTO> => {
   const formData = objectToFormData(vehicle);
-  console.log(formData);
+  for (const [key, value] of [...formData.entries()]) {
+    if (!value || value === 'undefined') {
+      formData.delete(key);
+    }
+  }
   const updatedVehicle = await axios.put<ResponseModel<VehicleDTO>>(
     `/api/vehicles/cars/update`,
     formData,

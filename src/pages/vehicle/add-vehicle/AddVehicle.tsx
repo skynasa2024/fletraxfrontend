@@ -2,12 +2,10 @@ import { Container } from '@/components/container';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarPageTitle } from '@/partials/toolbar';
 import { PageNavbar } from '@/pages/account';
 import { AddVehiclePage } from '.';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const AddVehicle = () => {
   const navigate = useNavigate();
-  const { id: vehicleId } = useParams();
-
   const Actions = () => (
     <ToolbarActions>
       <button

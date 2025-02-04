@@ -3,10 +3,9 @@ import {
   Information,
   Registration,
   InspectionAndInsurance,
-  CarScratches,
   AdditionalVehicleInfo as AdditionalVehicleInfoBlock
 } from './blocks';
-import { Form, Formik, FormikProps } from 'formik';
+import { Form, Formik } from 'formik';
 import PromoCarTypeIcon from '../blocks/svg/PromoCarTypeIcon';
 import PickupCarTypeIcon from '../blocks/svg/PickupCarTypeIcon';
 import ComfortCarTypeIcon from '../blocks/svg/ComfortCarTypeIcon';
@@ -18,13 +17,7 @@ import AutomaticGearTypeIcon from '../blocks/svg/AutomaticGearTypeIcon';
 import IndividualTypeIcon from '../blocks/svg/IndividualTypeIcon';
 import CompanyTypeIcon from '../blocks/svg/CompanyTypeIcon';
 import { useNavigate, useParams } from 'react-router';
-import {
-  createScratches,
-  createVehicle,
-  getVehicleDetails,
-  updateVehicle,
-  VehicleDTO
-} from '@/api/cars';
+import { createVehicle, getVehicleDetails, updateVehicle, VehicleDTO } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
 import clsx from 'clsx';
 
@@ -34,7 +27,7 @@ type RadioOption<T> = {
   icon?: React.ReactNode;
 };
 
-type TabType = 'information' | 'registration' | 'inspectionAndInsurance' | 'carScratches';
+type TabType = 'information' | 'registration' | 'inspectionAndInsurance';
 
 interface AdditionalVehicleInfo {
   vehicleImage?: string;
@@ -163,8 +156,6 @@ export interface InspectionAndInsuranceFormField {
   exhaustEndDate: string;
 }
 
-export const scratchPlaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
 export interface Scratch {
   place: number;
   explanationOf: string;
@@ -179,8 +170,7 @@ export interface CarScratchesFormField {
 export type AddVehicleForm = AdditionalVehicleInfo &
   InformationFormField &
   RegistrationFormField &
-  InspectionAndInsuranceFormField &
-  CarScratchesFormField;
+  InspectionAndInsuranceFormField;
 
 const AddVehiclePage = () => {
   const { id: carId } = useParams();
@@ -199,9 +189,6 @@ const AddVehiclePage = () => {
     color: currentVehicle?.color || 'Black',
     numberOfSeats: currentVehicle?.numberOfSeats || 4,
     registrationType: currentVehicle?.type || 'Individual',
-    scratches: (currentVehicle?.scratches as any[]) || [
-      { place: 1, explanationOf: '', vehicleId: '' }
-    ],
     price: currentVehicle?.price || 0,
     volume: currentVehicle?.volume || '',
     power: currentVehicle?.power || '',
@@ -281,30 +268,23 @@ const AddVehiclePage = () => {
     exhaustEndDate: ''
   };
 
-  const carScratchesInitialValues: CarScratchesFormField = {
-    scratches: []
-  };
-
   const initialValues: AddVehicleForm = {
     ...informationInitialValues,
     ...registrationInitialValues,
     ...inspectionAndInsuranceInitialValues,
-    ...carScratchesInitialValues,
     ...additionalVehicleInfoInitialValues
   };
 
   const refs = {
     information: useRef<HTMLDivElement>(null),
     registration: useRef<HTMLDivElement>(null),
-    inspectionAndInsurance: useRef<HTMLDivElement>(null),
-    carScratches: useRef<HTMLDivElement>(null)
+    inspectionAndInsurance: useRef<HTMLDivElement>(null)
   };
 
   const tabConfig = [
     { id: 'information', label: 'Information' },
     { id: 'registration', label: 'Registration' },
-    { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' },
-    { id: 'carScratches', label: 'Car Scratches' }
+    { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' }
   ] as const;
 
   const handleTabClick = (tab: TabType) => {
@@ -332,7 +312,7 @@ const AddVehiclePage = () => {
   };
 
   const handleSaveClick = async (values: AddVehicleForm) => {
-    const { scratches, ...vehicle } = values;
+    const { ...vehicle } = values;
 
     setIsLoadingSave(true);
     try {
@@ -365,10 +345,6 @@ const AddVehiclePage = () => {
 
         const newVehicle = await updateVehicle(updatedVehicle);
         newId = newVehicle.vehicleId;
-
-        if (scratches.length > 0) {
-          await createScratches(scratches);
-        }
       } else {
         const vehicleData: Partial<VehicleDTO> = {
           ...vehicle,
@@ -389,9 +365,6 @@ const AddVehiclePage = () => {
         }
         const newVehicle = await createVehicle(vehicleData);
         newId = newVehicle.vehicleId;
-        if (scratches.length > 0) {
-          await createScratches(scratches);
-        }
       }
       navigate(`/vehicles/vehicle/${newId}`);
     } catch (error) {
@@ -401,7 +374,7 @@ const AddVehiclePage = () => {
     }
   };
 
-  const renderContent = (formikProps: FormikProps<AddVehicleForm>) => {
+  const renderContent = () => {
     switch (activeTab) {
       case 'information':
         return <Information title="Information" />;
@@ -409,8 +382,6 @@ const AddVehiclePage = () => {
         return <Registration />;
       case 'inspectionAndInsurance':
         return <InspectionAndInsurance />;
-      case 'carScratches':
-        return <CarScratches formikProps={formikProps} />;
       default:
         return null;
     }
@@ -423,7 +394,12 @@ const AddVehiclePage = () => {
       if (!carId) return;
       setIsLoading(true);
       try {
-        const vehicle = await getVehicleDetails(carId);
+        const vehicle = (await getVehicleDetails(carId)) as any;
+        for (const key in vehicle) {
+          if (!vehicle[key]) {
+            delete vehicle[key];
+          }
+        }
         setCurrentVehicle(vehicle);
       } catch (error) {
         console.error('Error fetching vehicle details:', error);
@@ -446,7 +422,7 @@ const AddVehiclePage = () => {
       initialValues={carId ? currentVehicleInitialValues : initialValues}
       onSubmit={handleSaveClick}
     >
-      {(props) => {
+      {() => {
         return (
           <Form>
             <div className="grid grid-cols-4 gap-5">
@@ -478,7 +454,7 @@ const AddVehiclePage = () => {
                     {/* Tab Content */}
                     <div className="tab-content">
                       <div ref={refs[activeTab]} className="focus:outline-none">
-                        {renderContent(props)}
+                        {renderContent()}
                       </div>
 
                       <div className="mt-5 flex justify-end gap-4">
