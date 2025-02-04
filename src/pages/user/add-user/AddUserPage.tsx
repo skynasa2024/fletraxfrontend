@@ -1,14 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Information, Contact, InformationAccount } from './blocks';
 import { UserModel } from '@/api/user';
 import { CompanyInformation } from './blocks/CompanyInformation';
 import { Device } from './blocks/Device';
+import { useLocation } from 'react-router';
 
 export interface AddUserPageProps {
   user?: UserModel;
 }
 
 const AddUserPage = ({ user }: AddUserPageProps) => {
+  const { hash } = useLocation();
   const [activeTab, setActiveTab] = useState<
     'information' | 'account' | 'contact' | 'company info' | 'device'
   >('information');
@@ -36,6 +38,18 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       header.focus();
     }
   };
+
+  useEffect(() => {
+    if (hash === '#account') {
+      handleTabClick(accountRef, 'account');
+    } else if (hash === '#contact') {
+      handleTabClick(contactRef, 'contact');
+    } else if (hash === '#company-info') {
+      handleTabClick(companyInformationRef, 'company info');
+    } else if (hash === '#devices') {
+      handleTabClick(deviceRef, 'device');
+    }
+  }, [hash]);
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
@@ -109,9 +123,11 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       <div ref={companyInformationRef}>
         <CompanyInformation user={user} />
       </div>
-      <div ref={deviceRef}>
-        <Device user={user} />
-      </div>
+      {user && (
+        <div ref={deviceRef}>
+          <Device user={user} />
+        </div>
+      )}
     </div>
   );
 };

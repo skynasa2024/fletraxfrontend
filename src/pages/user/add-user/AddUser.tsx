@@ -43,7 +43,7 @@ const AddUser = () => {
       className="pb-10"
       action={async (data) => {
         const response = user ? await updateUser(user.id, data) : await createUser(data);
-        navigate(`/users/user/${response.id}`);
+        navigate(`/users/edit/${response.id}#devices`);
       }}
     >
       <PageNavbar />
