@@ -74,7 +74,7 @@ const AppRoutingSetup = (): ReactElement => {
         </Route>
       </Route>
       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-      <Route path="/hedef-privacy-policy" element={<PrivacyPolicyPage />} />
+      <Route path="/hedef-privacy-policy" element={<PrivacyPolicyPage productName="Hedef" />} />
       <Route path="error/*" element={<ErrorsRouting />} />
       <Route path="auth/*" element={<AuthPage />} />
       <Route path="*" element={<Navigate to="/error/404" />} />

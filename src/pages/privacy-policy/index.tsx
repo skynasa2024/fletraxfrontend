@@ -2,7 +2,11 @@ import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
 import './styles.css';
 
-const PrivacyPolicyPage = () => {
+interface PrivacyPolicyPageProps {
+  productName?: string;
+}
+
+const PrivacyPolicyPage = ({ productName = 'Fletrax' }: PrivacyPolicyPageProps) => {
   return (
     <div className="w-full">
       <nav className="bg-coal-600 p-4 flex items-center justify-between">
@@ -15,7 +19,7 @@ const PrivacyPolicyPage = () => {
         </Link>
       </nav>
       <div className="py-10 container mx-auto">
-        <h1>Fletrax Privacy Policy</h1>
+        <h1>{productName} Privacy Policy</h1>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use, and
           disclosure of Your information when You use the Service and tells You about Your privacy
@@ -48,11 +52,11 @@ const PrivacyPolicyPage = () => {
           </li>
           <li>
             <strong>Application:</strong> The software program provided by the Company downloaded by
-            You on any electronic device, named Fletrax.
+            You on any electronic device, named {productName}.
           </li>
           <li>
             <strong>Company:</strong> (referred to as either "the Company", "We", "Us" or "Our" in
-            this Agreement) refers to Fletrax.
+            this Agreement) refers to {productName}.
           </li>
           <li>
             <strong>Country:</strong> Refers to: Turkey.
