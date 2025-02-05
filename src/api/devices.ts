@@ -225,3 +225,42 @@ export const unlinkLinkDevice = async (userId: string, imei: string | string[]):
     params: { userId }
   });
 };
+
+interface Address {
+  road: string;
+  village: string;
+  state_district: string;
+  state: string;
+  ISO3166_2_lvl4: string;
+  postcode: string;
+  country: string;
+  country_code: string;
+}
+
+interface ReverseGeoLocationResponse {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  category: string;
+  type: string;
+  place_rank: number;
+  importance: number;
+  addresstype: string;
+  name: string;
+  display_name: string;
+  address: Address;
+  boundingbox: string[];
+}
+
+export const reverseGeoLocation = async (lat: number, lng: number): Promise<string> => {
+  const location = await axios.get<ReverseGeoLocationResponse>(
+    `https://nominatim.openstreetmap.org/reverse`,
+    {
+      params: { lat, lon: lng, format: 'jsonv2' }
+    }
+  );
+  return location.data.display_name;
+};

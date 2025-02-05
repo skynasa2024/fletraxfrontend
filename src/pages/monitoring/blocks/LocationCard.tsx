@@ -3,9 +3,22 @@ import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import 'react-resizable/css/styles.css';
 import { toAbsoluteUrl } from '@/utils';
 import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { reverseGeoLocation } from '@/api/devices';
 
 export const LocationCard = () => {
   const { selectedLocation: location } = useMonitoringProvider();
+  const [address, setAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!location) {
+      return;
+    }
+
+    reverseGeoLocation(location.lat, location.long).then((data) => {
+      setAddress(data);
+    });
+  }, [location]);
 
   if (!location) {
     return null;
@@ -161,10 +174,7 @@ export const LocationCard = () => {
       </div>
       <div className="card-body flex gap-2 px-[34px] py-[10px] text-[#A1A5B7] font-medium text-xs max-w-[680px]">
         <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
-        <div>
-          384 meters southeast of Virgin International Co., Ltd., Yulu Interchange, Guangming
-          District, Shenzhen, Guangdong (3S)
-        </div>
+        <div>{address || 'Loading...'}</div>
       </div>
       <div className="card-footer justify-center p-0 text-[#1F242E] dark:text-gray-800">
         <a href="#" className="px-5 py-2 flex gap-2 !text-inherit">
