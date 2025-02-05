@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getTopics } from '@/api/user.ts';
-import mqtt, { OnMessageCallback } from 'mqtt';
+import { OnMessageCallback } from 'mqtt';
+import { useMqttProvider } from '@/providers/MqttProvider';
 
-const useMqttNotifications = (mqttClient: mqtt.MqttClient | undefined, onMessage: OnMessageCallback) => {
+const useMqttNotifications = (onMessage: OnMessageCallback) => {
   const [notificationsTopic, setNotificationsTopic] = useState<string | null>(null);
+  const { mqttClient } = useMqttProvider();
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -27,27 +29,21 @@ const useMqttNotifications = (mqttClient: mqtt.MqttClient | undefined, onMessage
   useEffect(() => {
     if (!mqttClient || !notificationsTopic) return;
 
-    const subscribeToTopic = async () => {
-      if (mqttClient.connected) {
-        await mqttClient.subscribeAsync(notificationsTopic);
-      } else {
-        mqttClient.once('connect', async () => {
-          await mqttClient.subscribeAsync(notificationsTopic);
-        });
-      }
+    if (mqttClient.connected) {
+      mqttClient.subscribeAsync(notificationsTopic);
+    } else {
+      mqttClient.once('connect', async () => {
+        mqttClient.subscribeAsync(notificationsTopic);
+      });
+    }
 
-      mqttClient.on('message', onMessage);
+    mqttClient.on('message', onMessage);
 
-      return () => {
-        mqttClient.off('message', onMessage);
-        mqttClient.unsubscribeAsync(notificationsTopic);
-      };
+    return () => {
+      mqttClient.off('message', onMessage);
+      mqttClient.unsubscribeAsync(notificationsTopic);
     };
-
-    subscribeToTopic();
-
   }, [mqttClient, notificationsTopic, onMessage]);
-
 };
 
 export { useMqttNotifications };

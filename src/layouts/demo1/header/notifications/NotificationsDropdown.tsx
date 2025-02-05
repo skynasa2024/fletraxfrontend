@@ -3,8 +3,10 @@ import { getHeight } from '@/utils';
 import { KeenIcon } from '@/components';
 import { MenuSub } from '@/components/menu';
 import { useViewport } from '@/hooks';
-import { INotification, INotificationsDropdownProps } from '@/layouts/demo1/header/notifications/types.tsx';
-import { useMqttProvider } from '@/providers/MqttProvider.tsx';
+import {
+  INotification,
+  INotificationsDropdownProps
+} from '@/layouts/demo1/header/notifications/types.tsx';
 import { Buffer } from 'buffer';
 import { useMqttNotifications } from '@/layouts/demo1/header/notifications/useMqttNotifications.tsx';
 import { NotificationItem } from '@/layouts/demo1/header/notifications/NotificationItem.tsx';
@@ -38,12 +40,9 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
 
   const onMessage = (topic: string, payload: Buffer) => {
     try {
-      if (topic.includes("user/notifications")) {
+      if (topic.includes('user/notifications')) {
         const parsedNotification: INotification = JSON.parse(payload.toString());
-        setNotifications((prevNotifications) => [
-          parsedNotification,
-          ...prevNotifications
-        ]);
+        setNotifications((prevNotifications) => [parsedNotification, ...prevNotifications]);
         showNotificationSnackbar(parsedNotification);
       }
     } catch (error) {
@@ -55,19 +54,19 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
     enqueueSnackbar(notification.text, {
       variant: 'default',
       content: (key) => (
-        <NotificationSnackbar
-          key={key}
-          user={notification.userId}
-          text={notification.text}
-          date={formatTimeAgo(notification.createdAt)}
-          info={notification.type}
-        />
+        <div key={key} className="p-4">
+          <NotificationSnackbar
+            user={notification.vehiclePlate}
+            text={notification.text}
+            date={formatTimeAgo(notification.createdAt)}
+            info={notification.type}
+          />
+        </div>
       )
     });
   };
 
-  const { mqttClient } = useMqttProvider();
-  useMqttNotifications(mqttClient, onMessage);
+  useMqttNotifications(onMessage);
   const [notifications, setNotifications] = useState<INotification[]>([]);
 
   return (
@@ -94,24 +93,25 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
       >
         <div className="flex flex-col items-center gap-5 py-4 divider-y divider-gray-200">
           {notifications.length == 0 && <span className="text-sm">No notifications available</span>}
-          {notifications.length > 0 && notifications.map((notification, index) => (
-            <React.Fragment key={index}>
-              <NotificationItem
-                badgeColor="badge-success"
-                userName={notification.userId}
-                text={notification.text}
-                date={formatTimeAgo(notification.createdAt)}
-                info={notification.type}
-              />
-              {index < notifications.length - 1 && (
-                <div className="border-b border-b-gray-200"></div>
-              )}
-            </React.Fragment>
-          ))}
+          {notifications.length > 0 &&
+            notifications.map((notification, index) => (
+              <React.Fragment key={index}>
+                <NotificationItem
+                  badgeColor="badge-success"
+                  userName={notification.vehiclePlate}
+                  text={notification.text}
+                  date={formatTimeAgo(notification.createdAt)}
+                  info={notification.type}
+                />
+                {index < notifications.length - 1 && (
+                  <div className="border-b border-b-gray-200"></div>
+                )}
+              </React.Fragment>
+            ))}
         </div>
       </div>
 
-      {notifications.length > 0 &&
+      {notifications.length > 0 && (
         <div ref={footerRef}>
           <div>
             <div className="border-b border-b-gray-200"></div>
@@ -120,7 +120,7 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
             </div>
           </div>
         </div>
-      }
+      )}
     </MenuSub>
   );
 };
