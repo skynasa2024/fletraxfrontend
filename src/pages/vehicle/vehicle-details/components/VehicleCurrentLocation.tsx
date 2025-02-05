@@ -5,12 +5,14 @@ import { Buffer } from 'buffer';
 
 export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: string | null }) {
   const { mqttClient } = useMqttProvider();
+  const topic = `user/monitoring/+/${deviceIdent}`;
 
   const [parameters, setParameters] = useState<
     Record<string, { data: any; timestamp: Date; latest: boolean }>
   >({});
 
-  const onMessage = (topic: string, message: Buffer) => {
+  const onMessage = (incomingTopic: string, message: Buffer) => {
+    if (incomingTopic !== topic) return;
     const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
     const timestamp = new Date(device.server_timestamp * 1000);
     const newParameters = { ...parameters };
@@ -26,7 +28,6 @@ export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: 
   useEffect(() => {
     if (!mqttClient) return;
 
-    const topic = `user/monitoring/+/${deviceIdent}`;
     if (!topic) return;
     if (mqttClient.connected) {
       mqttClient.subscribeAsync(topic);

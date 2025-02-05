@@ -1,33 +1,13 @@
 import Toolbar from './Toolbar';
 import FileList, { FileInfo } from './details-components/FileList';
-import TripList from './details-components/TripList';
 import Card from './details-components/Card';
 import ProfileCard from './ProfileCard';
 import { useNavigate, useParams } from 'react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { DriverDetails, getDriver } from '@/api/drivers';
 import { MaintenanceViolationTable } from '../dashboards/dashboard/blocks/maintenance/MaintenanceViolation';
-
-interface TripData {
-  distance: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  speed: number;
-}
-
-const trips: TripData[] = Array(10)
-  .fill(null)
-  .map(() => ({
-    distance: `${(Math.random() * 10 + 1).toFixed(2)} KM`,
-    date: new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1)
-      .toISOString()
-      .split('T')[0],
-    startTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-    endTime: `${String(Math.floor(Math.random() * 24)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}:${String(Math.floor(Math.random() * 60)).padStart(2, '0')}`,
-    speed: Math.floor(Math.random() * 101) + 50,
-    maxSpeed: Math.floor(Math.random() * 81) + 100
-  }));
+import TripList from '../vehicle/blocks/details-components/TripList';
+import VehicleCurrentLocation from '../vehicle/vehicle-details/components/VehicleCurrentLocation';
 
 const DriverDetailsPage = () => {
   const { id } = useParams();
@@ -93,7 +73,7 @@ const DriverDetailsPage = () => {
           />
         </div>
 
-        <div className="flex justify-between items-start px-5 mt-4">
+        <div className="flex px-5 mt-4 gap-4">
           {/* Maintenance Card */}
           <Card
             type="maintenance"
@@ -104,6 +84,9 @@ const DriverDetailsPage = () => {
             title={''}
             description={''}
           />
+          <div className="card hover:shadow-md flex-1 w-full">
+            <VehicleCurrentLocation deviceIdent="" />
+          </div>
 
           {/* Violations Card */}
           <Card
@@ -117,15 +100,7 @@ const DriverDetailsPage = () => {
           />
         </div>
 
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 m-5 mt-0 ">
-          <TripList
-            trips={trips}
-            totalTrips={450}
-            className="sm:w-full mt-4 hover:shadow-md"
-            title="Trips"
-          />
-          <div className="p-4 card hover:shadow-md w-full">map</div>
-        </div>
+        <TripList deviceIdent="" />
         <div className="m-5">
           <MaintenanceViolationTable id={driver.vehicle.id} />
         </div>
