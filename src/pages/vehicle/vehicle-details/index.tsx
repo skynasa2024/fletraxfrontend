@@ -23,7 +23,6 @@ import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/m
 import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
-import Map from '@/pages/device/Map.tsx';
 import { Device, getDevice } from '@/api/devices.ts';
 
 const geofences = [
@@ -204,12 +203,7 @@ const VehicleInfo = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
-          <TripList deviceIdent={currentDevice?.ident} />
-          <div className="p-4 card hover:shadow-md  w-full">
-            <Map />
-          </div>
-        </div>
+        <TripList deviceIdent={currentDevice?.ident} />
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
             <h2 className="text-xl font-semibold mb-4 ps-4">Documents</h2>

@@ -34,7 +34,8 @@ interface TripsContextProps {
   path?: TripPath[];
 }
 
-const TripsContext = createContext<TripsContextProps>({
+// eslint-disable-next-line react-refresh/only-export-components
+export const TripsContext = createContext<TripsContextProps>({
   searchDeviceQuery: '',
   setSearchDeviceQuery: () => {},
   startDate: undefined,

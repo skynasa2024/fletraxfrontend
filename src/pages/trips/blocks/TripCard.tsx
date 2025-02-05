@@ -12,6 +12,7 @@ import { useAuthContext } from '@/auth';
 
 interface TripCardProps {
   tripGroup: TripGroup;
+  animation?: boolean;
 }
 
 const formatRelativeLocale: Record<string, string> = {
@@ -28,7 +29,7 @@ const locale = {
   formatRelative: (token: string) => formatRelativeLocale[token]
 };
 
-const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
+const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const { setSelectedTrip, selectedTrip } = useTripsContext();
   const { play, playing, stop } = useAnimationContext();
@@ -54,32 +55,33 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
             <span>{tripGroup.trips.length} </span>
             <span className="font-normal">Trips</span>
           </div>
-          <div
-            className="cursor-pointer ms-auto"
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log(playing, selectedTrip, tripGroup);
-              stop();
-              if (playing && selectedTrip === tripGroup) {
-                return;
-              }
-              setSelectedTrip(tripGroup);
-              play();
-            }}
-          >
-            <img
-              src={toAbsoluteUrl(
-                `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
-              )}
-              className="dark:hidden"
-            />
-            <img
-              src={toAbsoluteUrl(
-                `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start-dark'}.svg`
-              )}
-              className="light:hidden"
-            />
-          </div>
+          {animation && (
+            <div
+              className="cursor-pointer ms-auto"
+              onClick={(e) => {
+                e.stopPropagation();
+                stop();
+                if (playing && selectedTrip === tripGroup) {
+                  return;
+                }
+                setSelectedTrip(tripGroup);
+                play();
+              }}
+            >
+              <img
+                src={toAbsoluteUrl(
+                  `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start'}.svg`
+                )}
+                className="dark:hidden"
+              />
+              <img
+                src={toAbsoluteUrl(
+                  `/media/icons/${playing && selectedTrip === tripGroup ? 'start-green' : 'start-dark'}.svg`
+                )}
+                className="light:hidden"
+              />
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-3 px-[6px] gap-2">
           <div className="flex flex-col gap-1">
@@ -139,31 +141,33 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup }) => {
                   <div className="text-xs text-[#3F4254] dark:text-gray-50 font-semibold">
                     {idx + 1}
                   </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      stop();
-                      if (playing && selectedTrip === trip) {
-                        return;
-                      }
-                      setSelectedTrip(trip);
-                      play();
-                    }}
-                  >
-                    <img
-                      src={toAbsoluteUrl(
-                        `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
-                      )}
-                      className="dark:hidden"
-                    />
-                    <img
-                      src={toAbsoluteUrl(
-                        `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start-dark'}.svg`
-                      )}
-                      className="light:hidden"
-                    />
-                  </div>
+                  {animation && (
+                    <div
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        stop();
+                        if (playing && selectedTrip === trip) {
+                          return;
+                        }
+                        setSelectedTrip(trip);
+                        play();
+                      }}
+                    >
+                      <img
+                        src={toAbsoluteUrl(
+                          `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start'}.svg`
+                        )}
+                        className="dark:hidden"
+                      />
+                      <img
+                        src={toAbsoluteUrl(
+                          `/media/icons/${playing && selectedTrip === trip ? 'start-green' : 'start-dark'}.svg`
+                        )}
+                        className="light:hidden"
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex gap-1 items-center">
