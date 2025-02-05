@@ -1,6 +1,7 @@
 import FileUpload from '@/components/FileUpload';
 import { useState } from 'react';
 import { AddDriverPageProps } from '../AddDriverPage';
+import { VehicleSearch } from './VehicleSearch';
 
 const Information = ({ driver }: AddDriverPageProps) => {
   const [selectedType, setSelectedType] = useState(
@@ -102,32 +103,45 @@ const Information = ({ driver }: AddDriverPageProps) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2.5">
-          {selectedType === 'turkish' ? (
-            <>
-              <label className="form-label">ID number</label>
-              <input
-                required
-                type="text"
-                className="input"
-                name="idNumber"
-                placeholder="ID number"
-                defaultValue={driver?.idNumber}
-              />
-            </>
-          ) : (
-            <>
-              <label className="form-label">Passport number</label>
-              <input
-                required
-                type="text"
-                className="input"
-                name="passportNumber"
-                placeholder="Passport number"
-                defaultValue={driver?.passportNumber}
-              />
-            </>
-          )}
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="flex flex-col gap-2.5">
+            {selectedType === 'turkish' ? (
+              <>
+                <label className="form-label">ID number</label>
+                <input
+                  required
+                  type="text"
+                  className="input"
+                  name="idNumber"
+                  placeholder="ID number"
+                  defaultValue={driver?.idNumber}
+                />
+              </>
+            ) : (
+              <>
+                <label className="form-label">Passport number</label>
+                <input
+                  required
+                  type="text"
+                  className="input"
+                  name="passportNumber"
+                  placeholder="Passport number"
+                  defaultValue={driver?.passportNumber}
+                />
+              </>
+            )}
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <label className="form-label">Vehicle</label>
+            <VehicleSearch
+              initialSearch={
+                driver?.vehicle && {
+                  plate: driver?.vehicle?.plate,
+                  id: driver?.vehicle?.id
+                }
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

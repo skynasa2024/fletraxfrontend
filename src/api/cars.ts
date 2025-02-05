@@ -360,7 +360,7 @@ export const getVehicles = async (
       id: vehicle.vehicleId,
       brandImage: vehicle.image ?? '',
       plate: vehicle.plate,
-      imei: 'imei',
+      imei: vehicle.deviceIdent,
       name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
     },
     customer: {
