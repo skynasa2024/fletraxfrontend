@@ -65,7 +65,7 @@ const ParameterList = ({ items }: ParameterListProps) => {
 
             {/* Card Body */}
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 truncate">{value.data.toString()}</span>
+              <span className="text-sm text-gray-600 truncate">{value.data?.toString()}</span>
             </div>
           </div>
         ))}

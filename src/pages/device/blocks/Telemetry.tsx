@@ -14,24 +14,27 @@ const Telemetry = () => {
     Record<string, { data: any; timestamp: Date; latest: boolean }>
   >({});
   const { device }: { device: DeviceDTO } = useOutletContext();
+  const topic = `user/monitoring/+/${device.ident}`;
 
-  const onMessage = (topic: string, message: Buffer) => {
-    const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
-    const timestamp = new Date(device.server_timestamp * 1000);
-    const newParameters = { ...parameters };
-    for (const key in parameters) {
-      newParameters[key].latest = false;
-    }
-    for (const key in device) {
-      newParameters[key] = { data: device[key], timestamp, latest: true };
-    }
-    setParameters(newParameters);
+  const onMessage = (incomingTopic: string, message: Buffer) => {
+    if (incomingTopic !== topic) return;
+    setParameters((prev) => {
+      const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
+      const timestamp = new Date(device.server_timestamp * 1000);
+      const newParameters = { ...prev };
+      for (const key in prev) {
+        newParameters[key].latest = false;
+      }
+      for (const key in device) {
+        newParameters[key] = { data: device[key], timestamp, latest: true };
+      }
+      return newParameters;
+    });
   };
 
   useEffect(() => {
     if (!mqttClient) return;
 
-    const topic = `user/monitoring/+/${device.ident}`;
     if (!topic) return;
     if (mqttClient.connected) {
       mqttClient.subscribeAsync(topic);
