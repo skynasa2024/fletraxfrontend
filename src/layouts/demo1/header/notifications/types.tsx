@@ -3,7 +3,8 @@ export interface INotificationsDropdownProps {
 }
 
 export interface INotificationItemProps {
-  userName: string;
+  plate: string;
+  imei: string;
   text: string;
   date: string;
   info: string;
@@ -11,7 +12,8 @@ export interface INotificationItemProps {
 }
 
 export interface INotificationSnackbarProps {
-  user: string;
+  plate: string;
+  imei: string;
   text: string;
   date: string;
   info: string;

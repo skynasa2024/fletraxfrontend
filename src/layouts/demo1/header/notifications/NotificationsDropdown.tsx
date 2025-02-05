@@ -56,7 +56,8 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
       content: (key) => (
         <div key={key} className="p-4">
           <NotificationSnackbar
-            user={notification.vehiclePlate}
+            plate={notification.vehiclePlate}
+            imei={notification.deviceIdent}
             text={notification.text}
             date={formatTimeAgo(notification.createdAt)}
             info={notification.type}
@@ -98,7 +99,8 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
               <React.Fragment key={index}>
                 <NotificationItem
                   badgeColor="badge-success"
-                  userName={notification.vehiclePlate}
+                  plate={notification.vehiclePlate}
+                  imei={notification.deviceIdent}
                   text={notification.text}
                   date={formatTimeAgo(notification.createdAt)}
                   info={notification.type}

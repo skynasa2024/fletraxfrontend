@@ -82,7 +82,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         accessorKey: 'device.name',
         header: 'Device Name',
-        cell: ({ row }) => <span>{row.original.deviceName}</span>
+        cell: ({ row }) => <span>{row.original.vehicle.imei}</span>
       },
       {
         accessorKey: 'mileage',

@@ -4,7 +4,7 @@ import { useSettings } from '@/providers';
 import { INotificationSnackbarProps } from '@/layouts/demo1/header/notifications/types.tsx';
 
 const NotificationSnackbar = forwardRef<HTMLDivElement, INotificationSnackbarProps>(
-  ({ user, text, date, info }, ref) => {
+  ({ plate, imei, text, date, info }, ref) => {
     const { settings } = useSettings();
     return (
       <div
@@ -18,7 +18,8 @@ const NotificationSnackbar = forwardRef<HTMLDivElement, INotificationSnackbarPro
           />
         </div>
         <div className="flex flex-col gap-1">
-          <div className="text-gray-900 text-2sm mb-px">{user}</div>
+          <div className="text-gray-900 text-2sm mb-px">{plate}</div>
+          <div className="text-gray-900 text-2sm mb-px">{imei}</div>
           <span className="text-2sm text-gray-700"> {text} </span>
           <span className="flex items-center text-2xs font-medium text-gray-500">
             {' '}

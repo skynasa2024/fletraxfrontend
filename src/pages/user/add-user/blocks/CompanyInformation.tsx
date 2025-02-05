@@ -12,7 +12,6 @@ const CompanyInformation = ({ user }: AddUserPageProps) => {
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Tax number</label>
             <input
-              required
               type="text"
               className="input"
               name="companyTaxNumber"

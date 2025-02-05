@@ -2,7 +2,7 @@ import { INotificationItemProps } from '@/layouts/demo1/header/notifications/typ
 import { KeenIcon } from '@/components';
 import { useSettings } from '@/providers';
 
-const NotificationItem = ({ userName, text, date, info }: INotificationItemProps) => {
+const NotificationItem = ({ imei, plate, text, date, info }: INotificationItemProps) => {
   const { settings } = useSettings();
 
   return (
@@ -15,7 +15,8 @@ const NotificationItem = ({ userName, text, date, info }: INotificationItemProps
       </div>
 
       <div className="flex flex-col gap-1">
-        <div className="text-gray-900 text-2sm mb-px">{userName}</div>
+        <div className="text-gray-900 text-2sm mb-px">{plate}</div>
+        <div className="text-gray-900 text-2sm mb-px">{imei}</div>
         <span className="text-2sm text-gray-700"> {text} </span>
         <span className="flex items-center text-2xs font-medium text-gray-500">
           {' '}
