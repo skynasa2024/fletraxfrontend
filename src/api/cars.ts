@@ -5,7 +5,7 @@ import { User, getUser } from './user';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
-import { arrayToFormData, objectToFormData, toAbsoluteUrl } from '@/utils';
+import { objectToFormData, toAbsoluteUrl } from '@/utils';
 import { CarType, FuelType, GearType, RegistrationType } from '@/pages/vehicle/add-vehicle';
 
 export interface CarCountsDTO {
@@ -42,6 +42,7 @@ export interface VehicleDetails {
   mileage: string;
   status: string;
   deviceName: string;
+  carId: string;
 }
 
 export interface VehicleDTO {
@@ -372,7 +373,8 @@ export const getVehicles = async (
     type: vehicle.gear ?? 'NA',
     mileage: vehicle.currentMileage ? vehicle.currentMileage : 'NA',
     status: vehicle.status,
-    deviceName: 'Device Name'
+    deviceName: 'Device Name',
+    carId: vehicle.id
   }));
 
   return {
@@ -492,7 +494,7 @@ export const updateScratch = async (formData: FormData): Promise<ScratchDTO> => 
     }
   );
   return updatedScratch.data.result;
-}
+};
 
 export const getScratches = async (
   vehicleId: string,

@@ -178,7 +178,7 @@ function GridViewStatusDropdown({ vehicleDetails, refetchStats }: StatusDropdown
     <StatusDropdown
       selected={vehicleDetails.status}
       setSelected={async (value) => {
-        await updateVehicleStatus(vehicleDetails.vehicle.id, value);
+        await updateVehicleStatus(vehicleDetails.carId, value);
         refetch();
         refetchStats();
       }}

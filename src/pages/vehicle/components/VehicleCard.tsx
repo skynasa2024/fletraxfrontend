@@ -29,7 +29,7 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           <StatusDropdown
             selected={vehicle.status}
             setSelected={async (value) => {
-              await updateVehicleStatus(vehicle.vehicle.id, value);
+              await updateVehicleStatus(vehicle.carId, value);
               await refetchVehicles();
               refetchStats?.();
             }}
