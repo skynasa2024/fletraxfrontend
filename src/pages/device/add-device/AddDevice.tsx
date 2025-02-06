@@ -41,7 +41,7 @@ const AddDevice = () => {
       className="pb-10"
       action={async (data) => {
         const response = device ? await updateDevice(device.id, data) : await createDevice(data);
-        navigate(`/devices/device/${response.id}`);
+        navigate(`/devices/device/${response.ident}`);
       }}
     >
       <PageNavbar />
