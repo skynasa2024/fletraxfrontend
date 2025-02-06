@@ -110,7 +110,9 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         id: 'actions',
         header: 'Actions',
-        cell: ({ row }) => <ActionsDropdown vehicleId={row.original.vehicle.id} />
+        cell: ({ row }) => (
+          <ActionsDropdown vehicleId={row.original.vehicle.id} carId={row.original.carId} />
+        )
       }
     ],
     [refetchStats]
@@ -129,7 +131,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
+function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: string }) {
   const reload = useDataGrid().fetchServerSideData;
 
   return (
@@ -154,7 +156,7 @@ function ActionsDropdown({ vehicleId }: { vehicleId: string }) {
           <MenuSub className="menu-default">
             <MenuItem
               onClick={async () => {
-                await deleteVehicle(vehicleId);
+                await deleteVehicle(carId);
                 reload();
               }}
             >

@@ -126,7 +126,7 @@ const VehicleInfo = () => {
 
   return (
     <>
-      <Toolbar />
+      <Toolbar carId={vehicle?.id} />
       <div className="px-10">
         <div className="flex flex-col lg:flex-row">
           <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2 p-4">

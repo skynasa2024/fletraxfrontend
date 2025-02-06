@@ -3,7 +3,7 @@ import { DeleteIcon, EditIcon, MaintenanceIcon, ViolationsIcon } from '../../blo
 import { Container } from '@/components';
 import { deleteVehicle } from '@/api/cars';
 
-const Toolbar = () => {
+const Toolbar = ({ carId }: { carId?: string | null }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -36,8 +36,8 @@ const Toolbar = () => {
         <button
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
           onClick={async () => {
-            if (!id) return;
-            await deleteVehicle(id);
+            if (!carId) return;
+            await deleteVehicle(carId);
             navigate('/vehicles/vehicle');
           }}
         >

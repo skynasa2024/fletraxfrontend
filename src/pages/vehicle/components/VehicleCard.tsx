@@ -104,7 +104,7 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           href="#"
           onClick={async (e) => {
             e.preventDefault();
-            await deleteVehicle(vehicle.vehicle.id);
+            await deleteVehicle(vehicle.carId);
             refetchVehicles();
           }}
           className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50"
