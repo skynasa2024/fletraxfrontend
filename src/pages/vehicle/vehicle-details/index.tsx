@@ -109,8 +109,8 @@ const VehicleInfo = () => {
 
     const files: FileInfo[] = [];
 
-    files.push({ name: 'Image', url: (vehicle?.imageFile as string) ?? undefined });
-    files.push({ name: 'License', url: (vehicle?.licenseImageFile as string) ?? undefined });
+    files.push({ name: 'Image', url: (vehicle?.image as string) ?? undefined });
+    files.push({ name: 'License', url: (vehicle?.licenseImage as string) ?? undefined });
 
     return files;
   }, [vehicle]);

@@ -24,11 +24,11 @@ const CompanyInformation = ({ user }: AddUserPageProps) => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Contract PDF</label>
-            <FileUpload name="contractPdfFile" isUploaded={!!user?.contractPdfFile} />
+            <FileUpload name="contractPdfFile" isUploaded={!!user?.contractPdf} />
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">Tax Plate</label>
-            <FileUpload name="taxPlateFile" isUploaded={!!user?.taxPlateFile} />
+            <FileUpload name="taxPlateFile" isUploaded={!!user?.taxPlate} />
           </div>
         </div>
       </div>

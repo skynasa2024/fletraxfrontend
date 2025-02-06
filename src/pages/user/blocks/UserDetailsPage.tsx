@@ -30,19 +30,19 @@ const UserDetailsPage = () => {
 
     files.push({
       name: 'Front Photo Of National ID Image',
-      url: user.frontPhotoNationalIdFile ?? undefined
+      url: user.frontPhotoNationalId ?? undefined
     });
     files.push({
       name: 'National ID Background Image',
-      url: user.nationalIdBackgroundFile ?? undefined
+      url: user.nationalIdBackground ?? undefined
     });
     files.push({
       name: 'Contract PDF',
-      url: user.contractPdfFile ?? undefined
+      url: user.contractPdf ?? undefined
     });
     files.push({
       name: 'Tax Plate',
-      url: user.taxPlateFile ?? undefined
+      url: user.taxPlate ?? undefined
     });
 
     return files;

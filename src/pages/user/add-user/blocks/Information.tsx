@@ -91,17 +91,11 @@ const Information = ({ user }: AddUserPageProps) => {
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
             <label className="form-label">Front Photo Of National ID Image</label>
-            <FileUpload
-              name="frontPhotoNationalIdFile"
-              isUploaded={!!user?.frontPhotoNationalIdFile}
-            />
+            <FileUpload name="frontPhotoNationalIdFile" isUploaded={!!user?.frontPhotoNationalId} />
           </div>
           <div className="flex flex-col gap-2.5">
             <label className="form-label">National ID Background Image</label>
-            <FileUpload
-              name="nationalIdBackgroundFile"
-              isUploaded={!!user?.nationalIdBackgroundFile}
-            />
+            <FileUpload name="nationalIdBackgroundFile" isUploaded={!!user?.nationalIdBackground} />
           </div>
         </div>
         <RoleComponent role="admin">

@@ -1,6 +1,7 @@
+import { downloadDocument, getDocumentType } from '@/api/documents';
 import { toAbsoluteUrl } from '@/utils';
 import { Check, X } from 'lucide-react';
-import React, { useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 export interface FileInfo {
   name: string;
@@ -17,15 +18,15 @@ interface FileListProps {
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file }) => {
-  const type = useMemo(() => {
+  const [type, setType] = React.useState('FILE');
+  useEffect(() => {
     if (file.url) {
-      const ext = file.url.split('.').pop();
-      if (ext) {
-        return ext.toUpperCase();
-      }
+      getDocumentType(file.url).then((type) => {
+        setType(type.split('/')[0].toUpperCase());
+      });
     }
-    return 'FILE';
   }, [file.url]);
+
   const getIconSrc = (type: string) =>
     toAbsoluteUrl(`/media/icons/${type !== 'FILE' ? type.toLowerCase() + '-' : ''}file-icon.svg`); // Placeholder for demo
 
@@ -39,14 +40,13 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
 
         {/* Aligning elements to the end */}
         <div className="ml-auto flex items-center gap-2">
-          <a href={file.url} target="_blank" rel="noreferrer">
-            <button
-              disabled={!file.url}
-              className="btn text-blue-500 px-3 py-1 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
-            >
-              {file.url ? 'View' : 'No File'}
-            </button>
-          </a>
+          <button
+            disabled={!file.url}
+            className="btn text-blue-500 px-3 py-1 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+            onClick={() => file.url && downloadDocument(file.url, file.name)}
+          >
+            {file.url ? 'View' : 'No File'}
+          </button>
           {file.url ? (
             <div className="flex items-center justify-center w-5 h-5 bg-green-500 rounded-full">
               <Check className="w-4 h-4 text-white" />
