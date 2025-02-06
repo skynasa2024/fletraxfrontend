@@ -102,7 +102,7 @@ const Device = ({ user }: AddUserPageProps) => {
                         height={height}
                         width={width}
                         rowCount={unlinkedDevices.totalCount}
-                        rowHeight={92}
+                        rowHeight={68}
                         rowRenderer={({ key, index, style }) => {
                           const device = unlinkedDevices?.data[index];
 
@@ -111,13 +111,13 @@ const Device = ({ user }: AddUserPageProps) => {
                           }
 
                           return (
-                            <div key={key} style={style}>
-                              <div className="m-4 p-4 border rounded-lg border-gray-200 flex items-center gap-4">
-                                <DeviceIcon className="size-12 text-[#5151F9]" />
+                            <div key={key} style={style} className="px-4 py-1">
+                              <div className="p-4 border rounded-lg border-gray-200 flex items-center gap-4 h-full">
+                                <DeviceIcon className="size-5 text-[#5151F9]" />
                                 <div className="font-semibold flex-1">{device.ident}</div>
                                 <button
                                   type="button"
-                                  className="btn btn-lg btn-icon btn-outline btn-success"
+                                  className="btn btn-sm !size-7 btn-icon btn-outline btn-success"
                                   onClick={async () => {
                                     await unlinkLinkDevice(user!.id, device.ident);
                                     update();
@@ -192,7 +192,7 @@ const Device = ({ user }: AddUserPageProps) => {
                         height={height}
                         width={width}
                         rowCount={linkedDevices.totalCount}
-                        rowHeight={92}
+                        rowHeight={68}
                         rowRenderer={({ key, index, style }) => {
                           const device = linkedDevices?.data[index];
 
@@ -201,13 +201,13 @@ const Device = ({ user }: AddUserPageProps) => {
                           }
 
                           return (
-                            <div key={key} style={style}>
-                              <div className="m-4 p-4 border rounded-lg border-gray-200 flex items-center gap-4">
-                                <DeviceIcon className="size-12 text-[#5151F9]" />
+                            <div key={key} style={style} className="px-4 py-1">
+                              <div className="p-4 border rounded-lg border-gray-200 flex items-center gap-4 h-full">
+                                <DeviceIcon className="size-5 text-[#5151F9]" />
                                 <div className="font-semibold flex-1">{device.ident}</div>
                                 <button
                                   type="button"
-                                  className="btn btn-lg btn-icon btn-outline btn-warning"
+                                  className="btn btn-sm !size-7 btn-icon btn-outline btn-warning"
                                   onClick={async () => {
                                     await unlinkLinkDevice(user!.parentId || 'null', device.ident);
                                     update();
