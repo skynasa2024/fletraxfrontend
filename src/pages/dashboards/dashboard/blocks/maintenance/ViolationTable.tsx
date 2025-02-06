@@ -54,7 +54,6 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
         accessorFn: (row) => row.user,
         id: 'driver',
         header: () => 'Driver',
-        enableSorting: true,
         cell: (info) => (
           <div className="flex gap-2 items-center">
             <img
@@ -75,7 +74,6 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
         accessorFn: (row) => row.vehicle,
         id: 'vehicle',
         header: () => 'Car',
-        enableSorting: true,
         cell: (info) =>
           info.row.original.vehicle && <CarView vehicle={info.row.original.vehicle} />,
         meta: {
@@ -84,7 +82,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       },
       {
         accessorFn: (row) => row.date,
-        id: 'date',
+        id: 'startDate',
         header: () => 'Date',
         enableSorting: true,
         cell: (info) => (
@@ -108,7 +106,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       },
       {
         accessorFn: (row) => row.price,
-        id: 'price',
+        id: 'amount',
         header: () => 'Price',
         enableSorting: true,
         cell: (info) => (

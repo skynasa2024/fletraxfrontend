@@ -101,7 +101,10 @@ export const getDrivers = async (
       : {
           page: params.pageIndex,
           size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value
+          search: params.filters?.[0] && params.filters[0].value,
+          ...(params.sorting?.[0] && {
+            sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+          })
         };
 
   const drivers = await axios.get<PaginatedResponseModel<DriverDTO>>('/api/drivers/index', {

@@ -69,6 +69,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
       {
         accessorKey: 'name',
         header: 'Name',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
@@ -111,7 +112,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
         accessorFn: (row) => row.status,
         id: 'status',
         header: () => 'Status',
-
+        enableSorting: true,
         cell: (info) => <UserListDropdown refetch={refetch} {...info} />,
         meta: {
           className: 'min-w-44'
@@ -124,7 +125,10 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           <div className="flex gap-3">
             <button onClick={() => updateUsersStack(info.row.original)}>
               <div className="flex justify-center items-center size-7.5 bg-gray-200 rounded-full">
-                <KeenIcon icon="users" className={settings.themeMode == 'dark' ? 'text-white' : 'text-black'} />
+                <KeenIcon
+                  icon="users"
+                  className={settings.themeMode == 'dark' ? 'text-white' : 'text-black'}
+                />
               </div>
             </button>
             <a href={`/users/user/${info.row.original.id}`} className="size-7.5">
@@ -162,7 +166,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
         }
       }
     ],
-    [refetch]
+    [refetch, settings.themeMode]
   );
 
   const updateUsersStack = (user: User) => {
@@ -220,9 +224,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
               >
                 {user.name}
               </button>
-              {index < usersStack.length - 1 && (
-                <span className="text-gray-500">/</span>
-              )}
+              {index < usersStack.length - 1 && <span className="text-gray-500">/</span>}
             </React.Fragment>
           ))}
         </div>
@@ -233,7 +235,12 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           columns={columns}
           serverSide={true}
           filters={searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : []}
-          onFetchData={(params) => getUsersByParentId(params, usersStack.length > 0 ? usersStack[usersStack.length - 1].id : null)}
+          onFetchData={(params) =>
+            getUsersByParentId(
+              params,
+              usersStack.length > 0 ? usersStack[usersStack.length - 1].id : null
+            )
+          }
         />
       </div>
     </div>

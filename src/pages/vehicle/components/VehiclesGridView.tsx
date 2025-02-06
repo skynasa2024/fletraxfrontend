@@ -47,8 +47,9 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
         )
       },
       {
-        accessorKey: 'brandName',
+        accessorKey: 'brand',
         header: 'Brand',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <Image
@@ -65,13 +66,15 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
         )
       },
       {
-        accessorKey: 'vehicle.plate',
+        accessorKey: 'plate',
         header: 'Plate',
+        enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.vehicle.plate} />
       },
       {
         accessorKey: 'gear',
         header: 'Gear',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/manual.svg')} />
@@ -80,13 +83,15 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
         )
       },
       {
-        accessorKey: 'device.name',
+        accessorKey: 'deviceIdent',
         header: 'Device Name',
+        enableSorting: true,
         cell: ({ row }) => <span>{row.original.vehicle.imei}</span>
       },
       {
-        accessorKey: 'mileage',
+        accessorKey: 'maintenanceMileage',
         header: 'Maintenance Mileage',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
@@ -97,6 +102,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       {
         accessorKey: 'status',
         header: 'Status',
+        enableSorting: true,
         cell: ({ row }) => (
           <GridViewStatusDropdown vehicleDetails={row.original} refetchStats={refetchStats} />
         )

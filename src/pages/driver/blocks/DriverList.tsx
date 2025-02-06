@@ -53,8 +53,9 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
-        accessorKey: 'name',
+        accessorKey: 'fullName',
         header: 'Full Name',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
@@ -69,11 +70,13 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
       {
         accessorKey: 'dateOfBirth',
         header: 'Birth Date',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.dateOfBirth}</div>
       },
       {
         accessorKey: 'nationality',
         header: 'Nationality',
+        enableSorting: true,
         cell: ({ row }) => (
           <span className={'px-3 py-1 rounded-full bg-blue-100 text-blue-800'}>
             {row.original.nationality}
@@ -83,26 +86,31 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
       {
         accessorKey: 'idNumber',
         header: 'ID Number',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.idNumber}</div>
       },
       {
-        accessorKey: 'licenseNumber',
+        accessorKey: 'licenseSerialNumber',
         header: 'License Number',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseNumber}</div>
       },
       {
-        accessorKey: 'licenseExpiry',
+        accessorKey: 'licenseExpiryDate',
         header: 'License Expiry',
+        enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseExpiry}</div>
       },
       {
-        accessorKey: 'vehicle',
+        accessorKey: 'vehiclePlate',
         header: 'Vehicle',
+        enableSorting: true,
         cell: ({ row }) => <CarView vehicle={row.original.vehicle} />
       },
       {
         accessorKey: 'status',
         header: 'Status',
+        enableSorting: true,
         cell: (info) => <DriverListDropdown refetch={refetch} {...info} />
       },
       {

@@ -77,7 +77,10 @@ export const getDevices = async (
       : {
           page: params.pageIndex,
           size: params.pageSize,
-          search: filters['__any'] && filters['__any'].toString()
+          search: filters['__any'] && filters['__any'].toString(),
+          ...(params.sorting?.[0] && {
+            sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+          })
         };
 
   const devices = await axios.get<PaginatedResponseModel<DeviceDTO>>(

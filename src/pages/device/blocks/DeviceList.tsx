@@ -32,6 +32,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
       {
         accessorKey: 'ident',
         header: 'IMEI',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-4">
             <DeviceIcon color="#5151F9" className="size-12 min-w-12" />
@@ -44,11 +45,13 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
       {
         accessorKey: 'vehiclePlate',
         header: 'Vehicle Plate',
+        enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
         accessorKey: 'phone',
         header: 'Phone',
+        enableSorting: true,
         cell: ({ row }) => (
           <span>
             {row.original.phoneCode} {row.original.phone}
@@ -58,6 +61,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
       {
         accessorKey: 'protocol',
         header: 'Protocol',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex flex-col gap-2">
             <span>Protocol: {getProtocolName(row.original.protocolId)}</span>
@@ -66,8 +70,9 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         )
       },
       {
-        accessorKey: 'subscription',
+        accessorKey: 'subscriptionStartDate',
         header: 'Subscription',
+        enableSorting: true,
         cell: ({ row }) => (
           <div className="flex flex-col gap-2">
             <span>Start: {row.original.subscriptionStartDate}</span>
