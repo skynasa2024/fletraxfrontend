@@ -9,7 +9,7 @@ const User = ({ device }: AddDevicePageProps) => {
   const [userTree, setUserTree] = useState<({ name: string; id: string } | null)[]>([null]);
   useEffect(() => {
     const lastUser = userTree[userTree.length - 1];
-    if (lastUser) {
+    if (lastUser && lastUser.id) {
       getUsersUnderParent(lastUser.id, { start: 0, end: 0 }).then((users) => {
         if (users.totalCount > 0) {
           setUserTree((prev) => [...prev, null]);
