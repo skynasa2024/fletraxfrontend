@@ -4,6 +4,7 @@ export interface StatusDropdownProps {
   selected: string;
   // eslint-disable-next-line no-unused-vars
   setSelected: (value: string) => void;
+  readOnly?: boolean;
   options: Record<
     string,
     {
@@ -14,7 +15,26 @@ export interface StatusDropdownProps {
   >;
 }
 
-export const StatusDropdown = ({ selected, setSelected, options }: StatusDropdownProps) => {
+export const StatusDropdown = ({
+  selected,
+  setSelected,
+  options,
+  readOnly = false
+}: StatusDropdownProps) => {
+  if (readOnly) {
+    return (
+      <div
+        className="btn btn-clear font-bold text-xs h-fit px-3 py-[6px] cursor-default"
+        style={{
+          color: options[selected]?.color ?? 'white',
+          backgroundColor: options[selected]?.backgroundColor ?? 'gray'
+        }}
+      >
+        {options[selected]?.name || selected}
+      </div>
+    );
+  }
+
   return (
     <Menu>
       <MenuItem

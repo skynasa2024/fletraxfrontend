@@ -17,9 +17,11 @@ import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useSettings } from '@/providers';
+import { useAuthContext } from '@/auth';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const { settings } = useSettings();
+  const { currentUser } = useAuthContext();
 
   const reload = useDataGrid().fetchServerSideData;
   return (
@@ -30,6 +32,7 @@ const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () 
         reload();
         info.refetch();
       }}
+      readOnly={currentUser?.role !== 'admin'}
       options={{
         true: {
           color: '#50CD89',
