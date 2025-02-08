@@ -125,8 +125,9 @@ export const getUserModel = async (id: string): Promise<UserModel> => {
   return client.data.result;
 };
 
-export const getUser = async (id: string): Promise<User> => {
+export const getUser = async (id: string): Promise<User | null> => {
   const client = await getUserModel(id);
+  if (client === null) { return null; }
   return {
     id: client.id,
     name: client.name,

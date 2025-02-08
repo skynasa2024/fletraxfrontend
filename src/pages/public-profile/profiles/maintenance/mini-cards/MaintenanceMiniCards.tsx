@@ -1,51 +1,41 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
-import { getMaintenanceStats, IMaintenanceCardProps, IMaintenanceStats } from '@/api/maintenance.ts';
+import { IMaintenanceCardProps, IMaintenanceStats } from '@/api/maintenance.ts';
 import BlocksIcon from '@/pages/vehicle/blocks/svg/BlocksIcon.tsx';
 import { MaintenanceIcon } from '@/pages/public-profile/profiles/maintenance/blocks/svg';
 
-const MaintenanceMiniCards = () => {
-
-  const [stats, setStats] = useState<IMaintenanceStats>();
-
-  const fetchStats = () => {
-    getMaintenanceStats().then(setStats);
-  };
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
+const MaintenanceMiniCards = (props: { stats: IMaintenanceStats | undefined }) => {
 
   const metrics = useMemo(
     () => [
       {
-        value: stats?.total || 0,
+        value: props?.stats?.total || 0,
         label: 'Total Maintenance',
         textColor: 'text-white',
         bgColor: 'bg-blue-500',
         icon: <BlocksIcon />
       },
       {
-        value: stats?.lastMonth || 0,
+        value: props?.stats?.lastMonth || 0,
         label: 'Last Month Maintenance',
         textColor: 'text-gray-800',
         icon: <MaintenanceIcon color="#FFA800" />
       },
       {
-        value: stats?.ongoing || 0,
+        value: props?.stats?.ongoing || 0,
         label: 'Ongoing Maintenance',
         textColor: 'text-gray-800',
         icon: <MaintenanceIcon color="#FF0000" />
       },
       {
-        value: stats?.finished || 0,
+        value: props?.stats?.finished || 0,
         label: 'Finished Maintenance',
         textColor: 'text-gray-800',
         iconColor: 'bg-blue-500',
         icon: <MaintenanceIcon color="#50C878" />
       }
     ],
-    [stats]
+    [props]
   );
 
   const MetricCard: React.FC<IMaintenanceCardProps> = ({ classNames, icon, label, value }) => (

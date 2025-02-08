@@ -2,8 +2,9 @@ import { TDataGridRequestParams } from '@/components';
 import { Paginated } from '@/api/common.ts';
 import { axios } from '@/api/axios.ts';
 import { PaginatedResponseModel, ResponseModel } from '@/api/response.ts';
-import { getVehicle, Vehicle } from '@/api/cars.ts';
 import React from 'react';
+import { getUser, User } from '@/api/user.ts';
+import { Vehicle } from '@/api/cars.ts';
 
 export interface Maintenance {
   id: string;
@@ -15,17 +16,38 @@ export interface Maintenance {
   status: string;
 }
 
-export interface MaintenanceDTO {
+export interface IMaintenance {
   id: string;
   type: string;
   description: string;
   supplier: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   status: string;
   amount: number;
   vehicleId: string;
+  vehiclePlate: string,
+  vehicleImage: string,
+  vehicleBrand: string,
+  vehicleModel: string,
   userId: string;
+}
+
+export interface IMaintenanceTableData {
+  id: string;
+  type: string;
+  supplier: string;
+  startDate: Date;
+  endDate: Date;
+  status: string;
+  amount: number;
+  vehicleId: string;
+  vehiclePlate: string,
+  vehicleImage: string,
+  vehicleName: string,
+  vehicleBrand: string,
+  userId: string,
+  user: User | null;
 }
 
 export interface IMaintenanceStats {
@@ -52,10 +74,7 @@ export const getMaintenanceStats = async (): Promise<IMaintenanceStats> => {
   return stats.data.result;
 };
 
-export const getMaintenance = async (
-  params: TDataGridRequestParams
-): Promise<Paginated<Maintenance>> => {
-  // Convert filters to map
+export const getMaintenance = async (params: TDataGridRequestParams): Promise<Paginated<IMaintenanceTableData>> => {
   const filters =
     params.filters?.reduce(
       (acc, filter) => {
@@ -64,7 +83,7 @@ export const getMaintenance = async (
       },
       {} as Record<string, unknown>
     ) ?? {};
-  const maintenances = await axios.get<PaginatedResponseModel<MaintenanceDTO>>(
+  const maintenances = await axios.get<PaginatedResponseModel<IMaintenance>>(
     filters['vehicleId']
       ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
       : '/api/maintenances/index',
@@ -80,20 +99,28 @@ export const getMaintenance = async (
     }
   );
 
-  const vehiclePromise = maintenances.data.result.content.map((maintenance) =>
-    getVehicle(maintenance.vehicleId)
+  const users = await Promise.all(
+    maintenances.data.result.content
+      .filter((maintenance) => maintenance.userId !== null)
+      .map((maintenance) => getUser(maintenance.userId))
   );
-  const vehicles = await Promise.all(vehiclePromise);
 
   return {
     data: maintenances.data.result.content.map((maintenance, i) => ({
       id: maintenance.id,
-      date: new Date(maintenance.startDate),
-      vehicle: vehicles[i],
       type: maintenance.type,
       supplier: maintenance.supplier,
-      price: maintenance.amount,
-      status: maintenance.status
+      amount: maintenance.amount,
+      status: maintenance.status,
+      user: users[i],
+      vehicleId: maintenance.vehicleId,
+      vehiclePlate: maintenance.vehiclePlate,
+      vehicleImage: maintenance.vehicleImage,
+      vehicleName: maintenance.vehicleBrand + ' ' + maintenance.vehicleModel,
+      startDate: new Date(maintenance.startDate),
+      endDate: new Date(maintenance.endDate),
+      userId: maintenance.userId,
+      vehicleBrand: maintenance.vehicleBrand,
     })),
     totalCount: maintenances.data.result.totalElements
   };
