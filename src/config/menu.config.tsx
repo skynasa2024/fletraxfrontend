@@ -86,20 +86,20 @@ export const MENU_SIDEBAR: TMenuConfig = [
     ]
 
   }, */
-  // {
-  //   title: 'Maintenance',
-  //   externalIcon: 'maintenance',
-  //   children: [
-  //     {
-  //       title: 'Maintenance',
-  //       path: '/maintenance/maintenance'
-  //     },
-  //     {
-  //       title: 'Add Maintenance',
-  //       path: '/maintenance/add-maintenance'
-  //     }
-  //   ]
-  // },
+  {
+    title: 'Maintenance',
+    externalIcon: 'maintenance',
+    children: [
+      {
+        title: 'Maintenance',
+        path: '/maintenance/maintenance'
+      },
+      {
+        title: 'Add Maintenance',
+        path: '/maintenance/add-maintenance'
+      }
+    ]
+  },
   {
     title: 'Device',
     externalIcon: 'device',
