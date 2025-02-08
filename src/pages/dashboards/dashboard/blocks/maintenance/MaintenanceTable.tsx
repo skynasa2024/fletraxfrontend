@@ -1,5 +1,5 @@
 import { DataGrid, useDataGrid } from '@/components';
-import { getMaintenance, Maintenance, updateMaintenanceStatus } from '@/api/cars';
+import { getMaintenance, Maintenance, updateMaintenanceStatus } from '@/api/maintenance.ts';
 import { useMemo } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { CarView } from '../CarView';

@@ -1,7 +1,7 @@
 import { TDataGridRequestParams } from '@/components';
 import { OffsetBounds, Paginated } from './common';
 import { Driver } from './drivers';
-import { User, getUser } from './user';
+import { getUser, User } from './user';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
 import { getDevice } from './devices';
@@ -261,102 +261,24 @@ export const updateVehicleStatus = async (id: string, status: string): Promise<v
   });
 };
 
-export interface Maintenance {
-  id: string;
-  date: Date;
-  vehicle: Vehicle | null;
-  type: string;
-  supplier: string;
-  price: number;
-  status: string;
-}
-
-export interface MaintenanceDTO {
-  id: string;
-  type: string;
-  description: string;
-  supplier: string;
-  startDate: string;
-  endDate: string;
-  status: string;
-  amount: number;
-  vehicleId: string;
-  userId: string;
-}
-
-export const getMaintenance = async (
-  params: TDataGridRequestParams
-): Promise<Paginated<Maintenance>> => {
-  // Convert filters to map
-  const filters =
-    params.filters?.reduce(
-      (acc, filter) => {
-        acc[filter.id] = filter.value;
-        return acc;
-      },
-      {} as Record<string, unknown>
-    ) ?? {};
-  const maintenances = await axios.get<PaginatedResponseModel<MaintenanceDTO>>(
-    filters['vehicleId']
-      ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
-      : '/api/maintenances/index',
-    {
-      params: {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: filters['__any'] && filters['__any'].toString(),
-        ...(params.sorting?.[0] && {
-          sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
-        })
-      }
-    }
-  );
-
-  const vehiclePromise = maintenances.data.result.content.map((maintenance) =>
-    getVehicle(maintenance.vehicleId)
-  );
-  const vehicles = await Promise.all(vehiclePromise);
-
-  return {
-    data: maintenances.data.result.content.map((maintenance, i) => ({
-      id: maintenance.id,
-      date: new Date(maintenance.startDate),
-      vehicle: vehicles[i],
-      type: maintenance.type,
-      supplier: maintenance.supplier,
-      price: maintenance.amount,
-      status: maintenance.status
-    })),
-    totalCount: maintenances.data.result.totalElements
-  };
-};
-
-export const updateMaintenanceStatus = async (id: string, status: string): Promise<void> => {
-  await axios.patch(`/api/maintenances/update-status/${id}`, undefined, {
-    params: {
-      status
-    }
-  });
-};
-
 export const getVehicles = async (
   params: TDataGridRequestParams | OffsetBounds
 ): Promise<Paginated<VehicleDetails>> => {
   const requestParams =
     'start' in params
       ? {
-          offset: params.start,
-          size: params.end - params.start + 1,
-          search: params.search
-        }
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
       : {
-          page: params.pageIndex,
-          size: params.pageSize,
-          search: params.filters?.[0] && params.filters[0].value,
-          ...(params.sorting?.[0] && {
-            sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
-          })
-        };
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value,
+        ...(params.sorting?.[0] && {
+          sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+        })
+      };
 
   const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/index',
@@ -392,7 +314,7 @@ export const getVehicles = async (
   };
 };
 
-const getVehicle = async (id: string): Promise<Vehicle | null> => {
+export const getVehicle = async (id: string): Promise<Vehicle | null> => {
   const vehicle = await axios.get<ResponseModel<VehicleDTO | null>>(
     `/api/vehicles/cars/find-by-vehicle-id/${id}`
   );
