@@ -50,7 +50,7 @@ const Main = () => {
       <Helmet>
         <title>
           {menuItem?.title
-            ? `${menuItem.title} | ${intl.formatMessage({ id: 'APP.DEFAULT_TITLE' })}`
+            ? `${intl.formatMessage({ id: menuItem.title })} | ${intl.formatMessage({ id: 'APP.DEFAULT_TITLE' })}`
             : intl.formatMessage({ id: 'APP.DEFAULT_TITLE' })}
         </title>
       </Helmet>
