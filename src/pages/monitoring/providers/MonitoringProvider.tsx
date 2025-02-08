@@ -156,7 +156,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
           l.vehicle.imei.includes(searchQuery)
       )
       .map((l) => l.vehicle.imei)
-      .filter((l) => (selectedClient ? clientToLocations[selectedClient?.id].includes(l) : true));
+      .filter((l) => (selectedClient ? clientToLocations[selectedClient?.id]?.includes(l) : true));
   }, [clientToLocations, locations, searchQuery, searchTarget, selectedClient]);
   const filteredLocations = useMemo(() => {
     if (!filteredLocationsImei) {
