@@ -1,5 +1,6 @@
 import { getNotifications, Notification } from '@/api/notifications';
 import { Fragment, useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>();
@@ -12,7 +13,9 @@ const Notifications = () => {
     <div className="card hover:shadow-md h-full">
       <div className="card-header">
         <div className="card-title">
-          <h3>Notifications</h3>
+          <h3>
+            <FormattedMessage id="DASHBOARD.NOTIFICATIONS.TITLE" />
+          </h3>
         </div>
       </div>
 

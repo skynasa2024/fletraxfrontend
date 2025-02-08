@@ -13,6 +13,7 @@ import { NotificationItem } from '@/layouts/demo1/header/notifications/Notificat
 import { formatTimeAgo } from '@/utils/Date.ts';
 import { useSnackbar } from 'notistack';
 import { NotificationSnackbar } from '@/layouts/demo1/header/notifications/NotificationSnackbar.tsx';
+import { FormattedMessage } from 'react-intl';
 
 const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -75,7 +76,7 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
       <div ref={headerRef}>
         <div>
           <div className="flex items-center justify-between gap-2.5 text-sm text-gray-900 font-semibold px-5 py-2.5">
-            Notifications
+            <FormattedMessage id="DASHBOARD.NOTIFICATIONS.TITLE" />
             <button
               className="btn btn-sm btn-icon btn-light btn-clear shrink-0"
               onClick={handleClose}
@@ -93,7 +94,11 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
         style={{ maxHeight: `${scrollableHeight}px` }}
       >
         <div className="flex flex-col items-center gap-5 py-4 divider-y divider-gray-200">
-          {notifications.length == 0 && <span className="text-sm">No notifications available</span>}
+          {notifications.length == 0 && (
+            <span className="text-sm">
+              <FormattedMessage id="DASHBOARD.NOTIFICATIONS.NO_NOTIFICATIONS" />
+            </span>
+          )}
           {notifications.length > 0 &&
             notifications.map((notification, index) => (
               <React.Fragment key={index}>
@@ -118,7 +123,9 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
           <div>
             <div className="border-b border-b-gray-200"></div>
             <div className="flex items-center justify-center my-3">
-              <button className="btn btn-sm btn-light justify-center">Mark all as read</button>
+              <button className="btn btn-sm btn-light justify-center">
+                <FormattedMessage id="DASHBOARD.NOTIFICATIONS.MARK_ALL_READ" />
+              </button>
             </div>
           </div>
         </div>
