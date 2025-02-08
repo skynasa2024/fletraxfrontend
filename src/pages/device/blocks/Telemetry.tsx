@@ -17,7 +17,8 @@ const Telemetry = () => {
   const topic = `user/monitoring/+/${device.ident}`;
 
   const onMessage = (incomingTopic: string, message: Buffer) => {
-    if (incomingTopic !== topic) return;
+    if (!incomingTopic.startsWith('user/monitoring') && !incomingTopic.includes(device.ident))
+      return;
     setParameters((prev) => {
       const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
       const timestamp = new Date(device.server_timestamp * 1000);
