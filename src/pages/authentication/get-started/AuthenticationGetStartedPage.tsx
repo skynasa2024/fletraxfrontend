@@ -1,5 +1,5 @@
 import { Container } from '@/components/container';
-import { DashboardContent } from '@/pages/dashboards/dashboard';
+import { DashboardContent } from '@/pages/dashboards';
 
 const AuthenticationGetStartedPage = () => {
   return (

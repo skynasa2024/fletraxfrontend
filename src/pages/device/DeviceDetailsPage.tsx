@@ -3,7 +3,7 @@ import DeviceIcon from './svg/device.svg?react';
 import { Outlet, useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { deleteDevice, DeviceDTO, getDeviceModelByImei } from '@/api/devices';
-import { CarPlate } from '../dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '../dashboards/blocks/CarPlate';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import {
   KeenIcon,

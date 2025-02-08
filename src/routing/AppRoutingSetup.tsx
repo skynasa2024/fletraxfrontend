@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
-import { DefaultPage } from '@/pages/dashboards';
+import { DashboardPage } from '@/pages/dashboards';
 import { User } from '@/pages/user';
 import { Vehicles } from '@/pages/vehicle';
 
@@ -36,7 +36,7 @@ const AppRoutingSetup = (): ReactElement => {
     <Routes>
       <Route element={<RequireAuth />}>
         <Route element={<Demo1Layout />}>
-          <Route path="/" element={<DefaultPage />} />
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/geofences" element={<GeofencePage />} />

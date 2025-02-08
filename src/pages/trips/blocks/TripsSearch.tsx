@@ -1,6 +1,6 @@
 import { getMonitoringDevices, MonitoringDTO } from '@/api/devices';
 import { KeenIcon } from '@/components';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { useEffect, useMemo, useState } from 'react';
 
 interface TripsSearchProps {

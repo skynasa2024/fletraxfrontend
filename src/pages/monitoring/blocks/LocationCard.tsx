@@ -1,4 +1,4 @@
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import 'react-resizable/css/styles.css';
 import { toAbsoluteUrl } from '@/utils';

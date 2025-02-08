@@ -14,7 +14,7 @@ import {
 import { deleteUser, getUsersByParentId, updateUserStatus, User, UserModel } from '@/api/user';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
-import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useSettings } from '@/providers';
 import { useAuthContext } from '@/auth';

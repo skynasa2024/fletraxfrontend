@@ -1,5 +1,5 @@
 import { Vehicle } from '@/api/cars';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import Image from '@/components/image/Image';
 import { KeenIcon } from '@/components';
 

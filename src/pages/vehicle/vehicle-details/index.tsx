@@ -15,11 +15,11 @@ import VehicleMetrics from '../blocks/details-components/VehicleMetrics.tsx';
 import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
 import TripList from '../blocks/details-components/TripList.tsx';
 import { useParams } from 'react-router-dom';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
 import React, { useEffect, useMemo, useState } from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
-import { MaintenanceViolationTable } from '@/pages/dashboards/dashboard/blocks/maintenance/MaintenanceViolation.tsx';
+import { MaintenanceViolationTable } from '@/pages/dashboards/blocks/maintenance/MaintenanceViolation.tsx';
 import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
@@ -60,16 +60,16 @@ const VehicleInfo = () => {
     value: string;
     icon: React.ReactNode;
   }[] = [
-    { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
-    { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
-    { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
-    { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
-    { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
-    { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
-    { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
-    { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
-    { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
-  ];
+      { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
+      { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
+      { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
+      { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
+      { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
+      { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
+      { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
+      { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
+      { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
+    ];
   const details = [
     { label: 'Type', value: vehicle?.type || 'NA' },
     { label: 'Identify Number', value: vehicle?.identifyNumber || 'NA' },

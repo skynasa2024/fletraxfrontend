@@ -5,7 +5,7 @@ import ProfileCard from './ProfileCard';
 import { useNavigate, useParams } from 'react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { DriverDetails, getDriver } from '@/api/drivers';
-import { MaintenanceViolationTable } from '../dashboards/dashboard/blocks/maintenance/MaintenanceViolation';
+import { MaintenanceViolationTable } from '../dashboards/blocks/maintenance/MaintenanceViolation';
 import TripList from '../vehicle/blocks/details-components/TripList';
 import VehicleCurrentLocation from '../vehicle/vehicle-details/components/VehicleCurrentLocation';
 

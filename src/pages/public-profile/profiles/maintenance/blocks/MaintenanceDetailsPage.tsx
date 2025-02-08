@@ -2,7 +2,7 @@ import React from 'react';
 
 import CarBrandImage from '@/components/CarBrandsImage';
 import Toolbar from './Toolbar';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 
 const MaintenanceDetails: React.FC = () => {
   return (
@@ -30,19 +30,19 @@ const MaintenanceDetails: React.FC = () => {
             </div>
             <div className="grid grid-cols-3 gap-8">
               <div className="border border-dashed rounded-lg border-gray-300 p-4">
-              <p className="text-gray-800 font-semibold">16-09-2024</p>
+                <p className="text-gray-800 font-semibold">16-09-2024</p>
                 <p className="text-red-500 text-sm mb-1">Start Date</p>
-              
+
               </div>
               <div className="border border-dashed  rounded-lg  border-gray-300 p-4">
-              <p className="text-gray-800 font-semibold">16-09-2024</p>
+                <p className="text-gray-800 font-semibold">16-09-2024</p>
                 <p className="text-green-500 text-sm mb-1">Finished Date</p>
-                
+
               </div>
               <div className="border border-dashed  rounded-lg border-gray-300 p-4">
-              <p className="text-gray-800 font-semibold">250 $</p>
+                <p className="text-gray-800 font-semibold">250 $</p>
                 <p className="text-gray-500 text-sm mb-1">Price</p>
-              
+
               </div>
             </div>
           </div>
