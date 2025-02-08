@@ -63,5 +63,6 @@
   "NOTIFICATIONS.DEVICE_IMEI": "{imei}",
   "NOTIFICATIONS.MESSAGE": "{text}",
   "NOTIFICATIONS.DATE": "{date}",
-  "NOTIFICATIONS.TYPE": "{info}"
+  "NOTIFICATIONS.TYPE": "{info}",
+  "APP.DEFAULT_TITLE": "Fletrax"
 }

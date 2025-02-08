@@ -4,6 +4,7 @@ import { Outlet, useLocation } from 'react-router';
 import { useMenuCurrentItem } from '@/components/menu';
 import { Footer, Header, Sidebar, useDemo1Layout } from '../';
 import { useMenus } from '@/providers';
+import { FormattedMessage } from 'react-intl';
 
 const Main = () => {
   const { layout } = useDemo1Layout();
@@ -46,7 +47,9 @@ const Main = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>{menuItem?.title}</title>
+        <title>
+          <FormattedMessage id={menuItem?.title || 'APP.DEFAULT_TITLE'} />
+        </title>
       </Helmet>
 
       <Sidebar />
