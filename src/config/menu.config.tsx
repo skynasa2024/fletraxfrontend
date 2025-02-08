@@ -79,20 +79,29 @@ export const MENU_SIDEBAR: TMenuConfig = [
   //     }
   //   ]
   // },
-  // {
-  //   title: 'SIDEBAR.MENU.MAINTENANCE',
-  //   externalIcon: 'maintenance',
-  //   children: [
-  //     {
-  //       title: 'SIDEBAR.MENU.MAINTENANCE.MAINTENANCE',
-  //       path: '/maintenance/maintenance'
-  //     },
-  //     {
-  //       title: 'SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE',
-  //       path: '/maintenance/add-maintenance'
-  //     }
-  //   ]
-  // },
+  {
+    title: 'SIDEBAR.MENU.MAINTENANCE',
+    externalIcon: 'maintenance',
+    children: [
+      {
+        title: 'SIDEBAR.MENU.MAINTENANCE.MAINTENANCE',
+        path: '/maintenance'
+      },
+      {
+        title: 'SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE',
+        path: '/maintenance/add'
+      },
+      {
+        title: 'SIDEBAR.MENU.MAINTENANCE.MAINTENANCE_TYPE',
+        path: '/maintenance/maintenance-type'
+      },
+      {
+        title: 'SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE_TYPE',
+        path: '/maintenance/maintenance-type/add'
+      }
+
+    ]
+  },
   {
     title: 'SIDEBAR.MENU.DEVICE',
     externalIcon: 'device',
