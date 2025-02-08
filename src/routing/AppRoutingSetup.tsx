@@ -5,7 +5,7 @@ import { User } from '@/pages/user';
 import { Vehicles } from '@/pages/vehicle';
 
 import { Driver } from '@/pages/driver';
-import { Maintenance } from '@/pages/public-profile/profiles/maintenance';
+import { MaintenancePage } from '@/pages/public-profile/profiles/maintenance';
 
 import { AddUser } from '@/pages/user/add-user';
 import { AddDriver } from '@/pages/driver/add-driver';
@@ -20,8 +20,8 @@ import UserDetailsPage from '@/pages/user/blocks/UserDetailsPage';
 import VehicleDetailsPage from '@/pages/vehicle/vehicle-details';
 import DriverDetailsPage from '@/pages/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
-import MaintenanceDetailsPage from '@/pages/public-profile/profiles/maintenance/blocks/MaintenanceDetailsPage';
-import { AddMaintenance } from '@/pages/account/home/add-maintenance/AddMaintenance';
+import MaintenanceDetailsPage
+  from '@/pages/public-profile/profiles/maintenance/view-maintenance/MaintenanceDetailsPage.tsx';
 import { GeofencePage } from '@/pages/geofence/GeofencePage';
 import { Device } from '@/pages/device';
 import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
@@ -37,6 +37,10 @@ import {
   MaintenanceTypeDetailsPage,
   MaintenanceTypePage
 } from '@/pages/public-profile/profiles/maintenance-types';
+import { AddMaintenancePage } from '@/pages/public-profile/profiles/maintenance/add-maintenance/AddMaintenancePage.tsx';
+import {
+  EditMaintenancePage
+} from '@/pages/public-profile/profiles/maintenance/edit-maintenance/EditMaintenancePage.tsx';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -54,12 +58,10 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/vehicles/edit/:id" element={<AddVehicle />} />
           <Route path="/vehicles/edit-scratches/:id" element={<AddVehicleScratches />} />
 
-          <Route path="/maintenance/maintenance" element={<Maintenance />} />
-          <Route
-            path="/maintenance/maintenance/view-maintenance"
-            element={<MaintenanceDetailsPage />}
-          />
-          <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
+          <Route path="/maintenance" element={<MaintenancePage />} />
+          <Route path="/maintenance/add" element={<AddMaintenancePage />} />
+          <Route path="/maintenance/edit/:id" element={<EditMaintenancePage />} />
+          <Route path="/maintenance/view/:id" element={<MaintenanceDetailsPage />} />
 
           <Route element={<RequireRole role="admin" />}>
             <Route path="/maintenance/maintenance-type" element={<MaintenanceTypePage />} />

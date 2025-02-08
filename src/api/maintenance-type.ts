@@ -1,12 +1,12 @@
 import { TDataGridRequestParams } from '@/components';
-import { Paginated } from '@/api/common.ts';
+import { OffsetBounds, Paginated } from '@/api/common.ts';
 import { axios } from '@/api/axios.ts';
 import { PaginatedResponseModel, ResponseModel } from '@/api/response.ts';
 
 export interface MaintenanceTypeModel {
   id?: string;
-  code: string;
-  title: string;
+  code?: string;
+  title?: string;
 }
 
 export interface IMaintenanceTypeTableData {
@@ -47,6 +47,43 @@ export const getMaintenanceTypes = async (params: TDataGridRequestParams): Promi
     totalCount: maintenanceTypes.data.result.totalElements
   };
 };
+
+export const searchMaintenanceTypes = async (
+  params: TDataGridRequestParams | OffsetBounds
+): Promise<Paginated<MaintenanceTypeModel>> => {
+  const requestParams =
+    'start' in params
+      ? {
+        offset: params.start,
+        size: params.end - params.start + 1,
+        search: params.search
+      }
+      : {
+        page: params.pageIndex,
+        size: params.pageSize,
+        search: params.filters?.[0] && params.filters[0].value,
+        ...(params.sorting?.[0] && {
+          sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+        })
+      };
+
+  const maintenanceTypes = await axios.get<PaginatedResponseModel<MaintenanceTypeModel>>(
+    '/api/maintenances/types/index',
+    {
+      params: requestParams
+    }
+  );
+
+  return {
+    data: maintenanceTypes.data.result.content.map((maintenanceType) => ({
+      id: maintenanceType.id,
+      code: maintenanceType.code,
+      title: maintenanceType.title
+    })),
+    totalCount: maintenanceTypes.data.result.totalElements
+  };
+};
+
 
 export const getMaintenanceTypeById = async (id: string) => {
   return await axios.get<ResponseModel<MaintenanceTypeModel>>(`/api/maintenances/types/show/${id}`);

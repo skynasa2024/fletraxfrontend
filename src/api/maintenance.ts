@@ -16,7 +16,7 @@ export interface Maintenance {
   status: string;
 }
 
-export interface IMaintenance {
+export interface MaintenanceModel {
   id: string;
   type: string;
   description: string;
@@ -24,7 +24,24 @@ export interface IMaintenance {
   startDate: Date;
   endDate: Date;
   status: string;
-  amount: number;
+  amount: number | undefined;
+  vehicleId: string;
+  vehiclePlate: string,
+  vehicleImage: string,
+  vehicleBrand: string,
+  vehicleModel: string,
+  userId: string;
+}
+
+export interface MaintenanceUpdateModel {
+  id: string;
+  type: string;
+  description: string;
+  supplier: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  amount: number | undefined;
   vehicleId: string;
   vehiclePlate: string,
   vehicleImage: string,
@@ -83,7 +100,7 @@ export const getMaintenance = async (params: TDataGridRequestParams): Promise<Pa
       },
       {} as Record<string, unknown>
     ) ?? {};
-  const maintenances = await axios.get<PaginatedResponseModel<IMaintenance>>(
+  const maintenances = await axios.get<PaginatedResponseModel<MaintenanceModel>>(
     filters['vehicleId']
       ? `/api/maintenances/get-by-vehicle-id/${filters['vehicleId']}`
       : '/api/maintenances/index',
@@ -102,7 +119,7 @@ export const getMaintenance = async (params: TDataGridRequestParams): Promise<Pa
   const users = await Promise.all(
     maintenances.data.result.content
       .filter((maintenance) => maintenance.userId !== null)
-      .map((maintenance) => getUser(maintenance.userId))
+      .map((maintenance) => getUser(maintenance.userId!))
   );
 
   return {
@@ -110,27 +127,40 @@ export const getMaintenance = async (params: TDataGridRequestParams): Promise<Pa
       id: maintenance.id,
       type: maintenance.type,
       supplier: maintenance.supplier,
-      amount: maintenance.amount,
+      amount: maintenance.amount!,
       status: maintenance.status,
       user: users[i],
       vehicleId: maintenance.vehicleId,
       vehiclePlate: maintenance.vehiclePlate,
       vehicleImage: maintenance.vehicleImage,
       vehicleName: maintenance.vehicleBrand + ' ' + maintenance.vehicleModel,
-      startDate: new Date(maintenance.startDate),
-      endDate: new Date(maintenance.endDate),
+      startDate: new Date(maintenance.startDate!),
+      endDate: new Date(maintenance.endDate!),
       userId: maintenance.userId,
-      vehicleBrand: maintenance.vehicleBrand,
+      vehicleBrand: maintenance.vehicleBrand
     })),
     totalCount: maintenances.data.result.totalElements
   };
 };
 
 export const updateMaintenanceStatus = async (id: string, status: string): Promise<void> => {
-  await axios.patch(`/api/maintenances/update-status/${id}`, undefined, {
-    params: {
-      status
-    }
-  });
+  await axios.patch(`/api/maintenances/update-status/${id}`, undefined, { params: { status } });
 };
+
+export const getMaintenanceById = async (id: string) => {
+  return await axios.get<ResponseModel<MaintenanceModel>>(`/api/maintenances/show/${id}`);
+};
+
+export const createMaintenance = async (data: FormData) => {
+  return await axios.post<ResponseModel<MaintenanceModel>>('/api/maintenances/create', data);
+};
+
+export const updateMaintenance = async (data: FormData) => {
+  return await axios.put<ResponseModel<MaintenanceModel>>('/api/maintenances/update', data);
+};
+
+export const deleteMaintenance = async (id: string) => {
+  return await axios.get(`/api/maintenances/delete/${id}`);
+};
+
 

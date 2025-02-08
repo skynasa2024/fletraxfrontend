@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import { IMaintenanceCardProps, IMaintenanceStats } from '@/api/maintenance.ts';
 import BlocksIcon from '@/pages/vehicle/blocks/svg/BlocksIcon.tsx';
-import { MaintenanceIcon } from '@/pages/public-profile/profiles/maintenance/blocks/svg';
+import { MaintenanceIcon } from '@/assets/svg';
 
 const MaintenanceMiniCards = (props: { stats: IMaintenanceStats | undefined }) => {
 

@@ -234,9 +234,9 @@ export const getViolations = async (
   return {
     data: violations.data.result.content.map((violation, i) => ({
       id: violation.id,
-      vehicle: vehicles[i],
+      vehicle: vehicles[i]!,
       date: new Date(violation.startDate),
-      user: users[i],
+      user: users[i]!,
       type: violation.type,
       price: violation.amount,
       status: violation.status

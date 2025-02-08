@@ -2,7 +2,7 @@ import { DefaultTooltip } from '@/components';
 import clsx from 'clsx';
 
 export interface CarPlateProps {
-  plate: string;
+  plate?: string;
   className?: string;
   showTooltip?: boolean;
 }

@@ -92,11 +92,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
     children: [
       {
         title: 'Maintenance',
-        path: '/maintenance/maintenance'
+        path: '/maintenance'
       },
       {
         title: 'Add Maintenance',
-        path: '/maintenance/add-maintenance'
+        path: '/maintenance/add'
       },
       {
         title: 'Maintenance Type',

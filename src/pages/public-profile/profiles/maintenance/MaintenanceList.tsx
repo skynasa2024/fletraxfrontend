@@ -1,18 +1,34 @@
-import { DataGrid, KeenIcon } from '@/components';
-import { getMaintenance, IMaintenanceTableData } from '@/api/maintenance.ts';
+import { DataGrid, KeenIcon, Menu, MenuIcon, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
+import { deleteMaintenance, getMaintenance, IMaintenanceTableData } from '@/api/maintenance.ts';
 import React, { useMemo, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField.tsx';
 import { useSettings } from '@/providers';
-import { MaintenanceStatusDropdown } from './MaintenanceStatusDropdown.tsx';
+import { MaintenanceStatusDropdown } from './components/MaintenanceStatusDropdown.tsx';
+import { useSnackbar } from 'notistack';
 
 const MaintenanceList = (props: { fetchStats: () => void }) => {
-  const { settings } = useSettings();
   const navigate = useNavigate();
+  const { settings } = useSettings();
+  const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleDelete = (id: string) => {
+    deleteMaintenance(id).then(response => {
+      props?.fetchStats();
+      navigate('/maintenance');
+      enqueueSnackbar(response.data.message, {
+        variant: response.data.success ? 'success' : 'error'
+      });
+    }).catch(error => {
+      enqueueSnackbar(error, {
+        variant: 'error'
+      });
+    });
+  };
 
   const columns = useMemo<ColumnDef<IMaintenanceTableData>[]>(
     () => [
@@ -36,20 +52,6 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         ),
         meta: {
           className: 'min-w-40'
-        }
-      },
-      {
-        accessorFn: (row) => row.userId,
-        id: 'userId',
-        header: () => 'User',
-        enableSorting: true,
-        cell: (info) => (
-          <span className="text-gray-800">
-            {info.row.original.user?.name}
-          </span>
-        ),
-        meta: {
-          className: 'min-w-36'
         }
       },
       {
@@ -124,15 +126,33 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         header: () => 'Action',
         cell: (info) => (
           <div className="flex gap-3">
-            <button onClick={() => navigate('/maintenance/maintenance/view-maintenance')}>
+            <Link to={`/maintenance/view/${info.row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
-            </button>
-            <button>
+            </Link>
+            <Link to={`/maintenance/edit/${info.row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
-            </button>
-            <button>
-              <img src={toAbsoluteUrl('/media/icons/more.svg')} alt="More" />
-            </button>
+            </Link>
+            <Menu>
+              <MenuItem toggle="dropdown" trigger="click">
+                <MenuToggle>
+                  <KeenIcon className="text-xl" icon="dots-vertical" />
+                </MenuToggle>
+                <MenuSub className="menu-default">
+                  <MenuItem
+                    onClick={() => {
+                      handleDelete(info.row.original.id);
+                    }}
+                  >
+                    <MenuLink>
+                      <MenuIcon>
+                        <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} alt="Delete" />
+                      </MenuIcon>
+                      <MenuTitle>Delete</MenuTitle>
+                    </MenuLink>
+                  </MenuItem>
+                </MenuSub>
+              </MenuItem>
+            </Menu>
           </div>
         ),
         meta: {
@@ -140,7 +160,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         }
       }
     ],
-    [navigate, props?.fetchStats]
+    [handleDelete, props?.fetchStats]
   );
 
   return (
