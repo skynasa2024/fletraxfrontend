@@ -1,15 +1,13 @@
 import { toAbsoluteUrl } from '@/utils';
 import arMessages from './messages/ar.json';
 import enMessages from './messages/en.json';
-import frMessages from './messages/fr.json';
-import zhMessages from './messages/zh.json';
+import trMessages from './messages/tr.json';
 import { type TLanguage } from './types.d';
 
 const I18N_MESSAGES = {
   en: enMessages,
   ar: arMessages,
-  fr: frMessages,
-  zh: zhMessages
+  tr: trMessages
 };
 
 const I18N_CONFIG_KEY = 'i18nConfig';
@@ -23,25 +21,18 @@ const I18N_LANGUAGES: readonly TLanguage[] = [
     messages: I18N_MESSAGES.en
   },
   {
-    label: 'Arabic (Saudi)',
+    label: 'العربية / Arabic',
     code: 'ar',
     direction: 'rtl',
     flag: toAbsoluteUrl('/media/flags/saudi-arabia.svg'),
     messages: I18N_MESSAGES.ar
   },
   {
-    label: 'French',
-    code: 'fr',
+    label: 'Türkçe / Turkish',
+    code: 'tr',
     direction: 'ltr',
-    flag: toAbsoluteUrl('/media/flags/france.svg'),
-    messages: I18N_MESSAGES.fr
-  },
-  {
-    label: 'Chinese',
-    code: 'zh',
-    direction: 'ltr',
-    flag: toAbsoluteUrl('/media/flags/china.svg'),
-    messages: I18N_MESSAGES.zh
+    flag: toAbsoluteUrl('/media/flags/turkey.svg'),
+    messages: I18N_MESSAGES.tr
   }
 ];
 
