@@ -5,8 +5,12 @@ import { CircularProgress, Skeleton } from '@mui/material';
 import { Paginated } from '@/api/common';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { CarView } from './CarView';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 const MileageEngineGraph = () => {
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
   const [selection, setSelection] = useState('All');
   const sort: 'kilometers' | 'engine' = useMemo(() => {
     if (selection === 'Engine') {
@@ -56,14 +60,23 @@ const MileageEngineGraph = () => {
     <div className="card hover:shadow-md h-full">
       <div className="card-header">
         <div className="card-title">
-          <h3>Mileage & Engine Hours</h3>
-          <h4 className="text-sm font-thin text-[#B5B5C3]">All today</h4>
+          <h3>
+            <FormattedMessage id="DASHBOARD.MILEAGE_ENGINE.TITLE" />
+          </h3>
+          <h4 className="text-sm font-thin text-[#B5B5C3]">
+            <FormattedMessage id="DASHBOARD.MILEAGE_ENGINE.SUBTITLE" />
+          </h4>
         </div>
 
         <ButtonRadioGroup
           selection={selection}
           setSelection={setSelection}
           selections={['Engine', 'Mileage', 'All']}
+          translations={{
+            Engine: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ENGINE' }),
+            Mileage: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.MILEAGE' }),
+            All: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ALL' })
+          }}
           disabled={!data}
         />
       </div>
@@ -82,6 +95,7 @@ const MileageEngineGraph = () => {
                     className="scrollable-y !overflow-x-hidden"
                     height={height}
                     width={width}
+                    style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
                     rowCount={remoteRowCount}
                     rowHeight={82}
                     rowRenderer={({ key, index, style }) => {

@@ -9,7 +9,10 @@ export interface CarPlateProps {
 
 export const CarPlate = ({ plate, className, showTooltip = false }: CarPlateProps) => {
   return (
-    <div className={clsx('flex font-medium font-sans w-36', className)}>
+    <div
+      className={clsx('flex font-medium font-sans w-36', className)}
+      style={{ direction: 'ltr' }}
+    >
       <div className="flex items-center justify-center rounded-s-lg py-2 px-2 bg-[#5271FF] text-white">
         TR
       </div>
