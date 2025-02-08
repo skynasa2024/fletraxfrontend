@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
 import { useParams } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -9,6 +8,7 @@ import { Container } from '@/components';
 import { ArrowLeftIcon } from 'lucide-react';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { format } from 'date-fns';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
 
 const MaintenanceDetails = () => {
   const { id } = useParams<{ id: string }>();

@@ -4,7 +4,7 @@ import { useAuthContext } from '@/auth';
 import { useDataGrid } from '@/components';
 import React from 'react';
 import { IMaintenanceTableData, updateMaintenanceStatus } from '@/api/maintenance.ts';
-import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown.tsx';
+import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown.tsx';
 
 export const MaintenanceStatusDropdown = (info: CellContext<IMaintenanceTableData, unknown> & {
   refetch: () => void

@@ -1,10 +1,10 @@
 import { getVehicles, VehicleDetails } from '@/api/cars';
 import { Paginated } from '@/api/common';
 import { KeenIcon } from '@/components';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
 import { Skeleton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
 
 interface MaintenanceVehicleDropdownSearchProps {
   initialSearch?: {
