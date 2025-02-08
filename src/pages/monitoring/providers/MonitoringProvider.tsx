@@ -196,7 +196,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
       memoryMaplocations[ident] = JSON.parse(JSON.stringify(defaultLocation));
       memoryMaplocations[ident].vehicle.imei = location.ident;
-      memoryMaplocations[ident].vehicle.plate = location.vehiclePlate;
+      memoryMaplocations[ident].vehicle.plate = location.vehiclePlate ?? '';
       memoryMaplocations[ident].online = location.status === 'online';
 
       setClientToLocations((prev) => ({

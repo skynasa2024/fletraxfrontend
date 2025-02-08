@@ -8,6 +8,7 @@ interface TripsSearchProps {
   // eslint-disable-next-line no-unused-vars
   setSearch: (value: string) => void;
   onSearch?: () => void;
+  // eslint-disable-next-line no-unused-vars
   onSelectDevice?: (device: MonitoringDTO) => void;
 }
 export const TripsSearch = ({ search, setSearch, onSearch, onSelectDevice }: TripsSearchProps) => {
@@ -16,7 +17,9 @@ export const TripsSearch = ({ search, setSearch, onSearch, onSelectDevice }: Tri
     return devices?.filter(
       (device) =>
         device.ident.toLowerCase().includes(search.toLowerCase()) ||
-        device.vehiclePlate.toLowerCase().includes(search.toLowerCase())
+        (device.vehiclePlate
+          ? device.vehiclePlate.toLowerCase().includes(search.toLowerCase())
+          : false)
     );
   }, [devices, search]);
   const [focused, setFocused] = useState(false);
@@ -67,7 +70,7 @@ export const TripsSearch = ({ search, setSearch, onSearch, onSelectDevice }: Tri
                 onSelectDevice?.(device);
               }}
             >
-              <CarPlate plate={device.vehiclePlate} />
+              <CarPlate plate={device.vehiclePlate ?? ''} />
               <div>{device.ident}</div>
             </div>
           ))}
