@@ -3,30 +3,28 @@ import { Container } from '@/components/container';
 import { PageNavbar } from '@/pages/account';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { deleteMaintenanceType, getMaintenanceTypeById, updateMaintenanceType } from '@/api/maintenance-type.ts';
+import {
+  deleteMaintenanceType,
+  getMaintenanceTypeById,
+  MaintenanceTypeModel,
+  updateMaintenanceType
+} from '@/api/maintenance-type.ts';
 import { useParams } from 'react-router';
 import { ArrowLeftIcon } from 'lucide-react';
-import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
+import { DeleteIcon } from '@/pages/driver/svg';
 
 const EditMaintenanceTypePage = () => {
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement | null>(null);
-
-  const [formData, setFormData] = useState({
-    title: '',
-    code: ''
-  });
+  const [model, setModel] = useState<MaintenanceTypeModel>();
 
   useEffect(() => {
     if (id) {
       getMaintenanceTypeById(id)
         .then((response) => {
-          setFormData({
-            title: response.data.result.title,
-            code: response.data.result.code
-          });
+          setModel(response.data.result);
         }).catch(() => {
         navigate('/error/404');
       });
@@ -42,6 +40,7 @@ const EditMaintenanceTypePage = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    formData.set('id', id);
     updateMaintenanceType(formData)
       .then((response) => {
         enqueueSnackbar(response.data.message, {
@@ -81,7 +80,7 @@ const EditMaintenanceTypePage = () => {
       <PageNavbar />
       <Container>
         <div className="flex justify-between items-center gap-6">
-          <h1 className="text-xl font-medium leading-none text-gray-900">Maintenance Type Details</h1>
+          <h1 className="text-xl font-medium leading-none text-gray-900">Edit Maintenance Type</h1>
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
@@ -97,12 +96,15 @@ const EditMaintenanceTypePage = () => {
             </button>
           </div>
         </div>
-        <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto pt-6">
-          <div className="card py-4">
+        <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
+          <div className="card">
+            <div className="card-header" id="maintenance_settings">
+              <h3 className="card-title">Maintenance Type</h3>
+            </div>
             <form
               ref={formRef}
               onSubmit={handleSubmit}
-              className="card-body grid gap-5"
+              className="card-body grid gap-5 py-10"
             >
               <div className="grid lg:grid-cols-2 gap-5">
                 <div className="grid gap-2.5">
@@ -113,8 +115,8 @@ const EditMaintenanceTypePage = () => {
                     name="title"
                     className="input"
                     placeholder="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    value={model?.title}
+                    onChange={(e) => setModel({ ...model, title: e.target.value })}
                   />
                 </div>
 
@@ -126,8 +128,8 @@ const EditMaintenanceTypePage = () => {
                     name="code"
                     className="input"
                     placeholder="code"
-                    value={formData.code}
-                    onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                    value={model?.code}
+                    onChange={(e) => setModel({ ...model, code: e.target.value })}
                   />
                 </div>
               </div>

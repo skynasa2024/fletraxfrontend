@@ -2,37 +2,36 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Container } from '@/components/container';
 import { PageNavbar } from '@/pages/account';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteMaintenanceType, getMaintenanceTypeById } from '@/api/maintenance-type.ts';
+import { deleteMaintenanceType, getMaintenanceTypeById, MaintenanceTypeModel } from '@/api/maintenance-type';
 import { useParams } from 'react-router';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useSnackbar } from 'notistack';
 
 const MaintenanceTypeDetailsPage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
-  const [formData, setFormData] = useState({
-    id: '',
-    title: '',
-    code: ''
-  });
+  const [model, setModel] = useState<MaintenanceTypeModel>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       getMaintenanceTypeById(id)
         .then((response) => {
-          setFormData({
-            id: response.data.result?.id ?? '',
-            title: response.data.result.title,
-            code: response.data.result.code
-          });
-        }).catch(() => {
-        navigate('/error/404');
-      });
+          const { result } = response.data;
+          if (result) {
+            setModel(result);
+          }
+        })
+        .catch(() => {
+          navigate('/error/404');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-
   }, [id, navigate]);
 
   if (!id) {
@@ -45,16 +44,20 @@ const MaintenanceTypeDetailsPage = () => {
   };
 
   const handleDelete = () => {
-    deleteMaintenanceType(id).then(response => {
-      navigate('/maintenance/maintenance-type');
-      enqueueSnackbar(response.data.message, {
-        variant: response.data.success ? 'success' : 'error'
-      });
-    }).catch(error => {
-      enqueueSnackbar(error, {
-        variant: 'error'
-      });
-    });
+    if (id) {
+      deleteMaintenanceType(id)
+        .then((response) => {
+          navigate('/maintenance/maintenance-type');
+          enqueueSnackbar(response.data.message, {
+            variant: response.data.success ? 'success' : 'error'
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar(error.message || 'An error occurred', {
+            variant: 'error'
+          });
+        });
+    }
   };
 
   return (
@@ -77,32 +80,41 @@ const MaintenanceTypeDetailsPage = () => {
             </Link>
             <button
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
-              onClick={handleDelete}
-            >
+              onClick={handleDelete}>
               <DeleteIcon className="w-4 h-4" />
               Delete
             </button>
           </div>
         </div>
-        <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto pt-6">
-          <div className="card py-4">
-            <form className="card-body grid gap-5">
-              <div className="grid gap-2.5">
-                <h1 className="text-white">ID</h1>
-                <span>{formData.id}</span>
+        <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
+          <div className="card">
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <span>Loading...</span>
               </div>
-              <div className="grid lg:grid-cols-2 gap-5">
-                <div className="grid gap-2.5">
-                  <h1 className="text-white">Title</h1>
-                  <span>{formData.title}</span>
+            ) : (
+              <div>
+                <div className="card-header" id="maintenance_settings">
+                  <h3 className="card-title">Maintenance Type</h3>
                 </div>
-
-                <div className="grid gap-2.5">
-                  <h1 className="text-white">Code</h1>
-                  <span>{formData.title}</span>
-                </div>
+                <form className="card-body grid gap-5 py-6">
+                  <div className="grid gap-2.5">
+                    <h1 className="text-white">ID</h1>
+                    <span>{model?.id}</span>
+                  </div>
+                  <div className="grid lg:grid-cols-2 gap-5">
+                    <div className="grid gap-2.5">
+                      <h1 className="text-white">Title</h1>
+                      <span>{model?.title}</span>
+                    </div>
+                    <div className="grid gap-2.5">
+                      <h1 className="text-white">Code</h1>
+                      <span>{model?.code}</span>
+                    </div>
+                  </div>
+                </form>
               </div>
-            </form>
+            )}
           </div>
         </div>
       </Container>

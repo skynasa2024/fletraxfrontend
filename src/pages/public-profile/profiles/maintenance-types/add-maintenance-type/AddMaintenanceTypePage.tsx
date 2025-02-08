@@ -40,7 +40,7 @@ const AddMaintenanceTypePage = () => {
       <PageNavbar />
       <Container>
         <div className="flex justify-between items-center gap-6">
-          <h1 className="text-xl font-medium leading-none text-gray-900">Maintenance Type Details</h1>
+          <h1 className="text-xl font-medium leading-none text-gray-900">Add Maintenance Type</h1>
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
@@ -50,11 +50,14 @@ const AddMaintenanceTypePage = () => {
           </div>
         </div>
         <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto pt-6">
-          <div className="card py-4">
+          <div className="card">
+            <div className="card-header" id="maintenance_settings">
+              <h3 className="card-title">Maintenance Type</h3>
+            </div>
             <form
               ref={formRef}
               onSubmit={handleSubmit}
-              className="card-body grid gap-5"
+              className="card-body grid gap-5  py-8"
             >
               <div className="grid lg:grid-cols-2 gap-5">
                 <div className="grid gap-2.5">
