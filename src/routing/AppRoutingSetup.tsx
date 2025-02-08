@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { DefaultPage } from '@/pages/dashboards';
 import { User } from '@/pages/user';
@@ -31,6 +31,13 @@ import Telemetry from '@/pages/device/blocks/Telemetry';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import { AddVehicleScratches } from '@/pages/vehicle/add-vehicle/AddVehicleScratches';
 
+import {
+  AddMaintenanceTypePage,
+  EditMaintenanceTypePage,
+  MaintenanceTypeDetailsPage,
+  MaintenanceTypePage
+} from '@/pages/public-profile/profiles/maintenance-types';
+
 const AppRoutingSetup = (): ReactElement => {
   return (
     <Routes>
@@ -53,6 +60,13 @@ const AppRoutingSetup = (): ReactElement => {
             element={<MaintenanceDetailsPage />}
           />
           <Route path="/maintenance/add-maintenance" element={<AddMaintenance />} />
+
+          <Route element={<RequireRole role="admin" />}>
+            <Route path="/maintenance/maintenance-type" element={<MaintenanceTypePage />} />
+            <Route path="/maintenance/maintenance-type/add" element={<AddMaintenanceTypePage />} />
+            <Route path="/maintenance/maintenance-type/edit/:id" element={<EditMaintenanceTypePage />} />
+            <Route path="/maintenance/maintenance-type/view/:id" element={<MaintenanceTypeDetailsPage />} />
+          </Route>
 
           <Route path="/devices/device/" element={<Device />} />
           <Route path="/devices/device/:id" element={<DeviceDetailsPage />}>

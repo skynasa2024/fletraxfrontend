@@ -97,6 +97,14 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'Add Maintenance',
         path: '/maintenance/add-maintenance'
+      },
+      {
+        title: 'Maintenance Type',
+        path: '/maintenance/maintenance-type'
+      },
+      {
+        title: 'Add Maintenance Type',
+        path: '/maintenance/maintenance-type/add'
       }
     ]
   },
