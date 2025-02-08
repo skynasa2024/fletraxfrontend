@@ -1,2 +1,3 @@
-export * from './default';
-export * from './dashboard';
+export * from './blocks';
+export * from './DashboardContent';
+export * from './DashboardPage';

@@ -11,7 +11,7 @@ import '@formatjs/intl-relativetimeformat/locale-data/zh';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
-import { I18N_CONFIG_KEY, I18N_DEFAULT_LANGUAGE } from '@/i18n';
+import { I18N_CONFIG_KEY, I18N_DEFAULT_LANGUAGE, I18N_LANGUAGES, I18N_MESSAGES } from '@/i18n';
 import { type TLanguage, type ITranslationProviderProps } from '@/i18n';
 import { getData, setData } from '@/utils';
 
@@ -46,6 +46,13 @@ const I18NProvider = ({ children }: PropsWithChildren) => {
 const TranslationProvider = ({ children }: PropsWithChildren) => {
   const [currentLanguage, setCurrentLanguage] = useState(initialProps.currentLanguage);
 
+  useEffect(() => {
+    changeLanguage(
+      I18N_LANGUAGES.find((lang) => lang.code === currentLanguage.code) ?? I18N_DEFAULT_LANGUAGE
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const changeLanguage = (language: TLanguage) => {
     setData(I18N_CONFIG_KEY, language);
     setCurrentLanguage(language);
@@ -53,7 +60,7 @@ const TranslationProvider = ({ children }: PropsWithChildren) => {
 
   const isRTL = () => {
     return currentLanguage.direction === 'rtl';
-  }
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute('dir', currentLanguage.direction);

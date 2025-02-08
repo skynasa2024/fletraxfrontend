@@ -3,6 +3,7 @@ export interface ButtonRadioGroupProps {
   // eslint-disable-next-line no-unused-vars
   setSelection: (value: string) => void;
   selections: string[];
+  translations?: Record<string, string>;
   className?: string;
   suffix?: Record<string, string>;
   disabled?: boolean;
@@ -13,6 +14,7 @@ export const ButtonRadioGroup = ({
   setSelection,
   selections,
   suffix,
+  translations,
   className = 'btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear',
   disabled
 }: ButtonRadioGroupProps) => {
@@ -26,7 +28,7 @@ export const ButtonRadioGroup = ({
           onClick={() => setSelection(value)}
           disabled={disabled}
         >
-          {value}
+          {translations?.[value] ?? value}
           {suffix?.[value] ?? ''}
         </button>
       ))}

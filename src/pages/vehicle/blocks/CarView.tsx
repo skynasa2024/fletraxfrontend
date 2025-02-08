@@ -1,7 +1,7 @@
 import { Vehicle } from '@/api/cars.ts';
 import { KeenIcon } from '@/components';
 import Image from '@/components/image/Image';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate.tsx';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 
 export interface CarViewProps {
   vehicle: Vehicle;

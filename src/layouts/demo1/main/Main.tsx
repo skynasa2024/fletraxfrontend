@@ -4,8 +4,10 @@ import { Outlet, useLocation } from 'react-router';
 import { useMenuCurrentItem } from '@/components/menu';
 import { Footer, Header, Sidebar, useDemo1Layout } from '../';
 import { useMenus } from '@/providers';
+import { useIntl } from 'react-intl';
 
 const Main = () => {
+  const intl = useIntl();
   const { layout } = useDemo1Layout();
   const { pathname } = useLocation();
   const { getMenuConfig } = useMenus();
@@ -46,7 +48,11 @@ const Main = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>{menuItem?.title}</title>
+        <title>
+          {menuItem?.title
+            ? `${intl.formatMessage({ id: menuItem.title })} | ${intl.formatMessage({ id: 'APP.DEFAULT_TITLE' })}`
+            : intl.formatMessage({ id: 'APP.DEFAULT_TITLE' })}
+        </title>
       </Helmet>
 
       <Sidebar />

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { deleteDevice, DeviceDTO, getDevices } from '@/api/devices';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import DeviceIcon from '../svg/device.svg?react';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import {

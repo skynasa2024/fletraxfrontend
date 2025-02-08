@@ -55,7 +55,7 @@ export const DeviceProvider = ({ children }: PropsWithChildren) => {
     <DeviceContext.Provider
       value={{
         getProtocolName: (protocolId: string) => protocols[protocolId] || '',
-        getTypeName: (typeId: string) => types[typeId].name || '',
+        getTypeName: (typeId: string) => types[typeId]?.name || '',
         protocols,
         types,
         getTypesOfProtocol

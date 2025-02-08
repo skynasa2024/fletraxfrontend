@@ -1,10 +1,10 @@
 import { deleteVehicle, updateVehicleStatus, VehicleDetails } from '@/api/cars';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import Image from '@/components/image/Image';
 import { KeenIcon } from '@/components';
 import { toAbsoluteUrl } from '@/utils';
-import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router';
 
 type VehicleCardProps = {

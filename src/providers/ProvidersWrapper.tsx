@@ -19,10 +19,10 @@ const queryClient = new QueryClient();
 const ProvidersWrapper = ({ children }: PropsWithChildren) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <SnackbarProvider>
-        <AuthProvider>
-          <SettingsProvider>
-            <TranslationProvider>
+      <AuthProvider>
+        <SettingsProvider>
+          <TranslationProvider>
+            <SnackbarProvider>
               <HelmetProvider>
                 <LayoutProvider>
                   <LoadersProvider>
@@ -34,10 +34,10 @@ const ProvidersWrapper = ({ children }: PropsWithChildren) => {
                   </LoadersProvider>
                 </LayoutProvider>
               </HelmetProvider>
-            </TranslationProvider>
-          </SettingsProvider>
-        </AuthProvider>
-      </SnackbarProvider>
+            </SnackbarProvider>
+          </TranslationProvider>
+        </SettingsProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

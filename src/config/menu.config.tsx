@@ -2,151 +2,136 @@ import { type TMenuConfig } from '@/components/menu';
 
 export const MENU_SIDEBAR: TMenuConfig = [
   {
-    title: 'Dashboard',
+    title: 'SIDEBAR.MENU.DASHBOARD',
     externalIcon: 'dashboard',
     path: '/'
   },
   {
-    title: 'Monitoring',
+    title: 'SIDEBAR.MENU.MONITORING',
     externalIcon: 'monitoring',
     path: '/monitoring',
     fullScreen: true
   },
   {
-    title: 'Trips',
+    title: 'SIDEBAR.MENU.TRIPS',
     externalIcon: 'trips',
     path: '/trips',
     fullScreen: true
   },
   // {
-  //   title: 'Geofence',
+  //   title: 'SIDEBAR.MENU.GEOFENCE',
   //   externalIcon: 'geofence',
   //   children: [
   //     {
-  //       title: 'Geofence',
+  //       title: 'SIDEBAR.MENU.GEOFENCE.GEOFENCE',
   //       path: '/geofences',
   //       fullScreen: true
   //     },
   //     {
-  //       title: 'Linked Geofence',
+  //       title: 'SIDEBAR.MENU.GEOFENCE.LINKED_GEOFENCE',
   //       path: '/geofence/linked'
   //     },
   //     {
-  //       title: 'Add Geofence',
+  //       title: 'SIDEBAR.MENU.GEOFENCE.ADD_GEOFENCE',
   //       path: '/geofence/add'
   //     }
   //   ]
   // },
   {
-    title: 'Vehicle',
+    title: 'SIDEBAR.MENU.VEHICLE',
     externalIcon: 'vehicle',
     children: [
       {
-        title: 'Vehicle',
+        title: 'SIDEBAR.MENU.VEHICLE.VEHICLE',
         path: '/vehicles/vehicle'
       },
       {
-        title: 'Add Vehicle',
+        title: 'SIDEBAR.MENU.VEHICLE.ADD_VEHICLE',
         path: '/vehicles/add-vehicle'
       }
     ]
   },
-
-  /*   {
-    title: 'Reservations',
-    externalIcon: 'reservations', 
-    children: [
-      {
-        title: 'Add Reservations',
-        path: '/vehicle/login'
-      },
-      {
-        title: 'Reservations',
-        path: '/vehicle/signup'
-      },
-
-
-    ]
-    
-  }, */
-  /* {
-    title: 'Customer',
-    externalIcon: 'customer',
-    children: [
-      {
-        title: 'Customer',
-        path: '/customer/customer'
-      },
-      {
-        title: 'Add Customer',
-        path: '/customer/add-customer'
-      },
-
-     
-    ]
-
-  }, */
+  // {
+  //   title: 'SIDEBAR.MENU.RESERVATIONS',
+  //   externalIcon: 'reservations',
+  //   children: [
+  //     {
+  //       title: 'SIDEBAR.MENU.RESERVATIONS.ADD_RESERVATIONS',
+  //       path: '/vehicle/login'
+  //     },
+  //     {
+  //       title: 'SIDEBAR.MENU.RESERVATIONS.RESERVATIONS',
+  //       path: '/vehicle/signup'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'SIDEBAR.MENU.CUSTOMER',
+  //   externalIcon: 'customer',
+  //   children: [
+  //     {
+  //       title: 'SIDEBAR.MENU.CUSTOMER.CUSTOMER',
+  //       path: '/customer/customer'
+  //     },
+  //     {
+  //       title: 'SIDEBAR.MENU.CUSTOMER.ADD_CUSTOMER',
+  //       path: '/customer/add-customer'
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'SIDEBAR.MENU.MAINTENANCE',
+  //   externalIcon: 'maintenance',
+  //   children: [
+  //     {
+  //       title: 'SIDEBAR.MENU.MAINTENANCE.MAINTENANCE',
+  //       path: '/maintenance/maintenance'
+  //     },
+  //     {
+  //       title: 'SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE',
+  //       path: '/maintenance/add-maintenance'
+  //     }
+  //   ]
+  // },
   {
-    title: 'Maintenance',
-    externalIcon: 'maintenance',
-    children: [
-      {
-        title: 'Maintenance',
-        path: '/maintenance'
-      },
-      {
-        title: 'Add Maintenance',
-        path: '/maintenance/add'
-      },
-      {
-        title: 'Maintenance Type',
-        path: '/maintenance/maintenance-type'
-      },
-      {
-        title: 'Add Maintenance Type',
-        path: '/maintenance/maintenance-type/add'
-      }
-    ]
-  },
-  {
-    title: 'Device',
+    title: 'SIDEBAR.MENU.DEVICE',
     externalIcon: 'device',
     children: [
       {
-        title: 'Device',
+        title: 'SIDEBAR.MENU.DEVICE.DEVICE',
         path: '/devices/device'
       },
       {
-        title: 'Add device',
+        title: 'SIDEBAR.MENU.DEVICE.ADD_DEVICE',
         path: '/devices/add-device',
         role: 'admin'
       }
     ]
   },
   {
-    title: 'User',
+    title: 'SIDEBAR.MENU.USER',
     externalIcon: 'user',
     children: [
       {
-        title: 'User',
+        title: 'SIDEBAR.MENU.USER.USER',
         path: '/users/user'
       },
       {
-        title: 'Add users',
+        title: 'SIDEBAR.MENU.USER.ADD_USER',
         path: '/users/add-user'
       }
     ]
   },
   {
-    title: 'Driver',
+    title: 'SIDEBAR.MENU.DRIVER',
     externalIcon: 'driver',
     children: [
       {
-        title: 'Driver',
+        title: 'SIDEBAR.MENU.DRIVER.DRIVER',
         path: '/drivers/driver'
       },
       {
-        title: 'Add Driver',
+        title: 'SIDEBAR.MENU.DRIVER.ADD_DRIVER',
         path: '/drivers/add-driver'
       }
     ]

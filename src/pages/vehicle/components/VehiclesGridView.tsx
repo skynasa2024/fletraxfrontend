@@ -13,9 +13,9 @@ import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 import { deleteVehicle, getVehicles, updateVehicleStatus, VehicleDetails } from '@/api/cars';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
-import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router-dom';
 
 type VehiclesGridViewProps = {

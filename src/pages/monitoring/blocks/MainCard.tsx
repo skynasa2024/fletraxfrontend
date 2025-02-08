@@ -3,11 +3,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMonitoringProvider } from '../providers/MonitoringProvider';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css';
-import { ButtonRadioGroup } from '@/pages/dashboards/dashboard/blocks/ButtonRadioGroup';
+import { ButtonRadioGroup } from '@/pages/dashboards/blocks/ButtonRadioGroup';
 import { AutoSizer, List } from 'react-virtualized';
 import { toAbsoluteUrl } from '@/utils';
 import { useSearchParams } from 'react-router-dom';
-import { CarView } from '@/pages/dashboards/dashboard/blocks/CarView';
+import { CarView } from '@/pages/dashboards/blocks/CarView';
 
 export const MainCard = () => {
   const [searchParams] = useSearchParams();

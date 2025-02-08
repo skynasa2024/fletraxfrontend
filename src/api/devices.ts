@@ -101,7 +101,7 @@ export interface MonitoringDTO {
   status: string;
   motionStatus: string;
   userId: string;
-  vehiclePlate: string;
+  vehiclePlate: string | null;
   vehicleImage: string | null;
 }
 

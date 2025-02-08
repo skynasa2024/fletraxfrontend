@@ -15,7 +15,7 @@ import { getDrivers, DriverDetails, updateDriverStatus, deleteDriver } from '@/a
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { CarView } from '@/pages/vehicle/blocks/CarView';
-import { StatusDropdown } from '@/pages/dashboards/dashboard/blocks/StatusDropdown';
+import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 
 const DriverListDropdown = (

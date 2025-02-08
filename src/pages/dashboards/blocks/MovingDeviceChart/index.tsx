@@ -5,9 +5,11 @@ import { getCarCount } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
 import { ButtonRadioGroup } from '../ButtonRadioGroup';
 import { toAbsoluteUrl } from '@/utils';
+import { FormattedMessage, useIntl } from 'react-intl';
 import './style.css';
 
 const MovingDeviceChart = () => {
+  const intl = useIntl();
   const [selection, setSelection] = useState('Device');
   const [allData, setAllData] = useState<Record<string, number>>();
   const data = useMemo(() => {
@@ -20,10 +22,18 @@ const MovingDeviceChart = () => {
   }, [allData, selection]);
   const labels = useMemo(() => {
     if (allData) {
-      return selection === 'Moving' ? ['Moving', 'Parked'] : ['Online', 'Offline'];
+      return selection === 'Moving'
+        ? [
+            intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.MOVING' }),
+            intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.PARKED' })
+          ]
+        : [
+            intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.ONLINE' }),
+            intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.OFFLINE' })
+          ];
     }
     return null;
-  }, [allData, selection]);
+  }, [allData, selection, intl]);
   const colors: string[] = ['var(--tw-success)', 'var(--tw-danger)'];
 
   const options: ApexOptions = {
@@ -96,14 +106,22 @@ const MovingDeviceChart = () => {
     >
       <div className="px-7 py-6 flex items-center justify-between">
         <div className="card-title">
-          <h3>Moving & Device</h3>
-          <h4 className="text-sm font-thin text-[#B5B5C3]">Status</h4>
+          <h3>
+            <FormattedMessage id="DASHBOARD.MOVING_DEVICE.TITLE" />
+          </h3>
+          <h4 className="text-sm font-thin text-[#B5B5C3]">
+            <FormattedMessage id="DASHBOARD.MOVING_DEVICE.STATUS" />
+          </h4>
         </div>
 
         <ButtonRadioGroup
           selection={selection}
           setSelection={setSelection}
           selections={['Moving', 'Device']}
+          translations={{
+            Moving: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.MOVING' }),
+            Device: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.DEVICE' })
+          }}
         />
       </div>
 
@@ -139,7 +157,9 @@ const MovingDeviceChart = () => {
             <img src={toAbsoluteUrl('/media/icons/total.svg')} />
             <div className="flex flex-col">
               <div className="text-lg font-semibold">{data.reduce((acc, val) => acc + val)}</div>
-              <div className="text-xs font-medium text-gray-600">Total</div>
+              <div className="text-xs font-medium text-gray-600">
+                <FormattedMessage id="DASHBOARD.MOVING_DEVICE.TOTAL" />
+              </div>
             </div>
           </div>
         </div>

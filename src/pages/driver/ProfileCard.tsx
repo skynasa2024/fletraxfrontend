@@ -1,6 +1,6 @@
 import React from 'react';
 import { CalendarIcon } from './svg';
-import { CarPlate } from '@/pages/dashboards/dashboard/blocks/CarPlate';
+import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import Image from '@/components/image/Image';
 import { toAbsoluteUrl } from '@/utils';
 
