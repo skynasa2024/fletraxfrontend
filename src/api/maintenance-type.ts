@@ -15,7 +15,9 @@ export interface IMaintenanceTypeTableData {
   title: string;
 }
 
-export const getMaintenanceTypes = async (params: TDataGridRequestParams): Promise<Paginated<MaintenanceTypeModel>> => {
+export const getMaintenanceTypes = async (
+  params: TDataGridRequestParams
+): Promise<Paginated<MaintenanceTypeModel>> => {
   const filters =
     params.filters?.reduce(
       (acc, filter) => {
@@ -54,18 +56,18 @@ export const searchMaintenanceTypes = async (
   const requestParams =
     'start' in params
       ? {
-        offset: params.start,
-        size: params.end - params.start + 1,
-        search: params.search
-      }
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
       : {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value,
-        ...(params.sorting?.[0] && {
-          sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
-        })
-      };
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value,
+          ...(params.sorting?.[0] && {
+            sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+          })
+        };
 
   const maintenanceTypes = await axios.get<PaginatedResponseModel<MaintenanceTypeModel>>(
     '/api/maintenances/types/index',
@@ -84,17 +86,25 @@ export const searchMaintenanceTypes = async (
   };
 };
 
-
 export const getMaintenanceTypeById = async (id: string) => {
   return await axios.get<ResponseModel<MaintenanceTypeModel>>(`/api/maintenances/types/show/${id}`);
 };
 
 export const createMaintenanceType = async (data: FormData) => {
-  return await axios.post<ResponseModel<MaintenanceTypeModel>>('/api/maintenances/types/create', data);
+  const response = await axios.post<ResponseModel<MaintenanceTypeModel>>(
+    '/api/maintenances/types/create',
+    data
+  );
+  return response.data.result;
 };
 
-export const updateMaintenanceType = async (data: FormData) => {
-  return await axios.put<ResponseModel<MaintenanceTypeModel>>('/api/maintenances/types/update', data);
+export const updateMaintenanceType = async (id: string, data: FormData) => {
+  data.append('id', id);
+  const response = await axios.put<ResponseModel<MaintenanceTypeModel>>(
+    '/api/maintenances/types/update',
+    data
+  );
+  return response.data.result;
 };
 
 export const deleteMaintenanceType = async (id: string) => {

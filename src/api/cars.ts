@@ -10,19 +10,19 @@ import { CarType, FuelType, GearType, RegistrationType } from '@/pages/vehicle/a
 
 export interface CarCountsDTO {
   total: number;
-  offline: number;
-  online: number;
-  moving: number;
-  parking: number;
+  offline?: number;
+  online?: number;
+  moving?: number;
+  parking?: number;
 }
 
 export const getCarCount = async (): Promise<Record<string, number>> => {
   const carCounts = await axios.get<ResponseModel<CarCountsDTO>>('/api/devices/counts');
   return {
-    Moving: carCounts.data.result.moving,
-    Parked: carCounts.data.result.parking,
-    Online: carCounts.data.result.online,
-    Offline: carCounts.data.result.offline
+    Moving: carCounts.data.result.moving ?? 0,
+    Parked: carCounts.data.result.parking ?? 0,
+    Online: carCounts.data.result.online ?? 0,
+    Offline: carCounts.data.result.offline ?? 0
   };
 };
 
@@ -267,18 +267,18 @@ export const getVehicles = async (
   const requestParams =
     'start' in params
       ? {
-        offset: params.start,
-        size: params.end - params.start + 1,
-        search: params.search
-      }
+          offset: params.start,
+          size: params.end - params.start + 1,
+          search: params.search
+        }
       : {
-        page: params.pageIndex,
-        size: params.pageSize,
-        search: params.filters?.[0] && params.filters[0].value,
-        ...(params.sorting?.[0] && {
-          sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
-        })
-      };
+          page: params.pageIndex,
+          size: params.pageSize,
+          search: params.filters?.[0] && params.filters[0].value,
+          ...(params.sorting?.[0] && {
+            sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+          })
+        };
 
   const vehiclesRes = await axios.get<PaginatedResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/index',

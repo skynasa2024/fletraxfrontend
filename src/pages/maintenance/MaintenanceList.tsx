@@ -1,6 +1,16 @@
-import { DataGrid, KeenIcon, Menu, MenuIcon, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
+import {
+  DataGrid,
+  KeenIcon,
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle
+} from '@/components';
 import { deleteMaintenance, getMaintenance, IMaintenanceTableData } from '@/api/maintenance.ts';
-import React, { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,26 +19,45 @@ import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField
 import { useSettings } from '@/providers';
 import { MaintenanceStatusDropdown } from './components/MaintenanceStatusDropdown.tsx';
 import { useSnackbar } from 'notistack';
+import { CarView } from '../dashboards/blocks/CarView.tsx';
+import { getMaintenanceTypes } from '@/api/maintenance-type.ts';
 
 const MaintenanceList = (props: { fetchStats: () => void }) => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
+  const [maintenanceTypes, setMaintenanceTypes] = useState<Record<string, string>>();
 
-  const handleDelete = (id: string) => {
-    deleteMaintenance(id).then(response => {
-      props?.fetchStats();
-      navigate('/maintenance');
-      enqueueSnackbar(response.data.message, {
-        variant: response.data.success ? 'success' : 'error'
-      });
-    }).catch(error => {
-      enqueueSnackbar(error, {
-        variant: 'error'
-      });
+  useEffect(() => {
+    getMaintenanceTypes({ pageSize: 1000, pageIndex: 0 }).then((response) => {
+      setMaintenanceTypes(
+        response.data.reduce(
+          (acc, type) => ({ ...acc, ...(type.title && type.code && { [type.code]: type.title }) }),
+          {} as Record<string, string>
+        )
+      );
     });
-  };
+  }, []);
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteMaintenance(id)
+        .then((response) => {
+          props?.fetchStats();
+          navigate('/maintenance');
+          enqueueSnackbar(response.data.message, {
+            variant: response.data.success ? 'success' : 'error'
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar(error, {
+            variant: 'error'
+          });
+        });
+    },
+    [enqueueSnackbar, navigate, props]
+  );
 
   const columns = useMemo<ColumnDef<IMaintenanceTableData>[]>(
     () => [
@@ -38,17 +67,15 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         header: () => 'Car',
         enableSorting: true,
         cell: (info) => (
-          <div className="flex items-center gap-2">
-            <img
-              src={info.row.original.vehicleImage}
-              alt="Car logo"
-              className="w-6 h-6"
-            />
-            <div className="flex flex-col">
-              <span className="text-gray-800">{Number(info.row.original.vehiclePlate) || 0}</span>
-              <span className="text-gray-400 text-sm">{info.row.original.vehicleName}</span>
-            </div>
-          </div>
+          <CarView
+            vehicle={{
+              id: info.row.original.vehicleId,
+              name: info.row.original.vehicleName,
+              plate: info.row.original.vehiclePlate,
+              imei: '',
+              brandImage: ''
+            }}
+          />
         ),
         meta: {
           className: 'min-w-40'
@@ -61,7 +88,9 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800">
-            {info.row.original.type}
+            {maintenanceTypes
+              ? maintenanceTypes[info.row.original.type] || 'Unknown Type'
+              : 'Loading...'}
           </span>
         ),
         meta: {
@@ -73,11 +102,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         id: 'supplier',
         header: () => 'Supplier',
         enableSorting: true,
-        cell: (info) => (
-          <span className="text-gray-800">
-            {info.row.original.supplier}
-          </span>
-        ),
+        cell: (info) => <span className="text-gray-800">{info.row.original.supplier}</span>,
         meta: {
           className: 'min-w-36'
         }
@@ -160,7 +185,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         }
       }
     ],
-    [handleDelete, props?.fetchStats]
+    [handleDelete, maintenanceTypes, props?.fetchStats]
   );
 
   return (
@@ -185,9 +210,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         columns={columns}
         serverSide={true}
         onFetchData={getMaintenance}
-        filters={[
-          ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
-        ]}
+        filters={[...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])]}
       />
     </div>
   );

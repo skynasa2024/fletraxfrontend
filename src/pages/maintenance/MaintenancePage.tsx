@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MaintenanceMiniCards } from './mini-cards/MaintenanceMiniCards';
 import { getMaintenanceStats, IMaintenanceStats } from '@/api/maintenance.ts';
-import { MaintenanceList } from '@/pages/public-profile/profiles/maintenance/MaintenanceList.tsx';
+import { MaintenanceList } from '@/pages/maintenance/MaintenanceList';
 import { Container } from '@/components';
 
 const MaintenancePage = () => {

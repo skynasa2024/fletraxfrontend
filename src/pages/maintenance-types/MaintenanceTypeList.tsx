@@ -1,11 +1,25 @@
-import { DataGrid, KeenIcon, Menu, MenuIcon, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
+import {
+  DataGrid,
+  KeenIcon,
+  Menu,
+  MenuIcon,
+  MenuItem,
+  MenuLink,
+  MenuSub,
+  MenuTitle,
+  MenuToggle
+} from '@/components';
 import React, { useMemo, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField.tsx';
 import { useSettings } from '@/providers';
-import { deleteMaintenanceType, getMaintenanceTypes, IMaintenanceTypeTableData } from '@/api/maintenance-type.ts';
+import {
+  deleteMaintenanceType,
+  getMaintenanceTypes,
+  IMaintenanceTypeTableData
+} from '@/api/maintenance-type.ts';
 import { useSnackbar } from 'notistack';
 
 const MaintenanceTypeList = () => {
@@ -15,16 +29,18 @@ const MaintenanceTypeList = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleDelete = (id: string) => {
-    deleteMaintenanceType(id).then(response => {
-      navigate('/maintenance/maintenance-type');
-      enqueueSnackbar(response.data.message, {
-        variant: response.data.success ? 'success' : 'error'
+    deleteMaintenanceType(id)
+      .then((response) => {
+        navigate('/maintenance/maintenance-type');
+        enqueueSnackbar(response.data.message, {
+          variant: response.data.success ? 'success' : 'error'
+        });
+      })
+      .catch((error) => {
+        enqueueSnackbar(error, {
+          variant: 'error'
+        });
       });
-    }).catch(error => {
-      enqueueSnackbar(error, {
-        variant: 'error'
-      });
-    });
   };
 
   const columns = useMemo<ColumnDef<IMaintenanceTypeTableData>[]>(
@@ -34,11 +50,7 @@ const MaintenanceTypeList = () => {
         id: 'id',
         header: () => 'ID',
         enableSorting: true,
-        cell: (info) => (
-          <span className="text-gray-800">
-            {info.row.original.id}
-          </span>
-        ),
+        cell: (info) => <span className="text-gray-800">{info.row.original.id}</span>,
         meta: {
           className: 'min-w-36'
         }
@@ -48,11 +60,7 @@ const MaintenanceTypeList = () => {
         id: 'title',
         header: () => 'Title',
         enableSorting: true,
-        cell: (info) => (
-          <span className="text-gray-800">
-            {info.row.original.title}
-          </span>
-        ),
+        cell: (info) => <span className="text-gray-800">{info.row.original.title}</span>,
         meta: {
           className: 'min-w-36'
         }
@@ -62,11 +70,7 @@ const MaintenanceTypeList = () => {
         id: 'code',
         header: () => 'Code',
         enableSorting: true,
-        cell: (info) => (
-          <span className="text-gray-800">
-            {info.row.original.code}
-          </span>
-        ),
+        cell: (info) => <span className="text-gray-800">{info.row.original.code}</span>,
         meta: {
           className: 'min-w-36'
         }
@@ -76,10 +80,16 @@ const MaintenanceTypeList = () => {
         header: () => 'Action',
         cell: (info) => (
           <div className="flex gap-3">
-            <Link to={`/maintenance/maintenance-type/view/${info.row.original.id}`} className="size-7.5">
+            <Link
+              to={`/maintenance/maintenance-type/view/${info.row.original.id}`}
+              className="size-7.5"
+            >
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </Link>
-            <Link to={`/maintenance/maintenance-type/edit/${info.row.original.id}`} className="size-7.5">
+            <Link
+              to={`/maintenance/maintenance-type/edit/${info.row.original.id}`}
+              className="size-7.5"
+            >
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </Link>
             <Menu>
@@ -136,9 +146,7 @@ const MaintenanceTypeList = () => {
         columns={columns}
         serverSide={true}
         onFetchData={getMaintenanceTypes}
-        filters={[
-          ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
-        ]}
+        filters={[...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])]}
       />
     </div>
   );

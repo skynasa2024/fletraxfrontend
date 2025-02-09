@@ -93,13 +93,14 @@ export const MENU_SIDEBAR: TMenuConfig = [
       },
       {
         title: 'SIDEBAR.MENU.MAINTENANCE.MAINTENANCE_TYPE',
-        path: '/maintenance/maintenance-type'
+        path: '/maintenance/maintenance-type',
+        role: 'admin'
       },
       {
         title: 'SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE_TYPE',
-        path: '/maintenance/maintenance-type/add'
+        path: '/maintenance/maintenance-type/add',
+        role: 'admin'
       }
-
     ]
   },
   {

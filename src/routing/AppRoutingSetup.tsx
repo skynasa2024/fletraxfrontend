@@ -5,7 +5,7 @@ import { User } from '@/pages/user';
 import { Vehicles } from '@/pages/vehicle';
 
 import { Driver } from '@/pages/driver';
-import { MaintenancePage } from '@/pages/public-profile/profiles/maintenance';
+import { MaintenancePage } from '@/pages/maintenance';
 
 import { AddUser } from '@/pages/user/add-user';
 import { AddDriver } from '@/pages/driver/add-driver';
@@ -20,8 +20,7 @@ import UserDetailsPage from '@/pages/user/blocks/UserDetailsPage';
 import VehicleDetailsPage from '@/pages/vehicle/vehicle-details';
 import DriverDetailsPage from '@/pages/driver/DriverDetailsPage';
 import { TripsPage } from '@/pages/trips/TripsPage';
-import MaintenanceDetailsPage
-  from '@/pages/public-profile/profiles/maintenance/view-maintenance/MaintenanceDetailsPage.tsx';
+import MaintenanceDetailsPage from '@/pages/maintenance/view-maintenance/MaintenanceDetailsPage';
 import { GeofencePage } from '@/pages/geofence/GeofencePage';
 import { Device } from '@/pages/device';
 import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
@@ -31,16 +30,9 @@ import Telemetry from '@/pages/device/blocks/Telemetry';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import { AddVehicleScratches } from '@/pages/vehicle/add-vehicle/AddVehicleScratches';
 
-import {
-  AddMaintenanceTypePage,
-  EditMaintenanceTypePage,
-  MaintenanceTypeDetailsPage,
-  MaintenanceTypePage
-} from '@/pages/public-profile/profiles/maintenance-types';
-import { AddMaintenancePage } from '@/pages/public-profile/profiles/maintenance/add-maintenance/AddMaintenancePage.tsx';
-import {
-  EditMaintenancePage
-} from '@/pages/public-profile/profiles/maintenance/edit-maintenance/EditMaintenancePage.tsx';
+import { MaintenanceTypeDetailsPage, MaintenanceTypePage } from '@/pages/maintenance-types';
+import { AddMaintenance } from '@/pages/maintenance/add-maintenance/AddMaintenance';
+import { AddMaintenanceType } from '@/pages/maintenance-types/add-maintenance-type/AddMaintenanceType';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -59,15 +51,18 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/vehicles/edit-scratches/:id" element={<AddVehicleScratches />} />
 
           <Route path="/maintenance" element={<MaintenancePage />} />
-          <Route path="/maintenance/add" element={<AddMaintenancePage />} />
-          <Route path="/maintenance/edit/:id" element={<EditMaintenancePage />} />
+          <Route path="/maintenance/add" element={<AddMaintenance />} />
+          <Route path="/maintenance/edit/:id" element={<AddMaintenance />} />
           <Route path="/maintenance/view/:id" element={<MaintenanceDetailsPage />} />
 
           <Route element={<RequireRole role="admin" />}>
             <Route path="/maintenance/maintenance-type" element={<MaintenanceTypePage />} />
-            <Route path="/maintenance/maintenance-type/add" element={<AddMaintenanceTypePage />} />
-            <Route path="/maintenance/maintenance-type/edit/:id" element={<EditMaintenanceTypePage />} />
-            <Route path="/maintenance/maintenance-type/view/:id" element={<MaintenanceTypeDetailsPage />} />
+            <Route path="/maintenance/maintenance-type/add" element={<AddMaintenanceType />} />
+            <Route path="/maintenance/maintenance-type/edit/:id" element={<AddMaintenanceType />} />
+            <Route
+              path="/maintenance/maintenance-type/view/:id"
+              element={<MaintenanceTypeDetailsPage />}
+            />
           </Route>
 
           <Route path="/devices/device/" element={<Device />} />

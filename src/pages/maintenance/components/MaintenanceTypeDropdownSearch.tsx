@@ -21,7 +21,10 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
   const remoteRowCount = useMemo(() => maintenanceTypes?.totalCount ?? 0, [maintenanceTypes]);
 
   const isRowLoaded = ({ index }: { index: number }) => !!maintenanceTypes?.data[index];
-  const loadMoreRows = async ({ startIndex, stopIndex }: {
+  const loadMoreRows = async ({
+    startIndex,
+    stopIndex
+  }: {
     startIndex: number;
     stopIndex: number;
   }) => {
@@ -39,7 +42,9 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
   };
 
   useEffect(() => {
-    searchMaintenanceTypes({ start: 0, end: 10, search: privateSearch || '' }).then(setMaintenanceTypes);
+    searchMaintenanceTypes({ start: 0, end: 10, search: privateSearch || '' }).then(
+      setMaintenanceTypes
+    );
   }, [privateSearch]);
 
   useEffect(() => {
@@ -71,7 +76,7 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
       </button>
       {(focused || hovered) && (
         <div
-          className="absolute bottom-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"
+          className="absolute top-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
@@ -109,7 +114,7 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
                               setHovered(false);
                             }}
                           >
-                            <span className="font-monospace">{maintenanceType.title}</span>
+                            <span>{maintenanceType.title}</span>
                           </div>
                         </div>
                       );

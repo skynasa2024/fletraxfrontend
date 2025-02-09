@@ -21,15 +21,15 @@ export interface MaintenanceModel {
   type: string;
   description: string;
   supplier: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   status: string;
   amount: number | undefined;
   vehicleId: string;
-  vehiclePlate: string,
-  vehicleImage: string,
-  vehicleBrand: string,
-  vehicleModel: string,
+  vehiclePlate: string;
+  vehicleImage: string;
+  vehicleBrand: string;
+  vehicleModel: string;
   userId: string;
 }
 
@@ -43,10 +43,10 @@ export interface MaintenanceUpdateModel {
   status: string;
   amount: number | undefined;
   vehicleId: string;
-  vehiclePlate: string,
-  vehicleImage: string,
-  vehicleBrand: string,
-  vehicleModel: string,
+  vehiclePlate: string;
+  vehicleImage: string;
+  vehicleBrand: string;
+  vehicleModel: string;
   userId: string;
 }
 
@@ -59,11 +59,11 @@ export interface IMaintenanceTableData {
   status: string;
   amount: number;
   vehicleId: string;
-  vehiclePlate: string,
-  vehicleImage: string,
-  vehicleName: string,
-  vehicleBrand: string,
-  userId: string,
+  vehiclePlate: string;
+  vehicleImage: string;
+  vehicleName: string;
+  vehicleBrand: string;
+  userId: string;
   user: User | null;
 }
 
@@ -91,7 +91,9 @@ export const getMaintenanceStats = async (): Promise<IMaintenanceStats> => {
   return stats.data.result;
 };
 
-export const getMaintenance = async (params: TDataGridRequestParams): Promise<Paginated<IMaintenanceTableData>> => {
+export const getMaintenance = async (
+  params: TDataGridRequestParams
+): Promise<Paginated<IMaintenanceTableData>> => {
   const filters =
     params.filters?.reduce(
       (acc, filter) => {
@@ -152,15 +154,36 @@ export const getMaintenanceById = async (id: string) => {
 };
 
 export const createMaintenance = async (data: FormData) => {
-  return await axios.post<ResponseModel<MaintenanceModel>>('/api/maintenances/create', data);
+  // Fix startDate and endDate
+  if (data.get('startDate')) {
+    data.set('startDate', new Date(data.get('startDate') as string).toISOString());
+  }
+  if (data.get('endDate')) {
+    data.set('endDate', new Date(data.get('endDate') as string).toISOString());
+  }
+  const response = await axios.post<ResponseModel<MaintenanceModel>>(
+    '/api/maintenances/create',
+    data
+  );
+  return response.data.result;
 };
 
-export const updateMaintenance = async (data: FormData) => {
-  return await axios.put<ResponseModel<MaintenanceModel>>('/api/maintenances/update', data);
+export const updateMaintenance = async (id: string, data: FormData) => {
+  data.append('id', id);
+  // Fix startDate and endDate
+  if (data.get('startDate')) {
+    data.set('startDate', new Date(data.get('startDate') as string).toISOString());
+  }
+  if (data.get('endDate')) {
+    data.set('endDate', new Date(data.get('endDate') as string).toISOString());
+  }
+  const response = await axios.put<ResponseModel<MaintenanceModel>>(
+    '/api/maintenances/update',
+    data
+  );
+  return response.data.result;
 };
 
 export const deleteMaintenance = async (id: string) => {
   return await axios.get(`/api/maintenances/delete/${id}`);
 };
-
-

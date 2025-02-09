@@ -11,8 +11,9 @@ interface VehicleSearchProps {
     plate: string;
     id: string;
   };
+  place?: 'top' | 'bottom';
 }
-export const VehicleSearch = ({ initialSearch }: VehicleSearchProps) => {
+export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchProps) => {
   const [privateSearch, setPrivateSearch] = useState(initialSearch?.plate);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialSearch?.id);
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
@@ -71,7 +72,7 @@ export const VehicleSearch = ({ initialSearch }: VehicleSearchProps) => {
       </button>
       {(focused || hovered) && (
         <div
-          className="absolute bottom-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"
+          className={`absolute ${place === 'top' ? 'bottom' : 'top'}-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y`}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >

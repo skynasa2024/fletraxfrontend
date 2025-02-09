@@ -4,22 +4,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { deleteMaintenance, getMaintenanceById, MaintenanceModel } from '@/api/maintenance.ts';
 import { PageNavbar } from '@/pages/account';
-import { Container } from '@/components';
+import { Container, KeenIcon } from '@/components';
 import { ArrowLeftIcon } from 'lucide-react';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { format } from 'date-fns';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
+import { CircularProgress } from '@mui/material';
+import Image from '@/components/image/Image';
 
 const MaintenanceDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [model, setModel] = useState<MaintenanceModel>();
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (id) {
-      setLoading(true);
       getMaintenanceById(id)
         .then((response) => {
           const { result } = response.data;
@@ -29,9 +29,6 @@ const MaintenanceDetails = () => {
         })
         .catch(() => {
           navigate('/error/404');
-        })
-        .finally(() => {
-          setLoading(false);
         });
     }
   }, [id, navigate]);
@@ -71,46 +68,56 @@ const MaintenanceDetails = () => {
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md">
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md"
+            >
               <ArrowLeftIcon className="w-4 h-4" /> Back
             </button>
             <Link to={`/maintenance/edit/${id}`}>
-              <button
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
+              <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
                 <EditIcon className="w-4 h-4" /> Edit
               </button>
             </Link>
             <button
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
-              onClick={handleDelete}>
+              onClick={handleDelete}
+            >
               <DeleteIcon className="w-4 h-4" />
               Delete
             </button>
           </div>
         </div>
-        {loading ? (
+        {!model ? (
           <div className="flex justify-center items-center h-[70vh]">
-            <span>Loading...</span>
+            <CircularProgress />
           </div>
         ) : (
           <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto pt-4">
-            <div className="rounded-lg p-6 max-w-4xl mx-auto">
-              <div className="flex items-start gap-6 mb-8 border rounded-lg p-8">
-                <img
-                  src={model?.vehicleImage}
-                  alt="Vehicle"
+            <div className="p-6 max-w-4xl mx-auto">
+              <div className="card flex flex-row items-start gap-6 mb-8 p-8">
+                <Image
+                  src={model.vehicleImage}
+                  alt={model.vehiclePlate}
+                  title={model.vehiclePlate}
                   className="w-48 h-36 object-cover rounded-lg"
+                  fallback={
+                    <div className="bg-neutral-200 w-48 h-36 aspect-square rounded-lg flex items-center justify-center">
+                      <KeenIcon style="duotone" icon="car" className="text-black text-[96px]" />
+                    </div>
+                  }
                 />
                 <div className="flex-grow">
                   <div className="flex items-center justify-between py-4">
                     <div>
-                      <h2 className="text-xl font-medium text-gray-800">{model?.vehicleBrand ?? 'null'}</h2>
-                      <p className="text-gray-500">{model?.vehicleModel ?? 'null'}</p>
+                      <h2 className="text-xl font-medium text-gray-800">
+                        {model?.vehicleBrand ?? 'Unknown'}
+                      </h2>
+                      <p className="text-gray-500">{model?.vehicleModel ?? 'Unknown'}</p>
                     </div>
                     <CarPlate plate={model?.vehiclePlate} />
                     <div className="flex items-center gap-4">
-                      <span
-                        className="px-3 py-1 rounded-md border border-gray-300 text-green-500 capitalize">{model?.status}</span>
+                      <span className="px-3 py-1 rounded-md border border-gray-300 text-green-500 capitalize">
+                        {model?.status}
+                      </span>
                     </div>
                   </div>
 
@@ -137,7 +144,7 @@ const MaintenanceDetails = () => {
                 </div>
               </div>
 
-              <div className="mt-8 rounded-lg border p-4">
+              <div className="card mt-8 p-4">
                 <h3 className="text-xl font-semibold mb-4 text-gray-800">Information</h3>
                 <div className="divide-y divide-gray-200">
                   <div className="py-4 grid grid-cols-[100px,1fr] gap-4">
