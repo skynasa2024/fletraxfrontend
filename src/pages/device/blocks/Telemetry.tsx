@@ -58,12 +58,19 @@ const Telemetry = () => {
       <div className="flex justify-between gap-4 p-2">
         {/* Speed Gauge */}
         <div className="flex items-center justify-start">
-          <SpeedGauge
-            value={parameters['position_speed']?.data}
-            maxValue={160}
-            existingKilometers={parameters['existing_kilometers']?.data}
-            parkingTime={parameters['parking_time']?.data}
-          />
+          <div className="card flex flex-col max-w-sm p-8 w-96 h-[454px]">
+            <SpeedGauge value={parameters['position_speed']?.data} maxValue={160} />
+            <div className="flex flex-col gap-4 justify-center mt-4">
+              <div>
+                <span className="font-bold">Existing kilometers:</span>{' '}
+                <span>{parameters['existing_kilometers']?.data ?? '?'}</span>
+              </div>
+              <div>
+                <span className="font-bold">Parking time:</span>{' '}
+                <span>{parameters['parking_time']?.data ?? '?'}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Map */}
