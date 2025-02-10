@@ -25,7 +25,7 @@ const Documents = ({ driver }: AddDriverPageProps) => {
             <input
               required
               type="date"
-              className="input w-full"
+              className="input w-full dark:[color-scheme:dark]"
               name="licenseIssueDate"
               defaultValue={driver?.licenseIssueDate}
             />
@@ -35,7 +35,7 @@ const Documents = ({ driver }: AddDriverPageProps) => {
             <input
               required
               type="date"
-              className="input w-full"
+              className="input w-full dark:[color-scheme:dark]"
               name="licenseExpiryDate"
               defaultValue={driver?.licenseExpiry}
             />

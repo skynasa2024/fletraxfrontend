@@ -83,7 +83,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-3 px-[6px] gap-2">
+        <div className="grid grid-cols-3 px-[6px] gap-2 relative">
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
@@ -121,6 +121,15 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
               {tripGroup.trips.reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0).toFixed(0)}{' '}
               Km/h
             </div>
+          </div>
+          <div
+            className="flex items-center justify-center absolute top-0 right-0 bottom-0 cursor-pointer w-8"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+          >
+            <KeenIcon icon={isOpen ? 'up' : 'down'} className="dark:text-[#F5F5FC]" />
           </div>
         </div>
       </div>

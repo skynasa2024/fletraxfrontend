@@ -8,11 +8,15 @@ import { AddUserPage } from '.';
 import { useNavigate, useParams } from 'react-router';
 import { createUser, getUserModel, updateUser, UserModel } from '@/api/user';
 import { CircularProgress } from '@mui/material';
+import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
+import { ResponseModel } from '@/api/response';
 
 const AddUser = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [user, setUser] = useState<UserModel | undefined>(undefined);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (id) {
@@ -42,11 +46,24 @@ const AddUser = () => {
     <form
       className="pb-10"
       action={async (data) => {
-        const response = user ? await updateUser(user.id, data) : await createUser(data);
-        if (user) {
-          navigate(`/users/user/${response.id}`);
-        } else {
-          navigate(`/users/edit/${response.id}#devices`);
+        try {
+          const response = user ? await updateUser(user.id, data) : await createUser(data);
+          if (user) {
+            navigate(`/users/user/${response.id}`);
+          } else {
+            navigate(`/users/edit/${response.id}#devices`);
+          }
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError<ResponseModel<never>>;
+            enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+              variant: 'error'
+            });
+          } else {
+            enqueueSnackbar('An error occurred', {
+              variant: 'error'
+            });
+          }
         }
       }}
     >

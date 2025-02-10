@@ -58,6 +58,7 @@ export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: 
       direction={parameters['position_direction']?.data}
       engineStatus={parameters['engine_ignition_status']?.data}
       online={parameters['status']?.data === 'online'}
+      hidden
     />
   );
 }

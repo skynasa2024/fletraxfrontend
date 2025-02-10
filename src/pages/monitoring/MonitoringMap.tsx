@@ -1,7 +1,4 @@
 import { CarsLayer } from './blocks/CarsLayer';
-import { ZoomControl } from './blocks/ZoomControl';
-import { MapControls } from './blocks/MapControls';
-import { OtherControls } from './blocks/OtherControls';
 import { MainControl } from './blocks/MainControl';
 import { MainCard } from './blocks/MainCard';
 import { SubControl } from './blocks/SubControl';
@@ -14,13 +11,8 @@ const MonitoringMap = () => {
   const { selectedLocation } = useMonitoringProvider();
 
   return (
-    <AppMap>
+    <AppMap mapControls={<ShowImeiControl />}>
       <CarsLayer />
-      <MapControls>
-        <ZoomControl />
-        <OtherControls />
-        <ShowImeiControl />
-      </MapControls>
       <MainControl title="MONITORING">
         <MainCard />
       </MainControl>

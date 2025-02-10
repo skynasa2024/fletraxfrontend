@@ -48,7 +48,7 @@ const Information = ({ user }: AddUserPageProps) => {
             <input
               required
               type="date"
-              className="input w-full"
+              className="input w-full dark:[color-scheme:dark]"
               name="subscriptionStartDate"
               placeholder="DD/MM/YYYY"
               defaultValue={user?.subscriptionStartDate}

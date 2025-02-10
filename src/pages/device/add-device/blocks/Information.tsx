@@ -121,7 +121,7 @@ const Information = ({ device }: AddDevicePageProps) => {
             <input
               required
               type="date"
-              className="input w-full"
+              className="input w-full dark:[color-scheme:dark]"
               name="subscriptionStartDate"
               placeholder="DD/MM/YYYY"
               defaultValue={device?.subscriptionStartDate}
@@ -133,7 +133,7 @@ const Information = ({ device }: AddDevicePageProps) => {
             <input
               required
               type="date"
-              className="input w-full"
+              className="input w-full dark:[color-scheme:dark]"
               name="subscriptionEndDate"
               placeholder="DD/MM/YYYY"
               defaultValue={device?.subscriptionEndDate}

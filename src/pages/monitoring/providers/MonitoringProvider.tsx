@@ -153,6 +153,7 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
       .filter(
         (l) =>
           l.vehicle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          l.vehicle.plate.toLowerCase().includes(searchQuery.toLowerCase()) ||
           l.vehicle.imei.includes(searchQuery)
       )
       .map((l) => l.vehicle.imei)

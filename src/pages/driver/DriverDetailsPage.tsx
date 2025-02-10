@@ -105,9 +105,9 @@ const DriverDetailsPage = () => {
           <MaintenanceViolationTable id={driver.vehicle.id} />
         </div>
         <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 m-5">
-          <div className="w-1/2">
+          <div className="w-full">
             <h2 className="text-xl font-semibold mb-4">Documents</h2>
-            <FileList files={files} />
+            <FileList files={files} columns={2} />
           </div>
         </div>
       </div>

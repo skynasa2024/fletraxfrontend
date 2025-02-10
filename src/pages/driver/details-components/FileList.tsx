@@ -15,6 +15,7 @@ interface FileCardProps {
 
 interface FileListProps {
   files: FileInfo[];
+  columns?: number;
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file }) => {
@@ -31,7 +32,7 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
     toAbsoluteUrl(`/media/icons/${type !== 'FILE' ? type.toLowerCase() + '-' : ''}file-icon.svg`); // Placeholder for demo
 
   return (
-    <div className="card hover:shadow-md p-4  mb-4 last:mb-0 w-full">
+    <div className="card hover:shadow-md p-4 w-full">
       <div className="flex items-center sm:flex-row flex-col">
         <img src={getIconSrc(type)} alt={`${type} Icon`} className="size-6 mr-2" />
         <div>
@@ -62,10 +63,15 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
   );
 };
 
-const FileList: React.FC<FileListProps> = ({ files }) => {
+const FileList: React.FC<FileListProps> = ({ files, columns = 1 }) => {
   return (
     <div className="flex space-x-4">
-      <div className="w-full">
+      <div
+        className="w-full grid gap-4"
+        style={{
+          gridTemplateColumns: `repeat(${columns}, 1fr)`
+        }}
+      >
         {files.map((file, index) => (
           <FileCard key={`${file.name}-${index}`} file={file} />
         ))}

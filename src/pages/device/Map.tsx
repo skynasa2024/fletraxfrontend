@@ -13,8 +13,9 @@ interface MapProps {
   direction?: number;
   online?: boolean;
   engineStatus?: boolean;
+  hidden?: boolean;
 }
-const Map = ({ location, direction, online, engineStatus }: MapProps) => {
+const Map = ({ location, direction, online, engineStatus, hidden = false }: MapProps) => {
   const icon = useMemo(
     () => ({
       green: L.icon({
@@ -50,13 +51,18 @@ const Map = ({ location, direction, online, engineStatus }: MapProps) => {
   if (!location || !direction) {
     return (
       <div className="w-full h-full rounded-lg overflow-hidden shadow-lg">
-        <AppMap zoom={13} dragging={false}></AppMap>
+        <AppMap zoom={13} dragging={false} mapControlSize={hidden ? 'hidden' : 'small'} />
       </div>
     );
   }
   return (
     <div className="w-full h-full rounded-lg overflow-hidden shadow-lg">
-      <AppMap center={[location.lat, location.lng]} zoom={13} dragging={false}>
+      <AppMap
+        center={[location.lat, location.lng]}
+        zoom={13}
+        dragging={false}
+        mapControlSize={hidden ? 'hidden' : 'small'}
+      >
         <RotatableMarker
           position={[location.lat, location.lng]}
           rotationAngle={direction}

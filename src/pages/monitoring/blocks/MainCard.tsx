@@ -20,7 +20,7 @@ export const MainCard = () => {
     setSelectedLocation,
     search
   } = useMonitoringProvider();
-  const [searchTarget, setSearchTarget] = useState(searchParams.get('target') ?? 'User');
+  const [searchTarget, setSearchTarget] = useState(searchParams.get('target') ?? 'Vehicle');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') ?? '');
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);

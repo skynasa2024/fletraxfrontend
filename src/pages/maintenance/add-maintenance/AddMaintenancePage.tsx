@@ -50,7 +50,7 @@ const AddMaintenancePage = ({ maintenance }: AddMaintenancePageProps) => {
               <input
                 required
                 type="date"
-                className="input w-full"
+                className="input w-full dark:[color-scheme:dark]"
                 name="startDate"
                 placeholder="DD/MM/YYYY"
                 defaultValue={
@@ -63,7 +63,7 @@ const AddMaintenancePage = ({ maintenance }: AddMaintenancePageProps) => {
               <input
                 required
                 type="date"
-                className="input w-full"
+                className="input w-full dark:[color-scheme:dark]"
                 name="endDate"
                 placeholder="DD/MM/YYYY"
                 defaultValue={

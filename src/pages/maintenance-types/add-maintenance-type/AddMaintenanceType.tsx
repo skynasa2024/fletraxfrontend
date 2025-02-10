@@ -13,11 +13,15 @@ import {
   MaintenanceTypeModel,
   updateMaintenanceType
 } from '@/api/maintenance-type';
+import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
+import { ResponseModel } from '@/api/response';
 
 const AddMaintenanceType = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [type, setType] = useState<MaintenanceTypeModel | undefined>(undefined);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (id) {
@@ -49,11 +53,24 @@ const AddMaintenanceType = () => {
     <form
       className="pb-10"
       action={async (data) => {
-        const response =
-          type && type.id
-            ? await updateMaintenanceType(type.id, data)
-            : await createMaintenanceType(data);
-        navigate(`/maintenance/maintenance-type/view/${response.id}`);
+        try {
+          const response =
+            type && type.id
+              ? await updateMaintenanceType(type.id, data)
+              : await createMaintenanceType(data);
+          navigate(`/maintenance/maintenance-type/view/${response.id}`);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError<ResponseModel<never>>;
+            enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+              variant: 'error'
+            });
+          } else {
+            enqueueSnackbar('An error occurred', {
+              variant: 'error'
+            });
+          }
+        }
       }}
     >
       <PageNavbar />

@@ -29,6 +29,7 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
+              className="dark:[color-scheme:dark]"
               value={startDate ? startDate : ''}
               onChange={(e) => {
                 setStartDate(e.target.value);
@@ -41,6 +42,7 @@ export const MainCard = () => {
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
+              className="dark:[color-scheme:dark]"
               value={endDate ? endDate : ''}
               onChange={(e) => {
                 setEndDate(e.target.value);

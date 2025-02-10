@@ -6,6 +6,9 @@ import { CircularProgress, Modal } from '@mui/material';
 import Dropzone from '../components/Dropzone';
 import { useParams } from 'react-router';
 import { createScratch, deleteScratch, getScratches, ScratchDTO, updateScratch } from '@/api/cars';
+import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
+import { ResponseModel } from '@/api/response';
 
 const CarScratches: React.FC = () => {
   const { id } = useParams();
@@ -165,26 +168,52 @@ interface CarScratchFormProps {
 }
 
 const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, newScratch }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [changed, setChanged] = useState(newScratch || false);
   const [file, setFile] = useState<File | undefined>(
     scratch.image ? new File([], 'File') : undefined
   );
   const fileInpueRef = React.createRef<HTMLInputElement>();
   const handleRemove = async () => {
-    if (!scratch.id) return;
-
-    await deleteScratch(scratch.id);
-    onRefresh();
+    try {
+      if (!scratch.id) return;
+      await deleteScratch(scratch.id);
+      onRefresh();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ResponseModel<never>>;
+        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+          variant: 'error'
+        });
+      } else {
+        enqueueSnackbar('An error occurred', {
+          variant: 'error'
+        });
+      }
+    }
   };
 
   const handleSave = async (formData: FormData) => {
-    if (newScratch) {
-      await createScratch(formData);
-    } else {
-      formData.append('scratches[0].id', scratch.id || '');
-      await updateScratch(formData);
+    try {
+      if (newScratch) {
+        await createScratch(formData);
+      } else {
+        formData.append('scratches[0].id', scratch.id || '');
+        await updateScratch(formData);
+      }
+      onRefresh();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ResponseModel<never>>;
+        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+          variant: 'error'
+        });
+      } else {
+        enqueueSnackbar('An error occurred', {
+          variant: 'error'
+        });
+      }
     }
-    onRefresh();
   };
 
   return (

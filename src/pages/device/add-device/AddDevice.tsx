@@ -6,8 +6,12 @@ import { useEffect, useState } from 'react';
 import { DeviceDTO, getDeviceModel, updateDevice, createDevice } from '@/api/devices';
 import { AddDevicePage } from './AddDevicePage';
 import { CircularProgress } from '@mui/material';
+import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
+import { ResponseModel } from '@/api/response';
 
 const AddDevice = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { id } = useParams();
   const [device, setDevice] = useState<DeviceDTO | undefined>(undefined);
@@ -40,8 +44,22 @@ const AddDevice = () => {
     <form
       className="pb-10"
       action={async (data) => {
-        const response = device ? await updateDevice(device.id, data) : await createDevice(data);
-        navigate(`/devices/device/${response.ident}`);
+        try {
+          const response = device ? await updateDevice(device.id, data) : await createDevice(data);
+          navigate(`/devices/device/${response.ident}`);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError<ResponseModel<never>>;
+
+            enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+              variant: 'error'
+            });
+          } else {
+            enqueueSnackbar('An error occurred', {
+              variant: 'error'
+            });
+          }
+        }
       }}
     >
       <PageNavbar />

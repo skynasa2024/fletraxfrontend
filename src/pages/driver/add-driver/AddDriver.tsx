@@ -8,9 +8,13 @@ import { useNavigate, useParams } from 'react-router';
 import { createDriver, DriverDetails, getDriver, updateDriver } from '@/api/drivers';
 import { useEffect, useState } from 'react';
 import { CircularProgress } from '@mui/material';
+import axios, { AxiosError } from 'axios';
+import { useSnackbar } from 'notistack';
+import { ResponseModel } from '@/api/response';
 
 const AddDriver = () => {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const [driver, setDriver] = useState<DriverDetails | undefined>(undefined);
 
@@ -42,8 +46,21 @@ const AddDriver = () => {
     <form
       className="pb-10"
       action={async (data) => {
-        const response = driver ? await updateDriver(driver.id, data) : await createDriver(data);
-        navigate(`/drivers/driver/${response.id}`);
+        try {
+          const response = driver ? await updateDriver(driver.id, data) : await createDriver(data);
+          navigate(`/drivers/driver/${response.id}`);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError<ResponseModel<never>>;
+            enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+              variant: 'error'
+            });
+          } else {
+            enqueueSnackbar('An error occurred', {
+              variant: 'error'
+            });
+          }
+        }
       }}
     >
       <PageNavbar />

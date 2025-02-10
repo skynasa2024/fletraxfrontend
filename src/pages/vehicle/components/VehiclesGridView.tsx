@@ -84,7 +84,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'deviceIdent',
-        header: 'Device Name',
+        header: 'Device',
         enableSorting: true,
         cell: ({ row }) => <span>{row.original.vehicle.imei}</span>
       },
