@@ -6,6 +6,8 @@ import { useNavigate, useParams } from 'react-router';
 import FileList, { FileInfo } from '@/pages/driver/details-components/FileList';
 import { DeviceList } from '@/pages/device/blocks';
 import Toolbar from './Toolbar';
+import { Chip } from '@mui/material';
+import clsx from 'clsx';
 
 const UserDetailsPage = () => {
   const { id } = useParams();
@@ -60,23 +62,28 @@ const UserDetailsPage = () => {
   return (
     <Container className="mb-10 flex flex-col gap-6">
       <Toolbar />
-      <div className="grid md:grid-cols-2 gap-6">
+
+      <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="card-body p-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
+            <p className="text-gray-400">{user.country}</p>
+          </div>
+          <UserStatusTag status={user.status} />
+        </div>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6">
         <div className="card bg-white shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8">
-            <div className="flex gap-3 items-center">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
-                <p className="text-gray-400">{user.country}</p>
-              </div>
-            </div>
-            <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4 mt-4">
-              <h2 className="text-xl font-semibold mb-4">Documents</h2>
+            <div className="flex gap-3 items-center"></div>
+            <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4">
+              <h2 className="text-xl font-semibold mb-4 text-dark">Documents</h2>
               <FileList files={files} />
             </div>
           </div>
         </div>
         <div className="card bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="card-body p-8 grid grid-cols-2 gap-6">
+          <div className="card-body p-8 flex flex-col gap-6">
             <div>
               <p className="text-gray-400 mb-1">Identify Number</p>
               <p className="text-gray-800 font-semibold">{user.identifyNumber}</p>
@@ -108,6 +115,10 @@ const UserDetailsPage = () => {
                 <span>{user.state}</span>
               </p>
             </div>
+          </div>
+        </div>
+        <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="card-body p-8 flex flex-col gap-6">
             <div>
               <p className="text-gray-400 mb-1">Time Zone</p>
               <p className="text-gray-800 font-semibold">{user.timezone}</p>
@@ -147,5 +158,18 @@ const UserDetailsPage = () => {
     </Container>
   );
 };
+
+function UserStatusTag({ status }: { status: boolean }) {
+  return (
+    <div
+      className={clsx('px-4 py-2 rounded-md font-semibold text-lg', {
+        'bg-green-500/10 border border-success text-success': status,
+        'bg-red-500/10 border border-danger text-danger': !status
+      })}
+    >
+      {status ? 'Active' : 'Inactive'}
+    </div>
+  );
+}
 
 export default UserDetailsPage;
