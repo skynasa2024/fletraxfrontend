@@ -89,7 +89,7 @@ export const PlaybackCard = () => {
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
                 Start Date
               </span>
             </div>
@@ -109,7 +109,7 @@ export const PlaybackCard = () => {
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
                 Mileage
               </span>
             </div>
@@ -123,7 +123,7 @@ export const PlaybackCard = () => {
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
                 Max Speed
               </span>
             </div>
