@@ -4,8 +4,6 @@ interface GaugeProps {
   value?: number;
   maxValue?: number;
   unit?: string;
-  parkingTime?: string;
-  existingKilometers?: string;
 }
 
 const CONSTANTS = {
@@ -62,99 +60,82 @@ const calculateTaperedPointer = (angle: number, center: number, length: number):
   `;
 };
 
-const SpeedGauge: React.FC<GaugeProps> = ({
-  maxValue = 100,
-  unit = 'km/h',
-  value,
-  existingKilometers,
-  parkingTime
-}: GaugeProps) => {
+const SpeedGauge: React.FC<GaugeProps> = ({ maxValue = 100, unit = 'km/h', value }: GaugeProps) => {
   const center = CONSTANTS.VIEW_BOX_SIZE / 2;
   const angleRange = CONSTANTS.END_ANGLE - CONSTANTS.START_ANGLE;
   const valueAngle = CONSTANTS.START_ANGLE + angleRange * ((value ?? 0) / maxValue);
 
   return (
-    <div className="card flex flex-col max-w-sm p-8 w-96 h-[454px]">
-      <svg
-        viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`}
-        className="mx-auto"
-        style={{ marginBottom: '-110px' }}
+    <svg
+      viewBox={`0 0 ${CONSTANTS.VIEW_BOX_SIZE} ${CONSTANTS.VIEW_BOX_SIZE}`}
+      className="mx-auto"
+      style={{ marginBottom: '-110px' }}
+    >
+      <defs>
+        <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+          <feOffset dx="2" dy="2" result="offsetblur" />
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.4" />
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Background arc */}
+      <path
+        d={createArc(CONSTANTS.START_ANGLE, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
+        fill="none"
+        stroke="#e5e7eb"
+        strokeWidth={CONSTANTS.STROKE_WIDTH}
+      />
+
+      {/* Value arc */}
+      <path
+        d={createArc(CONSTANTS.START_ANGLE, valueAngle, center, CONSTANTS.RADIUS)}
+        fill="none"
+        stroke="#4338ca"
+        strokeWidth={CONSTANTS.STROKE_WIDTH}
+      />
+
+      {/* Warning zone */}
+      <path
+        d={createArc(
+          CONSTANTS.END_ANGLE - CONSTANTS.WARNING_ZONE_DEGREES,
+          CONSTANTS.END_ANGLE,
+          center,
+          CONSTANTS.RADIUS
+        )}
+        fill="none"
+        stroke="#ef4444"
+        strokeWidth={CONSTANTS.STROKE_WIDTH}
+      />
+
+      {/* Pointer with shadow */}
+      <path
+        d={calculateTaperedPointer(valueAngle, center, CONSTANTS.POINTER_LENGTH)}
+        fill="#5E6278"
+        stroke="none"
+        filter="url(#pointerShadow)"
+      />
+
+      {/* Center text */}
+      <text
+        x={center}
+        y={center + 15}
+        textAnchor="middle"
+        className="text-4xl font-bold"
+        fill="black"
       >
-        <defs>
-          <filter id="pointerShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-            <feOffset dx="2" dy="2" result="offsetblur" />
-            <feComponentTransfer>
-              <feFuncA type="linear" slope="0.4" />
-            </feComponentTransfer>
-            <feMerge>
-              <feMergeNode />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Background arc */}
-        <path
-          d={createArc(CONSTANTS.START_ANGLE, CONSTANTS.END_ANGLE, center, CONSTANTS.RADIUS)}
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth={CONSTANTS.STROKE_WIDTH}
-        />
-
-        {/* Value arc */}
-        <path
-          d={createArc(CONSTANTS.START_ANGLE, valueAngle, center, CONSTANTS.RADIUS)}
-          fill="none"
-          stroke="#4338ca"
-          strokeWidth={CONSTANTS.STROKE_WIDTH}
-        />
-
-        {/* Warning zone */}
-        <path
-          d={createArc(
-            CONSTANTS.END_ANGLE - CONSTANTS.WARNING_ZONE_DEGREES,
-            CONSTANTS.END_ANGLE,
-            center,
-            CONSTANTS.RADIUS
-          )}
-          fill="none"
-          stroke="#ef4444"
-          strokeWidth={CONSTANTS.STROKE_WIDTH}
-        />
-
-        {/* Pointer with shadow */}
-        <path
-          d={calculateTaperedPointer(valueAngle, center, CONSTANTS.POINTER_LENGTH)}
-          fill="#5E6278"
-          stroke="none"
-          filter="url(#pointerShadow)"
-        />
-
-        {/* Center text */}
-        <text
-          x={center}
-          y={center + 15}
-          textAnchor="middle"
-          className="text-4xl font-bold"
-          fill="black"
-        >
-          {value ?? '?'}
-        </text>
-        <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">
-          {unit}
-        </text>
-      </svg>
-      <div className="flex flex-col gap-4 justify-center mt-4">
-        <div>
-          <span className="font-bold">Existing kilometers:</span>{' '}
-          <span>{existingKilometers ?? '?'}</span>
-        </div>
-        <div>
-          <span className="font-bold">Parking time:</span> <span>{parkingTime ?? '?'}</span>
-        </div>
-      </div>
-    </div>
+        {value ?? '?'}
+      </text>
+      <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">
+        {unit}
+      </text>
+    </svg>
   );
 };
 
