@@ -6,6 +6,13 @@ import { ZoomControl } from '@/pages/monitoring/blocks/ZoomControl';
 import { OtherControls } from '@/pages/monitoring/blocks/OtherControls';
 import { MapControls } from '@/pages/monitoring/blocks/MapControls';
 import CurrentLocationMarker from './CurrentLocationMarker';
+import { LayerProvider, useLayer } from './contexts/LayerProvider';
+
+const ProvidedTileLayer = () => {
+  const { layerUrl, attribution } = useLayer();
+
+  return <TileLayer url={layerUrl} attribution={attribution} />;
+};
 
 interface AppMapProps extends MapContainerProps {
   mapControls?: ReactNode;
@@ -29,18 +36,17 @@ const AppMap = ({
       minZoom={3}
       {...props}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {mapControlSize !== 'hidden' && <AttributionControl prefix="Leaflet" />}
-      <MapControls size={mapControlSize}>
-        <ZoomControl />
-        <OtherControls />
-        {mapControls}
-      </MapControls>
-      <CurrentLocationMarker />
-      {children}
+      <LayerProvider>
+        <ProvidedTileLayer />
+        {mapControlSize !== 'hidden' && <AttributionControl prefix="Leaflet" />}
+        <MapControls size={mapControlSize}>
+          <ZoomControl />
+          <OtherControls />
+          {mapControls}
+        </MapControls>
+        <CurrentLocationMarker />
+        {children}
+      </LayerProvider>
     </MapContainer>
   );
 };

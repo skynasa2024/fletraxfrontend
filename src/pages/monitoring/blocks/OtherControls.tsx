@@ -1,10 +1,12 @@
 import { toAbsoluteUrl } from '@/utils';
 import { useMap } from 'react-leaflet';
 import { useControl } from './MapControls/provider';
+import { useLayer } from '@/components/AppMap/contexts/LayerProvider';
 
 export const OtherControls = () => {
   const map = useMap();
   const { size } = useControl();
+  const { layer, setLayer } = useLayer();
 
   return (
     <div className="group bg-white rounded-lg shadow-lg cursor-pointer" data-size={size}>
@@ -26,6 +28,11 @@ export const OtherControls = () => {
         className="group-data-[size=large]:size-[46px] group-data-[size=small]:size-[28px] flex justify-center items-center"
         onClick={() => {
           // Change Layer
+          if (layer === 'normal') {
+            setLayer('satellite');
+          } else {
+            setLayer('normal');
+          }
         }}
       >
         <img
