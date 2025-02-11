@@ -18,25 +18,25 @@ export const MENU_SIDEBAR: TMenuConfig = [
     path: '/trips',
     fullScreen: true
   },
-  // {
-  //   title: 'SIDEBAR.MENU.GEOFENCE',
-  //   externalIcon: 'geofence',
-  //   children: [
-  //     {
-  //       title: 'SIDEBAR.MENU.GEOFENCE.GEOFENCE',
-  //       path: '/geofences',
-  //       fullScreen: true
-  //     },
-  //     {
-  //       title: 'SIDEBAR.MENU.GEOFENCE.LINKED_GEOFENCE',
-  //       path: '/geofence/linked'
-  //     },
-  //     {
-  //       title: 'SIDEBAR.MENU.GEOFENCE.ADD_GEOFENCE',
-  //       path: '/geofence/add'
-  //     }
-  //   ]
-  // },
+  {
+    title: 'SIDEBAR.MENU.GEOFENCE',
+    externalIcon: 'geofence',
+    children: [
+      {
+        title: 'SIDEBAR.MENU.GEOFENCE.GEOFENCE',
+        path: '/geofences',
+        fullScreen: true
+      },
+      // {
+      //   title: 'SIDEBAR.MENU.GEOFENCE.LINKED_GEOFENCE',
+      //   path: '/geofence/linked'
+      // },
+      {
+        title: 'SIDEBAR.MENU.GEOFENCE.ADD_GEOFENCE',
+        path: '/geofences/add'
+      }
+    ]
+  },
   {
     title: 'SIDEBAR.MENU.VEHICLE',
     externalIcon: 'vehicle',

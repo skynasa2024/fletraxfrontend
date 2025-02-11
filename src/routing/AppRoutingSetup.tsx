@@ -33,6 +33,7 @@ import { AddVehicleScratches } from '@/pages/vehicle/add-vehicle/AddVehicleScrat
 import { MaintenanceTypeDetailsPage, MaintenanceTypePage } from '@/pages/maintenance-types';
 import { AddMaintenance } from '@/pages/maintenance/add-maintenance/AddMaintenance';
 import { AddMaintenanceType } from '@/pages/maintenance-types/add-maintenance-type/AddMaintenanceType';
+import { AddGeofence } from '@/pages/geofence/add-geofence';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -42,7 +43,10 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
+
           <Route path="/geofences" element={<GeofencePage />} />
+          <Route path="/geofences/add" element={<AddGeofence />} />
+          <Route path="/geofences/edit/:id" element={<AddGeofence />} />
 
           <Route path="/vehicles/vehicle" element={<Vehicles />} />
           <Route path="/vehicles/vehicle/:id" element={<VehicleDetailsPage />} />
