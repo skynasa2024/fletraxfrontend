@@ -1,6 +1,6 @@
 import Map from '@/pages/device/Map';
 import { useMqttProvider } from '@/providers/MqttProvider';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Buffer } from 'buffer';
 
 export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: string | null }) {
@@ -11,24 +11,29 @@ export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: 
     Record<string, { data: any; timestamp: Date; latest: boolean }>
   >({});
 
-  const onMessage = (incomingTopic: string, message: Buffer) => {
-    if (
-      !incomingTopic.startsWith('user/monitoring') &&
-      deviceIdent &&
-      !incomingTopic.includes(deviceIdent)
-    )
-      return;
-    const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
-    const timestamp = new Date(device.server_timestamp * 1000);
-    const newParameters = { ...parameters };
-    for (const key in parameters) {
-      newParameters[key].latest = false;
-    }
-    for (const key in device) {
-      newParameters[key] = { data: device[key], timestamp, latest: true };
-    }
-    setParameters(newParameters);
-  };
+  const onMessage = useCallback(
+    (incomingTopic: string, message: Buffer) => {
+      if (
+        !incomingTopic.startsWith('user/monitoring') &&
+        deviceIdent &&
+        !incomingTopic.includes(deviceIdent)
+      )
+        return;
+      setParameters((prev) => {
+        const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
+        const timestamp = new Date(device.server_timestamp * 1000);
+        const newParameters = { ...prev };
+        for (const key in prev) {
+          newParameters[key].latest = false;
+        }
+        for (const key in device) {
+          newParameters[key] = { data: device[key], timestamp, latest: true };
+        }
+        return newParameters;
+      });
+    },
+    [deviceIdent]
+  );
 
   useEffect(() => {
     if (!mqttClient) return;

@@ -2,7 +2,7 @@ import { OffsetBounds, Paginated } from './common';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
 import { TDataGridRequestParams } from '@/components';
-import { Vehicle } from './cars';
+import { getVehicle, Vehicle } from './cars';
 
 interface DriverDTO {
   id: string;
@@ -164,6 +164,7 @@ export const getDrivers = async (
 
 export const getDriver = async (id: string): Promise<DriverDetails> => {
   const driver = await axios.get<ResponseModel<DriverDTO>>(`/api/drivers/show/${id}`);
+  const vehicle = await getVehicle(driver.data.result.vehicleId);
   return {
     id: driver.data.result.id,
     driver: {
@@ -204,7 +205,7 @@ export const getDriver = async (id: string): Promise<DriverDetails> => {
     vehicle: {
       brandImage: '',
       id: driver.data.result.vehicleId,
-      imei: '',
+      imei: vehicle?.imei || '',
       name: '',
       plate: driver.data.result.vehiclePlate
     }

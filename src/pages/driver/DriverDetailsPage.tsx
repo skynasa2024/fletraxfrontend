@@ -85,7 +85,7 @@ const DriverDetailsPage = () => {
             description={''}
           />
           <div className="card hover:shadow-md flex-1 w-full">
-            <VehicleCurrentLocation deviceIdent="" />
+            <VehicleCurrentLocation deviceIdent={driver.vehicle.imei} />
           </div>
 
           {/* Violations Card */}
@@ -100,7 +100,7 @@ const DriverDetailsPage = () => {
           />
         </div>
 
-        <TripList deviceIdent="" />
+        <TripList deviceIdent={driver.vehicle.imei} />
         <div className="m-5">
           <MaintenanceViolationTable id={driver.vehicle.id} />
         </div>
