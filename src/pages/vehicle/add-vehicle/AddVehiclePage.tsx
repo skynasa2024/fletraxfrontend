@@ -264,39 +264,38 @@ const AddVehiclePage = () => {
     ...additionalVehicleInfoInitialValues
   };
 
-  const refs = {
+  const refs: Record<TabType, React.RefObject<HTMLDivElement | null>> = {
     information: useRef<HTMLDivElement>(null),
     registration: useRef<HTMLDivElement>(null),
     inspectionAndInsurance: useRef<HTMLDivElement>(null)
   };
 
-  const tabConfig = [
-    { id: 'information', label: 'Information' },
-    { id: 'registration', label: 'Registration' },
-    { id: 'inspectionAndInsurance', label: 'Inspection & Insurance' }
+  const tabConfig: Array<{
+    id: TabType;
+    label: string;
+    ref: React.RefObject<HTMLDivElement | null>;
+  }> = [
+    { id: 'information', label: 'Information', ref: refs.information },
+    { id: 'registration', label: 'Registration', ref: refs.registration },
+    {
+      id: 'inspectionAndInsurance',
+      label: 'Inspection & Insurance',
+      ref: refs.inspectionAndInsurance
+    }
   ] as const;
 
-  const handleTabClick = (tab: TabType) => {
+  const handleTabClick = (ref: React.RefObject<HTMLDivElement | null>, tab: TabType) => {
     setActiveTab(tab);
 
-    refs[tab].current?.scrollIntoView({
+    ref.current?.scrollIntoView({
       behavior: 'smooth',
       block: 'center'
     });
 
-    const header = refs[tab].current?.querySelector('h2, h3') as HTMLElement | null;
+    const header = ref.current?.querySelector('h3');
     if (header) {
       header.setAttribute('tabindex', '-1');
       header.focus();
-    }
-  };
-
-  const handleNextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const currentIndex = tabConfig.findIndex((tab) => tab.id === activeTab);
-    if (currentIndex < tabConfig.length - 1) {
-      handleTabClick(tabConfig[currentIndex + 1].id as TabType);
     }
   };
 
@@ -363,21 +362,6 @@ const AddVehiclePage = () => {
     }
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'information':
-        return <Information title="Information" />;
-      case 'registration':
-        return <Registration />;
-      case 'inspectionAndInsurance':
-        return <InspectionAndInsurance />;
-      default:
-        return null;
-    }
-  };
-
-  const isLastTab = activeTab === tabConfig[tabConfig.length - 1].id;
-
   useEffect(() => {
     (async () => {
       if (!carId) return;
@@ -420,75 +404,57 @@ const AddVehiclePage = () => {
               </div>
               <div className="grid gap-5 lg:gap-7.5 mx-auto w-full col-span-3">
                 <div className="flex">
-                  {/* Main Content */}
                   <div className="w-full align-center">
-                    {/* Tabs Navigation */}
                     <div className="tabs flex flex-wrap border-b mb-4" data-tabs="true">
-                      {tabConfig.map(({ id, label }) => (
+                      {tabConfig.map(({ id, label, ref }) => (
                         <button
                           type="button"
                           key={id}
-                          className={`tab px-4 py-2 font-medium text-lg border-b-4 -mb-[1px] ${
-                            activeTab === id
-                              ? 'text-primary border-primary'
-                              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-                          }`}
-                          onClick={() => handleTabClick(id as TabType)}
+                          className={clsx(
+                            'tab px-4 py-2 font-medium text-lg border-b-4 -mb-[1px]',
+                            {
+                              'text-primary border-primary': activeTab === id,
+                              'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300':
+                                activeTab !== id
+                            }
+                          )}
+                          onClick={() => handleTabClick(ref, id)}
                         >
                           {label}
                         </button>
                       ))}
                     </div>
-
-                    {/* Tab Content */}
-                    <div className="tab-content">
-                      <div ref={refs[activeTab]} className="focus:outline-none">
-                        {renderContent()}
+                    <div className="flex flex-col gap-6">
+                      <div ref={refs.information}>
+                        <Information title="Information" />
                       </div>
+                      <div ref={refs.registration}>
+                        <Registration />
+                      </div>
+                      <div ref={refs.inspectionAndInsurance}>
+                        <InspectionAndInsurance />
+                      </div>
+                    </div>
 
-                      <div className="mt-5 flex justify-end gap-4">
-                        {/* Back Button */}
-                        {activeTab !== 'information' && (
-                          <button
-                            type="button"
-                            className="px-4 py-2 bg-gray-500 text-white rounded-lg"
-                            onClick={() => {
-                              const currentIndex = tabConfig.findIndex(
-                                (tab) => tab.id === activeTab
-                              );
-                              if (currentIndex > 0) {
-                                handleTabClick(tabConfig[currentIndex - 1].id as TabType);
-                              }
-                            }}
-                          >
-                            Back
-                          </button>
+                    <div className="mt-5 flex justify-end items-center gap-4">
+                      <button
+                        onClick={() => navigate(-1)}
+                        type="button"
+                        className="text-red-700 hover:text-white border bg-red-100 border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2.5 text-center me-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                      >
+                        Discard
+                      </button>
+                      <button
+                        className={clsx(
+                          'px-4 py-2 bg-success text-white rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center gap-3',
+                          { 'w-32': isLoadingSave, 'w-auto': !isLoadingSave }
                         )}
-                        {/* Next or Save Button */}
-                        <div>
-                          {!isLastTab ? (
-                            <button
-                              className="px-4 py-2 bg-indigo-500 text-white rounded-lg"
-                              onClick={handleNextClick}
-                              type="button"
-                            >
-                              Next
-                            </button>
-                          ) : (
-                            <button
-                              className={clsx(
-                                'px-4 py-2 bg-success text-white rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center gap-3',
-                                { 'w-32': isLoadingSave, 'w-auto': !isLoadingSave }
-                              )}
-                              type="submit"
-                              disabled={isLoadingSave}
-                            >
-                              {isLoadingSave && <CircularProgress size={14} color="success" />}
-                              Save
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                        type="submit"
+                        disabled={isLoadingSave}
+                      >
+                        {isLoadingSave && <CircularProgress size={14} color="success" />}
+                        Save
+                      </button>
                     </div>
                   </div>
                 </div>
