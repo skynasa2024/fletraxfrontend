@@ -12,7 +12,12 @@ export default function VehicleCurrentLocation({ deviceIdent }: { deviceIdent?: 
   >({});
 
   const onMessage = (incomingTopic: string, message: Buffer) => {
-    if (incomingTopic !== topic) return;
+    if (
+      !incomingTopic.startsWith('user/monitoring') &&
+      deviceIdent &&
+      !incomingTopic.includes(deviceIdent)
+    )
+      return;
     const device: Record<string, any> = JSON.parse(message.toString('utf-8'));
     const timestamp = new Date(device.server_timestamp * 1000);
     const newParameters = { ...parameters };

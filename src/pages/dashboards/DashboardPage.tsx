@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import { Container } from '@/components/container';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 
@@ -8,17 +6,15 @@ import { FormattedMessage } from 'react-intl';
 
 const DashboardPage = () => {
   return (
-    <Fragment>
-      <Container>
+    <>
+      <Container className="pb-20">
         <Toolbar>
           <ToolbarHeading title={<FormattedMessage id="SIDEBAR.MENU.DASHBOARD" />} description="" />
         </Toolbar>
-      </Container>
 
-      <Container>
         <DashboardContent />
       </Container>
-    </Fragment>
+    </>
   );
 };
 

@@ -118,10 +118,10 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href={`/drivers/driver/${row.original.id}`}>
+            <a href={`/drivers/driver/${row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
             </a>
-            <a href={`/drivers/edit/${row.original.id}`}>
+            <a href={`/drivers/edit/${row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
             </a>
             <Menu>

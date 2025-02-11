@@ -23,7 +23,6 @@ import { MaintenanceViolationTable } from '@/pages/dashboards/blocks/maintenance
 import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
-import { Device, getDevice } from '@/api/devices.ts';
 
 const geofences = [
   'ISTANBUL',
@@ -40,7 +39,6 @@ const geofences = [
 const VehicleInfo = () => {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState<VehicleDTO | null>();
-  const [currentDevice, setCurrentDevice] = useState<Device | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -60,16 +58,16 @@ const VehicleInfo = () => {
     value: string;
     icon: React.ReactNode;
   }[] = [
-      { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
-      { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
-      { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
-      { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
-      { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
-      { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
-      { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
-      { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
-      { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
-    ];
+    { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
+    { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
+    { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
+    { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
+    { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
+    { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
+    { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
+    { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
+    { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
+  ];
   const details = [
     { label: 'Type', value: vehicle?.type || 'NA' },
     { label: 'Identify Number', value: vehicle?.identifyNumber || 'NA' },
@@ -115,18 +113,9 @@ const VehicleInfo = () => {
     return files;
   }, [vehicle]);
 
-  useEffect(() => {
-    (async () => {
-      if (vehicle?.deviceId) {
-        const res = await getDevice(vehicle.deviceId);
-        setCurrentDevice(res);
-      }
-    })();
-  }, [vehicle]);
-
   return (
     <>
-      <Toolbar carId={vehicle?.id} />
+      <Toolbar carId={vehicle?.id} plate={vehicle?.plate} />
       <div className="px-10">
         <div className="flex flex-col lg:flex-row">
           <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2 p-4">
@@ -140,7 +129,7 @@ const VehicleInfo = () => {
               <div className="flex items-center space-x-2">
                 <div className="bg-blue-100 p-4 rounded-full"></div>
                 <div>
-                  <span className="text-lg font-medium">{currentDevice?.ident || 'NA'}</span>
+                  <span className="text-lg font-medium">{vehicle?.deviceIdent || 'NA'}</span>
                   <p className="text-sm text-gray-500">Device</p>
                 </div>
               </div>
@@ -162,7 +151,7 @@ const VehicleInfo = () => {
 
               {/* Details */}
               <div className="flex-grow lg:w-1/3 mb-4 card hover:shadow-md overflow-hidden p-4 flex flex-col gap-4 h-full">
-                <VehicleCurrentLocation deviceIdent={currentDevice?.ident} />
+                <VehicleCurrentLocation deviceIdent={vehicle?.deviceIdent} />
                 <div className="flex-grow">
                   {details.map(({ label, value }, index) => (
                     <div key={index} className="flex items-start mb-2">
@@ -203,7 +192,7 @@ const VehicleInfo = () => {
             </div>
           </div>
         </div>
-        <TripList deviceIdent={currentDevice?.ident} />
+        <TripList deviceIdent={vehicle?.deviceIdent} />
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
             <h2 className="text-xl font-semibold mb-4 ps-4">Documents</h2>

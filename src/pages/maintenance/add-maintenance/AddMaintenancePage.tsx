@@ -3,6 +3,7 @@ import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { MaintenanceTypeDropdownSearch } from '../components';
 import { useState } from 'react';
 import { format } from 'date-fns';
+import { useSearchParams } from 'react-router';
 
 export interface AddMaintenancePageProps {
   maintenance?: MaintenanceModel;
@@ -10,6 +11,7 @@ export interface AddMaintenancePageProps {
 
 const AddMaintenancePage = ({ maintenance }: AddMaintenancePageProps) => {
   const [selectedStatus, setSelectedStatus] = useState<'ongoing' | 'finished'>('ongoing');
+  const [searchParams] = useSearchParams();
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
@@ -24,10 +26,16 @@ const AddMaintenancePage = ({ maintenance }: AddMaintenancePageProps) => {
               <label className="form-label">Vehicle</label>
               <VehicleSearch
                 initialSearch={
-                  maintenance && {
-                    id: maintenance?.vehicleId,
-                    plate: maintenance?.vehiclePlate
-                  }
+                  (maintenance && {
+                    id: maintenance.vehicleId,
+                    plate: maintenance.vehiclePlate
+                  }) ||
+                  (searchParams.get('vehicleId') &&
+                    searchParams.get('plate') && {
+                      id: searchParams.get('vehicleId') || '',
+                      plate: searchParams.get('plate') || ''
+                    }) ||
+                  undefined
                 }
                 place="bottom"
               />
