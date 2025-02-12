@@ -17,6 +17,7 @@ import { toAbsoluteUrl } from '@/utils';
 import { CarView } from '@/pages/vehicle/blocks/CarView';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
+import { useSnackbar } from 'notistack';
 
 const DriverListDropdown = (
   info: CellContext<DriverDetails, unknown> & { refetch: () => void }
@@ -49,6 +50,7 @@ interface DriverListProps {
 }
 
 const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
@@ -133,6 +135,9 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
                   <MenuItem
                     onClick={async () => {
                       await deleteDriver(row.original.id);
+                      enqueueSnackbar('Driver deleted successfully', {
+                        variant: 'success'
+                      });
                       refetch();
                     }}
                   >
@@ -150,7 +155,7 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
         )
       }
     ],
-    [refetch]
+    [enqueueSnackbar, refetch]
   );
 
   return (

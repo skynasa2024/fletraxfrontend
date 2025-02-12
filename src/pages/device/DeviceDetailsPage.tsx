@@ -17,8 +17,10 @@ import {
 } from '@/components';
 import RoleComponent from '@/components/RoleComponent';
 import { toAbsoluteUrl } from '@/utils';
+import { useSnackbar } from 'notistack';
 
 const DeviceDetailsPage = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
   const { getProtocolName, getTypeName } = useDeviceProvider();
@@ -80,6 +82,9 @@ const DeviceDetailsPage = () => {
                         <MenuItem
                           onClick={async () => {
                             await deleteDevice(device.id);
+                            enqueueSnackbar('Device deleted successfully', {
+                              variant: 'success'
+                            });
                             navigate('/devices/device');
                           }}
                         >

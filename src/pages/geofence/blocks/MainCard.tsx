@@ -8,6 +8,7 @@ import { useLanguage } from '@/i18n';
 import { CircularProgress, Skeleton } from '@mui/material';
 import { KeenIcon } from '@/components';
 import { Link } from 'react-router';
+import { useSnackbar } from 'notistack';
 
 export const MainCard = () => {
   const {
@@ -21,6 +22,7 @@ export const MainCard = () => {
     remoteRowCount
   } = useGeofenceContext();
   const { isRTL } = useLanguage();
+  const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   return (
@@ -108,6 +110,9 @@ export const MainCard = () => {
                                   e.stopPropagation();
 
                                   await deleteGeofence(geofence.id);
+                                  enqueueSnackbar('Geofence deleted successfully', {
+                                    variant: 'success'
+                                  });
                                   await refetch();
 
                                   if (selectedGeofence?.id === geofence.id) {

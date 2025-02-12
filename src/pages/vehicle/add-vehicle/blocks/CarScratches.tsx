@@ -178,6 +178,9 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
     try {
       if (!scratch.id) return;
       await deleteScratch(scratch.id);
+      enqueueSnackbar('Scratch removed successfully', {
+        variant: 'success'
+      });
       onRefresh();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -201,6 +204,9 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
         formData.append('scratches[0].id', scratch.id || '');
         await updateScratch(formData);
       }
+      enqueueSnackbar('Scratch saved successfully', {
+        variant: 'success'
+      });
       onRefresh();
     } catch (error) {
       if (axios.isAxiosError(error)) {

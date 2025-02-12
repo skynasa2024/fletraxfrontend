@@ -46,6 +46,9 @@ const AddGeofence = () => {
       action={async (data) => {
         try {
           geofence ? await updateGeofence(geofence.id, data) : await createGeofence(data);
+          enqueueSnackbar('Geofence saved successfully', {
+            variant: 'success'
+          });
           navigate('/geofences');
         } catch (error) {
           if (axios.isAxiosError(error)) {

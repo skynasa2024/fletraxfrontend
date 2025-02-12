@@ -18,6 +18,7 @@ import RoleComponent from '@/components/RoleComponent';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
+import { useSnackbar } from 'notistack';
 
 type DeviceListProps = {
   refetchStats?: () => void;
@@ -25,6 +26,7 @@ type DeviceListProps = {
 };
 
 const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
@@ -101,6 +103,9 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
                     <MenuItem
                       onClick={async () => {
                         await deleteDevice(row.original.id);
+                        enqueueSnackbar('Device deleted successfully', {
+                          variant: 'success'
+                        });
                         refetch?.();
                       }}
                     >
@@ -119,7 +124,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         )
       }
     ],
-    [getProtocolName, getTypeName, refetch]
+    [enqueueSnackbar, getProtocolName, getTypeName, refetch]
   );
 
   return (

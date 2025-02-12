@@ -18,6 +18,7 @@ import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useSettings } from '@/providers';
 import { useAuthContext } from '@/auth';
+import { useSnackbar } from 'notistack';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const { settings } = useSettings();
@@ -55,6 +56,7 @@ interface UserListProps {
 
 const UserList: React.FC<UserListProps> = ({ refetch }) => {
   const { settings } = useSettings();
+  const { enqueueSnackbar } = useSnackbar();
   const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -146,6 +148,9 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                   <MenuItem
                     onClick={async () => {
                       await deleteUser(info.row.original.id);
+                      enqueueSnackbar('User deleted successfully', {
+                        variant: 'success'
+                      });
                       refetch();
                     }}
                   >

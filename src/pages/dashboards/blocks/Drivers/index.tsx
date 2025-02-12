@@ -5,8 +5,10 @@ import { deleteDriver, DriverDetails, getDrivers } from '@/api/drivers';
 import { DriverCard } from './DriverCard';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 import { KeenIcon } from '@/components';
+import { useSnackbar } from 'notistack';
 
 const DriverList = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
   const remoteRowCount = useMemo(() => drivers?.totalCount ?? 0, [drivers]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -100,6 +102,9 @@ const DriverList = () => {
                               end: index + 10
                             };
                             await deleteDriver(drivers.data[index].id);
+                            enqueueSnackbar('Driver deleted successfully', {
+                              variant: 'success'
+                            });
                             const driverRequest = await getDrivers(offset);
                             let newDrivers: Paginated<DriverDetails> = {
                               totalCount: driverRequest.totalCount,

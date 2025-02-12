@@ -9,7 +9,7 @@ import {
   MenuTitle,
   MenuToggle
 } from '@/components';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -28,20 +28,23 @@ const MaintenanceTypeList = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleDelete = (id: string) => {
-    deleteMaintenanceType(id)
-      .then((response) => {
-        navigate('/maintenance/maintenance-type');
-        enqueueSnackbar(response.data.message, {
-          variant: response.data.success ? 'success' : 'error'
+  const handleDelete = useCallback(
+    (id: string) => {
+      deleteMaintenanceType(id)
+        .then((response) => {
+          navigate('/maintenance/maintenance-type');
+          enqueueSnackbar(response.data.message, {
+            variant: response.data.success ? 'success' : 'error'
+          });
+        })
+        .catch((error) => {
+          enqueueSnackbar(error, {
+            variant: 'error'
+          });
         });
-      })
-      .catch((error) => {
-        enqueueSnackbar(error, {
-          variant: 'error'
-        });
-      });
-  };
+    },
+    [enqueueSnackbar, navigate]
+  );
 
   const columns = useMemo<ColumnDef<IMaintenanceTypeTableData>[]>(
     () => [

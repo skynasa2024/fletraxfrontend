@@ -46,6 +46,9 @@ const AddDevice = () => {
       action={async (data) => {
         try {
           device ? await updateDevice(device.id, data) : await createDevice(data);
+          enqueueSnackbar('Device saved successfully', {
+            variant: 'success'
+          });
           navigate('/devices/device');
         } catch (error) {
           if (axios.isAxiosError(error)) {

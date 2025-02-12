@@ -1,8 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { DeleteIcon, EditIcon } from './svg';
 import { deleteDriver } from '@/api/drivers';
+import { useSnackbar } from 'notistack';
 
 const Toolbar = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -20,6 +22,9 @@ const Toolbar = () => {
           onClick={async () => {
             if (!id) return;
             await deleteDriver(id);
+            enqueueSnackbar('Driver deleted successfully', {
+              variant: 'success'
+            });
             navigate('/drivers/driver');
           }}
         >

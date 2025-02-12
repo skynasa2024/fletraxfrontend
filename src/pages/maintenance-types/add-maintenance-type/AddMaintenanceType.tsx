@@ -57,6 +57,9 @@ const AddMaintenanceType = () => {
           type && type.id
             ? await updateMaintenanceType(type.id, data)
             : await createMaintenanceType(data);
+          enqueueSnackbar('Maintenance type saved successfully', {
+            variant: 'success'
+          });
           navigate('/maintenance/maintenance-type');
         } catch (error) {
           if (axios.isAxiosError(error)) {

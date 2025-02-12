@@ -2,7 +2,11 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Container } from '@/components/container';
 import { PageNavbar } from '@/pages/account';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteMaintenanceType, getMaintenanceTypeById, MaintenanceTypeModel } from '@/api/maintenance-type';
+import {
+  deleteMaintenanceType,
+  getMaintenanceTypeById,
+  MaintenanceTypeModel
+} from '@/api/maintenance-type';
 import { useParams } from 'react-router';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { ArrowLeftIcon } from 'lucide-react';
@@ -65,22 +69,25 @@ const MaintenanceTypeDetailsPage = () => {
       <PageNavbar />
       <Container>
         <div className="flex justify-between items-center gap-6">
-          <h1 className="text-xl font-medium leading-none text-gray-900">Maintenance Type Details</h1>
+          <h1 className="text-xl font-medium leading-none text-gray-900">
+            Maintenance Type Details
+          </h1>
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md">
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md"
+            >
               <ArrowLeftIcon className="w-4 h-4" /> Back
             </button>
             <Link to={`/maintenance/maintenance-type/edit/${id}`}>
-              <button
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
+              <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
                 <EditIcon className="w-4 h-4" /> Edit
               </button>
             </Link>
             <button
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
-              onClick={handleDelete}>
+              onClick={handleDelete}
+            >
               <DeleteIcon className="w-4 h-4" />
               Delete
             </button>

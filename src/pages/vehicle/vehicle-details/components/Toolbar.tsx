@@ -2,9 +2,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { DeleteIcon, EditIcon, MaintenanceIcon, ViolationsIcon } from '../../blocks/svg';
 import { Container } from '@/components';
 import { deleteVehicle } from '@/api/cars';
+import { useSnackbar } from 'notistack';
 
 const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | null }) => {
   const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   return (
@@ -40,6 +42,9 @@ const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | nul
           onClick={async () => {
             if (!carId) return;
             await deleteVehicle(carId);
+            enqueueSnackbar('Vehicle deleted successfully', {
+              variant: 'success'
+            });
             navigate('/vehicles/vehicle');
           }}
         >

@@ -6,6 +6,7 @@ import { KeenIcon } from '@/components';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router';
+import { useSnackbar } from 'notistack';
 
 type VehicleCardProps = {
   vehicle?: VehicleDetails;
@@ -14,6 +15,8 @@ type VehicleCardProps = {
 };
 
 export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: VehicleCardProps) {
+  const { enqueueSnackbar } = useSnackbar();
+
   if (!vehicle) {
     return (
       <div className="m-2 flex hover:shadow-md h-full w-full flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
@@ -105,6 +108,9 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           onClick={async (e) => {
             e.preventDefault();
             await deleteVehicle(vehicle.carId);
+            enqueueSnackbar('Vehicle deleted successfully', {
+              variant: 'success'
+            });
             refetchVehicles();
           }}
           className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50"

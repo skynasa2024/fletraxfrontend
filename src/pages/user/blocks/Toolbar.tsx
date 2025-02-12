@@ -1,8 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { deleteUser } from '@/api/user';
+import { useSnackbar } from 'notistack';
 
 const Toolbar = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -20,6 +22,9 @@ const Toolbar = () => {
           onClick={async () => {
             if (!id) return;
             await deleteUser(id);
+            enqueueSnackbar('User deleted successfully', {
+              variant: 'success'
+            });
             navigate('/users/user');
           }}
         >

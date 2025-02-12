@@ -55,6 +55,9 @@ const AddMaintenance = () => {
           maintenance
             ? await updateMaintenance(maintenance.id, data)
             : await createMaintenance(data);
+          enqueueSnackbar('Maintenance saved successfully', {
+            variant: 'success'
+          });
           navigate('/maintenance');
         } catch (error) {
           if (axios.isAxiosError(error)) {

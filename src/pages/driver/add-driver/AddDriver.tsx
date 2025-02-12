@@ -48,6 +48,9 @@ const AddDriver = () => {
       action={async (data) => {
         try {
           driver ? await updateDriver(driver.id, data) : await createDriver(data);
+          enqueueSnackbar('Driver saved successfully', {
+            variant: 'success'
+          });
           navigate('/drivers/driver');
         } catch (error) {
           if (axios.isAxiosError(error)) {

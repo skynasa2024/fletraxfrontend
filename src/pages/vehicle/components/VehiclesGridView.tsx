@@ -17,6 +17,7 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { STATUS_OPTIONS } from '../constants';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -133,6 +134,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
 
 function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: string }) {
   const reload = useDataGrid().fetchServerSideData;
+  const { enqueueSnackbar } = useSnackbar();
 
   return (
     <div className="flex gap-3 items-center justify-center">
@@ -157,6 +159,9 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
             <MenuItem
               onClick={async () => {
                 await deleteVehicle(carId);
+                enqueueSnackbar('Vehicle deleted successfully', {
+                  variant: 'success'
+                });
                 reload();
               }}
             >

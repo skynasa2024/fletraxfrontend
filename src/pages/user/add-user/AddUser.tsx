@@ -48,6 +48,9 @@ const AddUser = () => {
       action={async (data) => {
         try {
           const response = user ? await updateUser(user.id, data) : await createUser(data);
+          enqueueSnackbar('User saved successfully', {
+            variant: 'success'
+          });
           if (user) {
             navigate('/users/user');
           } else {
