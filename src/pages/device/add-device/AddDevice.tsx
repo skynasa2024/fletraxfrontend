@@ -45,8 +45,8 @@ const AddDevice = () => {
       className="pb-10"
       action={async (data) => {
         try {
-          const response = device ? await updateDevice(device.id, data) : await createDevice(data);
-          navigate(`/devices/device/${response.ident}`);
+          device ? await updateDevice(device.id, data) : await createDevice(data);
+          navigate('/devices/device');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;

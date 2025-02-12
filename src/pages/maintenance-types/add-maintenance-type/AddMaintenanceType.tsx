@@ -54,11 +54,10 @@ const AddMaintenanceType = () => {
       className="pb-10"
       action={async (data) => {
         try {
-          const response =
-            type && type.id
-              ? await updateMaintenanceType(type.id, data)
-              : await createMaintenanceType(data);
-          navigate(`/maintenance/maintenance-type/view/${response.id}`);
+          type && type.id
+            ? await updateMaintenanceType(type.id, data)
+            : await createMaintenanceType(data);
+          navigate('/maintenance/maintenance-type');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;

@@ -52,10 +52,10 @@ const AddMaintenance = () => {
       className="pb-10"
       action={async (data) => {
         try {
-          const response = maintenance
+          maintenance
             ? await updateMaintenance(maintenance.id, data)
             : await createMaintenance(data);
-          navigate(`/maintenance/view/${response.id}`);
+          navigate('/maintenance');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;

@@ -47,8 +47,8 @@ const AddDriver = () => {
       className="pb-10"
       action={async (data) => {
         try {
-          const response = driver ? await updateDriver(driver.id, data) : await createDriver(data);
-          navigate(`/drivers/driver/${response.id}`);
+          driver ? await updateDriver(driver.id, data) : await createDriver(data);
+          navigate('/drivers/driver');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;

@@ -49,7 +49,7 @@ const AddUser = () => {
         try {
           const response = user ? await updateUser(user.id, data) : await createUser(data);
           if (user) {
-            navigate(`/users/user/${response.id}`);
+            navigate('/users/user');
           } else {
             navigate(`/users/edit/${response.id}#devices`);
           }
