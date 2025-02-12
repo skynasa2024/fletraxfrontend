@@ -12,8 +12,10 @@ import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
 import { MaintenanceViolationTableProps } from './MaintenanceViolation';
 import { Link } from 'react-router';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 const MaintenanceStatusDropdown = (info: CellContext<IMaintenanceTableData, unknown>) => {
+  const intl = useIntl();
   const reload = useDataGrid().fetchServerSideData;
   return (
     <StatusDropdown
@@ -26,12 +28,12 @@ const MaintenanceStatusDropdown = (info: CellContext<IMaintenanceTableData, unkn
         ongoing: {
           color: '#FFA800',
           backgroundColor: '#FFF8EA',
-          name: 'In Maintenance'
+          name: intl.formatMessage({ id: 'MAINTENANCE.STATUS.ONGOING' })
         },
         finished: {
           color: '#50CD89',
           backgroundColor: '#EEFAF4',
-          name: 'Completed'
+          name: intl.formatMessage({ id: 'MAINTENANCE.STATUS.FINISHED' })
         }
       }}
     />
@@ -43,12 +45,13 @@ interface ViolationTableProps extends MaintenanceViolationTableProps {
 }
 
 const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
+  const intl = useIntl();
   const columns = useMemo<ColumnDef<IMaintenanceTableData>[]>(
     () => [
       {
         accessorFn: (row) => row.startDate,
         id: 'startDate',
-        header: () => 'Date',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.DATE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">
@@ -62,7 +65,7 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.vehicleId,
         id: 'vehicle',
-        header: () => 'Car',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.CAR" />,
         cell: (info) =>
           info.row.original.vehicleId && (
             <CarView
@@ -82,7 +85,7 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.type,
         id: 'type',
-        header: () => 'Type',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.TYPE" />,
         enableSorting: true,
         cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>,
         meta: {
@@ -92,7 +95,7 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.supplier,
         id: 'supplier',
-        header: () => 'Supplier',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.SUPPLIER" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">{info.row.original.supplier}</span>
@@ -104,21 +107,21 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.amount,
         id: 'amount',
-        header: () => 'Price',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.PRICE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">
-            {new Intl.NumberFormat('en-US', {
+            {intl.formatNumber(info.row.original.amount, {
               style: 'currency',
               currency: 'TRY'
-            }).format(info.row.original.amount)}
+            })}
           </span>
         )
       },
       {
         accessorFn: (row) => row.status,
         id: 'status',
-        header: () => 'Status',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.STATUS" />,
         enableSorting: true,
         cell: (info) => <MaintenanceStatusDropdown {...info} />,
         meta: {
@@ -127,7 +130,7 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
       },
       {
         id: 'actions',
-        header: () => 'Actions',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.ACTIONS" />,
         cell: (info) => (
           <div className="flex gap-3">
             <Link to={`/maintenance/view/${info.row.original.id}`} className="size-7.5">
@@ -143,7 +146,7 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
         }
       }
     ],
-    []
+    [intl]
   );
 
   return (

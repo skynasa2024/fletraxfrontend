@@ -7,8 +7,10 @@ import { format } from 'date-fns/fp';
 import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '../StatusDropdown';
 import { MaintenanceViolationTableProps } from './MaintenanceViolation';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
+  const intl = useIntl();
   const reload = useDataGrid().fetchServerSideData;
   return (
     <StatusDropdown
@@ -21,22 +23,22 @@ const ViolationStatusDropdown = (info: CellContext<Violation, unknown>) => {
         unpaid: {
           color: '#F1416C',
           backgroundColor: '#FFF5F8',
-          name: 'Unpaid'
+          name: intl.formatMessage({ id: 'VIOLATION.STATUS.UNPAID' })
         },
         under_review: {
           color: '#FFA800',
           backgroundColor: '#FFF8EA',
-          name: 'Under Review'
+          name: intl.formatMessage({ id: 'VIOLATION.STATUS.UNDER_REVIEW' })
         },
         recorded: {
           color: '#00A3FF',
           backgroundColor: '#EEF9FF',
-          name: 'Recorded'
+          name: intl.formatMessage({ id: 'VIOLATION.STATUS.RECORDED' })
         },
         paid: {
           color: '#50CD89',
           backgroundColor: '#EEFAF4',
-          name: 'Paid'
+          name: intl.formatMessage({ id: 'VIOLATION.STATUS.PAID' })
         }
       }}
     />
@@ -48,22 +50,23 @@ interface ViolationTableProps extends MaintenanceViolationTableProps {
 }
 
 const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
+  const intl = useIntl();
   const columns = useMemo<ColumnDef<Violation>[]>(
     () => [
       {
         accessorFn: (row) => row.user,
         id: 'driver',
-        header: () => 'Driver',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.DRIVER" />,
         cell: (info) => (
           <div className="flex gap-2 items-center">
             <img
               src={
-                info.row.original.user.avatar ||
+                info.row.original.user?.avatar ||
                 toAbsoluteUrl('/media/avatars/avatar-placeholder.png')
               }
               className="size-8 rounded-full aspect-square"
             />
-            <span className="text-gray-800 font-bold">{info.row.original.user.name}</span>
+            <span className="text-gray-800 font-bold">{info.row.original.user?.name}</span>
           </div>
         ),
         meta: {
@@ -73,7 +76,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.vehicle,
         id: 'vehicle',
-        header: () => 'Car',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.CAR" />,
         cell: (info) =>
           info.row.original.vehicle && <CarView vehicle={info.row.original.vehicle} />,
         meta: {
@@ -83,7 +86,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.date,
         id: 'startDate',
-        header: () => 'Date',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.DATE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">
@@ -97,7 +100,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.type,
         id: 'type',
-        header: () => 'Type',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.TYPE" />,
         enableSorting: true,
         cell: (info) => <span className="text-gray-800 font-bold">{info.row.original.type}</span>,
         meta: {
@@ -107,21 +110,21 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       {
         accessorFn: (row) => row.price,
         id: 'amount',
-        header: () => 'Price',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.PRICE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800 font-bold">
-            {new Intl.NumberFormat('en-US', {
+            {intl.formatNumber(info.row.original.price, {
               style: 'currency',
               currency: 'TRY'
-            }).format(info.row.original.price)}
+            })}
           </span>
         )
       },
       {
         accessorFn: (row) => row.status,
         id: 'status',
-        header: () => 'Status',
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.STATUS" />,
         enableSorting: true,
         cell: (info) => <ViolationStatusDropdown {...info} />,
         meta: {
@@ -130,10 +133,8 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
       },
       {
         id: 'actions',
-        header: () => 'Actions',
-        cell: (
-          info // TODO: Add links
-        ) => (
+        header: () => <FormattedMessage id="DASHBOARD.VIOLATION_TABLE.ACTIONS" />,
+        cell: (info) => (
           <div className="flex gap-3">
             <a href="#">
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
@@ -148,7 +149,7 @@ const ViolationTable = ({ searchQuery, id }: ViolationTableProps) => {
         }
       }
     ],
-    []
+    [intl]
   );
 
   return (
