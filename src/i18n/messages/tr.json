@@ -90,5 +90,8 @@
   "DASHBOARD.MAINTENANCE_TABLE.STATUS": "Durum",
   "DASHBOARD.MAINTENANCE_TABLE.ACTIONS": "İşlemler",
   "MAINTENANCE.STATUS.ONGOING": "Bakımda",
-  "MAINTENANCE.STATUS.FINISHED": "Tamamlandı"
+  "MAINTENANCE.STATUS.FINISHED": "Tamamlandı",
+  "DASHBOARD.VEHICLE_LIST.TITLE": "Araç",
+  "DASHBOARD.VEHICLE_LIST.SUBTITLE": "{count, plural, one {bir araçınız var} other {{count} araçınız var}}",
+  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "Araç Ekle"
 }

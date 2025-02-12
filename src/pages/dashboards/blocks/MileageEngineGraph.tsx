@@ -96,7 +96,7 @@ const MileageEngineGraph = () => {
           />
         </div>
       </div>
-      <div className="card-body flex flex-col grow px-3 py-3">
+      <div className="card-body flex flex-col grow px-3 py-3 [direction:ltr]">
         {data ? (
           <AutoSizer>
             {({ height, width }) => (

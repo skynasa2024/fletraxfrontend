@@ -5,14 +5,19 @@ import VehicleCard from '@/pages/vehicle/components/VehicleCard';
 import { toAbsoluteUrl } from '@/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
+import { useIntl, FormattedMessage } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 export function VehicleList() {
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
   const remoteRowCount = useMemo(() => vehicles?.totalCount ?? 0, [vehicles]);
   const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const isRowLoaded = ({ index }: { index: number }) => !!vehicles?.data[index];
+  const isRowLoaded = ({ index }: { index: number }) =>
+    isRTL() ? !!vehicles?.data[remoteRowCount - index - 1] : !!vehicles?.data[index];
   const loadMoreRows = async ({
     startIndex,
     stopIndex
@@ -20,11 +25,13 @@ export function VehicleList() {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const vehicles = await getVehicles({ start: startIndex, end: stopIndex });
+    const computedStart = isRTL() ? remoteRowCount - stopIndex - 1 : startIndex;
+    const computedStop = isRTL() ? remoteRowCount - startIndex - 1 : stopIndex;
+    const vehicles = await getVehicles({ start: computedStart, end: computedStop });
     setVehicles((prev) => {
       const data = prev?.data ?? [];
       vehicles.data.forEach((vehicle, index) => {
-        data[startIndex + index] = vehicle;
+        data[computedStart + index] = vehicle;
       });
       return {
         data,
@@ -32,7 +39,7 @@ export function VehicleList() {
       };
     });
 
-    setMaxLoadedIndex((prev) => Math.max(prev, stopIndex));
+    setMaxLoadedIndex((prev) => Math.max(prev, computedStop));
   };
 
   const fetchAllLoadedVehicles = async () => {
@@ -41,17 +48,22 @@ export function VehicleList() {
   };
 
   useEffect(() => {
-    getVehicles({ start: 0, end: 10, search: searchQuery }).then(setVehicles);
+    getVehicles({ start: 0, end: 20, search: searchQuery }).then(setVehicles);
   }, [searchQuery]);
 
   return (
     <div className="card">
       <div className="px-7 pt-6 flex items-center justify-between">
         <div className="card-title">
-          <h3>Vehicle</h3>
+          <h3>
+            <FormattedMessage id="DASHBOARD.VEHICLE_LIST.TITLE" defaultMessage="Vehicle" />
+          </h3>
           <h4 className="text-sm font-thin text-[#B5B5C3]">
-            You have {vehicles?.totalCount}{' '}
-            {(vehicles?.totalCount ?? 0 > 1) ? 'vehicles' : 'vehicle'}
+            <FormattedMessage
+              id="DASHBOARD.VEHICLE_LIST.SUBTITLE"
+              defaultMessage="You have {count, plural, one {vehicle} other {vehicles}}"
+              values={{ count: vehicles?.totalCount ?? 0 }}
+            />
           </h4>
         </div>
         <div className="flex gap-7 items-center">
@@ -59,19 +71,19 @@ export function VehicleList() {
             <KeenIcon icon="magnifier" />
             <input
               type="text"
-              placeholder="Search"
+              placeholder={intl.formatMessage({ id: 'COMMON.SEARCH', defaultMessage: 'Search' })}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <button className="btn btn-info px-8">
             <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-            Add Car
+            <FormattedMessage id="DASHBOARD.VEHICLE_LIST.ADD_CAR" defaultMessage="Add Car" />
           </button>
         </div>
       </div>
 
-      <div className="card-body pt-2 px-6 pb-3">
+      <div className="card-body pt-2 px-6 pb-3 [direction:ltr]">
         <AutoSizer disableHeight>
           {({ width }) => (
             <InfiniteLoader
@@ -87,6 +99,7 @@ export function VehicleList() {
                   width={width}
                   columnCount={vehicles?.totalCount ?? 0}
                   columnWidth={402}
+                  scrollToColumn={remoteRowCount - 1}
                   rowCount={1}
                   rowHeight={291}
                   overscanColumnCount={20}
@@ -100,7 +113,11 @@ export function VehicleList() {
                     vehicles && (
                       <div key={key} style={style} className="pr-4 !h-[271px]">
                         <VehicleCard
-                          vehicle={vehicles.data[index]}
+                          vehicle={
+                            isRTL()
+                              ? vehicles.data[remoteRowCount - index - 1]
+                              : vehicles.data[index]
+                          }
                           refetchVehicles={fetchAllLoadedVehicles}
                         />
                       </div>

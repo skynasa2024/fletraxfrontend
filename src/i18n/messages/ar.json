@@ -90,5 +90,8 @@
   "DASHBOARD.MAINTENANCE_TABLE.STATUS": "الحالة",
   "DASHBOARD.MAINTENANCE_TABLE.ACTIONS": "الإجراءات",
   "MAINTENANCE.STATUS.ONGOING": "قيد الصيانة",
-  "MAINTENANCE.STATUS.FINISHED": "مكتمل"
+  "MAINTENANCE.STATUS.FINISHED": "مكتمل",
+  "DASHBOARD.VEHICLE_LIST.TITLE": "مركبة",
+  "DASHBOARD.VEHICLE_LIST.SUBTITLE": "لديك {count, plural, one {مركبة واحدة} other {# مركبات}}",
+  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "أضف مركبة"
 }
