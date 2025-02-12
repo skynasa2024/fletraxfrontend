@@ -6,14 +6,20 @@ import { DriverCard } from './DriverCard';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 import { KeenIcon } from '@/components';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 const DriverList = () => {
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
   const { enqueueSnackbar } = useSnackbar();
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
   const remoteRowCount = useMemo(() => drivers?.totalCount ?? 0, [drivers]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const isRowLoaded = ({ index }: { index: number }) => !!drivers?.data[index];
+  const isRowLoaded = ({ index }: { index: number }) =>
+    isRTL() ? !!drivers?.data[remoteRowCount - index - 1] : !!drivers?.data[index];
+
   const loadMoreRows = async ({
     startIndex,
     stopIndex
@@ -42,10 +48,15 @@ const DriverList = () => {
     <div className="card">
       <div className="px-7 pt-6 flex items-center justify-between">
         <div className="card-title">
-          <h3>Driver</h3>
+          <h3>
+            <FormattedMessage id="DRIVER.TITLE" defaultMessage="Driver" />
+          </h3>
           <h4 className="text-sm font-thin text-[#B5B5C3]">
-            You have {drivers?.totalCount}{' '}
-            {(drivers?.totalCount ?? 0 > 1) ? 'customers' : 'customer'}
+            <FormattedMessage
+              id="DRIVER.SUBTITLE"
+              defaultMessage="You have {count} {count, plural, one {customer} other {customers}}"
+              values={{ count: drivers?.totalCount ?? 0 }}
+            />
           </h4>
         </div>
         <div className="flex gap-7 items-center">
@@ -53,7 +64,7 @@ const DriverList = () => {
             <KeenIcon icon="magnifier" />
             <input
               type="text"
-              placeholder="Search"
+              placeholder={intl.formatMessage({ id: 'COMMON.SEARCH', defaultMessage: 'Search' })}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -61,13 +72,13 @@ const DriverList = () => {
           <a href="/drivers/add-driver">
             <button className="btn btn-info px-4">
               <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-              Add Driver
+              <FormattedMessage id="DRIVER.ADD" defaultMessage="Add Driver" />
             </button>
           </a>
         </div>
       </div>
 
-      <div className="card-body pt-2 px-6 pb-3">
+      <div className="card-body pt-2 px-6 pb-3 [direction:ltr]">
         <AutoSizer disableHeight>
           {({ width }) => (
             <InfiniteLoader
@@ -85,6 +96,7 @@ const DriverList = () => {
                   columnWidth={402}
                   rowCount={1}
                   rowHeight={291}
+                  scrollToColumn={isRTL() ? remoteRowCount - 1 : undefined}
                   onSectionRendered={({ columnOverscanStartIndex, columnOverscanStopIndex }) =>
                     onRowsRendered({
                       startIndex: columnOverscanStartIndex,
@@ -95,16 +107,23 @@ const DriverList = () => {
                     drivers && (
                       <div key={key} style={style} className="pr-4">
                         <DriverCard
-                          driver={drivers.data[index]}
+                          driver={
+                            isRTL() ? drivers.data[remoteRowCount - index - 1] : drivers.data[index]
+                          }
                           onDelete={async () => {
                             const offset = {
                               start: Math.max(0, index - 10),
                               end: index + 10
                             };
                             await deleteDriver(drivers.data[index].id);
-                            enqueueSnackbar('Driver deleted successfully', {
-                              variant: 'success'
-                            });
+                            // Updated deletion message using intl.formatMessage
+                            enqueueSnackbar(
+                              intl.formatMessage({
+                                id: 'DRIVER.DELETE_SUCCESS',
+                                defaultMessage: 'Driver deleted successfully'
+                              }),
+                              { variant: 'success' }
+                            );
                             const driverRequest = await getDrivers(offset);
                             let newDrivers: Paginated<DriverDetails> = {
                               totalCount: driverRequest.totalCount,

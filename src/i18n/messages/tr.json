@@ -106,5 +106,14 @@
   "VEHICLE.CARD.DELETE_SUCCESS": "Araç başarıyla silindi",
   "VEHICLE.STATUS.UNAVAILABLE": "Kullanılamaz",
   "VEHICLE.STATUS.MAINTENANCE": "Bakımda",
-  "VEHICLE.STATUS.AVAILABLE": "Kullanılabilir"
+  "VEHICLE.STATUS.AVAILABLE": "Kullanılabilir",
+  "DRIVER.TITLE": "Sürücü",
+  "DRIVER.SUBTITLE": "Sahip olduğunuz {count} {count, plural, one {müşteri} other {müşteriler}}",
+  "DRIVER.ADD": "Sürücü Ekle",
+  "DRIVER.DELETE_SUCCESS": "Sürücü başarıyla silindi",
+  "DRIVER.VIEW": "Görüntüle",
+  "DRIVER.EDIT": "Düzenle",
+  "DRIVER.DELETE": "Sil",
+  "DRIVER.STATUS.UNDER_REVIEW": "İnceleniyor",
+  "DRIVER.STATUS.ACTIVE": "Aktif"
 }

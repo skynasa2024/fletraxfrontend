@@ -106,5 +106,14 @@
   "VEHICLE.STATUS.UNAVAILABLE": "Unavailable",
   "VEHICLE.STATUS.MAINTENANCE": "Maintenance",
   "VEHICLE.STATUS.AVAILABLE": "Available",
-  "COMMON.NA": "N/A"
+  "COMMON.NA": "N/A",
+  "DRIVER.TITLE": "Driver",
+  "DRIVER.SUBTITLE": "You have {count} {count, plural, one {customer} other {customers}}",
+  "DRIVER.ADD": "Add Driver",
+  "DRIVER.DELETE_SUCCESS": "Driver deleted successfully",
+  "DRIVER.VIEW": "View",
+  "DRIVER.EDIT": "Edit",
+  "DRIVER.DELETE": "Delete",
+  "DRIVER.STATUS.UNDER_REVIEW": "Under Review",
+  "DRIVER.STATUS.ACTIVE": "Active"
 }

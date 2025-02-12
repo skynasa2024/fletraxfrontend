@@ -106,5 +106,14 @@
   "VEHICLE.CARD.DELETE_SUCCESS": "تم حذف المركبة بنجاح",
   "VEHICLE.STATUS.UNAVAILABLE": "غير متاح",
   "VEHICLE.STATUS.MAINTENANCE": "تحت الصيانة",
-  "VEHICLE.STATUS.AVAILABLE": "متاح"
+  "VEHICLE.STATUS.AVAILABLE": "متاح",
+  "DRIVER.TITLE": "السائق",
+  "DRIVER.SUBTITLE": "لديك {count} {count, plural, one {عميل} other {عملاء}}",
+  "DRIVER.ADD": "إضافة سائق",
+  "DRIVER.DELETE_SUCCESS": "تم حذف السائق بنجاح",
+  "DRIVER.VIEW": "عرض",
+  "DRIVER.EDIT": "تعديل",
+  "DRIVER.DELETE": "حذف",
+  "DRIVER.STATUS.UNDER_REVIEW": "تحت المراجعة",
+  "DRIVER.STATUS.ACTIVE": "نشط"
 }

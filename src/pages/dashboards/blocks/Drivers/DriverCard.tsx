@@ -1,6 +1,8 @@
 import { DriverDetails, updateDriverStatus } from '@/api/drivers';
 import { StatusDropdown, StatusDropdownProps } from '../StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
+import { useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 interface DriverCardProps {
   driver?: DriverDetails;
@@ -8,14 +10,18 @@ interface DriverCardProps {
 }
 
 export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
   const options: StatusDropdownProps['options'] = {
     'Under Review': {
       color: '#FFA800',
-      backgroundColor: '#FFF8EA'
+      backgroundColor: '#FFF8EA',
+      nameKey: 'DRIVER.STATUS.UNDER_REVIEW'
     },
     Active: {
       color: '#50CD89',
-      backgroundColor: '#EEFAF4'
+      backgroundColor: '#EEFAF4',
+      nameKey: 'DRIVER.STATUS.ACTIVE'
     }
   };
 
@@ -28,7 +34,10 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
   }
 
   return (
-    <div className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden">
+    <div
+      className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden"
+      style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
+    >
       <div
         className="h-1 w-full"
         style={{ backgroundColor: options[driver.status]?.color || '#212121' }}
@@ -59,7 +68,7 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
           </div>
           <div className="flex gap-1 w-36">
             <img src={toAbsoluteUrl('/media/icons/phone.svg')} />
-            <span className="overflow-hidden text-ellipsis">{driver.phone}</span>
+            <span className="overflow-hidden text-ellipsis [direction:ltr]">{driver.phone}</span>
           </div>
           <div className="flex gap-1 w-36">
             <img src={toAbsoluteUrl('/media/icons/city.svg')} />
@@ -74,11 +83,11 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
       <div className="text-xs border-t flex justify-center">
         <a href={`/drivers/driver/${driver.id}`} className="px-5 py-2 flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
-          <span>View</span>
+          <span>{intl.formatMessage({ id: 'DRIVER.VIEW', defaultMessage: 'View' })}</span>
         </a>
         <a href={`/drivers/edit/${driver.id}`} className="px-5 py-2 border-x flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
-          <span>Edit</span>
+          <span>{intl.formatMessage({ id: 'DRIVER.EDIT', defaultMessage: 'Edit' })}</span>
         </a>
         <a
           href="#"
@@ -89,7 +98,7 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
           }}
         >
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
-          <span>Delete</span>
+          <span>{intl.formatMessage({ id: 'DRIVER.DELETE', defaultMessage: 'Delete' })}</span>
         </a>
       </div>
     </div>
