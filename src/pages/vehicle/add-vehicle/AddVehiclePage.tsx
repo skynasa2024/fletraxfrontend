@@ -20,6 +20,9 @@ import { useNavigate, useParams } from 'react-router';
 import { createVehicle, getVehicleDetails, updateVehicle, VehicleDTO } from '@/api/cars';
 import { CircularProgress } from '@mui/material';
 import clsx from 'clsx';
+import { useSnackbar } from 'notistack';
+import axios, { AxiosError } from 'axios';
+import { ResponseModel } from '@/api/response';
 
 type RadioOption<T> = {
   label: string;
@@ -162,6 +165,7 @@ export type AddVehicleForm = AdditionalVehicleInfo &
   InspectionAndInsuranceFormField;
 
 const AddVehiclePage = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { id: carId } = useParams();
   const [currentVehicle, setCurrentVehicle] = useState<VehicleDTO | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('information');
@@ -355,8 +359,21 @@ const AddVehiclePage = () => {
         newId = newVehicle.vehicleId;
       }
       navigate(`/vehicles/edit-scratches/${newId}`);
+      enqueueSnackbar('Vehicle saved successfully', {
+        variant: 'success'
+      });
     } catch (error) {
-      console.error('Error saving vehicle:', error);
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ResponseModel<never>>;
+
+        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
+          variant: 'error'
+        });
+      } else {
+        enqueueSnackbar('An error occurred', {
+          variant: 'error'
+        });
+      }
     } finally {
       setIsLoadingSave(false);
     }

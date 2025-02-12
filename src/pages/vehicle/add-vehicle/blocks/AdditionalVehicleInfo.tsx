@@ -1,6 +1,7 @@
 import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
+import OwnerSearch from './OwnerSearch';
 
 const AdditionalVehicleInfo = () => {
   return (
@@ -8,6 +9,10 @@ const AdditionalVehicleInfo = () => {
       <div className="p-4 card grid gap-2.5 overflow-auto">
         <label className="form-label card-title">Vehicle Image</label>
         <FormikFileUpload name="vehicleImage" />
+      </div>
+      <div className="card p-4 gap-4">
+        <label className="form-label card-title">Owner</label>
+        <OwnerSearch name="userId" />
       </div>
       <div className="card p-4 gap-4">
         <label className="form-label card-title">Plate Number</label>
