@@ -38,8 +38,8 @@ export interface VehicleDetails {
   vehicle: Vehicle;
   customer: Driver;
   brandName: string;
-  type: string;
-  mileage: string;
+  type?: string;
+  mileage?: string;
   status: string;
   deviceName: string;
   carId: string;
@@ -302,8 +302,8 @@ export const getVehicles = async (
       email: 'john.doe@example.com'
     },
     brandName: vehicle.brand,
-    type: vehicle.gear ?? 'NA',
-    mileage: vehicle.currentMileage ? vehicle.currentMileage : 'NA',
+    type: vehicle.gear,
+    mileage: vehicle.currentMileage,
     status: vehicle.status,
     deviceName: 'Device Name',
     carId: vehicle.id

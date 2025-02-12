@@ -98,5 +98,13 @@
   "DATA_GRID.LOADING": "Loading...",
   "DATA_GRID.PAGINATION.INFO": "{from} - {to} of {count}",
   "DATA_GRID.PAGINATION.SIZES_LABEL": "Show",
-  "DATA_GRID.PAGINATION.SIZES_DESCRIPTION": "per page"
+  "DATA_GRID.PAGINATION.SIZES_DESCRIPTION": "per page",
+  "VEHICLE.CARD.VIEW": "View",
+  "VEHICLE.CARD.EDIT": "Edit",
+  "VEHICLE.CARD.DELETE": "Delete",
+  "VEHICLE.CARD.DELETE_SUCCESS": "Vehicle deleted successfully",
+  "VEHICLE.STATUS.UNAVAILABLE": "Unavailable",
+  "VEHICLE.STATUS.MAINTENANCE": "Maintenance",
+  "VEHICLE.STATUS.AVAILABLE": "Available",
+  "COMMON.NA": "N/A"
 }

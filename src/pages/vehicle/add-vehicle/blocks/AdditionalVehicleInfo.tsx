@@ -2,8 +2,10 @@ import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
 import OwnerSearch from './OwnerSearch';
+import { useIntl } from 'react-intl';
 
 const AdditionalVehicleInfo = () => {
+  const intl = useIntl();
   return (
     <div className="flex flex-col gap-5 p-3">
       <div className="p-4 card grid gap-2.5 overflow-auto">
@@ -27,7 +29,7 @@ const AdditionalVehicleInfo = () => {
         <Field as="select" name="status" className="select">
           {Object.entries(STATUS_OPTIONS).map(([key, value], idx) => (
             <option key={key + idx} value={key}>
-              {value.name}
+              {intl.formatMessage({ id: value.nameKey, defaultMessage: key })}
             </option>
           ))}
         </Field>

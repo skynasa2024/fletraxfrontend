@@ -7,6 +7,8 @@ import { toAbsoluteUrl } from '@/utils';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router';
 import { useSnackbar } from 'notistack';
+import { useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 type VehicleCardProps = {
   vehicle?: VehicleDetails;
@@ -16,6 +18,8 @@ type VehicleCardProps = {
 
 export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: VehicleCardProps) {
   const { enqueueSnackbar } = useSnackbar();
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
 
   if (!vehicle) {
     return (
@@ -25,7 +29,10 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
     );
   }
   return (
-    <div className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full h-full hover:shadow-lg transition-shadow duration-200">
+    <div
+      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full h-full hover:shadow-lg transition-shadow duration-200"
+      style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
+    >
       <div className="flex flex-col gap-6 px-4 sm:px-6 lg:px-8 py-6 grow">
         <div className="flex justify-between items-center">
           <CarPlate plate={vehicle.vehicle.plate} />
@@ -76,11 +83,13 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           <div className="flex flex-wrap gap-4 sm:gap-[18px] text-[#72767C] font-dm-sans">
             <div className="flex gap-1">
               <img src={toAbsoluteUrl('/media/icons/gauge.svg')} />
-              <span className="uppercase">{vehicle.mileage}</span>
+              <span className="uppercase">
+                {vehicle.mileage ?? intl.formatMessage({ id: 'COMMON.NA' })}
+              </span>
             </div>
             <div className="flex gap-1">
               <img src={toAbsoluteUrl('/media/icons/manual.svg')} />
-              <span>{vehicle.type}</span>
+              <span>{vehicle.type ?? intl.formatMessage({ id: 'COMMON.NA' })}</span>
             </div>
           </div>
           <div className="text-md capitalize font-semibold text-[#3F4254] max-w-full sm:max-w-[92px] text-ellipsis overflow-hidden text-nowrap">
@@ -94,29 +103,33 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50"
         >
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
-          <span>View</span>
+          <span>{intl.formatMessage({ id: 'VEHICLE.CARD.VIEW', defaultMessage: 'View' })}</span>
         </Link>
         <Link
           to={'/vehicles/edit/' + vehicle.vehicle.id}
           className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50"
         >
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
-          <span>Edit</span>
+          <span>{intl.formatMessage({ id: 'VEHICLE.CARD.EDIT', defaultMessage: 'Edit' })}</span>
         </Link>
         <a
           href="#"
           onClick={async (e) => {
             e.preventDefault();
             await deleteVehicle(vehicle.carId);
-            enqueueSnackbar('Vehicle deleted successfully', {
-              variant: 'success'
-            });
+            enqueueSnackbar(
+              intl.formatMessage({
+                id: 'VEHICLE.CARD.DELETE_SUCCESS',
+                defaultMessage: 'Vehicle deleted successfully'
+              }),
+              { variant: 'success' }
+            );
             refetchVehicles();
           }}
           className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50"
         >
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
-          <span>Delete</span>
+          <span>{intl.formatMessage({ id: 'VEHICLE.CARD.DELETE', defaultMessage: 'Delete' })}</span>
         </a>
       </div>
     </div>

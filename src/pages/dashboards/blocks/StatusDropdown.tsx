@@ -1,4 +1,5 @@
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
+import { useIntl } from 'react-intl';
 
 export interface StatusDropdownProps {
   selected: string;
@@ -11,6 +12,7 @@ export interface StatusDropdownProps {
       color: string;
       backgroundColor: string;
       name?: string;
+      nameKey?: string; // new property to support translation keys
     }
   >;
 }
@@ -21,6 +23,15 @@ export const StatusDropdown = ({
   options,
   readOnly = false
 }: StatusDropdownProps) => {
+  const intl = useIntl();
+  const getOptionLabel = (key: string) => {
+    const option = options[key];
+    if (option.nameKey) {
+      return intl.formatMessage({ id: option.nameKey, defaultMessage: option.name || key });
+    }
+    return option.name || key;
+  };
+
   if (readOnly) {
     return (
       <div
@@ -30,7 +41,7 @@ export const StatusDropdown = ({
           backgroundColor: options[selected]?.backgroundColor ?? 'gray'
         }}
       >
-        {options[selected]?.name || selected}
+        {getOptionLabel(selected)}
       </div>
     );
   }
@@ -59,11 +70,11 @@ export const StatusDropdown = ({
             backgroundColor: options[selected]?.backgroundColor ?? 'gray'
           }}
         >
-          {options[selected]?.name || selected}
+          {getOptionLabel(selected)}
           <KeenIcon icon="down" className="!text-inherit !text-xs" />
         </MenuToggle>
         <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
-          {Object.entries(options).map(([key, options]) => (
+          {Object.entries(options).map(([key, option]) => (
             <MenuItem
               key={key}
               onClick={() => {
@@ -72,12 +83,13 @@ export const StatusDropdown = ({
             >
               <MenuLink>
                 <MenuTitle>
-                  <div
-                    style={{
-                      color: options.color
-                    }}
-                  >
-                    {options.name || key}
+                  <div style={{ color: option.color }}>
+                    {option.nameKey
+                      ? intl.formatMessage({
+                          id: option.nameKey,
+                          defaultMessage: option.name || key
+                        })
+                      : option.name || key}
                   </div>
                 </MenuTitle>
               </MenuLink>
