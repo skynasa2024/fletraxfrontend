@@ -6,14 +6,16 @@ import { useMonitoringProvider } from './providers/MonitoringProvider';
 import { LocationCard } from './blocks/LocationCard';
 import { ShowImeiControl } from './blocks/ShowImeiControl';
 import AppMap from '@/components/AppMap';
+import { useIntl } from 'react-intl';
 
 const MonitoringMap = () => {
   const { selectedLocation } = useMonitoringProvider();
+  const intl = useIntl();
 
   return (
     <AppMap mapControls={<ShowImeiControl />}>
       <CarsLayer />
-      <MainControl title="MONITORING">
+      <MainControl title={intl.formatMessage({ id: 'DASHBOARD.MONITORING.TITLE' })}>
         <MainCard />
       </MainControl>
       {selectedLocation && (

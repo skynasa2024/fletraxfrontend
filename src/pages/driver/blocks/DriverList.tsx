@@ -60,7 +60,7 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center mr-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center me-3">
               {row.original.driver.name[0]}
             </div>
             <div>

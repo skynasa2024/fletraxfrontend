@@ -8,8 +8,12 @@ import { AutoSizer, List } from 'react-virtualized';
 import { toAbsoluteUrl } from '@/utils';
 import { useSearchParams } from 'react-router-dom';
 import { CarView } from '@/pages/dashboards/blocks/CarView';
+import { useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 export const MainCard = () => {
+  const intl = useIntl();
+  const { isRTL } = useLanguage();
   const [searchParams] = useSearchParams();
   const {
     clients,
@@ -21,6 +25,13 @@ export const MainCard = () => {
     search
   } = useMonitoringProvider();
   const [searchTarget, setSearchTarget] = useState(searchParams.get('target') ?? 'Vehicle');
+  const targetTranslation: Record<string, string> = useMemo(
+    () => ({
+      User: intl.formatMessage({ id: 'MONITORING.USER' }),
+      Vehicle: intl.formatMessage({ id: 'MONITORING.VEHICLE' })
+    }),
+    [intl]
+  );
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') ?? '');
   const [selection, setSelection] = useState('All');
   const [resizableHeight, setResizableHeight] = useState(200);
@@ -65,7 +76,7 @@ export const MainCard = () => {
               toggle="dropdown"
               trigger="click"
               dropdownProps={{
-                placement: 'bottom-start',
+                placement: isRTL() ? 'bottom-end' : 'bottom-start',
                 modifiers: [
                   {
                     name: 'offset',
@@ -77,7 +88,7 @@ export const MainCard = () => {
               }}
             >
               <MenuToggle className="btn btn-clear font-semibold text-xs h-fit px-3 py-[6px] border-0 rounded-none border-e-2 border-dashed border-[#E4E6EF] dark:border-gray-400">
-                {searchTarget}
+                {targetTranslation[searchTarget]}
                 <KeenIcon icon="down" className="!text-inherit !text-xs" />
               </MenuToggle>
               <MenuSub className="menu-default" rootClassName="w-full max-w-[200px]">
@@ -89,7 +100,7 @@ export const MainCard = () => {
                     }}
                   >
                     <MenuLink>
-                      <MenuTitle>{target}</MenuTitle>
+                      <MenuTitle>{targetTranslation[target]}</MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 ))}
@@ -98,7 +109,7 @@ export const MainCard = () => {
           </Menu>
           <input
             type="text"
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -187,6 +198,9 @@ export const MainCard = () => {
                     height={resizableHeight}
                     width={width}
                     className="scrollable-y pb-4"
+                    style={{
+                      direction: isRTL() ? 'rtl' : 'ltr'
+                    }}
                   />
                 </div>
               </Resizable>
@@ -194,6 +208,11 @@ export const MainCard = () => {
                 <ButtonRadioGroup
                   selection={selection}
                   selections={['All', 'Online', 'Offline']}
+                  translations={{
+                    All: intl.formatMessage({ id: 'BUTTON_RADIO_GROUP.ALL' }),
+                    Online: intl.formatMessage({ id: 'BUTTON_RADIO_GROUP.ONLINE' }),
+                    Offline: intl.formatMessage({ id: 'BUTTON_RADIO_GROUP.OFFLINE' })
+                  }}
                   suffix={{
                     All: ` (${locations.length})`,
                     Online: ` (${onlineLocations.length})`,
@@ -231,7 +250,9 @@ export const MainCard = () => {
                             data-online={location.online}
                             className="rounded-md font-medium text-xs bg-[#F1416C]/10 text-[#F1416C] data-[online=true]:bg-[#50CD89]/10 data-[online=true]:text-[#50CD89] px-[10px] py-[6px] self-center"
                           >
-                            {location.online ? 'Online' : 'Offline'}
+                            {location.online
+                              ? intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.ONLINE' })
+                              : intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.OFFLINE' })}
                           </div>
                         </div>
                         <div className="border-b-2 border-[#E4E6EF] dark:border-gray-400 border-dashed" />
@@ -242,7 +263,11 @@ export const MainCard = () => {
                                 `/media/icons/${location.status.engineStatus ? 'on' : 'off'}.svg`
                               )}
                             />
-                            <div>{location.status.engineStatus ? 'ON' : 'OFF'}</div>
+                            <div>
+                              {intl.formatMessage({
+                                id: location.status.engineStatus ? 'STATUS.ON' : 'STATUS.OFF'
+                              })}
+                            </div>
                           </div>
                           <div className="flex flex-col gap-0.5 items-start">
                             <img
@@ -270,7 +295,13 @@ export const MainCard = () => {
                                 `/media/icons/${location.status.defenseStatus ? 'defense-active' : 'defense-inactive'}.svg`
                               )}
                             />
-                            <div>{location.status.defenseStatus ? 'Active' : 'Inactive'}</div>
+                            <div>
+                              {intl.formatMessage({
+                                id: location.status.defenseStatus
+                                  ? 'STATUS.ACTIVE'
+                                  : 'STATUS.INACTIVE'
+                              })}
+                            </div>
                           </div>
                           <div className="flex flex-col gap-0.5 items-start">
                             <img
@@ -278,7 +309,13 @@ export const MainCard = () => {
                                 `/media/icons/${location.status.engineBlocked ? 'engine-block-active' : 'engine-block-inactive'}.svg`
                               )}
                             />
-                            <div>{location.status.engineBlocked ? 'Active' : 'Inactive'}</div>
+                            <div>
+                              {intl.formatMessage({
+                                id: location.status.engineBlocked
+                                  ? 'STATUS.ACTIVE'
+                                  : 'STATUS.INACTIVE'
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -290,6 +327,9 @@ export const MainCard = () => {
                 height={height - resizableHeight - 50}
                 width={width}
                 className="scrollable-y"
+                style={{
+                  direction: isRTL() ? 'rtl' : 'ltr'
+                }}
               />
             </div>
           )}

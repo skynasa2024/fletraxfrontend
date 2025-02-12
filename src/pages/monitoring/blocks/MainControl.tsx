@@ -2,6 +2,8 @@ import { KeenIcon } from '@/components';
 import { Collapse } from '@mui/material';
 import { PropsWithChildren, ReactElement, useState } from 'react';
 import { useMap } from 'react-leaflet';
+import { useLanguage } from '@/i18n';
+import clsx from 'clsx';
 
 export interface MainControlProps extends PropsWithChildren {
   title: string;
@@ -9,15 +11,19 @@ export interface MainControlProps extends PropsWithChildren {
 }
 
 export const MainControl = ({ children, title, bar }: MainControlProps) => {
+  const { isRTL } = useLanguage();
   const map = useMap();
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div
-      className="leaflet-top leaflet-left max-h-screen flex items-stretch group data-[open=true]:h-screen"
+      className={clsx(
+        isRTL() ? 'leaflet-right [direction:rtl]' : 'leaflet-left [direction:ltr]',
+        'leaflet-top max-h-screen flex items-stretch group data-[open=true]:h-screen'
+      )}
       data-open={isOpen}
     >
-      <div className="leaflet-control flex flex-col gap-[10px] !mx-4 md:!mt-16 md:!ml-7 md:!mb-6 font-sans">
+      <div className="leaflet-control flex flex-col gap-[10px] !mx-4 md:!mt-16 md:!ms-7 md:!mb-6 font-sans">
         <div
           className="card group-data-[open=true]:h-full"
           onMouseOver={() => {

@@ -258,11 +258,16 @@ interface ReverseGeoLocationResponse {
   boundingbox: string[];
 }
 
-export const reverseGeoLocation = async (lat: number, lng: number): Promise<string> => {
+export const reverseGeoLocation = async (
+  lat: number,
+  lng: number,
+  locale?: string
+): Promise<string> => {
   const location = await axios.get<ReverseGeoLocationResponse>(
     `https://nominatim.openstreetmap.org/reverse`,
     {
-      params: { lat, lon: lng, format: 'jsonv2' }
+      params: { lat, lon: lng, format: 'jsonv2' },
+      ...(locale ? { headers: { 'Accept-Language': locale } } : {})
     }
   );
   return location.data.display_name;

@@ -141,7 +141,7 @@ const VehicleInfo = () => {
             {/* Vehicle Info Section */}
             <div className="flex flex-col lg:flex-row h-full">
               {/* Vehicle Info Cards */}
-              <div className="flex-grow mr-0 lg:mr-4 h-full">
+              <div className="flex-grow me-0 lg:me-4 h-full">
                 <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 h-full">
                   {vehicleInfo.map(({ label, value, icon }, index) => (
                     <VehicleInfoCard key={index} label={label} value={value} icon={icon} />
@@ -155,7 +155,7 @@ const VehicleInfo = () => {
                 <div className="flex-grow">
                   {details.map(({ label, value }, index) => (
                     <div key={index} className="flex items-start mb-2">
-                      <span className="text-gray-600 mr-1">{label}:</span>
+                      <span className="text-gray-600 me-1">{label}:</span>
                       <span className="text-gray-800">{value}</span>
                     </div>
                   ))}
@@ -181,7 +181,7 @@ const VehicleInfo = () => {
                           <span className="font-semibold">Start</span> :
                           <span>{item.startDate}</span>
                         </div>
-                        <div className="ml-4">
+                        <div className="ms-4">
                           <span className="font-semibold">End</span> : <span>{item.endDate}</span>
                         </div>
                       </div>

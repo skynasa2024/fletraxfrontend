@@ -12,7 +12,7 @@ const Icon3: React.FC<IconProps> = ({ className }) => {
       viewBox="0 0 15 15"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="w-4 h-4 text-gray-500 mr-2"
+      className="w-4 h-4 text-gray-500 me-2"
     >
       <g clip-path="url(#clip0_1484_3231)">
         <path

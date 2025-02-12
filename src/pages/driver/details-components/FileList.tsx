@@ -34,7 +34,7 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
   return (
     <div className="card hover:shadow-md p-4 w-full">
       <div className="flex items-center sm:flex-row flex-col">
-        <img src={getIconSrc(type)} alt={`${type} Icon`} className="size-6 mr-2" />
+        <img src={getIconSrc(type)} alt={`${type} Icon`} className="size-6 me-2" />
         <div>
           <p className="text-sm font-semibold">{file.name}</p>
         </div>

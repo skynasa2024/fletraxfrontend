@@ -30,7 +30,7 @@ const AppMap = ({
     <MapContainer
       center={[38.9637, 35.2433]}
       zoom={7}
-      className={clsx('size-full', className)}
+      className={clsx('size-full [direction:ltr]', className)}
       zoomControl={false}
       attributionControl={false}
       minZoom={3}

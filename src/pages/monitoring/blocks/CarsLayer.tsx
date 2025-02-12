@@ -108,80 +108,80 @@ export const CarsLayer = () => {
     >
       {selectedLocation
         ? selectedLocation.lat &&
-        selectedLocation.long && (
-          <RotatableMarker
-            key={selectedLocation.vehicle.imei}
-            position={[selectedLocation.lat, selectedLocation.long]}
-            rotationAngle={selectedLocation.angle}
-            icon={getIcon(selectedLocation)}
-            eventHandlers={{
-              click: () => {
-                setSelectedLocation(undefined);
-              }
-            }}
-          >
-            {showImei && (
-              <Tooltip
-                direction="top"
-                offset={[0, -20]}
-                permanent
-                className="bg-transparent border-0 shadow-none p-0"
-                interactive
-                eventHandlers={{
-                  click: () => {
-                    setSelectedLocation(undefined);
-                  }
-                }}
-              >
-                <CarPlate
-                  plate={selectedLocation.vehicle.plate}
-                  className="shadow-lg"
-                  showTooltip={false}
-                />
-              </Tooltip>
-            )}
-          </RotatableMarker>
-        )
-        : locations
-          ?.map(
-            (location) =>
-              location.lat &&
-              location.long && (
-                <RotatableMarker
-                  key={location.vehicle.imei}
-                  position={[location.lat, location.long]}
-                  rotationAngle={location.angle}
-                  icon={getIcon(location)}
+          selectedLocation.long && (
+            <RotatableMarker
+              key={selectedLocation.vehicle.imei}
+              position={[selectedLocation.lat, selectedLocation.long]}
+              rotationAngle={selectedLocation.angle}
+              icon={getIcon(selectedLocation)}
+              eventHandlers={{
+                click: () => {
+                  setSelectedLocation(undefined);
+                }
+              }}
+            >
+              {showImei && (
+                <Tooltip
+                  direction="top"
+                  offset={[0, -20]}
+                  permanent
+                  className="bg-transparent border-0 shadow-none p-0"
+                  interactive
                   eventHandlers={{
                     click: () => {
-                      setSelectedLocation(location);
+                      setSelectedLocation(undefined);
                     }
                   }}
                 >
-                  {showImei && (
-                    <Tooltip
-                      direction="top"
-                      offset={[0, -20]}
-                      permanent
-                      className="bg-transparent border-0 shadow-none p-0"
-                      interactive
-                      eventHandlers={{
-                        click: () => {
-                          setSelectedLocation(location);
-                        }
-                      }}
-                    >
-                      <CarPlate
-                        plate={location.vehicle.plate}
-                        className="shadow-lg"
-                        showTooltip={false}
-                      />
-                    </Tooltip>
-                  )}
-                </RotatableMarker>
-              )
+                  <CarPlate
+                    plate={selectedLocation.vehicle.plate}
+                    className="shadow-lg"
+                    showTooltip={false}
+                  />
+                </Tooltip>
+              )}
+            </RotatableMarker>
           )
-          .filter(Boolean)}
+        : locations
+            ?.map(
+              (location) =>
+                location.lat &&
+                location.long && (
+                  <RotatableMarker
+                    key={location.vehicle.imei}
+                    position={[location.lat, location.long]}
+                    rotationAngle={location.angle}
+                    icon={getIcon(location)}
+                    eventHandlers={{
+                      click: () => {
+                        setSelectedLocation(location);
+                      }
+                    }}
+                  >
+                    {showImei && (
+                      <Tooltip
+                        direction="top"
+                        offset={[0, -20]}
+                        permanent
+                        className="bg-transparent border-0 shadow-none p-0"
+                        interactive
+                        eventHandlers={{
+                          click: () => {
+                            setSelectedLocation(location);
+                          }
+                        }}
+                      >
+                        <CarPlate
+                          plate={location.vehicle.plate}
+                          className="shadow-lg"
+                          showTooltip={false}
+                        />
+                      </Tooltip>
+                    )}
+                  </RotatableMarker>
+                )
+            )
+            .filter(Boolean)}
     </MarkerClusterGroup>
   );
 };

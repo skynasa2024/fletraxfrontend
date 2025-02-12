@@ -154,7 +154,7 @@ const Card: React.FC<CardProps> = ({
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold text-gray-900 ml-1">+${unpaidAmount}</span>
+            <span className="font-semibold text-gray-900 ms-1">+${unpaidAmount}</span>
           </div>
         </div>
 
@@ -170,7 +170,7 @@ const Card: React.FC<CardProps> = ({
             >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="font-semibold text-gray-900 ml-1">+${paidAmount}</span>
+            <span className="font-semibold text-gray-900 ms-1">+${paidAmount}</span>
           </div>
         </div>
       </div>
