@@ -1,7 +1,31 @@
 import AppMap from '@/components/AppMap';
 import { AddGeofencePageProps } from '../AddGeofencePage';
 import { useState } from 'react';
-import { Circle, Marker } from 'react-leaflet';
+import { Circle, Marker, useMapEvent } from 'react-leaflet';
+
+interface GeofenceMarkerProps {
+  position: { lat: number; lng: number };
+  // eslint-disable-next-line no-unused-vars
+  setPosition: (position: { lat: number; lng: number }) => void;
+}
+
+const GeofenceMarker = ({ position, setPosition }: GeofenceMarkerProps) => {
+  useMapEvent('click', (e) => {
+    setPosition(e.latlng);
+  });
+
+  return (
+    <Marker
+      position={position}
+      draggable={true}
+      eventHandlers={{
+        drag: (e) => {
+          setPosition(e.target.getLatLng());
+        }
+      }}
+    />
+  );
+};
 
 const General = ({ geofence }: AddGeofencePageProps) => {
   const [position, setPosition] = useState<{ lat: number; lng: number }>({
@@ -85,15 +109,7 @@ const General = ({ geofence }: AddGeofencePageProps) => {
         </div>
         <div className="rounded-md w-full h-[512px]">
           <AppMap mapControlSize="small">
-            <Marker
-              position={position}
-              draggable={true}
-              eventHandlers={{
-                drag: (e) => {
-                  setPosition(e.target.getLatLng());
-                }
-              }}
-            />
+            <GeofenceMarker position={position} setPosition={setPosition} />
             <Circle center={position} radius={radius} />
           </AppMap>
         </div>
