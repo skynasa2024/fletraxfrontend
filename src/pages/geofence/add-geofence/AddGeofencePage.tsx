@@ -7,8 +7,8 @@ export interface AddGeofencePageProps {
 
 const AddGeofencePage = ({ geofence }: AddGeofencePageProps) => {
   return (
-    <div className="grid grid-cols-3 gap-[30px] mx-auto">
-      <div className="col-span-2">
+    <div className="flex flex-col gap-[30px] mx-auto">
+      <div>
         <General geofence={geofence} />
       </div>
       <div>

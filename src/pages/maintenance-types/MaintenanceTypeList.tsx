@@ -49,16 +49,6 @@ const MaintenanceTypeList = () => {
   const columns = useMemo<ColumnDef<IMaintenanceTypeTableData>[]>(
     () => [
       {
-        accessorFn: (row) => row.id,
-        id: 'id',
-        header: () => 'ID',
-        enableSorting: true,
-        cell: (info) => <span className="text-gray-800">{info.row.original.id}</span>,
-        meta: {
-          className: 'min-w-36'
-        }
-      },
-      {
         accessorFn: (row) => row.title,
         id: 'title',
         header: () => 'Title',
