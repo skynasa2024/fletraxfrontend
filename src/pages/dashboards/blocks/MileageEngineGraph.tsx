@@ -7,10 +7,12 @@ import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { CarView } from './CarView';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
+import { KeenIcon } from '@/components';
 
 const MileageEngineGraph = () => {
   const intl = useIntl();
   const { isRTL } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
   const [selection, setSelection] = useState('All');
   const sort: 'kilometers' | 'engine' = useMemo(() => {
     if (selection === 'Engine') {
@@ -38,7 +40,10 @@ const MileageEngineGraph = () => {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const remoteData = await getCarsMileageAndEngine({ start: startIndex, end: stopIndex }, sort);
+    const remoteData = await getCarsMileageAndEngine(
+      { start: startIndex, end: stopIndex, search: searchQuery },
+      sort
+    );
     setData((prev) => {
       const newData = prev?.data ?? [];
       remoteData.data.forEach((car, index) => {
@@ -53,8 +58,8 @@ const MileageEngineGraph = () => {
 
   useEffect(() => {
     setData(undefined);
-    getCarsMileageAndEngine({ start: 0, end: 10 }, sort).then(setData);
-  }, [sort]);
+    getCarsMileageAndEngine({ start: 0, end: 10, search: searchQuery }, sort).then(setData);
+  }, [sort, searchQuery]);
 
   return (
     <div className="card hover:shadow-md h-full">
@@ -68,17 +73,28 @@ const MileageEngineGraph = () => {
           </h4>
         </div>
 
-        <ButtonRadioGroup
-          selection={selection}
-          setSelection={setSelection}
-          selections={['Engine', 'Mileage', 'All']}
-          translations={{
-            Engine: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ENGINE' }),
-            Mileage: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.MILEAGE' }),
-            All: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ALL' })
-          }}
-          disabled={!data}
-        />
+        <div className="flex gap-5 items-center">
+          <div className="input max-w-48">
+            <KeenIcon icon="magnifier" />
+            <input
+              type="text"
+              placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <ButtonRadioGroup
+            selection={selection}
+            setSelection={setSelection}
+            selections={['Engine', 'Mileage', 'All']}
+            translations={{
+              Engine: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ENGINE' }),
+              Mileage: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.MILEAGE' }),
+              All: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ALL' })
+            }}
+            disabled={!data}
+          />
+        </div>
       </div>
       <div className="card-body flex flex-col grow px-3 py-3">
         {data ? (

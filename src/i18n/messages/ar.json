@@ -66,5 +66,6 @@
   "NOTIFICATIONS.MESSAGE": "{text}",
   "NOTIFICATIONS.DATE": "{date}",
   "NOTIFICATIONS.TYPE": "{info}",
-  "APP.DEFAULT_TITLE": "فلتراكس"
+  "APP.DEFAULT_TITLE": "فلتراكس",
+  "COMMON.SEARCH": "بحث"
 }

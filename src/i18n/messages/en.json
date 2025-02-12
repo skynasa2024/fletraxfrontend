@@ -66,5 +66,6 @@
   "NOTIFICATIONS.MESSAGE": "{text}",
   "NOTIFICATIONS.DATE": "{date}",
   "NOTIFICATIONS.TYPE": "{info}",
-  "APP.DEFAULT_TITLE": "Fletrax"
+  "APP.DEFAULT_TITLE": "Fletrax",
+  "COMMON.SEARCH": "Search"
 }

@@ -151,7 +151,8 @@ export const getCarsMileageAndEngine = async (
       params: {
         offset: offset.start,
         size: offset.end - offset.start + 1,
-        sort: sort === 'engine' ? 'dailyEngineHours,desc' : 'dailyExistingKilometers,desc'
+        sort: sort === 'engine' ? 'dailyEngineHours,desc' : 'dailyExistingKilometers,desc',
+        search: offset.search
       }
     }
   );
