@@ -93,5 +93,10 @@
   "MAINTENANCE.STATUS.FINISHED": "مكتمل",
   "DASHBOARD.VEHICLE_LIST.TITLE": "مركبة",
   "DASHBOARD.VEHICLE_LIST.SUBTITLE": "لديك {count, plural, one {مركبة واحدة} other {# مركبات}}",
-  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "أضف مركبة"
+  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "أضف مركبة",
+  "DATA_GRID.EMPTY": "لا توجد بيانات متاحة",
+  "DATA_GRID.LOADING": "جار التحميل...",
+  "DATA_GRID.PAGINATION.INFO": "{from} - {to} من {count}",
+  "DATA_GRID.PAGINATION.SIZES_LABEL": "عرض",
+  "DATA_GRID.PAGINATION.SIZES_DESCRIPTION": "لكل صفحة"
 }

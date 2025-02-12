@@ -93,5 +93,10 @@
   "MAINTENANCE.STATUS.FINISHED": "Tamamlandı",
   "DASHBOARD.VEHICLE_LIST.TITLE": "Araç",
   "DASHBOARD.VEHICLE_LIST.SUBTITLE": "{count, plural, one {bir araçınız var} other {{count} araçınız var}}",
-  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "Araç Ekle"
+  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "Araç Ekle",
+  "DATA_GRID.EMPTY": "Veri mevcut değil",
+  "DATA_GRID.LOADING": "Yükleniyor...",
+  "DATA_GRID.PAGINATION.INFO": "{from} - {to} / {count}",
+  "DATA_GRID.PAGINATION.SIZES_LABEL": "Göster",
+  "DATA_GRID.PAGINATION.SIZES_DESCRIPTION": "sayfa başına"
 }

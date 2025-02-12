@@ -93,5 +93,10 @@
   "MAINTENANCE.STATUS.FINISHED": "Completed",
   "DASHBOARD.VEHICLE_LIST.TITLE": "Vehicle",
   "DASHBOARD.VEHICLE_LIST.SUBTITLE": "You have {count, plural, one {vehicle} other {vehicles}}",
-  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "Add Car"
+  "DASHBOARD.VEHICLE_LIST.ADD_CAR": "Add Car",
+  "DATA_GRID.EMPTY": "No data available",
+  "DATA_GRID.LOADING": "Loading...",
+  "DATA_GRID.PAGINATION.INFO": "{from} - {to} of {count}",
+  "DATA_GRID.PAGINATION.SIZES_LABEL": "Show",
+  "DATA_GRID.PAGINATION.SIZES_DESCRIPTION": "per page"
 }

@@ -14,6 +14,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { DataGridInner } from './DataGridInner';
 import { TDataGridProps, TDataGridSelectedRowIds } from './DataGrid';
 import { deepMerge } from '@/utils';
+import { useIntl } from 'react-intl';
 
 export interface IDataGridContextProps<TData extends object> {
   props: TDataGridProps<TData>;
@@ -41,16 +42,26 @@ export const useDataGrid = () => {
 };
 
 export const DataGridProvider = <TData extends object>(props: TDataGridProps<TData>) => {
+  const intl = useIntl();
   const defaultValues: Partial<TDataGridProps<TData>> = {
     messages: {
-      empty: 'No data available',
-      loading: 'Loading...'
+      empty: intl.formatMessage({ id: 'DATA_GRID.EMPTY', defaultMessage: 'No data available' }),
+      loading: intl.formatMessage({ id: 'DATA_GRID.LOADING', defaultMessage: 'Loading...' })
     },
     pagination: {
-      info: '{from} - {to} of {count}',
+      info: intl.formatMessage({
+        id: 'DATA_GRID.PAGINATION.INFO',
+        defaultMessage: '{from} - {to} of {count}'
+      }),
       sizes: [5, 10, 25, 50, 100],
-      sizesLabel: 'Show',
-      sizesDescription: 'per page',
+      sizesLabel: intl.formatMessage({
+        id: 'DATA_GRID.PAGINATION.SIZES_LABEL',
+        defaultMessage: 'Show'
+      }),
+      sizesDescription: intl.formatMessage({
+        id: 'DATA_GRID.PAGINATION.SIZES_DESCRIPTION',
+        defaultMessage: 'per page'
+      }),
       size: 5,
       page: 0,
       moreLimit: 5,
