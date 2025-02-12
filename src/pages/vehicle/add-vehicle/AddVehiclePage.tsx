@@ -34,6 +34,7 @@ type TabType = 'information' | 'registration' | 'inspectionAndInsurance';
 
 interface AdditionalVehicleInfo {
   vehicleImage?: string;
+  owner?: string;
   plate: string;
   status: string;
   hgsNumber: string;
@@ -175,6 +176,7 @@ const AddVehiclePage = () => {
 
   const currentVehicleInitialValues: AddVehicleForm = {
     ...currentVehicle,
+    owner: currentVehicle?.owner || '',
     status: currentVehicle?.status || 'unavailable',
     fuelType: currentVehicle?.fuelType || 'Hybrid',
     carType: currentVehicle?.carType || 'PROMO',
@@ -312,19 +314,17 @@ const AddVehiclePage = () => {
       if (carId && currentVehicle) {
         const updatedVehicle: VehicleDTO = {
           ...vehicle,
+          owner: vehicle.owner || currentVehicle.owner,
           vehicleId: currentVehicle.vehicleId,
           id: currentVehicle.id,
           deviceId: currentVehicle.deviceId,
-          owner: currentVehicle.owner,
           userId: currentVehicle.userId,
           deviceIdent: currentVehicle.deviceIdent,
           type: vehicle.registrationType,
           gear: vehicle.gearType,
           kaskoInsuranceEndDate: vehicle.kaskoEndDate,
           kaskoInsuranceStartDate: vehicle.kaskoStartDate,
-          scratches: currentVehicle.scratches,
-          licenseImage: '',
-          image: ''
+          scratches: currentVehicle.scratches
         };
 
         if (vehicle.vehicleImage) {

@@ -1,7 +1,6 @@
 import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
-import OwnerSearch from './OwnerSearch';
 import { useIntl } from 'react-intl';
 
 const AdditionalVehicleInfo = () => {
@@ -14,7 +13,7 @@ const AdditionalVehicleInfo = () => {
       </div>
       <div className="card p-4 gap-4">
         <label className="form-label card-title">Owner</label>
-        <OwnerSearch name="userId" />
+        <Field type="text" className="input" name="owner" placeholder="Owner" />
       </div>
       <div className="card p-4 gap-4">
         <label className="form-label card-title">Plate Number</label>

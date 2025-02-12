@@ -48,7 +48,7 @@ export interface VehicleDetails {
 export interface VehicleDTO {
   id: string;
   plate: string;
-  image: string | null;
+  image?: string | null;
   imageFile?: string | null;
   type: RegistrationType;
   status: string;
@@ -83,7 +83,7 @@ export interface VehicleDTO {
   currentMileage: string;
   maintenanceMileage: string;
   fuelConsumption: number;
-  licenseImage?: string;
+  licenseImage?: string | null;
   licenseImageFile?: string;
   owner: string;
   userId: string;
@@ -371,6 +371,11 @@ export const getVehiclesStats = async (): Promise<VehicleStats> => {
 
 export const createVehicle = async (vehicle: Partial<VehicleDTO>): Promise<VehicleDTO> => {
   const formData = objectToFormData(vehicle);
+  for (const [key, value] of [...formData.entries()]) {
+    if (!value || value === 'undefined') {
+      formData.delete(key);
+    }
+  }
   const newVehicle = await axios.post<ResponseModel<VehicleDTO>>(
     '/api/vehicles/cars/create',
     formData,
