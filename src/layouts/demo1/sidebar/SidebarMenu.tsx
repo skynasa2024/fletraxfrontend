@@ -74,7 +74,6 @@ const SidebarMenu = () => {
           <MenuItem
             {...(item.toggle && { toggle: item.toggle })}
             {...(item.trigger && { trigger: item.trigger })}
-            open
           >
             <MenuLink
               className={clsx(
