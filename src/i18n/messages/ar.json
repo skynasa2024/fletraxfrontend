@@ -288,5 +288,7 @@
   "PLAYBACK.UNIT.KMH": "كم/س",
   "PLAYBACK.UNIT.KM": "كم",
   "PLAYBACK.SPEED.MULTIPLIER": "x{multiplier}",
-  "PRIVACY_POLICY.PERSONAL_DATA_DESCRIPTION": "أثناء استخدام خدمتنا، قد نطلب منك تزويدنا بمعلومات شخصية معينة يمكن استخدامها للاتصال بك أو تحديد هويتك. قد تتضمن المعلومات الشخصية التي يمكن تحديد هويتها، على سبيل المثال لا الحصر:"
+  "PRIVACY_POLICY.PERSONAL_DATA_DESCRIPTION": "أثناء استخدام خدمتنا، قد نطلب منك تزويدنا بمعلومات شخصية معينة يمكن استخدامها للاتصال بك أو تحديد هويتك. قد تتضمن المعلومات الشخصية التي يمكن تحديد هويتها، على سبيل المثال لا الحصر:",
+  "PRIVACY_POLICY.PERSONAL_DATA": "البيانات الشخصية",
+  "PRIVACY_POLICY.USAGE_DATA": "بيانات الاستخدام"
 }
