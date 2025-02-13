@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 const DashboardPage = () => {
   return (
     <>
-      <Container className="pb-20">
+      <Container>
         <Toolbar>
           <ToolbarHeading title={<FormattedMessage id="SIDEBAR.MENU.DASHBOARD" />} description="" />
         </Toolbar>
