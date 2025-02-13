@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { formatRelative } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { toAbsoluteUrl } from '@/utils';
@@ -37,7 +37,7 @@ const getLocaleConfig = (intl: ReturnType<typeof useIntl>) => {
 
 const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
   const intl = useIntl();
-  const locale = getLocaleConfig(intl);
+  const locale = useMemo(() => getLocaleConfig(intl), [intl]);
   const { isRTL } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const { setSelectedTrip, selectedTrip } = useTripsContext();
