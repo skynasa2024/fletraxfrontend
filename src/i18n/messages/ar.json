@@ -177,5 +177,21 @@
   "GEOFENCE.FORM.LONGITUDE.PLACEHOLDER": "خط الطول",
   "GEOFENCE.FORM.RADIUS": "نصف القطر",
   "GEOFENCE.FORM.RADIUS.PLACEHOLDER": "نصف القطر",
-  "COMMON.ERROR": "حدث خطأ"
+  "COMMON.ERROR": "حدث خطأ",
+  "LOGIN.TITLE": "تسجيل الدخول",
+  "LOGIN.NEED_ACCOUNT": "تحتاج حساب؟",
+  "LOGIN.SIGN_UP": "إنشاء حساب",
+  "LOGIN.USERNAME": "اسم المستخدم",
+  "LOGIN.USERNAME.PLACEHOLDER": "أدخل اسم المستخدم",
+  "LOGIN.PASSWORD": "كلمة المرور",
+  "LOGIN.PASSWORD.PLACEHOLDER": "أدخل كلمة المرور",
+  "LOGIN.FORGOT_PASSWORD": "نسيت كلمة المرور؟",
+  "LOGIN.REMEMBER_ME": "تذكرني",
+  "LOGIN.PLEASE_WAIT": "برجاء الانتظار...",
+  "LOGIN.SIGN_IN": "تسجيل الدخول",
+  "LOGIN.VALIDATION.MIN_LENGTH": "٣ رموز كحد أدنى",
+  "LOGIN.VALIDATION.MAX_LENGTH": "٥٠ رمزًا كحد أقصى",
+  "LOGIN.VALIDATION.USERNAME_REQUIRED": "اسم المستخدم مطلوب",
+  "LOGIN.VALIDATION.PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+  "LOGIN.OR": "أو"
 }

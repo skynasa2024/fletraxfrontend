@@ -183,5 +183,21 @@
   "GEOFENCE.FORM.LONGITUDE.PLACEHOLDER": "Boylam",
   "GEOFENCE.FORM.RADIUS": "Yarıçap",
   "GEOFENCE.FORM.RADIUS.PLACEHOLDER": "Yarıçap",
-  "COMMON.ERROR": "Bir hata oluştu"
+  "COMMON.ERROR": "Bir hata oluştu",
+  "LOGIN.TITLE": "Giriş yap",
+  "LOGIN.NEED_ACCOUNT": "Hesabınız yok mu?",
+  "LOGIN.SIGN_UP": "Kayıt ol",
+  "LOGIN.USERNAME": "Kullanıcı adı",
+  "LOGIN.USERNAME.PLACEHOLDER": "Kullanıcı adınızı girin",
+  "LOGIN.PASSWORD": "Şifre",
+  "LOGIN.PASSWORD.PLACEHOLDER": "Şifrenizi girin",
+  "LOGIN.FORGOT_PASSWORD": "Şifremi unuttum?",
+  "LOGIN.REMEMBER_ME": "Beni hatırla",
+  "LOGIN.PLEASE_WAIT": "Lütfen bekleyin...",
+  "LOGIN.SIGN_IN": "Giriş yap",
+  "LOGIN.VALIDATION.MIN_LENGTH": "En az 3 karakter",
+  "LOGIN.VALIDATION.MAX_LENGTH": "En fazla 50 karakter",
+  "LOGIN.VALIDATION.USERNAME_REQUIRED": "Kullanıcı adı gerekli",
+  "LOGIN.VALIDATION.PASSWORD_REQUIRED": "Şifre gerekli",
+  "LOGIN.OR": "veya"
 }

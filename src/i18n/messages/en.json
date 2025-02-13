@@ -183,5 +183,21 @@
   "GEOFENCE.FORM.LONGITUDE.PLACEHOLDER": "Longitude",
   "GEOFENCE.FORM.RADIUS": "Radius",
   "GEOFENCE.FORM.RADIUS.PLACEHOLDER": "Radius",
-  "COMMON.ERROR": "An error occurred"
+  "COMMON.ERROR": "An error occurred",
+  "LOGIN.TITLE": "Sign in",
+  "LOGIN.NEED_ACCOUNT": "Need an account?",
+  "LOGIN.SIGN_UP": "Sign up",
+  "LOGIN.USERNAME": "Username",
+  "LOGIN.USERNAME.PLACEHOLDER": "Enter username",
+  "LOGIN.PASSWORD": "Password",
+  "LOGIN.PASSWORD.PLACEHOLDER": "Enter Password",
+  "LOGIN.FORGOT_PASSWORD": "Forgot Password?",
+  "LOGIN.REMEMBER_ME": "Remember me",
+  "LOGIN.PLEASE_WAIT": "Please wait...",
+  "LOGIN.SIGN_IN": "Sign In",
+  "LOGIN.VALIDATION.MIN_LENGTH": "Minimum 3 symbols",
+  "LOGIN.VALIDATION.MAX_LENGTH": "Maximum 50 symbols",
+  "LOGIN.VALIDATION.USERNAME_REQUIRED": "Username is required",
+  "LOGIN.VALIDATION.PASSWORD_REQUIRED": "Password is required",
+  "LOGIN.OR": "Or"
 }

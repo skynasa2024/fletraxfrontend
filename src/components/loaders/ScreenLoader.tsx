@@ -1,4 +1,5 @@
 import { toAbsoluteUrl } from '@/utils';
+import { FormattedMessage } from 'react-intl';
 
 const ScreenLoader = () => {
   return (
@@ -8,7 +9,9 @@ const ScreenLoader = () => {
         src={toAbsoluteUrl('/media/app/mini-logo.svg')}
         alt="logo"
       />
-      <div className="text-gray-500 font-medium text-sm">Loading...</div>
+      <div className="text-gray-500 font-medium text-sm">
+        <FormattedMessage id="COMMON.LOADING" />
+      </div>
     </div>
   );
 };

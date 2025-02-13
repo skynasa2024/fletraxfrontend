@@ -7,26 +7,10 @@ import { KeenIcon } from '@/components';
 import { useAuthContext } from '@/auth';
 import { useLayout } from '@/providers';
 import { Alert } from '@/components';
-
-const loginSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Username is required'),
-  password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
-  remember: Yup.boolean()
-});
-
-const initialValues = {
-  username: '',
-  password: '',
-  remember: false
-};
+import { useIntl, FormattedMessage } from 'react-intl';
 
 const Login = () => {
+  const intl = useIntl();
   const [loading, setLoading] = useState(false);
   const { login } = useAuthContext();
   const navigate = useNavigate();
@@ -34,6 +18,24 @@ const Login = () => {
   const from = location.state?.from?.pathname || '/';
   const [showPassword, setShowPassword] = useState(false);
   const { currentLayout } = useLayout();
+
+  const loginSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(3, intl.formatMessage({ id: 'LOGIN.VALIDATION.MIN_LENGTH' }))
+      .max(50, intl.formatMessage({ id: 'LOGIN.VALIDATION.MAX_LENGTH' }))
+      .required(intl.formatMessage({ id: 'LOGIN.VALIDATION.USERNAME_REQUIRED' })),
+    password: Yup.string()
+      .min(3, intl.formatMessage({ id: 'LOGIN.VALIDATION.MIN_LENGTH' }))
+      .max(50, intl.formatMessage({ id: 'LOGIN.VALIDATION.MAX_LENGTH' }))
+      .required(intl.formatMessage({ id: 'LOGIN.VALIDATION.PASSWORD_REQUIRED' })),
+    remember: Yup.boolean()
+  });
+
+  const initialValues = {
+    username: '',
+    password: '',
+    remember: false
+  };
 
   const formik = useFormik({
     initialValues,
@@ -76,31 +78,39 @@ const Login = () => {
         noValidate
       >
         <div className="text-center mb-2.5">
-          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-2.5">Sign in</h3>
-          <div className="flex items-center justify-center font-medium">
-            <span className="text-2sm text-gray-600 me-1.5">Need an account?</span>
+          <h3 className="text-lg font-semibold text-gray-900 leading-none mb-2.5">
+            <FormattedMessage id="LOGIN.TITLE" />
+          </h3>
+          {/* <div className="flex items-center justify-center font-medium">
+            <span className="text-2sm text-gray-600 me-1.5">
+              <FormattedMessage id="LOGIN.NEED_ACCOUNT" />
+            </span>
             <Link
               to={currentLayout?.name === 'auth-branded' ? '/auth/signup' : '/auth/classic/signup'}
               className="text-2sm link"
             >
-              Sign up
+              <FormattedMessage id="LOGIN.SIGN_UP" />
             </Link>
-          </div>
+          </div> */}
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <span className="border-t border-gray-200 w-full"></span>
-          <span className="text-2xs text-gray-500 font-medium uppercase">Or</span>
+          <span className="text-2xs text-gray-500 font-medium uppercase">
+            <FormattedMessage id="LOGIN.OR" />
+          </span>
           <span className="border-t border-gray-200 w-full"></span>
-        </div>
+        </div> */}
 
         {formik.status && <Alert variant="danger">{formik.status}</Alert>}
 
         <div className="flex flex-col gap-1">
-          <label className="form-label text-gray-900">Username</label>
+          <label className="form-label text-gray-900">
+            <FormattedMessage id="LOGIN.USERNAME" />
+          </label>
           <label className="input">
             <input
-              placeholder="Enter username"
+              placeholder={intl.formatMessage({ id: 'LOGIN.USERNAME.PLACEHOLDER' })}
               autoComplete="off"
               {...formik.getFieldProps('username')}
               className={clsx('form-control', {
@@ -116,8 +126,10 @@ const Login = () => {
         </div>
 
         <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between gap-1">
-            <label className="form-label text-gray-900">Password</label>
+          {/* <div className="flex items-center justify-between gap-1">
+            <label className="form-label text-gray-900">
+              <FormattedMessage id="LOGIN.PASSWORD" />
+            </label>
             <Link
               to={
                 currentLayout?.name === 'auth-branded'
@@ -126,13 +138,13 @@ const Login = () => {
               }
               className="text-2sm link shrink-0"
             >
-              Forgot Password?
+              <FormattedMessage id="LOGIN.FORGOT_PASSWORD" />
             </Link>
-          </div>
+          </div> */}
           <label className="input">
             <input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Enter Password"
+              placeholder={intl.formatMessage({ id: 'LOGIN.PASSWORD.PLACEHOLDER' })}
               autoComplete="off"
               {...formik.getFieldProps('password')}
               className={clsx('form-control', {
@@ -160,7 +172,9 @@ const Login = () => {
             type="checkbox"
             {...formik.getFieldProps('remember')}
           />
-          <span className="checkbox-label">Remember me</span>
+          <span className="checkbox-label">
+            <FormattedMessage id="LOGIN.REMEMBER_ME" />
+          </span>
         </label>
 
         <button
@@ -168,7 +182,11 @@ const Login = () => {
           className="btn btn-primary flex justify-center grow"
           disabled={loading || formik.isSubmitting}
         >
-          {loading ? 'Please wait...' : 'Sign In'}
+          {loading ? (
+            <FormattedMessage id="LOGIN.PLEASE_WAIT" />
+          ) : (
+            <FormattedMessage id="LOGIN.SIGN_IN" />
+          )}
         </button>
       </form>
     </div>
