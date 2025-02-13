@@ -6,15 +6,17 @@ import { SubControl } from '../monitoring/blocks/SubControl';
 import { PlaybackCard } from './blocks/PlaybackCard';
 import { AnimationProvider } from './providers/AnimationContext';
 import AppMap from '@/components/AppMap';
+import { useIntl } from 'react-intl';
 
 const TripsMap = () => {
   const { path } = useTripsContext();
+  const intl = useIntl();
 
   return (
     <AppMap>
       <AnimationProvider>
         <TripsLayer />
-        <MainControl title="Trips">
+        <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.TRIPS' })}>
           <MainCard />
         </MainControl>
         {path && (

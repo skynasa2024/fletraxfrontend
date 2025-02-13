@@ -3,33 +3,42 @@ import { formatRelative } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { toAbsoluteUrl } from '@/utils';
 import { TripGroup } from '@/api/trips';
-import { enGB } from 'date-fns/locale/en-GB';
+import { enGB, ar, tr } from 'date-fns/locale';
 import { Collapse } from '@mui/material';
 import { KeenIcon } from '@/components';
 import { useTripsContext } from '../providers/TripsContext';
 import { useAnimationContext } from '../providers/AnimationContext';
 import { useAuthContext } from '@/auth';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 interface TripCardProps {
   tripGroup: TripGroup;
   animation?: boolean;
 }
 
-const formatRelativeLocale: Record<string, string> = {
-  lastWeek: 'eeee',
-  yesterday: "'Yesterday'",
-  today: "'Today'",
-  tomorrow: "'Tomorrow'",
-  nextWeek: "'Next' eeee",
-  other: 'dd/MM/yyyy'
-};
+const getLocaleConfig = (intl: ReturnType<typeof useIntl>) => {
+  const formatRelativeLocale: Record<string, string> = {
+    lastWeek: 'eeee',
+    yesterday: intl.formatMessage({ id: 'DATE.YESTERDAY' }),
+    today: intl.formatMessage({ id: 'DATE.TODAY' }),
+    tomorrow: intl.formatMessage({ id: 'DATE.TOMORROW' }),
+    nextWeek: `'${intl.formatMessage({ id: 'DATE.NEXT' })}' eeee`,
+    other: 'dd/MM/yyyy'
+  };
 
-const locale = {
-  ...enGB,
-  formatRelative: (token: string) => formatRelativeLocale[token]
+  const locale = intl.locale === 'en' ? enGB : intl.locale === 'tr' ? tr : ar;
+
+  return {
+    ...locale,
+    formatRelative: (token: string) => formatRelativeLocale[token]
+  };
 };
 
 const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
+  const intl = useIntl();
+  const locale = getLocaleConfig(intl);
+  const { isRTL } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const { setSelectedTrip, selectedTrip } = useTripsContext();
   const { play, playing, stop } = useAnimationContext();
@@ -46,18 +55,21 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
           stop();
         }}
         className="flex flex-col gap-2"
+        style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
       >
         <div className="grid grid-cols-3 px-[6px] items-center border-b-2 border-dashed py-2">
           <div className="text-xs font-semibold text-[#3F4254] dark:text-gray-50">
             {formatRelative(tripGroup.date, new Date(), { locale })}
           </div>
           <div className="text-xs font-semibold text-[#3F4254] dark:text-gray-50 mx-auto">
-            <span>{tripGroup.trips.length} </span>
-            <span className="font-normal">Trips</span>
+            <FormattedMessage id="TRIPS.COUNT" values={{ count: tripGroup.trips.length }} />
           </div>
           {animation && (
             <div
               className="cursor-pointer ms-auto"
+              style={{
+                transform: isRTL() ? 'scaleX(-1)' : 'none'
+              }}
               onClick={(e) => {
                 e.stopPropagation();
                 stop();
@@ -88,7 +100,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
               <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
-                Start Date
+                <FormattedMessage id="TRIPS.FIELD.START_DATE" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
@@ -103,7 +115,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
               <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
-                Mileage
+                <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
@@ -114,7 +126,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
               <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
-                Max Speed
+                <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
@@ -153,6 +165,9 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                   {animation && (
                     <div
                       className="cursor-pointer"
+                      style={{
+                        transform: isRTL() ? 'scaleX(-1)' : 'none'
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         stop();

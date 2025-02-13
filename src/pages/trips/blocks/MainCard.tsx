@@ -3,6 +3,7 @@ import 'react-resizable/css/styles.css';
 import { toAbsoluteUrl } from '@/utils';
 import TripCard from './TripCard';
 import { TripsSearch } from './TripsSearch';
+import { FormattedMessage } from 'react-intl';
 
 export const MainCard = () => {
   const {
@@ -25,7 +26,9 @@ export const MainCard = () => {
       <TripsSearch search={searchDeviceQuery} setSearch={setSearchDeviceQuery} onSearch={search} />
       <div className="grid grid-cols-2 gap-y-2 gap-x-4 shrink-0">
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">Start Date</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+            <FormattedMessage id="TRIPS.FIELD.START_DATE" />
+          </div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
@@ -38,7 +41,9 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">End Date</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+            <FormattedMessage id="TRIPS.FIELD.END_DATE" />
+          </div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="date"
@@ -51,7 +56,9 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">Start Time</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+            <FormattedMessage id="TRIPS.FIELD.START_TIME" />
+          </div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"
@@ -63,7 +70,9 @@ export const MainCard = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">End Time</div>
+          <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+            <FormattedMessage id="TRIPS.FIELD.END_TIME" />
+          </div>
           <div className="input input-sm h-[34px] shrink-0">
             <input
               type="time"
@@ -81,7 +90,7 @@ export const MainCard = () => {
         disabled={!searchDeviceQuery}
       >
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
-        Search
+        <FormattedMessage id="COMMON.SEARCH" />
       </button>
       <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
         {trips.map((tripGroup) => (

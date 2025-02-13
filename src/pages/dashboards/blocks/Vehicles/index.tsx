@@ -78,7 +78,7 @@ export function VehicleList() {
           </div>
           <button className="btn btn-info px-8">
             <img src={toAbsoluteUrl('/media/icons/add-user.svg')} />
-            <FormattedMessage id="DASHBOARD.VEHICLE_LIST.ADD_CAR" defaultMessage="Add Car" />
+            <FormattedMessage id="DASHBOARD.VEHICLE_LIST.ADD_CAR" />
           </button>
         </div>
       </div>

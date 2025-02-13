@@ -8,8 +8,10 @@ import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { useAnimationContext } from '../providers/AnimationContext';
 import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
 import { getColor } from './PolylineColors';
+import { useLanguage } from '@/i18n';
 
 export const TripsLayer = () => {
+  const { isRTL } = useLanguage();
   const map = useMap();
   const { path, selectedTrip } = useTripsContext();
   const trips = useMemo(() => {
@@ -106,8 +108,13 @@ export const TripsLayer = () => {
     if (!bounds) {
       return;
     }
-    map.flyToBounds(bounds, { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] });
-  }, [bounds, map]);
+    map.flyToBounds(
+      bounds,
+      isRTL()
+        ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
+        : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
+    );
+  }, [bounds, isRTL, map]);
 
   if (!path) {
     return null;

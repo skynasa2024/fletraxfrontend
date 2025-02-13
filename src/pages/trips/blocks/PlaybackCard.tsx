@@ -9,10 +9,13 @@ import { useTripsContext } from '../providers/TripsContext';
 import { toAbsoluteUrl } from '@/utils';
 import { formatInTimeZone } from 'date-fns-tz';
 import { TripGroup } from '@/api/trips';
+import { FormattedMessage } from 'react-intl';
+import { useLanguage } from '@/i18n';
 
 const MultiplierOptions = [0.25, 0.5, 1, 2, 3, 5, 10, 20];
 
 export const PlaybackCard = () => {
+  const { isRTL } = useLanguage();
   const {
     playing,
     play,
@@ -51,6 +54,9 @@ export const PlaybackCard = () => {
         <div className="flex gap-6 items-center p-4">
           <button
             className="btn btn-icon rounded-lg btn-info -scale-x-100 size-10"
+            style={{
+              transform: isRTL() ? 'none' : 'scaleX(-1)'
+            }}
             onClick={handleDecreasePlayBackSpeed}
             disabled={MultiplierOptions.indexOf(multiplier) === 0}
           >
@@ -72,6 +78,9 @@ export const PlaybackCard = () => {
 
           <button
             className="btn btn-icon rounded-lg btn-info size-10"
+            style={{
+              transform: isRTL() ? 'scaleX(-1)' : 'none'
+            }}
             onClick={handleIncreasePlayBackSpeed}
             disabled={MultiplierOptions.indexOf(multiplier) === MultiplierOptions.length - 1}
           >
@@ -90,7 +99,7 @@ export const PlaybackCard = () => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
               <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                Start Date
+                <FormattedMessage id="TRIPS.FIELD.START_DATE" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
@@ -110,7 +119,7 @@ export const PlaybackCard = () => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
               <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                Mileage
+                <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
@@ -124,7 +133,7 @@ export const PlaybackCard = () => {
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
               <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                Max Speed
+                <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
