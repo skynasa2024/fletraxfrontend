@@ -7,9 +7,10 @@ import { useLanguage } from '@/i18n';
 interface DriverCardProps {
   driver?: DriverDetails;
   onDelete: () => void;
+  refetchStats?: () => void;
 }
 
-export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
+export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) => {
   const intl = useIntl();
   const { isRTL } = useLanguage();
   const options: StatusDropdownProps['options'] = {
@@ -53,6 +54,7 @@ export const DriverCard = ({ driver, onDelete }: DriverCardProps) => {
             setSelected={async (status) => {
               await updateDriverStatus(driver.id, status === 'Active');
               onDelete();
+              refetchStats?.();
             }}
             options={options}
           />
