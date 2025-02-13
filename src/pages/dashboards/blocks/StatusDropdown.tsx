@@ -26,10 +26,10 @@ export const StatusDropdown = ({
   const intl = useIntl();
   const getOptionLabel = (key: string) => {
     const option = options[key];
-    if (option.nameKey) {
+    if (option?.nameKey) {
       return intl.formatMessage({ id: option.nameKey, defaultMessage: option.name || key });
     }
-    return option.name || key;
+    return option?.name || key;
   };
 
   if (readOnly) {
