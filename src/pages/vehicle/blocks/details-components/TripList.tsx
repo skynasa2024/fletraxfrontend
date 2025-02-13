@@ -7,6 +7,7 @@ import { toAbsoluteUrl } from '@/utils';
 import AppMap from '@/components/AppMap';
 import { Marker, Polyline } from 'react-leaflet';
 import { getColor } from '@/pages/trips/blocks/PolylineColors';
+import { useIntl } from 'react-intl';
 
 interface TripListProps {
   deviceIdent?: string;
@@ -17,6 +18,7 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
   const [path, setPath] = useState<TripPath[]>();
   const [trips, setTrips] = useState<TripGroup[]>();
   const map = useRef<L.Map>(null);
+  const intl = useIntl();
 
   const providerValues = {
     searchDeviceQuery: '',
@@ -112,18 +114,25 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
       <div className="flex flex-col px-5 mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
         <div className="p-4 card hover:shadow-md lg:w-1/2 mt-4 h-[450px]">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Trips</h2>
+            <h2 className="text-lg font-semibold">
+              {intl.formatMessage({ id: 'TRIPS.LIST.TITLE' })}
+            </h2>
             <span className="text-gray-500 text-sm">
               {trips
-                ? `${trips.reduce((total, group) => total + group.trips.length, 0)} Trips`
+                ? intl.formatMessage(
+                    { id: 'TRIPS.COUNT' },
+                    { count: trips.reduce((total, group) => total + group.trips.length, 0) }
+                  )
                 : deviceIdent
-                  ? 'Loading...'
+                  ? intl.formatMessage({ id: 'TRIPS.LIST.LOADING' })
                   : ''}
             </span>
           </div>
           {trips ? (
             trips.length === 0 ? (
-              <div className="text-center text-gray-500 py-4">No trips available</div>
+              <div className="text-center text-gray-500 py-4">
+                {intl.formatMessage({ id: 'TRIPS.LIST.NO_TRIPS' })}
+              </div>
             ) : (
               <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
                 {trips.map((tripGroup) => (
@@ -136,9 +145,13 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
               </div>
             )
           ) : deviceIdent ? (
-            <div className="text-center text-gray-500 py-4">Loading...</div>
+            <div className="text-center text-gray-500 py-4">
+              {intl.formatMessage({ id: 'TRIPS.LIST.LOADING' })}
+            </div>
           ) : (
-            <div className="text-center text-gray-500 py-4">No device assigned to this vehicle</div>
+            <div className="text-center text-gray-500 py-4">
+              {intl.formatMessage({ id: 'TRIPS.LIST.NO_DEVICE' })}
+            </div>
           )}
         </div>
         <div className="card hover:shadow-md w-full">
