@@ -9,8 +9,10 @@ import { CircularProgress, Skeleton } from '@mui/material';
 import { KeenIcon } from '@/components';
 import { Link } from 'react-router';
 import { useSnackbar } from 'notistack';
+import { useIntl } from 'react-intl';
 
 export const MainCard = () => {
+  const intl = useIntl();
   const {
     search,
     refetch,
@@ -37,7 +39,7 @@ export const MainCard = () => {
         <div className="input input-sm h-[34px]">
           <input
             type="text"
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -86,7 +88,7 @@ export const MainCard = () => {
                             key={geofence.id}
                             data-selected={geofence.id === selectedGeofence?.id}
                             onClick={() => setSelectedGeofence(geofence)}
-                            className="flex gap-2 justify-between items-center p-[14px] rounded-[10px] border border-[#E7E8ED] dark:border-gray-300 dark:data-[selected=true]:border-[#5151F9] data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F90A]"
+                            className="flex gap-2 justify-between items-center p-[14px] rounded-[10px] border border-[#E7E8ED] dark:border-gray-300 dark.data-[selected=true]:border-[#5151F9] data-[selected=true]:border-[#5151F9] data-[selected=true]:bg-[#5151F90A]"
                           >
                             <div className="flex flex-col gap-1">
                               <div className="text-sm font-semibold">{geofence.name}</div>
@@ -96,6 +98,7 @@ export const MainCard = () => {
                               <Link
                                 to={`/geofences/edit/${geofence.id}`}
                                 className="btn btn-icon btn-clean btn-lg !size-[18px]"
+                                title={intl.formatMessage({ id: 'GEOFENCE.CARD.EDIT' })}
                               >
                                 <img
                                   src={toAbsoluteUrl('/media/icons/edit-light.svg')}
@@ -105,14 +108,16 @@ export const MainCard = () => {
                               <a
                                 href="#"
                                 className="btn btn-icon btn-clean btn-lg !size-[18px]"
+                                title={intl.formatMessage({ id: 'GEOFENCE.CARD.DELETE' })}
                                 onClick={async (e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
 
                                   await deleteGeofence(geofence.id);
-                                  enqueueSnackbar('Geofence deleted successfully', {
-                                    variant: 'success'
-                                  });
+                                  enqueueSnackbar(
+                                    intl.formatMessage({ id: 'GEOFENCE.CARD.DELETE_SUCCESS' }),
+                                    { variant: 'success' }
+                                  );
                                   await refetch();
 
                                   if (selectedGeofence?.id === geofence.id) {

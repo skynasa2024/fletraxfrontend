@@ -9,8 +9,10 @@ import { useSnackbar } from 'notistack';
 import { ResponseModel } from '@/api/response';
 import { AddGeofencePage } from './AddGeofencePage';
 import { createGeofence, GeofenceDTO, getGeofence, updateGeofence } from '@/api/geofence';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const AddGeofence = () => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const { id } = useParams();
   const [geofence, setGeofence] = useState<GeofenceDTO | undefined>(undefined);
@@ -29,13 +31,13 @@ const AddGeofence = () => {
         className="text-red-700 hover:text-white border bg-red-100 border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
         onClick={() => navigate(-1)}
       >
-        Discard
+        <FormattedMessage id="GEOFENCE.BUTTON.DISCARD" />
       </button>
       <button
         type="submit"
         className="focus:outline-none text-white bg-green-500 w-40 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
       >
-        {geofence ? 'Save' : 'Add'}
+        <FormattedMessage id={geofence ? 'GEOFENCE.BUTTON.SAVE' : 'GEOFENCE.BUTTON.ADD'} />
       </button>
     </ToolbarActions>
   );
@@ -46,18 +48,21 @@ const AddGeofence = () => {
       action={async (data) => {
         try {
           geofence ? await updateGeofence(geofence.id, data) : await createGeofence(data);
-          enqueueSnackbar('Geofence saved successfully', {
+          enqueueSnackbar(intl.formatMessage({ id: 'GEOFENCE.SAVE_SUCCESS' }), {
             variant: 'success'
           });
           navigate('/geofences');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;
-            enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
-              variant: 'error'
-            });
+            enqueueSnackbar(
+              axiosError.response?.data.message || intl.formatMessage({ id: 'COMMON.ERROR' }),
+              {
+                variant: 'error'
+              }
+            );
           } else {
-            enqueueSnackbar('An error occurred', {
+            enqueueSnackbar(intl.formatMessage({ id: 'COMMON.ERROR' }), {
               variant: 'error'
             });
           }
@@ -75,7 +80,7 @@ const AddGeofence = () => {
           <Toolbar>
             <ToolbarHeading>
               <h1 className="text-xl font-medium leading-none text-gray-900">
-                {geofence ? 'Edit Geofence' : 'Add Geofence'}
+                <FormattedMessage id={geofence ? 'GEOFENCE.EDIT.TITLE' : 'GEOFENCE.ADD.TITLE'} />
               </h1>
             </ToolbarHeading>
             <Actions />

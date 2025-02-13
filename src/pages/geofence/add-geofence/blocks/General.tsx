@@ -2,6 +2,7 @@ import AppMap from '@/components/AppMap';
 import { AddGeofencePageProps } from '../AddGeofencePage';
 import { useState } from 'react';
 import { Circle, Marker, useMapEvent } from 'react-leaflet';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface GeofenceMarkerProps {
   position: { lat: number; lng: number };
@@ -28,6 +29,7 @@ const GeofenceMarker = ({ position, setPosition }: GeofenceMarkerProps) => {
 };
 
 const General = ({ geofence }: AddGeofencePageProps) => {
+  const intl = useIntl();
   const [position, setPosition] = useState<{ lat: number; lng: number }>({
     lat: geofence?.latitude || 38.9637,
     lng: geofence?.longitude || 35.2433
@@ -37,29 +39,35 @@ const General = ({ geofence }: AddGeofencePageProps) => {
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="general_settings">
-        <h3 className="card-title">General</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="GEOFENCE.FORM.GENERAL" />
+        </h3>
       </div>
       <div className="card-body grid gap-5">
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Name</label>
+            <label className="form-label">
+              <FormattedMessage id="GEOFENCE.FORM.NAME" />
+            </label>
             <input
               required
               type="text"
               className="input"
               name="name"
-              placeholder="Name"
+              placeholder={intl.formatMessage({ id: 'GEOFENCE.FORM.NAME.PLACEHOLDER' })}
               defaultValue={geofence?.name}
             />
           </div>
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Type</label>
+            <label className="form-label">
+              <FormattedMessage id="GEOFENCE.FORM.TYPE" />
+            </label>
             <input
               required
               type="text"
               className="input"
               name="type"
-              placeholder="Type"
+              placeholder={intl.formatMessage({ id: 'GEOFENCE.FORM.TYPE.PLACEHOLDER' })}
               defaultValue={geofence?.type}
             />
           </div>
@@ -67,33 +75,39 @@ const General = ({ geofence }: AddGeofencePageProps) => {
 
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Latitude</label>
+            <label className="form-label">
+              <FormattedMessage id="GEOFENCE.FORM.LATITUDE" />
+            </label>
             <input
               required
               className="input"
               inputMode="decimal"
               pattern="[0-9]*[.,]?[0-9]*"
               name="latitude"
-              placeholder="Latitude"
+              placeholder={intl.formatMessage({ id: 'GEOFENCE.FORM.LATITUDE.PLACEHOLDER' })}
               value={position.lat}
               onChange={(e) => setPosition({ lat: parseFloat(e.target.value), lng: position.lng })}
             />
           </div>
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Longitude</label>
+            <label className="form-label">
+              <FormattedMessage id="GEOFENCE.FORM.LONGITUDE" />
+            </label>
             <input
               required
               className="input"
               inputMode="decimal"
               pattern="[0-9]*[.,]?[0-9]*"
               name="longitude"
-              placeholder="Longitude"
+              placeholder={intl.formatMessage({ id: 'GEOFENCE.FORM.LONGITUDE.PLACEHOLDER' })}
               value={position.lng}
               onChange={(e) => setPosition({ lat: position.lat, lng: parseFloat(e.target.value) })}
             />
           </div>
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Radius</label>
+            <label className="form-label">
+              <FormattedMessage id="GEOFENCE.FORM.RADIUS" />
+            </label>
             <input
               required
               type="text"
@@ -101,7 +115,7 @@ const General = ({ geofence }: AddGeofencePageProps) => {
               inputMode="decimal"
               pattern="[0-9]*[.,]?[0-9]*"
               name="radius"
-              placeholder="Radius"
+              placeholder={intl.formatMessage({ id: 'GEOFENCE.FORM.RADIUS.PLACEHOLDER' })}
               value={radius}
               onChange={(e) => setRadius(parseFloat(e.target.value))}
             />

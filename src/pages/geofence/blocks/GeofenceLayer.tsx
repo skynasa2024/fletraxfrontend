@@ -3,9 +3,11 @@ import 'leaflet-rotatedmarker';
 import L from 'leaflet';
 import { useGeofenceContext } from '../providers/GeofenceContext';
 import { useEffect } from 'react';
+import { useLanguage } from '@/i18n';
 
 export const GeofenceLayer = () => {
   const map = useMap();
+  const { isRTL } = useLanguage();
   const { selectedGeofence } = useGeofenceContext();
 
   useEffect(() => {
@@ -16,8 +18,9 @@ export const GeofenceLayer = () => {
       });
       circle.addTo(map);
       map.flyToBounds(circle.getBounds(), {
-        paddingTopLeft: [300, 20],
-        paddingBottomRight: [100, 20],
+        ...(isRTL()
+          ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
+          : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }),
         duration: 3
       });
     }
@@ -26,7 +29,7 @@ export const GeofenceLayer = () => {
         map.removeLayer(circle);
       }
     };
-  }, [selectedGeofence, map]);
+  }, [selectedGeofence, map, isRTL]);
 
   return null;
 };
