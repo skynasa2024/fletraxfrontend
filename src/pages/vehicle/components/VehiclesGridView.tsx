@@ -18,6 +18,7 @@ import { STATUS_OPTIONS } from '../constants';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -25,6 +26,7 @@ type VehiclesGridViewProps = {
 };
 
 export default function VehiclesGridView({ searchQuery, refetchStats }: VehiclesGridViewProps) {
+  const intl = useIntl();
   const handleGetVehicles = async (params: TDataGridRequestParams) => {
     return await getVehicles(params);
   };
@@ -32,7 +34,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
     () => [
       {
         accessorKey: 'customer.name',
-        header: 'Owner',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.OWNER' }),
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
             <img
@@ -49,7 +51,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'brand',
-        header: 'Brand',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.BRAND' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-3">
@@ -68,13 +70,13 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'plate',
-        header: 'Plate',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.PLATE' }),
         enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.vehicle.plate} />
       },
       {
         accessorKey: 'gear',
-        header: 'Gear',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.GEAR' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
@@ -85,13 +87,13 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'deviceIdent',
-        header: 'Device',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.DEVICE' }),
         enableSorting: true,
         cell: ({ row }) => <span className="font-monospace">{row.original.vehicle.imei}</span>
       },
       {
         accessorKey: 'maintenanceMileage',
-        header: 'Maintenance Mileage',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.MAINTENANCE_MILEAGE' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
@@ -102,7 +104,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.STATUS' }),
         enableSorting: true,
         cell: ({ row }) => (
           <GridViewStatusDropdown vehicleDetails={row.original} refetchStats={refetchStats} />
@@ -110,13 +112,13 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: intl.formatMessage({ id: 'VEHICLE.GRID.HEADER.ACTIONS' }),
         cell: ({ row }) => (
           <ActionsDropdown vehicleId={row.original.vehicle.id} carId={row.original.carId} />
         )
       }
     ],
-    [refetchStats]
+    [refetchStats, intl]
   );
   return (
     <DataGrid
@@ -135,18 +137,21 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
 function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: string }) {
   const reload = useDataGrid().fetchServerSideData;
   const { enqueueSnackbar } = useSnackbar();
+  const intl = useIntl();
 
   return (
     <div className="flex gap-3 items-center justify-center">
       <Link
         to={'/vehicles/vehicle/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
+        title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
       >
         <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
       </Link>
       <Link
         to={'/vehicles/edit/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
+        title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.EDIT' })}
       >
         <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
       </Link>
@@ -159,7 +164,7 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
             <MenuItem
               onClick={async () => {
                 await deleteVehicle(carId);
-                enqueueSnackbar('Vehicle deleted successfully', {
+                enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.GRID.DELETE_SUCCESS' }), {
                   variant: 'success'
                 });
                 reload();
@@ -169,7 +174,9 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
                 <MenuIcon>
                   <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                 </MenuIcon>
-                <MenuTitle>Delete</MenuTitle>
+                <MenuTitle>
+                  <FormattedMessage id="VEHICLE.GRID.ACTION.DELETE" />
+                </MenuTitle>
               </MenuLink>
             </MenuItem>
           </MenuSub>

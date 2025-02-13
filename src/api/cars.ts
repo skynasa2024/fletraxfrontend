@@ -299,7 +299,7 @@ export const getVehicles = async (
     customer: {
       name: vehicle.owner,
       avatar: '',
-      email: 'john.doe@example.com'
+      email: ''
     },
     brandName: vehicle.brand,
     type: vehicle.gear,

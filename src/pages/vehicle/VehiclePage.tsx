@@ -5,6 +5,7 @@ import PeopleIcon from './blocks/svg/PeopleIcon.tsx';
 import { useEffect, useState } from 'react';
 import { getVehiclesStats, VehicleStats } from '@/api/cars.ts';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const VehiclePage = () => {
   const [vehiclesStats, setVehiclesStats] = useState<VehicleStats>({
@@ -30,11 +31,13 @@ const VehiclePage = () => {
   return (
     <div className="grid gap-5 lg:gap-7.5">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-xl text-gray-800">Vehicle List</h3>
+        <h3 className="font-bold text-xl text-gray-800">
+          <FormattedMessage id="VEHICLE.LIST.TITLE" />
+        </h3>
 
         <Link to="/vehicles/add-vehicle">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
-            New Vehicle
+            <FormattedMessage id="VEHICLE.LIST.ADD_NEW" />
           </button>
         </Link>
       </div>
@@ -50,29 +53,31 @@ type VehiclesMiniCardsProps = {
 };
 
 const VehiclesMiniCards = ({ stats }: VehiclesMiniCardsProps) => {
+  const intl = useIntl();
+
   const metrics: MetricData[] = [
     {
       value: stats.total,
-      label: 'Total Vehicles',
+      label: intl.formatMessage({ id: 'VEHICLE.STATS.TOTAL' }),
       textColor: 'text-white',
       bgColor: 'bg-blue-500',
       icon: <BlocksIcon />
     },
     {
       value: stats.unavailable,
-      label: 'Unavailable Vehicles',
+      label: intl.formatMessage({ id: 'VEHICLE.STATS.UNAVAILABLE' }),
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#FF0000" />
     },
     {
       value: stats.inMaintenance,
-      label: 'Vehicles in maintenance',
+      label: intl.formatMessage({ id: 'VEHICLE.STATS.IN_MAINTENANCE' }),
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#FFA800" />
     },
     {
       value: stats.available,
-      label: 'Available Vehicles',
+      label: intl.formatMessage({ id: 'VEHICLE.STATS.AVAILABLE' }),
       textColor: 'text-gray-800',
       icon: <PeopleIcon color="#5271FF" />
     }
