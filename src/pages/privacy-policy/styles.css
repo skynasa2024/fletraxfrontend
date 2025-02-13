@@ -55,4 +55,18 @@
   color: var(--primary-dark);
 }
 
+/* RTL Support */
+[dir="rtl"] .privacy-policy li {
+  margin-left: 0;
+  margin-right: 2rem;
+}
 
+[dir="rtl"] .privacy-policy ol {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .privacy-policy ul {
+  padding-left: 0;
+  padding-right: 1rem;
+}
