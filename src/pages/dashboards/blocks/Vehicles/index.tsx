@@ -3,10 +3,12 @@ import { Paginated } from '@/api/common';
 import { KeenIcon } from '@/components';
 import VehicleCard from '@/pages/vehicle/components/VehicleCard';
 import { toAbsoluteUrl } from '@/utils';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AutoSizer, Grid, InfiniteLoader } from 'react-virtualized';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useLanguage } from '@/i18n';
+
+const CARD_WIDTH = 402; // Base card width
 
 export function VehicleList() {
   const intl = useIntl();
@@ -15,6 +17,7 @@ export function VehicleList() {
   const remoteRowCount = useMemo(() => vehicles?.totalCount ?? 0, [vehicles]);
   const [maxLoadedIndex, setMaxLoadedIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const gridRef = useRef<Grid>(null);
 
   const isRowLoaded = ({ index }: { index: number }) =>
     isRTL() ? !!vehicles?.data[remoteRowCount - index - 1] : !!vehicles?.data[index];
@@ -51,6 +54,11 @@ export function VehicleList() {
     getVehicles({ start: 0, end: 20, search: searchQuery }).then(setVehicles);
   }, [searchQuery]);
 
+  const getColumnWidth = (width: number) => {
+    const totalWidth = remoteRowCount * CARD_WIDTH;
+    return width - totalWidth;
+  };
+
   return (
     <div className="card">
       <div className="px-7 pt-6 flex items-center justify-between">
@@ -84,24 +92,31 @@ export function VehicleList() {
       </div>
 
       <div className="card-body pt-2 px-6 pb-3 [direction:ltr]">
-        <AutoSizer disableHeight>
+        <AutoSizer disableHeight onResize={() => gridRef.current?.recomputeGridSize()}>
           {({ width }) => (
             <InfiniteLoader
               isRowLoaded={isRowLoaded}
               loadMoreRows={loadMoreRows}
-              rowCount={remoteRowCount}
+              rowCount={remoteRowCount + (isRTL() && getColumnWidth(width) > 0 ? 1 : 0)}
             >
               {({ onRowsRendered, registerChild }) => (
                 <Grid
-                  ref={registerChild}
+                  ref={(e) => {
+                    registerChild(e);
+                    gridRef.current = e;
+                  }}
                   className="scrollable-x !overflow-y-hidden"
                   height={291}
                   width={width}
-                  columnCount={vehicles?.totalCount ?? 0}
-                  columnWidth={402}
-                  scrollToColumn={remoteRowCount - 1}
+                  columnCount={remoteRowCount + (isRTL() && getColumnWidth(width) > 0 ? 1 : 0)}
+                  columnWidth={({ index }) =>
+                    isRTL() && index === 0 && getColumnWidth(width) > 0
+                      ? getColumnWidth(width)
+                      : CARD_WIDTH
+                  }
                   rowCount={1}
                   rowHeight={291}
+                  scrollToColumn={isRTL() ? remoteRowCount - 1 : undefined}
                   overscanColumnCount={20}
                   onSectionRendered={({ columnOverscanStartIndex, columnOverscanStopIndex }) =>
                     onRowsRendered({
@@ -109,20 +124,31 @@ export function VehicleList() {
                       stopIndex: columnOverscanStopIndex
                     })
                   }
-                  cellRenderer={({ key, columnIndex: index, style }) =>
-                    vehicles && (
-                      <div key={key} style={style} className="pr-4 !h-[271px]">
-                        <VehicleCard
-                          vehicle={
-                            isRTL()
-                              ? vehicles.data[remoteRowCount - index - 1]
-                              : vehicles.data[index]
-                          }
-                          refetchVehicles={fetchAllLoadedVehicles}
-                        />
+                  cellRenderer={({ key, columnIndex: index, style }) => {
+                    if (!vehicles) return null;
+                    const indexOffset = getColumnWidth(width) > 1 ? 1 : 0;
+                    const vehicle = isRTL()
+                      ? vehicles.data[remoteRowCount - index - 1 + indexOffset]
+                      : vehicles.data[index];
+
+                    if (isRTL() && indexOffset && index === 0) {
+                      return (
+                        <div key={key} style={style}>
+                          <div className="w-full h-full" />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={key}
+                        style={{ ...style, direction: isRTL() ? 'rtl' : 'ltr' }}
+                        className="pe-4 !h-[271px]"
+                      >
+                        <VehicleCard vehicle={vehicle} refetchVehicles={fetchAllLoadedVehicles} />
                       </div>
-                    )
-                  }
+                    );
+                  }}
                 />
               )}
             </InfiniteLoader>

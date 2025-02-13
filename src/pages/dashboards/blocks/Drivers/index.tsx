@@ -1,5 +1,5 @@
 import { Paginated } from '@/api/common';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toAbsoluteUrl } from '@/utils';
 import { deleteDriver, DriverDetails, getDrivers } from '@/api/drivers';
 import { DriverCard } from './DriverCard';
@@ -9,6 +9,8 @@ import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
 
+const CARD_WIDTH = 402; // Base card width
+
 const DriverList = () => {
   const intl = useIntl();
   const { isRTL } = useLanguage();
@@ -16,6 +18,7 @@ const DriverList = () => {
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
   const remoteRowCount = useMemo(() => drivers?.totalCount ?? 0, [drivers]);
   const [searchQuery, setSearchQuery] = useState('');
+  const gridRef = useRef<Grid>(null);
 
   const isRowLoaded = ({ index }: { index: number }) =>
     isRTL() ? !!drivers?.data[remoteRowCount - index - 1] : !!drivers?.data[index];
@@ -43,6 +46,11 @@ const DriverList = () => {
   useEffect(() => {
     getDrivers({ start: 0, end: 10, search: searchQuery }).then(setDrivers);
   }, [searchQuery]);
+
+  const getColumnWidth = (width: number) => {
+    const totalWidth = remoteRowCount * CARD_WIDTH;
+    return width - totalWidth;
+  };
 
   return (
     <div className="card">
@@ -79,21 +87,28 @@ const DriverList = () => {
       </div>
 
       <div className="card-body pt-2 px-6 pb-3 [direction:ltr]">
-        <AutoSizer disableHeight>
+        <AutoSizer disableHeight onResize={() => gridRef.current?.recomputeGridSize()}>
           {({ width }) => (
             <InfiniteLoader
               isRowLoaded={isRowLoaded}
               loadMoreRows={loadMoreRows}
-              rowCount={remoteRowCount}
+              rowCount={remoteRowCount + (isRTL() && getColumnWidth(width) > 0 ? 1 : 0)}
             >
               {({ onRowsRendered, registerChild }) => (
                 <Grid
-                  ref={registerChild}
+                  ref={(e) => {
+                    registerChild(e);
+                    gridRef.current = e;
+                  }}
                   className="scrollable-x !overflow-y-hidden"
                   height={291}
                   width={width}
-                  columnCount={drivers?.totalCount ?? 0}
-                  columnWidth={402}
+                  columnCount={remoteRowCount + (isRTL() && getColumnWidth(width) > 0 ? 1 : 0)}
+                  columnWidth={({ index }) =>
+                    isRTL() && index === 0 && getColumnWidth(width) > 0
+                      ? getColumnWidth(width)
+                      : CARD_WIDTH
+                  }
                   rowCount={1}
                   rowHeight={291}
                   scrollToColumn={isRTL() ? remoteRowCount - 1 : undefined}
@@ -103,13 +118,29 @@ const DriverList = () => {
                       stopIndex: columnOverscanStopIndex
                     })
                   }
-                  cellRenderer={({ key, columnIndex: index, style }) =>
-                    drivers && (
-                      <div key={key} style={style} className="pr-4">
+                  cellRenderer={({ key, columnIndex: index, style }) => {
+                    if (!drivers) return null;
+                    const indexOffset = getColumnWidth(width) > 1 ? 1 : 0;
+                    const driver = isRTL()
+                      ? drivers.data[remoteRowCount - index - 1 + indexOffset]
+                      : drivers.data[index];
+
+                    if (isRTL() && indexOffset && index === 0) {
+                      return (
+                        <div key={key} style={style}>
+                          <div className="w-full h-full" />
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={key}
+                        style={{ ...style, direction: isRTL() ? 'rtl' : 'ltr' }}
+                        className="pe-4"
+                      >
                         <DriverCard
-                          driver={
-                            isRTL() ? drivers.data[remoteRowCount - index - 1] : drivers.data[index]
-                          }
+                          driver={driver}
                           onDelete={async () => {
                             const offset = {
                               start: Math.max(0, index - 10),
@@ -136,8 +167,8 @@ const DriverList = () => {
                           }}
                         />
                       </div>
-                    )
-                  }
+                    );
+                  }}
                 />
               )}
             </InfiniteLoader>
