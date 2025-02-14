@@ -23,6 +23,7 @@ import clsx from 'clsx';
 import { useSnackbar } from 'notistack';
 import axios, { AxiosError } from 'axios';
 import { ResponseModel } from '@/api/response';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 type RadioOption<T> = {
   label: string;
@@ -46,43 +47,43 @@ interface AdditionalVehicleInfo {
 
 export type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
 export const fuelOptions: Array<RadioOption<FuelType>> = [
-  { label: 'Hybrid', value: 'Hybrid' },
-  { label: 'Diesel', value: 'Diesel' },
-  { label: 'Benzin', value: 'Benzin' },
-  { label: 'LPG', value: 'LPG' },
-  { label: 'Kerosine', value: 'Kerosine' },
-  { label: 'Electric', value: 'Electric' }
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.HYBRID', value: 'Hybrid' },
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.DIESEL', value: 'Diesel' },
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.BENZIN', value: 'Benzin' },
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.LPG', value: 'LPG' },
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.KEROSINE', value: 'Kerosine' },
+  { label: 'VEHICLE.FORM.INFORMATION.FUEL_TYPE.ELECTRIC', value: 'Electric' }
 ];
 
 export type CarType = 'PROMO' | 'Pickup' | 'COMFORT' | 'SUV' | 'Bus' | 'Van';
 export const carOptions: Array<RadioOption<CarType>> = [
   {
-    label: 'PROMO',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.PROMO',
     value: 'PROMO',
     icon: <PromoCarTypeIcon />
   },
   {
-    label: 'Pickup',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.PICKUP',
     value: 'Pickup',
     icon: <PickupCarTypeIcon />
   },
   {
-    label: 'COMFORT',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.COMFORT',
     value: 'COMFORT',
     icon: <ComfortCarTypeIcon />
   },
   {
-    label: 'SUV',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.SUV',
     value: 'SUV',
     icon: <SuvCarTypeIcon />
   },
   {
-    label: 'Bus',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.BUS',
     value: 'Bus',
     icon: <BusCarTypeIcon />
   },
   {
-    label: 'Van',
+    label: 'VEHICLE.FORM.INFORMATION.CAR_TYPE.VAN',
     value: 'Van',
     icon: <VanCarTypeIcon />
   }
@@ -90,9 +91,13 @@ export const carOptions: Array<RadioOption<CarType>> = [
 
 export type GearType = 'Automatic' | 'Manual';
 export const gearOptions: Array<RadioOption<GearType>> = [
-  { label: 'Automatic', value: 'Automatic', icon: <AutomaticGearTypeIcon /> },
   {
-    label: 'Manual',
+    label: 'VEHICLE.FORM.INFORMATION.GEAR.AUTOMATIC',
+    value: 'Automatic',
+    icon: <AutomaticGearTypeIcon />
+  },
+  {
+    label: 'VEHICLE.FORM.INFORMATION.GEAR.MANUAL',
     value: 'Manual',
     icon: <ManualGearTypeIcon />
   }
@@ -168,6 +173,7 @@ export type AddVehicleForm = AdditionalVehicleInfo &
 const AddVehiclePage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { id: carId } = useParams();
+  const intl = useIntl();
   const [currentVehicle, setCurrentVehicle] = useState<VehicleDTO | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('information');
   const [isLoading, setIsLoading] = useState(false);
@@ -281,11 +287,19 @@ const AddVehiclePage = () => {
     label: string;
     ref: React.RefObject<HTMLDivElement | null>;
   }> = [
-    { id: 'information', label: 'Information', ref: refs.information },
-    { id: 'registration', label: 'Registration', ref: refs.registration },
+    {
+      id: 'information',
+      label: intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION' }),
+      ref: refs.information
+    },
+    {
+      id: 'registration',
+      label: intl.formatMessage({ id: 'VEHICLE.FORM.REGISTRATION' }),
+      ref: refs.registration
+    },
     {
       id: 'inspectionAndInsurance',
-      label: 'Inspection & Insurance',
+      label: intl.formatMessage({ id: 'VEHICLE.FORM.INSPECTION_INSURANCE' }),
       ref: refs.inspectionAndInsurance
     }
   ] as const;
@@ -359,18 +373,22 @@ const AddVehiclePage = () => {
         newId = newVehicle.vehicleId;
       }
       navigate(`/vehicles/edit-scratches/${newId}`);
-      enqueueSnackbar('Vehicle saved successfully', {
+      enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.FORM.VALIDATION.SAVE_SUCCESS' }), {
         variant: 'success'
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
 
-        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
-          variant: 'error'
-        });
+        enqueueSnackbar(
+          axiosError.response?.data.message ||
+            intl.formatMessage({ id: 'VEHICLE.FORM.VALIDATION.ERROR' }),
+          {
+            variant: 'error'
+          }
+        );
       } else {
-        enqueueSnackbar('An error occurred', {
+        enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.FORM.VALIDATION.ERROR' }), {
           variant: 'error'
         });
       }
@@ -443,7 +461,7 @@ const AddVehiclePage = () => {
                     </div>
                     <div className="flex flex-col gap-6">
                       <div ref={refs.information}>
-                        <Information title="Information" />
+                        <Information />
                       </div>
                       <div ref={refs.registration}>
                         <Registration />
@@ -459,7 +477,7 @@ const AddVehiclePage = () => {
                         type="button"
                         className="text-red-700 hover:text-white border bg-red-100 border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-5 py-2.5 text-center me-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
                       >
-                        Discard
+                        <FormattedMessage id="VEHICLE.FORM.DISCARD" />
                       </button>
                       <button
                         className={clsx(
@@ -470,7 +488,7 @@ const AddVehiclePage = () => {
                         disabled={isLoadingSave}
                       >
                         {isLoadingSave && <CircularProgress size={14} color="success" />}
-                        Save
+                        <FormattedMessage id="VEHICLE.FORM.SAVE" />
                       </button>
                     </div>
                   </div>

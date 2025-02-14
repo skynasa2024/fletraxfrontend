@@ -9,6 +9,7 @@ import { createScratch, deleteScratch, getScratches, ScratchDTO, updateScratch }
 import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { ResponseModel } from '@/api/response';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const CarScratches: React.FC = () => {
   const { id } = useParams();
@@ -49,14 +50,18 @@ const CarScratches: React.FC = () => {
   return (
     <div className="card pb-2.5">
       <div className="card-header">
-        <h3 className="card-title">Car Scratches</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="VEHICLE.SCRATCHES.TITLE" />
+        </h3>
       </div>
       <div className="card-body grid gap-5 grid-cols-1 md:grid-cols-[1fr,300px]">
         {/* Left Column */}
         <div className="space-y-6 p-4">
           {/* Dropdown and Add Button */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Choose a place</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <FormattedMessage id="VEHICLE.SCRATCHES.CHOOSE_PLACE" />
+            </label>
             <div className="flex gap-4">
               <select
                 value={selectedPlace}
@@ -74,10 +79,12 @@ const CarScratches: React.FC = () => {
                 onClick={() => handleAddPlace()}
                 className="px-6 py-2 text-blue-500 border border-blue-500 rounded-md hover:bg-blue-50"
               >
-                Add
+                <FormattedMessage id="COMMON.ADD" />
               </button>
             </div>
-            <p className="mt-2 text-sm text-gray-500">As per side image</p>
+            <p className="mt-2 text-sm text-gray-500">
+              <FormattedMessage id="VEHICLE.SCRATCHES.AS_PER_SIDE_IMAGE" />
+            </p>
           </div>
 
           {/* Place Sections */}
@@ -169,6 +176,7 @@ interface CarScratchFormProps {
 
 const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, newScratch }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const intl = useIntl();
   const [changed, setChanged] = useState(newScratch || false);
   const [file, setFile] = useState<File | undefined>(
     scratch.image ? new File([], 'File') : undefined
@@ -178,20 +186,20 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
     try {
       if (!scratch.id) return;
       await deleteScratch(scratch.id);
-      enqueueSnackbar('Scratch removed successfully', {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage({ id: 'VEHICLE.SCRATCHES.NOTIFICATIONS.DELETE_SUCCESS' }),
+        { variant: 'success' }
+      );
       onRefresh();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
-        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
-          variant: 'error'
-        });
+        enqueueSnackbar(
+          axiosError.response?.data.message || intl.formatMessage({ id: 'COMMON.ERROR' }),
+          { variant: 'error' }
+        );
       } else {
-        enqueueSnackbar('An error occurred', {
-          variant: 'error'
-        });
+        enqueueSnackbar(intl.formatMessage({ id: 'COMMON.ERROR' }), { variant: 'error' });
       }
     }
   };
@@ -204,20 +212,19 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
         formData.append('scratches[0].id', scratch.id || '');
         await updateScratch(formData);
       }
-      enqueueSnackbar('Scratch saved successfully', {
+      enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.SCRATCHES.NOTIFICATIONS.SAVE_SUCCESS' }), {
         variant: 'success'
       });
       onRefresh();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
-        enqueueSnackbar(axiosError.response?.data.message || 'An error occurred', {
-          variant: 'error'
-        });
+        enqueueSnackbar(
+          axiosError.response?.data.message || intl.formatMessage({ id: 'COMMON.ERROR' }),
+          { variant: 'error' }
+        );
       } else {
-        enqueueSnackbar('An error occurred', {
-          variant: 'error'
-        });
+        enqueueSnackbar(intl.formatMessage({ id: 'COMMON.ERROR' }), { variant: 'error' });
       }
     }
   };
@@ -227,12 +234,14 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
       <input type="hidden" name={`scratches[0].vehicleId`} value={scratch.vehicleId} />
       <div className="p-4 border rounded-xl border-gray-600 relative">
         {/* Dynamic Place Label */}
-        <h3 className="text-lg font-medium mb-4">Place {scratch.place}</h3>
+        <h3 className="text-lg font-medium mb-4">
+          <FormattedMessage id="VEHICLE.SCRATCHES.PLACE" values={{ number: scratch.place }} />
+        </h3>
 
         {/* Delete Button */}
         <button
           type="button"
-          className="absolute top-4 right-4 text-red-500 hover:text-red-700"
+          className="absolute top-4 end-4 text-red-500 hover:text-red-700"
           onClick={handleRemove}
         >
           <TrashIcon />
@@ -254,7 +263,9 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
                   </option>
                 ))}
               </select>
-              <p className="mt-1 text-sm text-gray-500">As per side image</p>
+              <p className="mt-1 text-sm text-gray-500">
+                <FormattedMessage id="VEHICLE.SCRATCHES.AS_PER_SIDE_IMAGE" />
+              </p>
             </div>
 
             {/* Image Upload */}
@@ -278,7 +289,7 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
                       }}
                       className="text-red-500 hover:text-red-700 border border-red-500 hover:border-red-700 hover:bg-red-500/5 px-6 py-2 rounded-md"
                     >
-                      Remove
+                      <FormattedMessage id="COMMON.REMOVE" />
                     </button>
                   </div>
                 ) : (
@@ -286,9 +297,11 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
                     htmlFor={`scratches[0].imageFile`}
                     className="relative border border-gray-600 rounded-lg h-16 flex items-center justify-between px-4 cursor-pointer"
                   >
-                    <span className="text-gray-500">Drag and drop your files</span>
+                    <span className="text-gray-500">
+                      <FormattedMessage id="FILE_UPLOAD.DRAG_DROP" />
+                    </span>
                     <span className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-colors">
-                      Or choose files
+                      <FormattedMessage id="FILE_UPLOAD.CHOOSE_FILES" />
                     </span>
                   </label>
                 )}
@@ -299,23 +312,21 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
 
           {/* Explanation Text Area */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Explanation of Place</label>
+            <label className="block text-sm font-medium text-gray-700">
+              <FormattedMessage id="VEHICLE.SCRATCHES.EXPLANATION" />
+            </label>
             <textarea
               name={`scratches[0].explanationOf`}
               defaultValue={scratch.explanationOf}
               className="dark:bg-light-active dark:light-active mt-1 w-full p-3 border rounded-xl border-gray-600 resize-none h-32"
-              placeholder={`Describe the scratch in detail. For example: 
-- Length: Approximately 15cm long scratch
-- Type: Appears to be from contact with another car's door
-- Color of affected area: White paint with some gray marks
-- Additional details: Minor paint transfer visible, no denting observed`}
+              placeholder={intl.formatMessage({ id: 'VEHICLE.SCRATCHES.EXPLANATION.PLACEHOLDER' })}
               onChange={() => setChanged(true)}
             />
           </div>
           {changed && (
             <div className="flex justify-end">
               <button type="submit" className="px-6 py-2 btn btn-success">
-                Save
+                <FormattedMessage id="COMMON.SAVE" />
               </button>
             </div>
           )}

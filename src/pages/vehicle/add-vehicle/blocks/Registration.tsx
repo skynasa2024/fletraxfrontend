@@ -2,26 +2,35 @@ import { registrationTypeOptions } from '../AddVehiclePage';
 import FormRadioButton from '../components/FormRadioButton';
 import { Field } from 'formik';
 import CalendarIcon from '../../blocks/svg/CalendarIcon';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const Registration = () => {
+  const intl = useIntl();
+
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
-        <h3 className="card-title">Registration</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="VEHICLE.FORM.REGISTRATION.TITLE" />
+        </h3>
       </div>
 
       <div className="card-body grid gap-5">
         {/* Type Selection */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2.5">
-            <label className="form-label">Type</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.TYPE" />
+            </label>
             <div className="flex w-full gap-4">
               {registrationTypeOptions.map((type, idx) => (
                 <FormRadioButton
                   key={type.value + idx}
                   name="registrationType"
                   value={type.value}
-                  label={type.label}
+                  label={intl.formatMessage({
+                    id: `VEHICLE.FORM.REGISTRATION.TYPE.${type.value.toUpperCase()}`
+                  })}
                   icon={type.icon}
                 />
               ))}
@@ -29,12 +38,16 @@ const Registration = () => {
           </div>
           {/* Identify Number */}
           <div className="grid gap-2.5">
-            <label className="form-label">Identify Number</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.IDENTIFY_NUMBER" />
+            </label>
             <Field
               type="text"
               className="input"
               name="identifyNumber"
-              placeholder="Identify Number"
+              placeholder={intl.formatMessage({
+                id: 'VEHICLE.FORM.REGISTRATION.IDENTIFY_NUMBER.PLACEHOLDER'
+              })}
             />
           </div>
         </div>
@@ -42,25 +55,42 @@ const Registration = () => {
         {/* Vehicle Information */}
         <div className="grid grid-cols-3 gap-4">
           <div className="grid gap-2.5">
-            <label className="form-label">Chassis Number</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.CHASSIS_NUMBER" />
+            </label>
             <Field
               type="text"
               className="input"
               name="chassisNumber"
-              placeholder="Chassis Number"
+              placeholder={intl.formatMessage({
+                id: 'VEHICLE.FORM.REGISTRATION.CHASSIS_NUMBER.PLACEHOLDER'
+              })}
             />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Engine Number</label>
-            <Field type="text" className="input" name="engineNumber" placeholder="Engine Number" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.ENGINE_NUMBER" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="engineNumber"
+              placeholder={intl.formatMessage({
+                id: 'VEHICLE.FORM.REGISTRATION.ENGINE_NUMBER.PLACEHOLDER'
+              })}
+            />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Registration Number</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.REGISTRATION_NUMBER" />
+            </label>
             <Field
               type="text"
               className="input"
               name="registrationNumber"
-              placeholder="Registration Number"
+              placeholder={intl.formatMessage({
+                id: 'VEHICLE.FORM.REGISTRATION.REGISTRATION_NUMBER.PLACEHOLDER'
+              })}
             />
           </div>
         </div>
@@ -68,7 +98,9 @@ const Registration = () => {
         {/* Registration Dates */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2.5">
-            <label className="form-label">Registration Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.REGISTRATION_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -83,12 +115,13 @@ const Registration = () => {
                 className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
                 placeholder="DD/MM/YYYY"
               />
-
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">First Registration Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.FIRST_REGISTRATION_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -111,18 +144,31 @@ const Registration = () => {
         {/* License and Price */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2.5">
-            <label className="form-label">License Serial Number</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.LICENSE_SERIAL_NUMBER" />
+            </label>
             <Field
               type="text"
               className="input"
               name="licenseSerialNumber"
-              placeholder="License Serial Number"
+              placeholder={intl.formatMessage({
+                id: 'VEHICLE.FORM.REGISTRATION.LICENSE_SERIAL_NUMBER.PLACEHOLDER'
+              })}
             />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Price</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.REGISTRATION.PRICE" />
+            </label>
             <div className="input">
-              <Field type="text" name="price" placeholder="Price" />$
+              <Field
+                type="text"
+                name="price"
+                placeholder={intl.formatMessage({
+                  id: 'VEHICLE.FORM.REGISTRATION.PRICE.PLACEHOLDER'
+                })}
+              />
+              $
             </div>
           </div>
         </div>
