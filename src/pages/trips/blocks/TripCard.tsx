@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { formatRelative } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { toAbsoluteUrl } from '@/utils';
@@ -15,6 +15,7 @@ import { useLanguage } from '@/i18n';
 interface TripCardProps {
   tripGroup: TripGroup;
   animation?: boolean;
+  measure?: () => void;
 }
 
 const getLocaleConfig = (intl: ReturnType<typeof useIntl>) => {
@@ -35,7 +36,7 @@ const getLocaleConfig = (intl: ReturnType<typeof useIntl>) => {
   };
 };
 
-const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
+const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true, measure }) => {
   const intl = useIntl();
   const locale = useMemo(() => getLocaleConfig(intl), [intl]);
   const { isRTL } = useLanguage();
@@ -44,9 +45,15 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
   const { play, playing, stop } = useAnimationContext();
   const { currentUser } = useAuthContext();
 
+  useEffect(() => {
+    setTimeout(() => {
+      measure?.();
+    }, 0);
+  }, [isOpen, measure]);
+
   return (
     <div
-      className="flex flex-col gap-2 rounded-[10px] border-2 border-[#E7E8ED] dark:border-gray-200 overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
+      className="flex flex-col gap-2 mb-2.5 rounded-[10px] border-2 border-[#E7E8ED] dark:border-gray-200 overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
       data-selected={selectedTrip === tripGroup}
     >
       <div
@@ -139,6 +146,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             onClick={(e) => {
               e.stopPropagation();
               setIsOpen(!isOpen);
+              // measure?.();
             }}
           >
             <KeenIcon icon={isOpen ? 'up' : 'down'} className="dark:text-[#F5F5FC]" />
