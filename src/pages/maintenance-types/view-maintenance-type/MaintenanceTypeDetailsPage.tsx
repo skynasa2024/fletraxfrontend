@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Container } from '@/components/container';
 import { PageNavbar } from '@/pages/account';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import { useParams } from 'react-router';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage } from 'react-intl';
 
 const MaintenanceTypeDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,18 +71,20 @@ const MaintenanceTypeDetailsPage = () => {
       <Container>
         <div className="flex justify-between items-center gap-6">
           <h1 className="text-xl font-medium leading-none text-gray-900">
-            Maintenance Type Details
+            <FormattedMessage id="MAINTENANCE_TYPE.DETAILS.TITLE" />
           </h1>
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md"
             >
-              <ArrowLeftIcon className="w-4 h-4" /> Back
+              <ArrowLeftIcon className="w-4 h-4 rtl:-scale-x-100" />
+              <FormattedMessage id="COMMON.BACK" />
             </button>
             <Link to={`/maintenance/maintenance-type/edit/${id}`}>
               <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
-                <EditIcon className="w-4 h-4" /> Edit
+                <EditIcon className="w-4 h-4" />
+                <FormattedMessage id="COMMON.EDIT" />
               </button>
             </Link>
             <button
@@ -89,7 +92,7 @@ const MaintenanceTypeDetailsPage = () => {
               onClick={handleDelete}
             >
               <DeleteIcon className="w-4 h-4" />
-              Delete
+              <FormattedMessage id="COMMON.DELETE" />
             </button>
           </div>
         </div>
@@ -97,12 +100,16 @@ const MaintenanceTypeDetailsPage = () => {
           <div className="card">
             {loading ? (
               <div className="flex justify-center items-center">
-                <span>Loading...</span>
+                <span>
+                  <FormattedMessage id="COMMON.LOADING" />
+                </span>
               </div>
             ) : (
               <div>
                 <div className="card-header" id="maintenance_settings">
-                  <h3 className="card-title">Maintenance Type</h3>
+                  <h3 className="card-title">
+                    <FormattedMessage id="MAINTENANCE_TYPE.FORM.TITLE" />
+                  </h3>
                 </div>
                 <form className="card-body grid gap-5 py-6">
                   <div className="grid gap-2.5">
@@ -111,11 +118,15 @@ const MaintenanceTypeDetailsPage = () => {
                   </div>
                   <div className="grid lg:grid-cols-2 gap-5">
                     <div className="grid gap-2.5">
-                      <h1 className="text-white">Title</h1>
+                      <h1 className="text-white">
+                        <FormattedMessage id="MAINTENANCE_TYPE.FORM.FIELD.TITLE" />
+                      </h1>
                       <span>{model?.title}</span>
                     </div>
                     <div className="grid gap-2.5">
-                      <h1 className="text-white">Code</h1>
+                      <h1 className="text-white">
+                        <FormattedMessage id="MAINTENANCE_TYPE.FORM.FIELD.CODE" />
+                      </h1>
                       <span>{model?.code}</span>
                     </div>
                   </div>

@@ -501,5 +501,19 @@
   "MAINTENANCE.DETAILS.TITLE": "تفاصيل الصيانة",
   "MAINTENANCE.DETAILS.FINISHED_DATE": "تاريخ الانتهاء",
   "COMMON.BACK": "رجوع",
-  "COMMON.UNKNOWN": "غير معروف"
+  "COMMON.UNKNOWN": "غير معروف",
+  "MAINTENANCE_TYPE.LIST.TITLE": "أنواع الصيانة",
+  "MAINTENANCE_TYPE.LIST.ADD_NEW": "نوع صيانة جديد",
+  "MAINTENANCE_TYPE.GRID.HEADER.TITLE": "العنوان",
+  "MAINTENANCE_TYPE.GRID.HEADER.CODE": "الرمز",
+  "COMMON.ACTIONS": "الإجراءات",
+  "MAINTENANCE_TYPE.ADD.TITLE": "إضافة نوع صيانة",
+  "MAINTENANCE_TYPE.EDIT.TITLE": "تعديل نوع صيانة",
+  "MAINTENANCE_TYPE.FORM.SAVE_SUCCESS": "تم حفظ نوع الصيانة بنجاح",
+  "MAINTENANCE_TYPE.FORM.TITLE": "نوع الصيانة",
+  "MAINTENANCE_TYPE.FORM.FIELD.TITLE": "العنوان",
+  "MAINTENANCE_TYPE.FORM.FIELD.TITLE.PLACEHOLDER": "أدخل العنوان",
+  "MAINTENANCE_TYPE.FORM.FIELD.CODE": "الرمز",
+  "MAINTENANCE_TYPE.FORM.FIELD.CODE.PLACEHOLDER": "أدخل الرمز",
+  "MAINTENANCE_TYPE.DETAILS.TITLE": "تفاصيل نوع الصيانة"
 }
