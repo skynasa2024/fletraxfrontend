@@ -19,6 +19,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { toAbsoluteUrl } from '@/utils';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 type DeviceListProps = {
   refetchStats?: () => void;
@@ -29,11 +30,13 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
   const { getProtocolName, getTypeName } = useDeviceProvider();
+  const intl = useIntl();
+
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: 'IMEI',
+        header: intl.formatMessage({ id: 'DEVICE.LIST.GRID.IMEI' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center gap-4">
@@ -46,53 +49,69 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
       },
       {
         accessorKey: 'vehiclePlate',
-        header: 'Vehicle Plate',
+        header: intl.formatMessage({ id: 'DEVICE.LIST.GRID.PLATE' }),
         enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
         accessorKey: 'phone',
-        header: 'Phone',
+        header: intl.formatMessage({ id: 'DEVICE.LIST.GRID.PHONE' }),
         enableSorting: true,
         cell: ({ row }) => (
-          <span>
+          <span dir="ltr">
             {row.original.phoneCode} {row.original.phone}
           </span>
         )
       },
       {
         accessorKey: 'protocol',
-        header: 'Protocol',
+        header: intl.formatMessage({ id: 'DEVICE.LIST.GRID.PROTOCOL' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex flex-col gap-2">
-            <span>Protocol: {getProtocolName(row.original.protocolId)}</span>
-            <span>Type: {getTypeName(row.original.typeId)}</span>
+            <span>
+              <FormattedMessage id="DEVICE.LIST.GRID.PROTOCOL_TYPE" />:{' '}
+              {getProtocolName(row.original.protocolId)}
+            </span>
+            <span>
+              <FormattedMessage id="DEVICE.LIST.GRID.DEVICE_TYPE" />:{' '}
+              {getTypeName(row.original.typeId)}
+            </span>
           </div>
         )
       },
       {
         accessorKey: 'subscriptionStartDate',
-        header: 'Subscription',
+        header: intl.formatMessage({ id: 'DEVICE.LIST.GRID.SUBSCRIPTION' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex flex-col gap-2">
-            <span>Start: {row.original.subscriptionStartDate}</span>
-            <span>End: {row.original.subscriptionEndDate}</span>
+            <span>
+              <FormattedMessage id="COMMON.START" />: {row.original.subscriptionStartDate}
+            </span>
+            <span>
+              <FormattedMessage id="COMMON.END" />: {row.original.subscriptionEndDate}
+            </span>
           </div>
         )
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
             <a href={`/devices/device/${row.original.ident}`}>
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+              <img
+                src={toAbsoluteUrl('/media/icons/view.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+              />
             </a>
             <RoleComponent role="admin">
               <a href={`/devices/edit/${row.original.id}`}>
-                <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+                <img
+                  src={toAbsoluteUrl('/media/icons/edit.svg')}
+                  alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+                />
               </a>
               <Menu>
                 <MenuItem toggle="dropdown" trigger="click">
@@ -103,7 +122,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
                     <MenuItem
                       onClick={async () => {
                         await deleteDevice(row.original.id);
-                        enqueueSnackbar('Device deleted successfully', {
+                        enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.DELETE_SUCCESS' }), {
                           variant: 'success'
                         });
                         refetch?.();
@@ -113,7 +132,9 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
                         <MenuIcon>
                           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                         </MenuIcon>
-                        <MenuTitle>Delete</MenuTitle>
+                        <MenuTitle>
+                          <FormattedMessage id="COMMON.DELETE" />
+                        </MenuTitle>
                       </MenuLink>
                     </MenuItem>
                   </MenuSub>
@@ -124,14 +145,15 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         )
       }
     ],
-    [enqueueSnackbar, getProtocolName, getTypeName, refetch]
+    [enqueueSnackbar, getProtocolName, getTypeName, intl, refetch]
   );
 
   return (
     <div className="card">
       <div className="flex items-center justify-between p-6 ">
-        <h2 className="text-xl font-semibold text-gray-800">Devices List</h2>
-        {/* Search Input */}
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage id="DEVICE.LIST.TITLE" />
+        </h2>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <KeenIcon style="duotone" icon="magnifier" />
@@ -139,7 +161,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
           <DebouncedSearchInput
             type="search"
             className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             onDebounce={setSearchQuery}
           />
         </div>
@@ -160,4 +182,4 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
   );
 };
 
-export { DeviceList as DeviceList };
+export { DeviceList };

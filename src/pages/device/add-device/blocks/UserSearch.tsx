@@ -4,6 +4,7 @@ import { KeenIcon } from '@/components';
 import { Skeleton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface UserSearchProps {
   search?: string;
@@ -21,6 +22,7 @@ export const UserSearch = ({
   onSelectUserId,
   initialSearch
 }: UserSearchProps) => {
+  const intl = useIntl();
   const [privateSearch, setPrivateSearch] = useState(initialSearch ?? '');
   const [users, setUsers] = useState<Paginated<UserModel>>();
   const [focused, setFocused] = useState(false);
@@ -68,7 +70,7 @@ export const UserSearch = ({
     <div className="input input-sm h-[34px] shrink-0 relative">
       <input
         type="text"
-        placeholder="Search Users"
+        placeholder={intl.formatMessage({ id: 'USER.SEARCH.PLACEHOLDER' })}
         value={search ?? privateSearch}
         onChange={(e) => (setSearch ? setSearch(e.target.value) : setPrivateSearch(e.target.value))}
         onFocus={() => setFocused(true)}
@@ -90,7 +92,11 @@ export const UserSearch = ({
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {!users && <div className="p-2">Loading...</div>}
+          {!users && (
+            <div className="p-2">
+              <FormattedMessage id="COMMON.LOADING" />
+            </div>
+          )}
           <AutoSizer disableHeight>
             {({ width }) => (
               <InfiniteLoader
@@ -101,7 +107,7 @@ export const UserSearch = ({
                 {({ onRowsRendered, registerChild }) => (
                   <List
                     ref={registerChild}
-                    className="scrollable-y !overflow-x-hidden"
+                    className="scrollable-y px-2 !overflow-x-hidden"
                     height={384}
                     width={width}
                     rowCount={remoteRowCount}

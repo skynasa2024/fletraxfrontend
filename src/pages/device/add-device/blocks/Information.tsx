@@ -2,11 +2,13 @@ import PhoneInput from '@/components/PhoneInput';
 import { AddDevicePageProps } from '../AddDevicePage';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useEffect, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const Information = ({ device }: AddDevicePageProps) => {
   const { protocols, types, getTypesOfProtocol } = useDeviceProvider();
   const [protocolId, setProtocolId] = useState<string>();
   const [typeId, setTypeId] = useState<string>();
+  const { formatMessage } = useIntl();
 
   useEffect(() => {
     if (device?.protocolId && protocols && types) {
@@ -16,30 +18,36 @@ const Information = ({ device }: AddDevicePageProps) => {
   }, [device, protocols, types]);
 
   return (
-    <div className=" card pb-2.5">
+    <div className="card pb-2.5">
       <div className="card-header" id="general_settings">
-        <h3 className="card-title">Information</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="DEVICE.FORM.INFORMATION" />
+        </h3>
       </div>
       <div className="card-body grid gap-5">
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Name</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.NAME" />
+            </label>
             <input
               type="text"
               className="input"
               name="name"
-              placeholder="Name"
+              placeholder={formatMessage({ id: 'DEVICE.FORM.NAME.PLACEHOLDER' })}
               defaultValue={device?.name}
             />
           </div>
 
           <div className="grid gap-2.5">
-            <label className="form-label">Identify Number</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.IDENTIFY_NUMBER" />
+            </label>
             <input
               type="text"
               className="input"
               name="ident"
-              placeholder="Identify Number"
+              placeholder={formatMessage({ id: 'DEVICE.FORM.IDENTIFY_NUMBER.PLACEHOLDER' })}
               defaultValue={device?.ident}
             />
           </div>
@@ -47,7 +55,9 @@ const Information = ({ device }: AddDevicePageProps) => {
 
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Phone</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.PHONE" />
+            </label>
             <PhoneInput
               required
               phoneCodeName="phoneCode"
@@ -58,7 +68,9 @@ const Information = ({ device }: AddDevicePageProps) => {
           </div>
 
           <div className="grid gap-2.5">
-            <label className="form-label">Protocol</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.PROTOCOL" />
+            </label>
             <select
               className="select"
               name="protocolId"
@@ -67,7 +79,9 @@ const Information = ({ device }: AddDevicePageProps) => {
               onChange={(e) => setProtocolId(e.target.value)}
               value={protocolId}
             >
-              <option value="">Select Protocol</option>
+              <option value="">
+                <FormattedMessage id="DEVICE.FORM.SELECT_PROTOCOL" />
+              </option>
               {Object.entries(protocols).map(([id, data]) => (
                 <option key={id} value={id}>
                   {data}
@@ -79,7 +93,9 @@ const Information = ({ device }: AddDevicePageProps) => {
 
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Device Type</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.TYPE" />
+            </label>
             <select
               required
               className="select"
@@ -90,7 +106,9 @@ const Information = ({ device }: AddDevicePageProps) => {
             >
               {protocolId ? (
                 <>
-                  <option value="">Select Type</option>
+                  <option value="">
+                    <FormattedMessage id="DEVICE.FORM.SELECT_TYPE" />
+                  </option>
                   {getTypesOfProtocol(protocolId).map((type) => (
                     <option key={type.id} value={type.id}>
                       {type.name}
@@ -98,18 +116,22 @@ const Information = ({ device }: AddDevicePageProps) => {
                   ))}
                 </>
               ) : (
-                <option>Select Protocol</option>
+                <option>
+                  <FormattedMessage id="DEVICE.FORM.SELECT_PROTOCOL_FIRST" />
+                </option>
               )}
             </select>
           </div>
 
           <div className="grid gap-2.5">
-            <label className="form-label">Plate</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.PLATE" />
+            </label>
             <input
               type="text"
               className="input"
               name="vehiclePlate"
-              placeholder="Plate"
+              placeholder={formatMessage({ id: 'DEVICE.FORM.PLATE.PLACEHOLDER' })}
               defaultValue={device?.vehiclePlate}
             />
           </div>
@@ -117,7 +139,9 @@ const Information = ({ device }: AddDevicePageProps) => {
 
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Subscription Start Date</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.SUBSCRIPTION_START_DATE" />
+            </label>
             <input
               required
               type="date"
@@ -129,7 +153,9 @@ const Information = ({ device }: AddDevicePageProps) => {
           </div>
 
           <div className="grid gap-2.5">
-            <label className="form-label">Supscription End Date</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.SUBSCRIPTION_END_DATE" />
+            </label>
             <input
               required
               type="date"

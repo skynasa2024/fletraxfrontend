@@ -3,6 +3,7 @@ import { AddDevicePageProps } from '../AddDevicePage';
 import { UserSearch } from './UserSearch';
 import { getUser, getUserModel, getUsersUnderParent, UserModel } from '@/api/user';
 import { CircularProgress } from '@mui/material';
+import { FormattedMessage } from 'react-intl';
 
 const User = ({ device }: AddDevicePageProps) => {
   const [loading, setLoading] = useState(false);
@@ -52,7 +53,9 @@ const User = ({ device }: AddDevicePageProps) => {
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
-        <h3 className="card-title">User</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="DEVICE.FORM.USER" />
+        </h3>
       </div>
       {loading ? (
         <div className="flex justify-center items-center h-16">
@@ -61,7 +64,9 @@ const User = ({ device }: AddDevicePageProps) => {
       ) : (
         <div className="card-body grid grid-cols-3 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">User</label>
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.USER" />
+            </label>
             <UserSearch
               onSelectUserId={(id, name) => {
                 setUserTree((prev) => {
@@ -75,7 +80,9 @@ const User = ({ device }: AddDevicePageProps) => {
           </div>
           {userTree.slice(1).map((_, index) => (
             <div key={index} className="grid gap-2.5">
-              <label className="form-label">Subuser {index + 1}</label>
+              <label className="form-label">
+                <FormattedMessage id="DEVICE.FORM.SUBUSER" values={{ number: index + 1 }} />
+              </label>
               <UserSearch
                 parentId={userTree[index]?.id}
                 onSelectUserId={(id, name) => {

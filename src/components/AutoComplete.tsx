@@ -9,13 +9,22 @@ interface AdditionalProps<T> {
   renderValue: (option: T) => React.ReactNode;
   // eslint-disable-next-line no-unused-vars
   renderPrefix?: (option: T) => React.ReactNode;
+  direction?: 'ltr' | 'rtl';
 }
 
 export const Autocomplete = React.forwardRef(function Autocomplete(
   props: UseAutocompleteProps<string, false, false, false> & AdditionalProps<string>,
   ref: React.ForwardedRef<HTMLDivElement>
 ) {
-  const { disabled = false, readOnly = false, renderValue, renderPrefix, value, ...other } = props;
+  const {
+    disabled = false,
+    readOnly = false,
+    renderValue,
+    renderPrefix,
+    value,
+    direction,
+    ...other
+  } = props;
 
   const {
     getRootProps,
@@ -50,7 +59,13 @@ export const Autocomplete = React.forwardRef(function Autocomplete(
           readOnly={readOnly}
           required
           {...getInputProps()}
-          className="select text-sm leading-[1.5] text-gray-900 dark:text-gray-300 bg-inherit border-0 rounded-[inherit] px-1 py-2 outline-0"
+          className={clsx(
+            direction &&
+              (direction === 'rtl'
+                ? '![background-position-x:left]'
+                : '![background-position-x:right]'),
+            'select text-sm leading-[1.5] text-gray-900 dark:text-gray-300 bg-inherit border-0 rounded-[inherit] px-1 py-2 outline-0'
+          )}
         />
       </div>
       {anchorEl && (
