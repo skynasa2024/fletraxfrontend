@@ -3,39 +3,41 @@ import clsx from 'clsx';
 import { IMaintenanceCardProps, IMaintenanceStats } from '@/api/maintenance.ts';
 import BlocksIcon from '@/pages/vehicle/blocks/svg/BlocksIcon.tsx';
 import { MaintenanceIcon } from '@/assets/svg';
+import { useIntl } from 'react-intl';
 
 const MaintenanceMiniCards = (props: { stats: IMaintenanceStats | undefined }) => {
+  const intl = useIntl();
 
   const metrics = useMemo(
     () => [
       {
         value: props?.stats?.total || 0,
-        label: 'Total Maintenance',
+        label: intl.formatMessage({ id: 'MAINTENANCE.STATS.TOTAL' }),
         textColor: 'text-white',
         bgColor: 'bg-blue-500',
         icon: <BlocksIcon />
       },
       {
         value: props?.stats?.lastMonth || 0,
-        label: 'Last Month Maintenance',
+        label: intl.formatMessage({ id: 'MAINTENANCE.STATS.LAST_MONTH' }),
         textColor: 'text-gray-800',
         icon: <MaintenanceIcon color="#FFA800" />
       },
       {
         value: props?.stats?.ongoing || 0,
-        label: 'Ongoing Maintenance',
+        label: intl.formatMessage({ id: 'MAINTENANCE.STATS.ONGOING' }),
         textColor: 'text-gray-800',
         icon: <MaintenanceIcon color="#FF0000" />
       },
       {
         value: props?.stats?.finished || 0,
-        label: 'Finished Maintenance',
+        label: intl.formatMessage({ id: 'MAINTENANCE.STATS.FINISHED' }),
         textColor: 'text-gray-800',
         iconColor: 'bg-blue-500',
         icon: <MaintenanceIcon color="#50C878" />
       }
     ],
-    [props]
+    [props, intl]
   );
 
   const MetricCard: React.FC<IMaintenanceCardProps> = ({ classNames, icon, label, value }) => (

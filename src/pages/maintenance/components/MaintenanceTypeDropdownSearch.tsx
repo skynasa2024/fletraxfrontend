@@ -4,6 +4,7 @@ import { Skeleton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { MaintenanceTypeModel, searchMaintenanceTypes } from '@/api/maintenance-type.ts';
+import { useIntl } from 'react-intl';
 
 interface MaintenanceTypeSearchProps {
   initialSearch?: {
@@ -13,6 +14,7 @@ interface MaintenanceTypeSearchProps {
 }
 
 export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceTypeSearchProps) => {
+  const intl = useIntl();
   const [privateSearch, setPrivateSearch] = useState(initialSearch?.title);
   const [selectedMaintenanceTypeId, setSelectedMaintenanceTypeId] = useState(initialSearch?.code);
   const [maintenanceTypes, setMaintenanceTypes] = useState<Paginated<MaintenanceTypeModel>>();
@@ -58,7 +60,7 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
     <div className="input shrink-0 relative">
       <input
         type="text"
-        placeholder="Search MaintenanceTypes"
+        placeholder={intl.formatMessage({ id: 'MAINTENANCE_TYPE.SEARCH.PLACEHOLDER' })}
         value={privateSearch}
         onChange={(e) => setPrivateSearch(e.target.value)}
         onFocus={() => setFocused(true)}
@@ -80,7 +82,9 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {!maintenanceTypes && <div className="p-2">Loading...</div>}
+          {!maintenanceTypes && (
+            <div className="p-2">{intl.formatMessage({ id: 'COMMON.LOADING' })}</div>
+          )}
           <AutoSizer disableHeight>
             {({ width }) => (
               <InfiniteLoader

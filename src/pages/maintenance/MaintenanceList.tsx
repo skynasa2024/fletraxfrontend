@@ -21,8 +21,10 @@ import { MaintenanceStatusDropdown } from './components/MaintenanceStatusDropdow
 import { useSnackbar } from 'notistack';
 import { CarView } from '../dashboards/blocks/CarView.tsx';
 import { getMaintenanceTypes } from '@/api/maintenance-type.ts';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const MaintenanceList = (props: { fetchStats: () => void }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
@@ -64,7 +66,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       {
         accessorFn: (row) => row.vehicleBrand,
         id: 'vehicleBrand',
-        header: () => 'Car',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.CAR" />,
         enableSorting: true,
         cell: (info) => (
           <CarView
@@ -84,13 +86,14 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       {
         accessorFn: (row) => row.type,
         id: 'type',
-        header: () => 'Maintenance Type',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.TYPE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800">
             {maintenanceTypes
-              ? maintenanceTypes[info.row.original.type] || 'Unknown Type'
-              : 'Loading...'}
+              ? maintenanceTypes[info.row.original.type] ||
+                intl.formatMessage({ id: 'COMMON.UNKNOWN_TYPE' })
+              : intl.formatMessage({ id: 'COMMON.LOADING' })}
           </span>
         ),
         meta: {
@@ -100,7 +103,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       {
         accessorFn: (row) => row.supplier,
         id: 'supplier',
-        header: () => 'Supplier',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.SUPPLIER" />,
         enableSorting: true,
         cell: (info) => <span className="text-gray-800">{info.row.original.supplier}</span>,
         meta: {
@@ -110,7 +113,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       {
         accessorFn: (row) => row.amount,
         id: 'amount',
-        header: () => 'Price',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.PRICE" />,
         enableSorting: true,
         cell: (info) => (
           <span className="text-gray-800">
@@ -127,19 +130,25 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       {
         id: 'startDate',
         accessorKey: 'startDate',
-        header: 'Date',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.DATE" />,
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex flex-col gap-2">
-            <span>Start: {format(row.original.startDate.toDateString(), 'yyyy-MM-dd')}</span>
-            <span>End: {format(row.original.endDate.toDateString(), 'yyyy-MM-dd')}</span>
+            <span>
+              {intl.formatMessage({ id: 'COMMON.START' })}:{' '}
+              {format(row.original.startDate.toDateString(), 'yyyy-MM-dd')}
+            </span>
+            <span>
+              {intl.formatMessage({ id: 'COMMON.END' })}:{' '}
+              {format(row.original.endDate.toDateString(), 'yyyy-MM-dd')}
+            </span>
           </div>
         )
       },
       {
         accessorFn: (row) => row.status,
         id: 'status',
-        header: () => 'Status',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.STATUS" />,
         enableSorting: true,
         cell: (info) => <MaintenanceStatusDropdown refetch={props?.fetchStats} {...info} />,
         meta: {
@@ -148,14 +157,20 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
       },
       {
         id: 'actions',
-        header: () => 'Action',
+        header: () => <FormattedMessage id="DASHBOARD.MAINTENANCE_TABLE.ACTIONS" />,
         cell: (info) => (
           <div className="flex gap-3">
             <Link to={`/maintenance/view/${info.row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+              <img
+                src={toAbsoluteUrl('/media/icons/view.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+              />
             </Link>
             <Link to={`/maintenance/edit/${info.row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+              <img
+                src={toAbsoluteUrl('/media/icons/edit.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+              />
             </Link>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
@@ -170,9 +185,14 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
                   >
                     <MenuLink>
                       <MenuIcon>
-                        <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} alt="Delete" />
+                        <img
+                          src={toAbsoluteUrl('/media/icons/delete-light.svg')}
+                          alt={intl.formatMessage({ id: 'COMMON.DELETE' })}
+                        />
                       </MenuIcon>
-                      <MenuTitle>Delete</MenuTitle>
+                      <MenuTitle>
+                        <FormattedMessage id="COMMON.DELETE" />
+                      </MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 </MenuSub>
@@ -185,13 +205,15 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
         }
       }
     ],
-    [handleDelete, maintenanceTypes, props?.fetchStats]
+    [handleDelete, maintenanceTypes, props?.fetchStats, intl]
   );
 
   return (
     <div className="card">
       <div className="flex items-center justify-between p-6">
-        <h2 className="text-xl font-semibold text-gray-800">Maintenance List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage id="MAINTENANCE.LIST.TITLE" />
+        </h2>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <KeenIcon style="duotone" icon="magnifier" />
@@ -199,7 +221,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
           <DebouncedSearchInput
             type="search"
             className={`w-64 pl-10 pr-4 py-2 ${settings.themeMode == 'dark' ? 'bg-gray-950' : 'bg-gray-200'} text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info`}
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             onDebounce={setSearchQuery}
           />
         </div>
