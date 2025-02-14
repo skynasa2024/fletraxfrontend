@@ -54,16 +54,6 @@ const Teams = () => {
         }
       },
       {
-        accessorFn: (row) => row.updated_at,
-        id: 'updated_at',
-        enableSorting: true,
-        header: () => 'Last Modified',
-        cell: (info) => formatIsoDate(info.row.original.updated_at),
-        meta: {
-          className: 'min-w-[135px]'
-        }
-      },
-      {
         accessorFn: (row) => row.users,
         id: 'users',
         header: () => 'Members',
