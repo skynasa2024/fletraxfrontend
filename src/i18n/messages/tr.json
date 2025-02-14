@@ -607,5 +607,6 @@
   "DEVICE.FORM.NAME.PLACEHOLDER": "Cihaz adını girin",
   "DEVICE.FORM.IDENTIFY_NUMBER.PLACEHOLDER": "Kimlik numarasını girin",
   "DEVICE.FORM.PLATE.PLACEHOLDER": "Plaka numarasını girin",
-  "PHONE_INPUT.PLACEHOLDER": "Telefon numarası"
+  "PHONE_INPUT.PLACEHOLDER": "Telefon numarası",
+  "VEHICLE.SEARCH.PLACEHOLDER": "Araçları Ara"
 }

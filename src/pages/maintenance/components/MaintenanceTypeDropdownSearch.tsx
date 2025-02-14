@@ -78,7 +78,7 @@ export const MaintenanceTypeDropdownSearch = ({ initialSearch }: MaintenanceType
       </button>
       {(focused || hovered) && (
         <div
-          className="absolute top-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y"
+          className="absolute top-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y px-2"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >

@@ -135,6 +135,7 @@
   "VEHICLE.GRID.ACTION.EDIT": "Edit",
   "VEHICLE.GRID.ACTION.DELETE": "Delete",
   "VEHICLE.GRID.DELETE_SUCCESS": "Vehicle deleted successfully",
+  "VEHICLE.SEARCH.PLACEHOLDER": "Search Vehicles",
   "COMMON.NA": "N/A",
   "DRIVER.TITLE": "Driver",
   "DRIVER.SUBTITLE": "You have {count, plural, zero {no customers} one {one customer} other {# customers}}",

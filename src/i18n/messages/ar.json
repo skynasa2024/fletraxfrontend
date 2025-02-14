@@ -596,5 +596,6 @@
   "DEVICE.FORM.NAME.PLACEHOLDER": "أدخل اسم الجهاز",
   "DEVICE.FORM.IDENTIFY_NUMBER.PLACEHOLDER": "أدخل رقم التعريف",
   "DEVICE.FORM.PLATE.PLACEHOLDER": "أدخل رقم اللوحة",
-  "PHONE_INPUT.PLACEHOLDER": "رقم الهاتف"
+  "PHONE_INPUT.PLACEHOLDER": "رقم الهاتف",
+  "VEHICLE.SEARCH.PLACEHOLDER": "بحث المركبات"
 }

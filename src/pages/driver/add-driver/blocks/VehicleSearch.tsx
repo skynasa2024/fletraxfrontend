@@ -5,6 +5,7 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { Skeleton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 interface VehicleSearchProps {
   initialSearch?: {
@@ -14,6 +15,7 @@ interface VehicleSearchProps {
   place?: 'top' | 'bottom';
 }
 export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchProps) => {
+  const { formatMessage } = useIntl();
   const [privateSearch, setPrivateSearch] = useState(initialSearch?.plate);
   const [selectedVehicleId, setSelectedVehicleId] = useState(initialSearch?.id);
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
@@ -54,7 +56,7 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
     <div className="input shrink-0 relative">
       <input
         type="text"
-        placeholder="Search Vehicles"
+        placeholder={formatMessage({ id: 'VEHICLE.SEARCH.PLACEHOLDER' })}
         value={privateSearch}
         onChange={(e) => setPrivateSearch(e.target.value)}
         onFocus={() => setFocused(true)}
@@ -72,11 +74,15 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
       </button>
       {(focused || hovered) && (
         <div
-          className={`absolute ${place === 'top' ? 'bottom' : 'top'}-[calc(100%+4px)] left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y`}
+          className={`absolute ${place === 'top' ? 'bottom' : 'top'}-[calc(100%+4px)] px-2 left-0 w-full max-h-96 card dark:border-gray-200 mt-1 z-50 scrollable-y`}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {!vehicles && <div className="p-2">Loading...</div>}
+          {!vehicles && (
+            <div className="p-2">
+              <FormattedMessage id="COMMON.LOADING" />
+            </div>
+          )}
           <AutoSizer disableHeight>
             {({ width }) => (
               <InfiniteLoader
