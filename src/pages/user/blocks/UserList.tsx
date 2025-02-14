@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import {
   DataGrid,
   KeenIcon,
@@ -23,6 +24,7 @@ import { useSnackbar } from 'notistack';
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const { settings } = useSettings();
   const { currentUser } = useAuthContext();
+  const intl = useIntl();
 
   const reload = useDataGrid().fetchServerSideData;
   return (
@@ -38,12 +40,12 @@ const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () 
         true: {
           color: '#50CD89',
           backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
-          name: 'Active'
+          name: intl.formatMessage({ id: 'STATUS.ACTIVE' })
         },
         false: {
           color: '#F1416C',
           backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
-          name: 'Inactive'
+          name: intl.formatMessage({ id: 'STATUS.INACTIVE' })
         }
       }}
     />
@@ -57,6 +59,7 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ refetch }) => {
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
+  const intl = useIntl();
   const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -64,13 +67,13 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
     () => [
       {
         accessorKey: 'username',
-        header: 'Username',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.USERNAME' }),
         enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.username}</span>
       },
       {
         accessorKey: 'name',
-        header: 'Name',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.NAME' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
@@ -86,19 +89,19 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
       },
       {
         accessorKey: 'city',
-        header: 'City',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.CITY' }),
         enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800">{row.original.city}</span>
       },
       {
         accessorKey: 'timezone',
-        header: 'Timezone',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.TIMEZONE' }),
         enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800">{row.original.timezone}</span>
       },
       {
         accessorKey: 'subscriptionStartDate',
-        header: 'Subscription Start Date',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.SUBSCRIPTION_START_DATE' }),
         enableSorting: true,
         cell: ({ row }) => (
           <span className="text-gray-800">{row.original.subscriptionStartDate}</span>
@@ -106,14 +109,14 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
       },
       {
         accessorKey: 'role',
-        header: 'Role',
+        header: intl.formatMessage({ id: 'USER_PAGE.COLUMN.ROLE' }),
         enableSorting: true,
         cell: ({ row }) => <span className="text-gray-800 font-bold">{row.original.role}</span>
       },
       {
         accessorFn: (row) => row.status,
         id: 'status',
-        header: () => 'Status',
+        header: () => intl.formatMessage({ id: 'USER_PAGE.COLUMN.STATUS' }),
         enableSorting: true,
         cell: (info) => <UserListDropdown refetch={refetch} {...info} />,
         meta: {
@@ -122,7 +125,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
       },
       {
         id: 'actions',
-        header: () => 'Actions',
+        header: () => intl.formatMessage({ id: 'USER_PAGE.COLUMN.ACTIONS' }),
         cell: (info) => (
           <div className="flex gap-3">
             <button onClick={() => updateUsersStack(info.row.original)}>
@@ -148,7 +151,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                   <MenuItem
                     onClick={async () => {
                       await deleteUser(info.row.original.id);
-                      enqueueSnackbar('User deleted successfully', {
+                      enqueueSnackbar(intl.formatMessage({ id: 'USER_PAGE.USER_DELETE_SUCCESS' }), {
                         variant: 'success'
                       });
                       refetch();
@@ -158,7 +161,9 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                       <MenuIcon>
                         <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                       </MenuIcon>
-                      <MenuTitle>Delete</MenuTitle>
+                      <MenuTitle>
+                        <FormattedMessage id="COMMON.DELETE" />
+                      </MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 </MenuSub>
@@ -171,7 +176,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
         }
       }
     ],
-    [refetch, settings.themeMode]
+    [enqueueSnackbar, refetch, intl, settings.themeMode]
   );
 
   const updateUsersStack = (user: User) => {
@@ -195,7 +200,9 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
   return (
     <div className="card">
       <div className="flex items-center justify-between p-6">
-        <h2 className="text-xl font-semibold text-gray-800">Users List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage id="USER_PAGE.USER_LIST_TITLE" />
+        </h2>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <KeenIcon style="duotone" icon="magnifier" />
@@ -203,7 +210,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
           <DebouncedSearchInput
             type="search"
             className={`w-64 pl-10 pr-4 py-2 ${settings.themeMode == 'dark' ? 'bg-gray-950' : 'bg-gray-200'} text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info`}
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             onDebounce={setSearchQuery}
           />
         </div>
@@ -216,7 +223,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                 onClick={() => removeUsersStack()}
                 className="text-blue-600 hover:text-blue-800"
               >
-                Users
+                <FormattedMessage id="USER_PAGE.USERS" />
               </button>
               <span className="text-gray-500">/</span>
             </React.Fragment>
