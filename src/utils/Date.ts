@@ -1,18 +1,20 @@
-export const formatIsoDate = (isoDate: string) => {
+import { IntlShape } from 'react-intl';
+
+export const formatIsoDate = (isoDate: string, intl: IntlShape) => {
   const date = new Date(isoDate);
   const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
+    intl.formatMessage({ id: 'DATE.MONTH.JAN' }),
+    intl.formatMessage({ id: 'DATE.MONTH.FEB' }),
+    intl.formatMessage({ id: 'DATE.MONTH.MAR' }),
+    intl.formatMessage({ id: 'DATE.MONTH.APR' }),
+    intl.formatMessage({ id: 'DATE.MONTH.MAY' }),
+    intl.formatMessage({ id: 'DATE.MONTH.JUN' }),
+    intl.formatMessage({ id: 'DATE.MONTH.JUL' }),
+    intl.formatMessage({ id: 'DATE.MONTH.AUG' }),
+    intl.formatMessage({ id: 'DATE.MONTH.SEP' }),
+    intl.formatMessage({ id: 'DATE.MONTH.OCT' }),
+    intl.formatMessage({ id: 'DATE.MONTH.NOV' }),
+    intl.formatMessage({ id: 'DATE.MONTH.DEC' })
   ];
   const day = date.getDate();
   const month = monthNames[date.getMonth()];
@@ -20,7 +22,7 @@ export const formatIsoDate = (isoDate: string) => {
   return `${day} ${month}, ${year}`;
 };
 
-export const formatTimeAgo = (timestamp: number): string => {
+export const formatTimeAgo = (timestamp: number, intl: IntlShape): string => {
   const now = new Date();
   const date = new Date(timestamp * 1000);
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -31,32 +33,32 @@ export const formatTimeAgo = (timestamp: number): string => {
   const secondsInWeek = 60 * 60 * 24 * 7;
 
   if (diffInSeconds < secondsInMinute) {
-    // Less than a minute ago
-    return `a few seconds ago`;
+    return intl.formatMessage({ id: 'DATE.TIME.FEW_SECONDS_AGO' });
   } else if (diffInSeconds < secondsInHour) {
-    // Less than an hour ago
     const minutes = Math.floor(diffInSeconds / secondsInMinute);
-    return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    return intl.formatMessage(
+      { id: 'DATE.TIME.MINUTES_AGO' },
+      { minutes, s: minutes !== 1 ? 's' : '' }
+    );
   } else if (diffInSeconds < secondsInDay) {
-    // Less than a day ago
     const hours = Math.floor(diffInSeconds / secondsInHour);
-    return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    return intl.formatMessage({ id: 'DATE.TIME.HOURS_AGO' }, { hours, s: hours !== 1 ? 's' : '' });
   } else if (diffInSeconds < secondsInDay * 2) {
-    // Yesterday
-    return 'Yesterday';
+    return intl.formatMessage({ id: 'DATE.YESTERDAY' });
   } else if (diffInSeconds < secondsInWeek) {
-    // Less than a week ago
     const days = Math.floor(diffInSeconds / secondsInDay);
-    return `${days} day${days !== 1 ? 's' : ''} ago`;
+    return intl.formatMessage({ id: 'DATE.TIME.DAYS_AGO' }, { days, s: days !== 1 ? 's' : '' });
   } else {
-    // More than a week ago, return full date/time in DD/MM/YYYY hh:mm:ss AM/PM format
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const seconds = date.getSeconds().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const ampm =
+      hours >= 12
+        ? intl.formatMessage({ id: 'DATE.TIME.PM' })
+        : intl.formatMessage({ id: 'DATE.TIME.AM' });
     const formattedHours = hours % 12 || 12;
 
     return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
