@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Buffer } from 'buffer';
 import { useOutletContext } from 'react-router';
 import { DeviceDTO } from '@/api/devices';
+import { FormattedMessage } from 'react-intl';
 
 const Telemetry = () => {
   const { mqttClient } = useMqttProvider();
@@ -63,11 +64,15 @@ const Telemetry = () => {
             <SpeedGauge value={parameters['position_speed']?.data} maxValue={160} />
             <div className="flex flex-col gap-4 justify-center mt-4">
               <div>
-                <span className="font-bold">Existing kilometers:</span>{' '}
+                <span className="font-bold">
+                  <FormattedMessage id="DEVICE.TELEMETRY.EXISTING_KILOMETERS" />:
+                </span>{' '}
                 <span>{parameters['existing_kilometers']?.data ?? '?'}</span>
               </div>
               <div>
-                <span className="font-bold">Parking time:</span>{' '}
+                <span className="font-bold">
+                  <FormattedMessage id="DEVICE.TELEMETRY.PARKING_TIME" />:
+                </span>{' '}
                 <span>{parameters['parking_time']?.data ?? '?'}</span>
               </div>
             </div>

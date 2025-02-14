@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router';
 import FileList, { FileInfo } from '@/pages/driver/details-components/FileList';
 import { DeviceList } from '@/pages/device/blocks';
 import Toolbar from './Toolbar';
-import { Chip } from '@mui/material';
 import clsx from 'clsx';
 
 const UserDetailsPage = () => {

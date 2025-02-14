@@ -2,6 +2,7 @@ import { ScratchDTO } from '@/api/cars';
 import { KeenIcon } from '@/components';
 import { Popover } from '@mui/material';
 import React from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export type Scratch = {
   date: string;
@@ -52,7 +53,9 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
               </div>
             ))
           ) : (
-            <p className="p-3 text-center text-gray-500">No scratches found</p>
+            <p className="p-3 text-center text-gray-500">
+              <FormattedMessage id="VEHICLE.SCRATCHES.POPOVER.NO_SCRATCHES" />
+            </p>
           )}
         </div>
       </Popover>
@@ -61,8 +64,9 @@ export default function ScratchesPopover({ className, scratches }: ScratchesPopo
 }
 
 function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
+  const intl = useIntl();
   const formattedUpdatedAt = updatedAt
-    ? new Date(updatedAt).toLocaleString('en-GB', {
+    ? intl.formatDate(new Date(updatedAt), {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -70,12 +74,16 @@ function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
         minute: '2-digit',
         hour12: true
       })
-    : 'Invalid date';
+    : intl.formatMessage({ id: 'COMMON.INVALID_DATE' });
 
   return (
     <div className="flex gap-4 py-3 justify-start items-start">
       <div className="w-32 h-32 rounded-md overflow-hidden">
-        <img src={image as string} alt="scratch" className="object-cover" />
+        <img
+          src={image as string}
+          alt={intl.formatMessage({ id: 'VEHICLE.SCRATCHES.POPOVER.IMAGE_ALT' })}
+          className="object-cover"
+        />
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-start justify-start">

@@ -1,27 +1,33 @@
+import { FormattedMessage, useIntl } from 'react-intl';
+
 interface ParameterListProps {
   items: Record<string, { data: any; timestamp: Date; latest: boolean }>;
 }
 
 const ParameterList = ({ items }: ParameterListProps) => {
+  const intl = useIntl();
   return (
     <div className="">
       {/* Header */}
       <div className="flex justify-between items-center  p-4">
-        <h2 className="text-xl font-semibold text-gray-800">Parameters List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage id="DEVICE.PARAMETERS.TITLE" />
+        </h2>
         <div className="flex gap-4">
           {/* Filters Button */}
           <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border text-sm">
-            Filters <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">2</span>
+            <FormattedMessage id="COMMON.FILTERS" />
+            <span className="bg-gray-100 px-2 py-1 rounded-full text-xs">2</span>
           </button>
           {/* Export Button */}
           <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-md border text-sm">
-            Export
+            <FormattedMessage id="COMMON.EXPORT" />
           </button>
           {/* Search Bar */}
           <div className="relative">
             <input
               type="search"
-              placeholder="Search"
+              placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
               className="pl-8 pr-4 py-2 border rounded-md text-sm w-56"
             />
             <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">

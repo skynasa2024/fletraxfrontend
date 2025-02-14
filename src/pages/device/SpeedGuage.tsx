@@ -127,8 +127,8 @@ const SpeedGauge: React.FC<GaugeProps> = ({ maxValue = 100, unit = 'km/h', value
         x={center}
         y={center + 15}
         textAnchor="middle"
-        className="text-4xl font-bold"
-        fill="black"
+        className="text-4xl font-bold text-black dark:text-white"
+        fill="currentColor"
       >
         {value ?? '?'}
       </text>

@@ -1,4 +1,5 @@
 import { toAbsoluteUrl } from '@/utils/Assets';
+import { useIntl } from 'react-intl';
 
 interface CarProps {
   satalites?: number;
@@ -8,12 +9,17 @@ interface CarProps {
 }
 
 const Car = ({ satalites, signalStrength, battery, direction }: CarProps) => {
+  const intl = useIntl();
+
   return (
     <div className="card flex flex-col justify-center h-full p-8 ">
       <div className="flex w-full justify-center gap-8 mb-8 p-4">
         {/* Signal Icon */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#5151F9] flex items-center justify-center">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#5151F9] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.SATELLITE.TITLE' })}
+          >
             <svg
               width="33"
               height="33"
@@ -125,7 +131,10 @@ const Car = ({ satalites, signalStrength, battery, direction }: CarProps) => {
 
         {/* Signal Strength Icon */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#FFA800] flex items-center justify-center">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#FFA800] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.SIGNAL.TITLE' })}
+          >
             <svg
               width="13"
               height="12"
@@ -156,7 +165,10 @@ const Car = ({ satalites, signalStrength, battery, direction }: CarProps) => {
 
         {/* Battery Icon */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#FF0000] flex items-center justify-center">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#FF0000] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.BATTERY.TITLE' })}
+          >
             <svg
               width="10"
               height="6"
@@ -199,7 +211,7 @@ const Car = ({ satalites, signalStrength, battery, direction }: CarProps) => {
         <div className=" absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-2">
           <img
             src={toAbsoluteUrl('/media/images/car.png')}
-            alt="Car top view"
+            alt={intl.formatMessage({ id: 'DEVICE.CAR.IMAGE.ALT' })}
             className="w-full h-auto "
           />
         </div>

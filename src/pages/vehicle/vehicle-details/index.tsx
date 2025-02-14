@@ -10,7 +10,7 @@ import {
   ColorIcon,
   TypeIcon
 } from '../blocks/svg/index.ts';
-import FileList, { FileInfo } from '@/pages/driver/details-components/FileList.tsx';
+import FileList from '@/pages/driver/details-components/FileList.tsx';
 import VehicleMetrics from '../blocks/details-components/VehicleMetrics.tsx';
 import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
 import TripList from '../blocks/details-components/TripList.tsx';
@@ -23,6 +23,7 @@ import { MaintenanceViolationTable } from '@/pages/dashboards/blocks/maintenance
 import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 const geofences = [
   'ISTANBUL',
@@ -39,6 +40,7 @@ const geofences = [
 const VehicleInfo = () => {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState<VehicleDTO | null>();
+  const intl = useIntl();
 
   useEffect(() => {
     (async () => {
@@ -53,65 +55,139 @@ const VehicleInfo = () => {
     })();
   }, [id]);
 
-  const vehicleInfo: {
-    label: string;
-    value: string;
-    icon: React.ReactNode;
-  }[] = [
-    { label: 'Model', value: vehicle?.model || 'NA', icon: <ModelIcon /> },
-    { label: 'Model Series', value: vehicle?.modelSeries || 'NA', icon: <ModelSeriesIcon /> },
-    { label: 'Model Year', value: vehicle?.modelYear?.toString() || 'NA', icon: <ModelYearIcon /> },
-    { label: 'Fuel Type', value: vehicle?.fuelType || 'NA', icon: <FuelTypeIcon /> },
-    { label: 'Gear', value: vehicle?.gear || 'NA', icon: <GearIcon /> },
-    { label: 'Volume', value: vehicle?.volume || 'NA', icon: <VolumeIcon /> },
-    { label: 'Power', value: vehicle?.power || 'NA', icon: <PowerIcon /> },
-    { label: 'Color', value: vehicle?.color || 'NA', icon: <ColorIcon /> },
-    { label: 'Type', value: vehicle?.carType || 'NA', icon: <TypeIcon /> }
-  ];
-  const details = [
-    { label: 'Type', value: vehicle?.type || 'NA' },
-    { label: 'Identify Number', value: vehicle?.identifyNumber || 'NA' },
-    { label: 'Chassis Number', value: vehicle?.chassisNumber || 'NA' },
-    { label: 'Engine Number', value: vehicle?.engineNumber || 'NA' },
-    { label: 'Registration Number', value: vehicle?.registrationNumber || 'NA' },
-    { label: 'Registration Date', value: vehicle?.registrationDate || 'NA' },
-    { label: 'First Registration Date', value: vehicle?.firstRegistrationDate || 'NA' },
-    { label: 'License Serial Number', value: vehicle?.licenseSerialNumber || 'NA' },
-    { label: 'Price', value: vehicle?.price || 'NA' }
-  ];
-  const items = [
-    {
-      title: 'Inspection',
-      startDate: vehicle?.inspectionStartDate || 'NA',
-      endDate: vehicle?.inspectionEndDate || 'NA'
-    },
-    {
-      title: 'Insurance',
-      startDate: vehicle?.insuranceStartDate || 'NA',
-      endDate: vehicle?.insuranceEndDate || 'NA'
-    },
-    {
-      title: 'Kasko',
-      startDate: vehicle?.kaskoInsuranceStartDate || 'NA',
-      endDate: vehicle?.kaskoInsuranceEndDate || 'NA'
-    },
-    {
-      title: 'Exhaust',
-      startDate: vehicle?.exhaustStartDate || 'NA',
-      endDate: vehicle?.exhaustEndDate || 'NA'
-    }
-  ];
+  const vehicleInfo = useMemo(
+    () => [
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.MODEL' }),
+        value: vehicle?.model || 'NA',
+        icon: <ModelIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.MODEL_SERIES' }),
+        value: vehicle?.modelSeries || 'NA',
+        icon: <ModelSeriesIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.MODEL_YEAR' }),
+        value: vehicle?.modelYear?.toString() || 'NA',
+        icon: <ModelYearIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.FUEL_TYPE' }),
+        value: vehicle?.fuelType || 'NA',
+        icon: <FuelTypeIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.GEAR' }),
+        value: vehicle?.gear || 'NA',
+        icon: <GearIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.VOLUME' }),
+        value: vehicle?.volume || 'NA',
+        icon: <VolumeIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.POWER' }),
+        value: vehicle?.power || 'NA',
+        icon: <PowerIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.COLOR' }),
+        value: vehicle?.color || 'NA',
+        icon: <ColorIcon />
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.TYPE' }),
+        value: vehicle?.carType || 'NA',
+        icon: <TypeIcon />
+      }
+    ],
+    [vehicle, intl]
+  );
+
+  const details = useMemo(
+    () => [
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.TYPE' }),
+        value: vehicle?.type || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.IDENTIFY_NUMBER' }),
+        value: vehicle?.identifyNumber || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.CHASSIS_NUMBER' }),
+        value: vehicle?.chassisNumber || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.ENGINE_NUMBER' }),
+        value: vehicle?.engineNumber || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.REGISTRATION_NUMBER' }),
+        value: vehicle?.registrationNumber || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.REGISTRATION_DATE' }),
+        value: vehicle?.registrationDate || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.FIRST_REGISTRATION_DATE' }),
+        value: vehicle?.firstRegistrationDate || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.LICENSE_SERIAL_NUMBER' }),
+        value: vehicle?.licenseSerialNumber || 'NA'
+      },
+      {
+        label: intl.formatMessage({ id: 'VEHICLE.DETAILS.PRICE' }),
+        value: vehicle?.price || 'NA'
+      }
+    ],
+    [vehicle, intl]
+  );
+
+  const items = useMemo(
+    () => [
+      {
+        title: intl.formatMessage({ id: 'VEHICLE.DETAILS.INSURANCE.TYPES.INSPECTION' }),
+        startDate: vehicle?.inspectionStartDate || 'NA',
+        endDate: vehicle?.inspectionEndDate || 'NA'
+      },
+      {
+        title: intl.formatMessage({ id: 'VEHICLE.DETAILS.INSURANCE.TYPES.INSURANCE' }),
+        startDate: vehicle?.insuranceStartDate || 'NA',
+        endDate: vehicle?.insuranceEndDate || 'NA'
+      },
+      {
+        title: intl.formatMessage({ id: 'VEHICLE.DETAILS.INSURANCE.TYPES.KASKO' }),
+        startDate: vehicle?.kaskoInsuranceStartDate || 'NA',
+        endDate: vehicle?.kaskoInsuranceEndDate || 'NA'
+      },
+      {
+        title: intl.formatMessage({ id: 'VEHICLE.DETAILS.INSURANCE.TYPES.EXHAUST' }),
+        startDate: vehicle?.exhaustStartDate || 'NA',
+        endDate: vehicle?.exhaustEndDate || 'NA'
+      }
+    ],
+    [vehicle, intl]
+  );
 
   const files = useMemo(() => {
     if (!vehicle) return [];
 
-    const files: FileInfo[] = [];
-
-    files.push({ name: 'Image', url: (vehicle?.image as string) ?? undefined });
-    files.push({ name: 'License', url: (vehicle?.licenseImage as string) ?? undefined });
-
-    return files;
-  }, [vehicle]);
+    return [
+      {
+        name: intl.formatMessage({ id: 'VEHICLE.DETAILS.DOCUMENTS.IMAGE' }),
+        url: (vehicle?.image as string) ?? undefined
+      },
+      {
+        name: intl.formatMessage({ id: 'VEHICLE.DETAILS.DOCUMENTS.LICENSE' }),
+        url: (vehicle?.licenseImage as string) ?? undefined
+      }
+    ];
+  }, [vehicle, intl]);
 
   return (
     <>
@@ -130,7 +206,9 @@ const VehicleInfo = () => {
                 <div className="bg-blue-100 p-4 rounded-full"></div>
                 <div>
                   <span className="text-lg font-medium">{vehicle?.deviceIdent || 'NA'}</span>
-                  <p className="text-sm text-gray-500">Device</p>
+                  <p className="text-sm text-gray-500">
+                    <FormattedMessage id="VEHICLE.DETAILS.DEVICE" />
+                  </p>
                 </div>
               </div>
             </div>
@@ -166,7 +244,7 @@ const VehicleInfo = () => {
             {/* Inspection and Insurance Section */}
             <div className="card hover:shadow-md mb-2 p-4 mt-4">
               <h2 className="text-xl font-semibold mb-2 border-b-2 pb-2">
-                Vehicle Inspection and Insurance
+                <FormattedMessage id="VEHICLE.DETAILS.INSURANCE.TITLE" />
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {items.map((item) => (
@@ -178,11 +256,16 @@ const VehicleInfo = () => {
                       <h3 className="font-semibold text-lg">{item.title}</h3>
                       <div className="mt-1 flex">
                         <div>
-                          <span className="font-semibold">Start</span> :
-                          <span>{item.startDate}</span>
+                          <span className="font-semibold">
+                            <FormattedMessage id="VEHICLE.DETAILS.INSURANCE.START" />
+                          </span>
+                          :<span>{item.startDate}</span>
                         </div>
                         <div className="ms-4">
-                          <span className="font-semibold">End</span> : <span>{item.endDate}</span>
+                          <span className="font-semibold">
+                            <FormattedMessage id="VEHICLE.DETAILS.INSURANCE.END" />
+                          </span>
+                          :<span>{item.endDate}</span>
                         </div>
                       </div>
                     </div>
@@ -195,7 +278,9 @@ const VehicleInfo = () => {
         <TripList deviceIdent={vehicle?.deviceIdent} />
         <div className="flex flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
-            <h2 className="text-xl font-semibold mb-4 ps-4">Documents</h2>
+            <h2 className="text-xl font-semibold mb-4 ps-4">
+              <FormattedMessage id="VEHICLE.DETAILS.DOCUMENTS" />
+            </h2>
             <FileList files={files} />
           </div>
           <VehicleMetrics

@@ -1,3 +1,4 @@
+import { FormattedMessage } from 'react-intl';
 import InfoIcon from './svg/info.svg?react';
 import AIIcon from './svg/ai.svg?react';
 import EditIcon from './svg/edit.svg?react';
@@ -17,67 +18,67 @@ const DeviceNavigation = () => {
     () => [
       {
         icon: <InfoIcon />,
-        label: 'Info',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.INFO" />,
         path: 'info',
         disabled: true
       },
       {
         icon: <AIIcon />,
-        label: 'AI',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.AI" />,
         path: 'ai',
         disabled: true
       },
       {
         icon: <EditIcon />,
-        label: 'Edit',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.EDIT" />,
         path: 'edit',
         disabled: true
       },
       {
         icon: <TelemetryIcon />,
-        label: 'Telemetry',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.TELEMETRY" />,
         path: 'telemetry',
         default: true
       },
       {
         icon: <CommandsIcon />,
-        label: 'Commands & Settings',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.COMMANDS" />,
         path: 'commands',
         disabled: true
       },
       {
         icon: <LogsIcon />,
-        label: 'Logs & Messages',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.LOGS" />,
         path: 'logs',
         disabled: true
       },
       {
         icon: <GroupsIcon />,
-        label: 'Groups',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.GROUPS" />,
         path: 'groups',
         disabled: true
       },
       {
         icon: <CalcsIcon />,
-        label: 'Calcs',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.CALCS" />,
         path: 'calcs',
         disabled: true
       },
       {
         icon: <GeofenceIcon />,
-        label: 'Geofences',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.GEOFENCES" />,
         path: 'geofences',
         disabled: true
       },
       {
         icon: <StreamsIcon />,
-        label: 'Streams',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.STREAMS" />,
         path: 'streams',
         disabled: true
       },
       {
         icon: <PluginsIcon />,
-        label: 'Plugins',
+        label: <FormattedMessage id="DEVICE.NAVIGATION.PLUGINS" />,
         path: 'plugins',
         disabled: true
       }

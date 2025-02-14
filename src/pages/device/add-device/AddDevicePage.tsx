@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Information, User } from './blocks';
 import { DeviceDTO } from '@/api/devices';
+import { FormattedMessage } from 'react-intl';
 
 export interface AddDevicePageProps {
   device?: DeviceDTO;
@@ -41,7 +42,7 @@ const AddDevicePage = ({ device }: AddDevicePageProps) => {
           }`}
           onClick={() => handleTabClick(informationRef, 'information')}
         >
-          Information
+          <FormattedMessage id="DEVICE.ADD.TAB.INFORMATION" />
         </button>
         <button
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
@@ -51,7 +52,7 @@ const AddDevicePage = ({ device }: AddDevicePageProps) => {
           }`}
           onClick={() => handleTabClick(companyRef, 'company')}
         >
-          Company
+          <FormattedMessage id="DEVICE.ADD.TAB.COMPANY" />
         </button>
       </div>
 

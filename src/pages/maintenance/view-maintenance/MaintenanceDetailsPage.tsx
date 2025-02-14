@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { deleteMaintenance, getMaintenanceById, MaintenanceModel } from '@/api/maintenance.ts';
 import { PageNavbar } from '@/pages/account';
 import { Container, KeenIcon } from '@/components';
@@ -17,6 +18,7 @@ const MaintenanceDetails = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [model, setModel] = useState<MaintenanceModel>();
+  const intl = useIntl();
 
   useEffect(() => {
     if (id) {
@@ -52,7 +54,7 @@ const MaintenanceDetails = () => {
           });
         })
         .catch((error) => {
-          enqueueSnackbar(error.message || 'An error occurred', {
+          enqueueSnackbar(error.message || intl.formatMessage({ id: 'COMMON.ERROR' }), {
             variant: 'error'
           });
         });
@@ -64,17 +66,21 @@ const MaintenanceDetails = () => {
       <PageNavbar />
       <Container>
         <div className="flex justify-between items-center gap-6">
-          <h1 className="text-xl font-medium leading-none text-gray-900">Maintenance Details</h1>
+          <h1 className="text-xl font-medium leading-none text-gray-900">
+            <FormattedMessage id="MAINTENANCE.DETAILS.TITLE" defaultMessage="Maintenance Details" />
+          </h1>
           <div className="flex justify-end items-center gap-2 flex-wrap p-4">
             <button
               onClick={handleBack}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-blue-500 rounded-md"
             >
-              <ArrowLeftIcon className="w-4 h-4" /> Back
+              <ArrowLeftIcon className="w-4 h-4 rtl:-scale-x-100" />
+              <FormattedMessage id="COMMON.BACK" defaultMessage="Back" />
             </button>
             <Link to={`/maintenance/edit/${id}`}>
               <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
-                <EditIcon className="w-4 h-4" /> Edit
+                <EditIcon className="w-4 h-4" />
+                <FormattedMessage id="COMMON.EDIT" defaultMessage="Edit" />
               </button>
             </Link>
             <button
@@ -82,7 +88,7 @@ const MaintenanceDetails = () => {
               onClick={handleDelete}
             >
               <DeleteIcon className="w-4 h-4" />
-              Delete
+              <FormattedMessage id="COMMON.DELETE" defaultMessage="Delete" />
             </button>
           </div>
         </div>
@@ -109,9 +115,11 @@ const MaintenanceDetails = () => {
                   <div className="flex items-center justify-between py-4">
                     <div>
                       <h2 className="text-xl font-medium text-gray-800">
-                        {model?.vehicleBrand ?? 'Unknown'}
+                        {model?.vehicleBrand ?? <FormattedMessage id="COMMON.UNKNOWN" />}
                       </h2>
-                      <p className="text-gray-500">{model?.vehicleModel ?? 'Unknown'}</p>
+                      <p className="text-gray-500">
+                        {model?.vehicleModel ?? <FormattedMessage id="COMMON.UNKNOWN" />}
+                      </p>
                     </div>
                     <CarPlate plate={model?.vehiclePlate} />
                     <div className="flex items-center gap-4">
@@ -126,39 +134,61 @@ const MaintenanceDetails = () => {
                       <p className="text-gray-800 font-semibold">
                         {model?.startDate ? format(new Date(model.startDate), 'yyyy-MM-dd') : ''}
                       </p>
-                      <p className="text-red-500 text-sm mb-1">Start Date</p>
+                      <p className="text-red-500 text-sm mb-1">
+                        <FormattedMessage id="MAINTENANCE.FORM.START_DATE" />
+                      </p>
                     </div>
 
                     <div className="border border-dashed  rounded-lg  border-gray-300 p-4">
                       <p className="text-gray-800 font-semibold">
                         {model?.startDate ? format(new Date(model.endDate!), 'yyyy-MM-dd') : ''}
                       </p>
-                      <p className="text-green-500 text-sm mb-1">Finished Date</p>
+                      <p className="text-green-500 text-sm mb-1">
+                        <FormattedMessage
+                          id="MAINTENANCE.DETAILS.FINISHED_DATE"
+                          defaultMessage="Finished Date"
+                        />
+                      </p>
                     </div>
 
                     <div className="border border-dashed  rounded-lg border-gray-300 p-4">
-                      <p className="text-gray-800 font-semibold">{model?.amount} $</p>
-                      <p className="text-gray-500 text-sm mb-1">Price</p>
+                      <p className="text-gray-800 font-semibold">
+                        {intl.formatNumber(model?.amount || 0, {
+                          style: 'currency',
+                          currency: 'USD'
+                        })}
+                      </p>
+                      <p className="text-gray-500 text-sm mb-1">
+                        <FormattedMessage id="MAINTENANCE.FORM.PRICE" />
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="card mt-8 p-4">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">Information</h3>
+                <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                  <FormattedMessage id="VEHICLE.FORM.INFORMATION" />
+                </h3>
                 <div className="divide-y divide-gray-200">
                   <div className="py-4 grid grid-cols-[100px,1fr] gap-4">
-                    <span className="text-gray-500">Type</span>
+                    <span className="text-gray-500">
+                      <FormattedMessage id="MAINTENANCE.FORM.TYPE" />
+                    </span>
                     <span className="text-gray-800">{model?.type}</span>
                   </div>
 
                   <div className="py-4 grid grid-cols-[100px,1fr] gap-4">
-                    <span className="text-gray-500">Supplier</span>
+                    <span className="text-gray-500">
+                      <FormattedMessage id="MAINTENANCE.FORM.SUPPLIER" />
+                    </span>
                     <span className="text-gray-800">{model?.supplier}</span>
                   </div>
 
                   <div className="py-4 grid grid-cols-[100px,1fr] gap-4">
-                    <span className="text-gray-500">Description</span>
+                    <span className="text-gray-500">
+                      <FormattedMessage id="MAINTENANCE.FORM.DESCRIPTION" />
+                    </span>
                     <p className="text-gray-800">{model?.description}</p>
                   </div>
                 </div>

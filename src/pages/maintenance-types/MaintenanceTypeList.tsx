@@ -21,12 +21,14 @@ import {
   IMaintenanceTypeTableData
 } from '@/api/maintenance-type.ts';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const MaintenanceTypeList = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState('');
+  const intl = useIntl();
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -51,7 +53,9 @@ const MaintenanceTypeList = () => {
       {
         accessorFn: (row) => row.title,
         id: 'title',
-        header: () => 'Title',
+        header: () => (
+          <FormattedMessage id="MAINTENANCE_TYPE.GRID.HEADER.TITLE" defaultMessage="Title" />
+        ),
         enableSorting: true,
         cell: (info) => <span className="text-gray-800">{info.row.original.title}</span>,
         meta: {
@@ -61,7 +65,9 @@ const MaintenanceTypeList = () => {
       {
         accessorFn: (row) => row.code,
         id: 'code',
-        header: () => 'Code',
+        header: () => (
+          <FormattedMessage id="MAINTENANCE_TYPE.GRID.HEADER.CODE" defaultMessage="Code" />
+        ),
         enableSorting: true,
         cell: (info) => <span className="text-gray-800">{info.row.original.code}</span>,
         meta: {
@@ -70,20 +76,26 @@ const MaintenanceTypeList = () => {
       },
       {
         id: 'actions',
-        header: () => 'Action',
+        header: () => <FormattedMessage id="COMMON.ACTIONS" defaultMessage="Actions" />,
         cell: (info) => (
           <div className="flex gap-3">
             <Link
               to={`/maintenance/maintenance-type/view/${info.row.original.id}`}
               className="size-7.5"
             >
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+              <img
+                src={toAbsoluteUrl('/media/icons/view.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+              />
             </Link>
             <Link
               to={`/maintenance/maintenance-type/edit/${info.row.original.id}`}
               className="size-7.5"
             >
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+              <img
+                src={toAbsoluteUrl('/media/icons/edit.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+              />
             </Link>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
@@ -98,9 +110,14 @@ const MaintenanceTypeList = () => {
                   >
                     <MenuLink>
                       <MenuIcon>
-                        <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} alt="Delete" />
+                        <img
+                          src={toAbsoluteUrl('/media/icons/delete-light.svg')}
+                          alt={intl.formatMessage({ id: 'COMMON.DELETE' })}
+                        />
                       </MenuIcon>
-                      <MenuTitle>Delete</MenuTitle>
+                      <MenuTitle>
+                        <FormattedMessage id="COMMON.DELETE" defaultMessage="Delete" />
+                      </MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 </MenuSub>
@@ -108,19 +125,23 @@ const MaintenanceTypeList = () => {
             </Menu>
           </div>
         ),
-
         meta: {
           className: 'min-w-24'
         }
       }
     ],
-    [handleDelete]
+    [handleDelete, intl]
   );
 
   return (
     <div className="card">
       <div className="flex items-center justify-between p-6">
-        <h2 className="text-xl font-semibold text-gray-800">Maintenance Types List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage
+            id="MAINTENANCE_TYPE.LIST.TITLE"
+            defaultMessage="Maintenance Types List"
+          />
+        </h2>
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <KeenIcon style="duotone" icon="magnifier" />
@@ -128,7 +149,7 @@ const MaintenanceTypeList = () => {
           <DebouncedSearchInput
             type="search"
             className={`w-64 pl-10 pr-4 py-2 ${settings.themeMode == 'dark' ? 'bg-gray-950' : 'bg-gray-200'} text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info`}
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'MAINTENANCE_TYPE.SEARCH.PLACEHOLDER' })}
             onDebounce={setSearchQuery}
           />
         </div>

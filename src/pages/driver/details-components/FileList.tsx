@@ -2,6 +2,7 @@ import { downloadDocument, getDocumentType } from '@/api/documents';
 import { toAbsoluteUrl } from '@/utils';
 import { Check, X } from 'lucide-react';
 import React, { useEffect } from 'react';
+import { useIntl } from 'react-intl';
 
 export interface FileInfo {
   name: string;
@@ -20,6 +21,8 @@ interface FileListProps {
 
 const FileCard: React.FC<FileCardProps> = ({ file }) => {
   const [type, setType] = React.useState('FILE');
+  const intl = useIntl();
+
   useEffect(() => {
     if (file.url) {
       getDocumentType(file.url).then((type) => {
@@ -40,13 +43,15 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
         </div>
 
         {/* Aligning elements to the end */}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ms-auto flex items-center gap-2">
           <button
             disabled={!file.url}
             className="btn text-blue-500 px-3 py-1 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
             onClick={() => file.url && downloadDocument(file.url, file.name)}
           >
-            {file.url ? 'View' : 'No File'}
+            {file.url
+              ? intl.formatMessage({ id: 'FILE_LIST.VIEW' })
+              : intl.formatMessage({ id: 'FILE_LIST.NO_FILE' })}
           </button>
           {file.url ? (
             <div className="flex items-center justify-center w-5 h-5 bg-green-500 rounded-full">

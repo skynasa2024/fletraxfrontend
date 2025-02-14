@@ -8,62 +8,111 @@ import {
 } from '../AddVehiclePage';
 import FormRadioButton from '../components/FormRadioButton';
 import CalendarIcon from '../../blocks/svg/CalendarIcon';
+import { useIntl, FormattedMessage } from 'react-intl';
 
-interface IGeneralSettingsProps {
-  title: string;
-}
-const Information = ({ title }: IGeneralSettingsProps) => {
+const Information = () => {
+  const intl = useIntl();
+
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="vehicle_information">
-        <h3 className="card-title">{title}</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="VEHICLE.FORM.INFORMATION.TITLE" />
+        </h3>
       </div>
       <div className="card-body grid gap-5">
         {/* Brand and Model Row */}
         <div className="grid lg:grid-cols-3 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Brand</label>
-            <Field type="text" className="input" name="brand" placeholder="Brand" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.BRAND" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="brand"
+              placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.BRAND' })}
+            />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Model</label>
-            <Field type="text" className="input" name="model" placeholder="Model" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.MODEL" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="model"
+              placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.MODEL' })}
+            />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Model Series</label>
-            <Field type="text" className="input" name="modelSeries" placeholder="Model Series" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.MODEL_SERIES" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="modelSeries"
+              placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.MODEL_SERIES' })}
+            />
           </div>
         </div>
 
         {/* Model Year, Volume, Power Row */}
         <div className="grid lg:grid-cols-3 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Model Year</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.MODEL_YEAR" />
+            </label>
             <div className="input">
-              <Field type="number" step="1" name="modelYear" placeholder="Model Year" />
+              <Field
+                type="number"
+                step="1"
+                name="modelYear"
+                placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.MODEL_YEAR' })}
+              />
               <CalendarIcon />
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Volume</label>
-            <Field type="text" className="input" name="volume" placeholder="Volume" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.VOLUME" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="volume"
+              placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.VOLUME' })}
+            />
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Power</label>
-            <Field type="text" className="input" name="power" placeholder="Power" />
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.POWER" />
+            </label>
+            <Field
+              type="text"
+              className="input"
+              name="power"
+              placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.POWER' })}
+            />
           </div>
         </div>
 
         {/* Fuel Type */}
         <div className="grid gap-2.5">
-          <label className="form-label">Fuel Type</label>
+          <label className="form-label">
+            <FormattedMessage id="VEHICLE.FORM.INFORMATION.FUEL_TYPE" />
+          </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-col-6 gap-4 w-full">
             {fuelOptions.map((fuel, idx) => (
               <FormRadioButton
                 key={fuel.value + idx}
                 name={'fuelType'}
                 value={fuel.value}
-                label={fuel.label}
+                label={intl.formatMessage({
+                  id: `VEHICLE.FORM.INFORMATION.FUEL_TYPE.${fuel.value.toUpperCase()}`,
+                  defaultMessage: fuel.label
+                })}
               />
             ))}
           </div>
@@ -71,33 +120,42 @@ const Information = ({ title }: IGeneralSettingsProps) => {
 
         {/* Car Type */}
         <div className="grid gap-2.5">
-          <label className="form-label">Car Type</label>
+          <label className="form-label">
+            <FormattedMessage id="VEHICLE.FORM.INFORMATION.CAR_TYPE" />
+          </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 w-full">
             {carOptions.map((type, idx) => (
               <FormRadioButton
                 key={type.value + idx}
                 name={'carType'}
                 value={type.value}
-                label={type.label}
+                label={intl.formatMessage({
+                  id: `VEHICLE.FORM.INFORMATION.CAR_TYPE.${type.value.toUpperCase()}`,
+                  defaultMessage: type.label
+                })}
                 icon={type.icon}
               />
             ))}
           </div>
         </div>
 
-        {/* Gear */}
         {/* Gear, Color, and Number of Seats Row */}
         <div className="grid lg:grid-cols-3 gap-5">
           {/* Gear */}
           <div className="grid gap-2.5">
-            <label className="form-label">Gear</label>
-            <div className="grid  md:grid-cols-2 gap-4 w-full ">
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.GEAR" />
+            </label>
+            <div className="grid md:grid-cols-2 gap-4 w-full">
               {gearOptions.map((gear, idx) => (
                 <FormRadioButton
                   key={gear.value + idx}
                   name="gearType"
                   value={gear.value}
-                  label={gear.label}
+                  label={intl.formatMessage({
+                    id: `VEHICLE.FORM.INFORMATION.GEAR.${gear.value.toUpperCase()}`,
+                    defaultMessage: gear.label
+                  })}
                   icon={gear.icon}
                 />
               ))}
@@ -106,11 +164,16 @@ const Information = ({ title }: IGeneralSettingsProps) => {
 
           {/* Color */}
           <div className="grid gap-2.5 relative">
-            <label className="form-label">Color</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.COLOR" />
+            </label>
             <Field as="select" name="color" className="select">
               {colorOptions.map((color, idx) => (
                 <option key={color + idx} value={color}>
-                  {color}
+                  {intl.formatMessage({
+                    id: `VEHICLE.FORM.INFORMATION.COLOR.${color.toUpperCase()}`,
+                    defaultMessage: color
+                  })}
                 </option>
               ))}
             </Field>
@@ -118,7 +181,9 @@ const Information = ({ title }: IGeneralSettingsProps) => {
 
           {/* Number of Seats */}
           <div className="grid gap-2.5 relative">
-            <label className="form-label">Number of seats</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INFORMATION.NUMBER_OF_SEATS" />
+            </label>
             <Field as="select" name="numberOfSeats" className="select">
               {numberOfSeatsOptions.map((num, idx) => (
                 <option key={num + idx} value={num}>
@@ -133,4 +198,4 @@ const Information = ({ title }: IGeneralSettingsProps) => {
   );
 };
 
-export { Information, type IGeneralSettingsProps };
+export { Information };

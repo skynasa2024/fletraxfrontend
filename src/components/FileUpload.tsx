@@ -1,6 +1,7 @@
 import { toAbsoluteUrl } from '@/utils';
 import { ChangeEvent, InputHTMLAttributes, useRef, useState } from 'react';
 import { KeenIcon } from './keenicons';
+import { useIntl } from 'react-intl';
 
 const FileUpload = ({
   isUploaded,
@@ -9,6 +10,7 @@ const FileUpload = ({
   const [file, setFile] = useState<File | null>(isUploaded ? new File([], '__doc__') : null);
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const intl = useIntl();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -51,19 +53,27 @@ const FileUpload = ({
         )}
         {dragOver ? (
           <>
-            <p className="text-sm text-gray-500">Drop your files here</p>
-            <p className="text-xs text-gray-400">Unlimited files, 5GB total limit</p>
+            <p className="text-sm text-gray-500">
+              {intl.formatMessage({ id: 'FILE_UPLOAD.DROP_FILES' })}
+            </p>
+            <p className="text-xs text-gray-400">
+              {intl.formatMessage({ id: 'FILE_UPLOAD.FILE_LIMITS' })}
+            </p>
           </>
         ) : file ? (
           <p className="my-3 text-sm text-gray-500">
             {file.name === '__doc__'
-              ? 'Document file'
+              ? intl.formatMessage({ id: 'FILE_UPLOAD.DOCUMENT_FILE' })
               : `${file.name} (${(file.size / 1024).toFixed(0)} KB)`}
           </p>
         ) : (
           <>
-            <p className="mb-1 text-sm text-gray-500">Drag and drop your files</p>
-            <p className="text-xs text-gray-400 mb-3">Unlimited files, 5GB total limit</p>
+            <p className="mb-1 text-sm text-gray-500">
+              {intl.formatMessage({ id: 'FILE_UPLOAD.DRAG_DROP' })}
+            </p>
+            <p className="text-xs text-gray-400 mb-3">
+              {intl.formatMessage({ id: 'FILE_UPLOAD.FILE_LIMITS' })}
+            </p>
           </>
         )}
         <button
@@ -72,7 +82,9 @@ const FileUpload = ({
           style={{ display: dragOver ? 'none' : 'block' }}
           onClick={() => inputRef.current?.click()}
         >
-          {file ? 'Change file' : 'or choose files'}
+          {file
+            ? intl.formatMessage({ id: 'FILE_UPLOAD.CHANGE_FILE' })
+            : intl.formatMessage({ id: 'FILE_UPLOAD.CHOOSE_FILES' })}
           <input
             {...props}
             type="file"

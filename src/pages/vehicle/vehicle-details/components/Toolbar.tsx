@@ -3,38 +3,41 @@ import { DeleteIcon, EditIcon, MaintenanceIcon, ViolationsIcon } from '../../blo
 import { Container } from '@/components';
 import { deleteVehicle } from '@/api/cars';
 import { useSnackbar } from 'notistack';
+import { useIntl, FormattedMessage } from 'react-intl';
 
 const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | null }) => {
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const intl = useIntl();
 
   return (
     <Container>
       <div className="flex justify-end items-center gap-2 flex-wrap p-4">
         <Link to={`/vehicles/edit/${id}`}>
           <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-green-500 rounded-md">
-            <EditIcon className="w-4 h-4" /> Edit
+            <EditIcon className="w-4 h-4" />
+            <FormattedMessage id="VEHICLE.TOOLBAR.EDIT" />
           </button>
         </Link>
 
         <Link to={`/vehicles/edit-scratches/${id}`}>
           <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-purple-500 rounded-md">
             <EditIcon className="w-4 h-4" color="#6B46C1" />
-            Add scratch
+            <FormattedMessage id="VEHICLE.TOOLBAR.ADD_SCRATCH" />
           </button>
         </Link>
 
         <Link to={`/maintenance/add?vehicleId=${id}&plate=${plate}`}>
           <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-[#1BC5BD] rounded-md">
             <MaintenanceIcon className="w-4 h-4" />
-            Maintenance
+            <FormattedMessage id="VEHICLE.TOOLBAR.MAINTENANCE" />
           </button>
         </Link>
 
         <button className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md">
           <ViolationsIcon className="w-4 h-4" />
-          Violations
+          <FormattedMessage id="VEHICLE.TOOLBAR.VIOLATIONS" />
         </button>
 
         <button
@@ -42,14 +45,14 @@ const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | nul
           onClick={async () => {
             if (!carId) return;
             await deleteVehicle(carId);
-            enqueueSnackbar('Vehicle deleted successfully', {
+            enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.TOOLBAR.DELETE_SUCCESS' }), {
               variant: 'success'
             });
             navigate('/vehicles/vehicle');
           }}
         >
           <DeleteIcon className="w-4 h-4" />
-          Delete
+          <FormattedMessage id="VEHICLE.TOOLBAR.DELETE" />
         </button>
       </div>
     </Container>

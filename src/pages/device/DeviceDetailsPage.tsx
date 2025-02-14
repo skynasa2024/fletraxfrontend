@@ -18,12 +18,14 @@ import {
 import RoleComponent from '@/components/RoleComponent';
 import { toAbsoluteUrl } from '@/utils';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
   const { getProtocolName, getTypeName } = useDeviceProvider();
+  const intl = useIntl();
 
   const [device, sedivevice] = useState<DeviceDTO | null>(null);
   useEffect(() => {
@@ -58,20 +60,35 @@ const DeviceDetailsPage = () => {
               </div>
               <CarPlate className="w-auto" plate={device.vehiclePlate} />
               <div className="flex flex-col gap-2">
-                <span>Protocol: {getProtocolName(device.protocolId)}</span>
-                <span>Type: {getTypeName(device.typeId)}</span>
+                <span>
+                  <FormattedMessage id="DEVICE.DETAILS.PROTOCOL" />:{' '}
+                  {getProtocolName(device.protocolId)}
+                </span>
+                <span>
+                  <FormattedMessage id="DEVICE.DETAILS.TYPE" />: {getTypeName(device.typeId)}
+                </span>
               </div>
               <div className="flex flex-col gap-2">
-                <span>Start: {device.subscriptionStartDate}</span>
-                <span>End: {device.subscriptionEndDate}</span>
+                <span>
+                  <FormattedMessage id="COMMON.START" />: {device.subscriptionStartDate}
+                </span>
+                <span>
+                  <FormattedMessage id="COMMON.END" />: {device.subscriptionEndDate}
+                </span>
               </div>
               <div className="flex gap-3">
                 <a href={`/devices/device/${device.id}`}>
-                  <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+                  <img
+                    src={toAbsoluteUrl('/media/icons/view.svg')}
+                    alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+                  />
                 </a>
                 <RoleComponent role="admin">
                   <a href={`/devices/edit/${device.id}`}>
-                    <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+                    <img
+                      src={toAbsoluteUrl('/media/icons/edit.svg')}
+                      alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+                    />
                   </a>
                   <Menu>
                     <MenuItem toggle="dropdown" trigger="click">
@@ -82,7 +99,7 @@ const DeviceDetailsPage = () => {
                         <MenuItem
                           onClick={async () => {
                             await deleteDevice(device.id);
-                            enqueueSnackbar('Device deleted successfully', {
+                            enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.DELETE_SUCCESS' }), {
                               variant: 'success'
                             });
                             navigate('/devices/device');
@@ -92,7 +109,9 @@ const DeviceDetailsPage = () => {
                             <MenuIcon>
                               <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                             </MenuIcon>
-                            <MenuTitle>Delete</MenuTitle>
+                            <MenuTitle>
+                              <FormattedMessage id="COMMON.DELETE" />
+                            </MenuTitle>
                           </MenuLink>
                         </MenuItem>
                       </MenuSub>

@@ -3,6 +3,7 @@ import { useSettings } from '@/providers';
 import { useDataGrid } from '@/components';
 import { IMaintenanceTableData, updateMaintenanceStatus } from '@/api/maintenance.ts';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown.tsx';
+import { useIntl } from 'react-intl';
 
 export const MaintenanceStatusDropdown = (
   info: CellContext<IMaintenanceTableData, unknown> & {
@@ -10,7 +11,7 @@ export const MaintenanceStatusDropdown = (
   }
 ) => {
   const { settings } = useSettings();
-
+  const intl = useIntl();
   const reload = useDataGrid().fetchServerSideData;
 
   return (
@@ -23,14 +24,14 @@ export const MaintenanceStatusDropdown = (
       }}
       options={{
         ongoing: {
-          color: '#50CD89',
-          backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
-          name: 'Ongoing'
-        },
-        finished: {
           color: '#F1416C',
           backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
-          name: 'Finished'
+          name: intl.formatMessage({ id: 'MAINTENANCE.STATUS.ONGOING' })
+        },
+        finished: {
+          color: '#50CD89',
+          backgroundColor: settings.themeMode == 'dark' ? '#15171c' : '#ffffff',
+          name: intl.formatMessage({ id: 'MAINTENANCE.STATUS.FINISHED' })
         }
       }}
     />

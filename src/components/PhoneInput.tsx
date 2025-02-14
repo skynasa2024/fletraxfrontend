@@ -1,6 +1,7 @@
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 import { countries } from 'countries-list';
 import { useMemo, useState } from 'react';
+import { useIntl } from 'react-intl';
 import { Autocomplete } from './AutoComplete';
 
 export interface PhoneInputProps {
@@ -12,6 +13,7 @@ export interface PhoneInputProps {
 }
 
 const PhoneInput = (props: PhoneInputProps) => {
+  const { formatMessage } = useIntl();
   const [search, setSearch] = useState(props.phoneCodeInitialValue ?? '');
   const [selected, setSelected] = useState<string | null>(props.phoneCodeInitialValue ?? null);
   const phoneCodesList = useMemo(() => {
@@ -42,8 +44,9 @@ const PhoneInput = (props: PhoneInputProps) => {
   }, [phoneCodesList]);
 
   return (
-    <div className="input !pl-0">
+    <div className="input !pl-0" dir="ltr">
       <Autocomplete
+        direction="ltr"
         options={phoneCodes}
         renderPrefix={(option) => {
           return (
@@ -80,7 +83,7 @@ const PhoneInput = (props: PhoneInputProps) => {
       />
       <input
         required={props.required}
-        placeholder="Phone number"
+        placeholder={formatMessage({ id: "PHONE_INPUT.PLACEHOLDER" })}
         type="phone"
         defaultValue={props.initialValue}
         name={props.name}

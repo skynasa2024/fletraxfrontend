@@ -5,44 +5,47 @@ import BlocksIcon from '../vehicle/blocks/svg/BlocksIcon';
 import { DeviceStats, getDevicesStats } from '@/api/devices';
 import DeviceIcon from './svg/device.svg?react';
 import RoleComponent from '@/components/RoleComponent';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const DevicePage = () => {
   const [deviceStats, setDeviceStats] = useState<DeviceStats>();
+  const intl = useIntl();
+
   const metrics = useMemo(
     () => [
       {
         value: deviceStats?.total || 0,
-        label: 'Total Devices',
+        label: intl.formatMessage({ id: 'DEVICE.STATS.TOTAL' }),
         textColor: 'text-white',
         bgColor: 'bg-blue-500',
         icon: <BlocksIcon />
       },
       {
         value: deviceStats?.online || 0,
-        label: 'Online Devices',
+        label: intl.formatMessage({ id: 'DEVICE.STATS.ONLINE' }),
         textColor: 'text-gray-800',
         icon: <DeviceIcon className="text-teal-500" />
       },
       {
         value: deviceStats?.offline || 0,
-        label: 'Offline Devices',
+        label: intl.formatMessage({ id: 'DEVICE.STATS.OFFLINE' }),
         textColor: 'text-gray-800',
         icon: <DeviceIcon className="text-red-500" />
       },
       {
         value: deviceStats?.connected || 0,
-        label: 'Connected Devices',
+        label: intl.formatMessage({ id: 'DEVICE.STATS.CONNECTED' }),
         textColor: 'text-gray-800',
         icon: <DeviceIcon className="text-orange-500" />
       },
       {
         value: deviceStats?.disconnected || 0,
-        label: 'Disconnected Devices',
+        label: intl.formatMessage({ id: 'DEVICE.STATS.DISCONNECTED' }),
         textColor: 'text-gray-800',
         icon: <DeviceIcon className="text-violet-500" />
       }
     ],
-    [deviceStats]
+    [deviceStats, intl]
   );
 
   const refetch = () => {
@@ -57,12 +60,14 @@ const DevicePage = () => {
     <div className="flex flex-col gap-5 lg:gap-7.5 h-full">
       <div className="grid gap-5 lg:gap-7.5">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-xl text-gray-800">Devices</h3>
+          <h3 className="font-bold text-xl text-gray-800">
+            <FormattedMessage id="DEVICE.TITLE" />
+          </h3>
 
           <RoleComponent role="admin">
             <a href="/devices/add-device">
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
-                New Device
+                <FormattedMessage id="DEVICE.ADD_NEW" />
               </button>
             </a>
           </RoleComponent>

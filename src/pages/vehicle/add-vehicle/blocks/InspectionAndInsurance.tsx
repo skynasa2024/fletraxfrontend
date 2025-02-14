@@ -1,17 +1,22 @@
 import { Field } from 'formik';
 import CalendarIcon from '../../blocks/svg/CalendarIcon';
+import { FormattedMessage } from 'react-intl';
 
 const InspectionAndInsurance = () => {
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="company_settings">
-        <h3 className="card-title">Inspection and Insurance</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.TITLE" />
+        </h3>
       </div>
       <div className="card-body grid gap-5">
         {/* Inspection Dates */}
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Inspection Start Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.INSPECTION_START_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -30,7 +35,9 @@ const InspectionAndInsurance = () => {
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Inspection End Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.INSPECTION_END_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -53,7 +60,9 @@ const InspectionAndInsurance = () => {
         {/* Insurance Dates */}
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Insurance Start Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.INSURANCE_START_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -72,7 +81,9 @@ const InspectionAndInsurance = () => {
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Insurance End Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.INSURANCE_END_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -95,7 +106,9 @@ const InspectionAndInsurance = () => {
         {/* Kasko Dates */}
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Kasko Start Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.KASKO_START_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -114,7 +127,9 @@ const InspectionAndInsurance = () => {
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Kasko End Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.KASKO_END_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -137,7 +152,9 @@ const InspectionAndInsurance = () => {
         {/* Exhaust Dates */}
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="grid gap-2.5">
-            <label className="form-label">Exhaust Start Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.EXHAUST_START_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {
@@ -156,7 +173,9 @@ const InspectionAndInsurance = () => {
             </div>
           </div>
           <div className="grid gap-2.5">
-            <label className="form-label">Exhaust End Date</label>
+            <label className="form-label">
+              <FormattedMessage id="VEHICLE.FORM.INSPECTION_INSURANCE.EXHAUST_END_DATE" />
+            </label>
             <div
               className="input"
               onClick={(e) => {

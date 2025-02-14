@@ -13,9 +13,10 @@ import { NotificationItem } from '@/layouts/demo1/header/notifications/Notificat
 import { formatTimeAgo } from '@/utils/Date.ts';
 import { useSnackbar } from 'notistack';
 import { NotificationSnackbar } from '@/layouts/demo1/header/notifications/NotificationSnackbar.tsx';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => {
+  const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const headerRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -60,7 +61,7 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
             plate={notification.vehiclePlate}
             imei={notification.deviceIdent}
             text={notification.text}
-            date={formatTimeAgo(notification.createdAt)}
+            date={formatTimeAgo(notification.createdAt, intl)}
             info={notification.type}
           />
         </div>
@@ -107,7 +108,7 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
                   plate={notification.vehiclePlate}
                   imei={notification.deviceIdent}
                   text={notification.text}
-                  date={formatTimeAgo(notification.createdAt)}
+                  date={formatTimeAgo(notification.createdAt, intl)}
                   info={notification.type}
                 />
                 {index < notifications.length - 1 && (

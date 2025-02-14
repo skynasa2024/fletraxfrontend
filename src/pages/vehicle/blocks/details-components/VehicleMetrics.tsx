@@ -2,6 +2,7 @@ import React from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { EngineHours, Mileage, FuelConsumption } from '../svg';
+import { useIntl } from 'react-intl';
 
 interface MetricCardProps {
   icon: React.ComponentType;
@@ -55,24 +56,26 @@ const VehicleMetrics: React.FC<VehicleMetricsProps> = ({
     rentedTimes: '7'
   }
 }) => {
+  const intl = useIntl();
+
   const metricConfigs: MetricCardProps[] = [
     {
       icon: EngineHours,
-      label: 'Engine Hours',
+      label: intl.formatMessage({ id: 'VEHICLE.METRICS.ENGINE_HOURS' }),
       value: metrics.engineHours,
       percentage: 70,
       color: '#F87171'
     },
     {
       icon: Mileage,
-      label: 'Mileage',
+      label: intl.formatMessage({ id: 'VEHICLE.METRICS.MILEAGE' }),
       value: metrics.mileage,
       percentage: 80,
       color: '#60A5FA'
     },
     {
       icon: FuelConsumption,
-      label: 'Fuel Consumption',
+      label: intl.formatMessage({ id: 'VEHICLE.METRICS.FUEL_CONSUMPTION' }),
       value: metrics.fuelConsumption,
       percentage: 25,
       color: '#A78BFA'
