@@ -64,7 +64,7 @@ const UserDetailsPage = () => {
     <Container className="mb-10 flex flex-col gap-6">
       <Toolbar />
 
-      <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="card shadow-md rounded-lg overflow-hidden">
         <div className="card-body p-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
@@ -74,33 +74,33 @@ const UserDetailsPage = () => {
         </div>
       </div>
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="card shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8">
             <div className="flex gap-3 items-center"></div>
             <div className="flex flex-col space-y-4 md:space-y-0 md:space-x-4">
-              <h2 className="text-xl font-semibold mb-4 text-dark">
+              <h2 className="text-xl font-semibold mb-4 text-dark dark:text-white/70">
                 <FormattedMessage id="VEHICLE.DETAILS.DOCUMENTS" />
               </h2>
               <FileList files={files} />
             </div>
           </div>
         </div>
-        <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="card shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8 flex flex-col gap-6">
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.INFORMATION.IDENTIFY_NUMBER" />
               </p>
               <p className="text-gray-800 font-semibold">{user.identifyNumber}</p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.INFORMATION.SUBSCRIPTION_START_DATE" />
               </p>
               <p className="text-gray-800 font-semibold">{user.subscriptionStartDate}</p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.PHONE" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
@@ -111,7 +111,7 @@ const UserDetailsPage = () => {
               </p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.COUNTRY" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
@@ -120,7 +120,7 @@ const UserDetailsPage = () => {
               </p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.AREA" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
@@ -130,22 +130,22 @@ const UserDetailsPage = () => {
             </div>
           </div>
         </div>
-        <div className="card bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="card shadow-md rounded-lg overflow-hidden">
           <div className="card-body p-8 flex flex-col gap-6">
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.INFORMATION.TIMEZONE" />
               </p>
               <p className="text-gray-800 font-semibold">{user.timezone}</p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.INFORMATION.ROLE" />
               </p>
               <p className="text-gray-800 font-semibold">{user.role}</p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.PHONE2" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
@@ -156,7 +156,7 @@ const UserDetailsPage = () => {
               </p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.CITY" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
@@ -165,7 +165,7 @@ const UserDetailsPage = () => {
               </p>
             </div>
             <div>
-              <p className="text-gray-400 mb-1">
+              <p className="text-gray-400 dark:text-white/70 mb-1">
                 <FormattedMessage id="USER.ADD.CONTACT.ADDRESS" />
               </p>
               <p className="text-gray-800 font-semibold flex gap-2 items-center">
