@@ -34,6 +34,7 @@
     "esbuild-plugin-react-virtualized": "^1.0.4",
     "flag-icons": "^7.3.2",
     "formik": "^2.4.6",
+    "i18n-iso-countries": "^7.13.0",
     "leaflet": "^1.9.4",
     "leaflet-rotatedmarker": "^0.2.0",
     "lucide-react": "^0.461.0",

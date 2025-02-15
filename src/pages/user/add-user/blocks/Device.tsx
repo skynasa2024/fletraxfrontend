@@ -7,8 +7,10 @@ import { KeenIcon } from '@/components';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import DeviceIcon from '@/pages/device/svg/device.svg?react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const Device = ({ user }: AddUserPageProps) => {
+  const intl = useIntl();
   const [linkedDevicesSearch, setLinkedDevicesSearch] = useState<string>('');
   const [unlinkedDevicesSearch, setUnlinkedDevicesSearch] = useState<string>('');
   const [linkedDevices, setLinkedDevices] = useState<Paginated<DeviceDTO>>();
@@ -49,15 +51,24 @@ const Device = ({ user }: AddUserPageProps) => {
   return (
     <div className="card pb-2.5">
       <div className="card-header">
-        <h3 className="card-title">Device</h3>
+        <h3 className="card-title">
+          <FormattedMessage id="USER.ADD.TAB.DEVICE" />
+        </h3>
       </div>
       <div className="card-body grid lg:grid-cols-2 gap-5 h-[470px]">
         <div className="card pb-2.5">
           <div className="card-header gap-6">
             <div>
-              <h3 className="card-title text-nowrap">Unlinked Devices</h3>
+              <h3 className="card-title text-nowrap">
+                <FormattedMessage id="DEVICE.GRID.UNLINKED_DEVICES" />
+              </h3>
               {unlinkedDevices?.totalCount !== undefined && (
-                <h5 className="text-sm text-gray-400">{unlinkedDevices?.totalCount} Devices</h5>
+                <h5 className="text-sm text-gray-400">
+                  <FormattedMessage
+                    id="DEVICE.GRID.DEVICES_COUNT"
+                    values={{ count: unlinkedDevices.totalCount }}
+                  />
+                </h5>
               )}
             </div>
             {/* Search Input */}
@@ -69,7 +80,7 @@ const Device = ({ user }: AddUserPageProps) => {
                 <DebouncedSearchInput
                   type="search"
                   className="pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-                  placeholder="Search"
+                  placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
                   onDebounce={setUnlinkedDevicesSearch}
                 />
               </div>
@@ -145,9 +156,16 @@ const Device = ({ user }: AddUserPageProps) => {
         <div className="card pb-2.5">
           <div className="card-header gap-6">
             <div>
-              <h3 className="card-title text-nowrap">Linked Devices</h3>
+              <h3 className="card-title text-nowrap">
+                <FormattedMessage id="DEVICE.GRID.LINKED_DEVICES" />
+              </h3>
               {linkedDevices?.totalCount !== undefined && (
-                <h5 className="text-sm text-gray-400">{linkedDevices?.totalCount} Devices</h5>
+                <h5 className="text-sm text-gray-400">
+                  <FormattedMessage
+                    id="DEVICE.GRID.DEVICES_COUNT"
+                    values={{ count: linkedDevices.totalCount }}
+                  />
+                </h5>
               )}
             </div>
             {/* Search Input */}
@@ -159,7 +177,7 @@ const Device = ({ user }: AddUserPageProps) => {
                 <DebouncedSearchInput
                   type="search"
                   className="pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-                  placeholder="Search"
+                  placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
                   onDebounce={setLinkedDevicesSearch}
                 />
               </div>
