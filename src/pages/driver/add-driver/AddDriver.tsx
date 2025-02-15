@@ -45,7 +45,9 @@ const AddDriver = () => {
   return (
     <form
       className="pb-10"
-      action={async (data) => {
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target as HTMLFormElement);
         try {
           driver ? await updateDriver(driver.id, data) : await createDriver(data);
           enqueueSnackbar(intl.formatMessage({ id: 'DRIVER.FORM.SAVE_SUCCESS' }), {

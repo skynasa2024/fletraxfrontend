@@ -45,7 +45,9 @@ const AddGeofence = () => {
   return (
     <form
       className="pb-10"
-      action={async (data) => {
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target as HTMLFormElement);
         try {
           geofence ? await updateGeofence(geofence.id, data) : await createGeofence(data);
           enqueueSnackbar(intl.formatMessage({ id: 'GEOFENCE.SAVE_SUCCESS' }), {

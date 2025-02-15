@@ -44,7 +44,9 @@ const AddUser = () => {
   return (
     <form
       className="pb-10"
-      action={async (data) => {
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target as HTMLFormElement);
         try {
           const response = user ? await updateUser(user.id, data) : await createUser(data);
           enqueueSnackbar(<FormattedMessage id="USER.FORM.SAVE_SUCCESS" />, {

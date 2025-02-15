@@ -230,7 +230,14 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
   };
 
   return (
-    <form className="space-y-2" action={handleSave}>
+    <form
+      className="space-y-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        handleSave(formData);
+      }}
+    >
       <input type="hidden" name={`scratches[0].vehicleId`} value={scratch.vehicleId} />
       <div className="p-4 border rounded-xl border-gray-600 relative">
         {/* Dynamic Place Label */}
