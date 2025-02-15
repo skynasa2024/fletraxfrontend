@@ -18,10 +18,12 @@ import { CarView } from '@/pages/vehicle/blocks/CarView';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const DriverListDropdown = (
   info: CellContext<DriverDetails, unknown> & { refetch: () => void }
 ) => {
+  const intl = useIntl();
   const reload = useDataGrid().fetchServerSideData;
   return (
     <StatusDropdown
@@ -34,11 +36,13 @@ const DriverListDropdown = (
       options={{
         'Under Review': {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: intl.formatMessage({ id: 'DRIVER.STATUS.UNDER_REVIEW' })
         },
         Active: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: intl.formatMessage({ id: 'DRIVER.STATUS.ACTIVE' })
         }
       }}
     />
@@ -50,13 +54,15 @@ interface DriverListProps {
 }
 
 const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
+  const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
   const [searchQuery, setSearchQuery] = useState<string>('');
+
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
         accessorKey: 'fullName',
-        header: 'Full Name',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.FULL_NAME' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
@@ -71,13 +77,13 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
       },
       {
         accessorKey: 'dateOfBirth',
-        header: 'Birth Date',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.BIRTH_DATE' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.dateOfBirth}</div>
       },
       {
         accessorKey: 'nationality',
-        header: 'Nationality',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.NATIONALITY' }),
         enableSorting: true,
         cell: ({ row }) => (
           <span className={'px-3 py-1 rounded-full bg-blue-100 text-blue-800'}>
@@ -87,44 +93,50 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
       },
       {
         accessorKey: 'idNumber',
-        header: 'ID Number',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.ID_NUMBER' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.idNumber}</div>
       },
       {
         accessorKey: 'licenseSerialNumber',
-        header: 'License Number',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.LICENSE_NUMBER' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseNumber}</div>
       },
       {
         accessorKey: 'licenseExpiryDate',
-        header: 'License Expiry',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.LICENSE_EXPIRY' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseExpiry}</div>
       },
       {
         accessorKey: 'vehiclePlate',
-        header: 'Vehicle',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.VEHICLE' }),
         enableSorting: true,
         cell: ({ row }) => <CarView vehicle={row.original.vehicle} />
       },
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.STATUS' }),
         enableSorting: true,
         cell: (info) => <DriverListDropdown refetch={refetch} {...info} />
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
             <a href={`/drivers/driver/${row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+              <img
+                src={toAbsoluteUrl('/media/icons/view.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+              />
             </a>
             <a href={`/drivers/edit/${row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+              <img
+                src={toAbsoluteUrl('/media/icons/edit.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+              />
             </a>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
@@ -135,7 +147,7 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
                   <MenuItem
                     onClick={async () => {
                       await deleteDriver(row.original.id);
-                      enqueueSnackbar('Driver deleted successfully', {
+                      enqueueSnackbar(intl.formatMessage({ id: 'DRIVER.DELETE_SUCCESS' }), {
                         variant: 'success'
                       });
                       refetch();
@@ -145,7 +157,9 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
                       <MenuIcon>
                         <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                       </MenuIcon>
-                      <MenuTitle>Delete</MenuTitle>
+                      <MenuTitle>
+                        <FormattedMessage id="COMMON.DELETE" />
+                      </MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 </MenuSub>
@@ -155,13 +169,15 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
         )
       }
     ],
-    [enqueueSnackbar, refetch]
+    [enqueueSnackbar, refetch, intl]
   );
 
   return (
     <div className="card">
       <div className="flex items-center justify-between p-6 ">
-        <h2 className="text-xl font-semibold text-gray-800">Drivers List</h2>
+        <h2 className="text-xl font-semibold text-gray-800">
+          <FormattedMessage id="DRIVER.LIST.TITLE" />
+        </h2>
         {/* Search Input */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -170,7 +186,7 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
           <DebouncedSearchInput
             type="search"
             className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-            placeholder="Search"
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             onDebounce={setSearchQuery}
           />
         </div>

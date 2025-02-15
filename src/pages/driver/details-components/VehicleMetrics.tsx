@@ -41,21 +41,22 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
             pathColor: color,
             textColor: '#374151',
             trailColor: '#E5E7EB',
-            pathTransitionDuration: 0.5,
+            pathTransitionDuration: 0.5
           })}
         />
       </div>
-
     </div>
   );
 };
 
-const VehicleMetrics: React.FC<VehicleMetricsProps> = ({ metrics = {
-  engineHours: '250 Hr',
-  mileage: '157 km',
-  fuelConsumption: '9%',
-  rentedTimes: '7'
-} }) => {
+const VehicleMetrics: React.FC<VehicleMetricsProps> = ({
+  metrics = {
+    engineHours: '250 Hr',
+    mileage: '157 km',
+    fuelConsumption: '9%',
+    rentedTimes: '7'
+  }
+}) => {
   const metricConfigs: MetricCardProps[] = [
     {
       icon: EngineHours,

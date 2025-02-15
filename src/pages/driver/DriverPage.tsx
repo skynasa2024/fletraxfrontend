@@ -4,32 +4,35 @@ import PeopleIcon from '../vehicle/blocks/svg/PeopleIcon';
 import UserMiniCards from '../vehicle/mini-cards/UserMiniCards';
 import { DriverList } from './blocks';
 import { useEffect, useMemo, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const DriverPage = () => {
+  const intl = useIntl();
   const [driversStats, setDriversStats] = useState<DriverStats>();
+
   const metrics = useMemo(
     () => [
       {
         value: driversStats?.total || 0,
-        label: 'Total Drivers',
+        label: intl.formatMessage({ id: 'DRIVER.STATS.TOTAL' }),
         textColor: 'text-white',
         bgColor: 'bg-blue-500',
         icon: <BlocksIcon />
       },
       {
         value: driversStats?.active || 0,
-        label: 'Active Drivers',
+        label: intl.formatMessage({ id: 'DRIVER.STATS.ACTIVE' }),
         textColor: 'text-gray-800',
         icon: <PeopleIcon color="#5271FF" />
       },
       {
         value: driversStats?.unactive || 0,
-        label: 'Under Review Drivers',
+        label: intl.formatMessage({ id: 'DRIVER.STATS.UNDER_REVIEW' }),
         textColor: 'text-gray-800',
         icon: <PeopleIcon color="#FFA800" />
       }
     ],
-    [driversStats]
+    [driversStats, intl]
   );
 
   const refetch = () => {
@@ -43,11 +46,13 @@ const DriverPage = () => {
   return (
     <div className="grid gap-5 lg:gap-7.5">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-xl text-gray-800">Driver List</h3>
+        <h3 className="font-bold text-xl text-gray-800">
+          <FormattedMessage id="DRIVER.LIST.TITLE" />
+        </h3>
 
         <a href="/drivers/add-driver">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
-            New Driver
+            <FormattedMessage id="DRIVER.LIST.ADD_NEW" />
           </button>
         </a>
       </div>

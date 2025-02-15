@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 type CardProps = {
   type: 'maintenance' | 'violations';
@@ -125,7 +126,11 @@ const Card: React.FC<CardProps> = ({
           <div>{type === 'maintenance' ? <MaintenanceIcon /> : <ViolationsIcon />}</div>
           <div className="flex-grow min-w-0">
             <h2 className="text-gray-800 font-semibold text-base truncate">
-              {type === 'maintenance' ? 'Maintenance' : 'Violations'}
+              {type === 'maintenance' ? (
+                <FormattedMessage id="DASHBOARD.VIOLATION_MAINTENANCE.MAINTENANCE" />
+              ) : (
+                <FormattedMessage id="DASHBOARD.VIOLATION_MAINTENANCE.VIOLATION" />
+              )}
             </h2>
             <p className="text-gray-400 text-sm">{date}</p>
           </div>
@@ -136,14 +141,20 @@ const Card: React.FC<CardProps> = ({
             <span className="text-gray-600">{count}</span>
           </div>
           <span className="text-gray-500 text-sm sm:mt-1">
-            {type === 'maintenance' ? 'Maintenance' : 'Violations'}
+            {type === 'maintenance' ? (
+              <FormattedMessage id="DASHBOARD.VIOLATION_MAINTENANCE.MAINTENANCE" />
+            ) : (
+              <FormattedMessage id="DASHBOARD.VIOLATION_MAINTENANCE.VIOLATION" />
+            )}
           </span>
         </div>
       </div>
 
       <div className="flex justify-between pt-4 border-t border-gray-100">
         <div className="flex-1">
-          <p className="text-red-500 text-sm mb-1">Unpaid</p>
+          <p className="text-red-500 text-sm mb-1">
+            <FormattedMessage id="VIOLATION.STATUS.UNPAID" />
+          </p>
           <div className="flex items-center text-red-500">
             <svg
               className="w-4 h-4 rotate-45 shrink-0"
@@ -158,8 +169,10 @@ const Card: React.FC<CardProps> = ({
           </div>
         </div>
 
-        <div className="flex-1 text-right">
-          <p className="text-green-500 text-sm mb-1">Paid</p>
+        <div className="flex-1 text-end">
+          <p className="text-green-500 text-sm mb-1">
+            <FormattedMessage id="VIOLATION.STATUS.PAID" />
+          </p>
           <div className="flex items-center justify-end text-green-500">
             <svg
               className="w-4 h-4 -rotate-45 shrink-0"
