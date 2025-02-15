@@ -30,15 +30,17 @@ const DriverList = () => {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const drivers = await getDrivers({ start: startIndex, end: stopIndex });
+    const computedStart = isRTL() ? Math.max(remoteRowCount - stopIndex - 1, 0) : startIndex;
+    const computedStop = isRTL() ? Math.max(remoteRowCount - startIndex - 1, 0) : stopIndex;
+    const vehicles = await getDrivers({ start: computedStart, end: computedStop });
     setDrivers((prev) => {
       const data = prev?.data ?? [];
-      drivers.data.forEach((driver, index) => {
-        data[startIndex + index] = driver;
+      vehicles.data.forEach((vehicle, index) => {
+        data[computedStart + index] = vehicle;
       });
       return {
         data,
-        totalCount: drivers.totalCount
+        totalCount: vehicles.totalCount
       };
     });
   };
