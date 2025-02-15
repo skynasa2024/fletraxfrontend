@@ -122,7 +122,7 @@ const DriverDetailsPage = () => {
 
         <TripList deviceIdent={driver.vehicle.imei} />
         <div className="m-5">
-          <MaintenanceViolationTable id={driver.vehicle.id} />
+          {driver.vehicle.id && <MaintenanceViolationTable id={driver.vehicle.id} />}
         </div>
         <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 m-5">
           <div className="w-full">

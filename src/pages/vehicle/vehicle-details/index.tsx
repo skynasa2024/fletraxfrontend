@@ -302,7 +302,7 @@ const VehicleInfo = () => {
             /> */}
           </div>
           <div className="w-2/3">
-            <MaintenanceViolationTable id={vehicle?.vehicleId} />
+            {vehicle && <MaintenanceViolationTable id={vehicle?.vehicleId} />}
           </div>
         </div>
       </div>
