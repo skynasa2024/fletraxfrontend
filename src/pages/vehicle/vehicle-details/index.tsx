@@ -194,7 +194,7 @@ const VehicleInfo = () => {
       <Toolbar carId={vehicle?.id} plate={vehicle?.plate} />
       <div className="px-10">
         <div className="flex flex-col lg:flex-row">
-          <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2 p-4">
+          <div className="card hover:shadow-md w-full lg:w-1/2 grid grid-cols-1 mb-2 p-4">
             <div className="flex justify-between">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
@@ -286,7 +286,7 @@ const VehicleInfo = () => {
           <VehicleMetrics
             metrics={{
               engineHours: vehicle?.engineHours?.toString() || '0',
-              mileage: ((vehicle?.mileage || 0) + (vehicle?.currentMileage || 0)).toString(),
+              mileage: ((vehicle?.mileage || 0) + (vehicle?.currentMileage || 0)).toFixed(0),
               fuelConsumption: vehicle?.fuelConsumption?.toString() || '0'
             }}
           />
