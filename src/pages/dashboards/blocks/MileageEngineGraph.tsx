@@ -22,6 +22,7 @@ const MileageEngineGraph = () => {
   }, [selection]);
   const [data, setData] = useState<Paginated<CarMileageAndEngine>>();
   const remoteRowCount = useMemo(() => data?.totalCount ?? 0, [data]);
+  const [largestIndex, setLargestIndex] = useState(10);
   const [largestMileage, largestEngine] = useMemo(() => {
     if (!data) {
       return [0, 0];
@@ -54,11 +55,26 @@ const MileageEngineGraph = () => {
         totalCount: remoteData.totalCount
       };
     });
+    setLargestIndex(Math.max(largestIndex, stopIndex));
   };
 
   useEffect(() => {
     setData(undefined);
-    getCarsMileageAndEngine({ start: 0, end: 10, search: searchQuery }, sort).then(setData);
+    getCarsMileageAndEngine({ start: 0, end: largestIndex, search: searchQuery }, sort).then(
+      setData
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort, searchQuery]);
+
+  useEffect(() => {
+    // Update every 5 seconds
+    const interval = setInterval(() => {
+      getCarsMileageAndEngine({ start: 0, end: largestIndex, search: searchQuery }, sort).then(
+        setData
+      );
+    }, 5000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, searchQuery]);
 
   return (
