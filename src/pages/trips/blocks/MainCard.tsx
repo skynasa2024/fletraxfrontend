@@ -4,20 +4,8 @@ import { toAbsoluteUrl } from '@/utils';
 import TripCard from './TripCard';
 import { TripsSearch } from './TripsSearch';
 import { FormattedMessage } from 'react-intl';
-import {
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-  InfiniteLoader,
-  List
-} from 'react-virtualized';
-import React, { useRef } from 'react';
-import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
-
-const measurerCache = new CellMeasurerCache({
-  defaultHeight: 200,
-  fixedWidth: true
-});
+import { TripGroup } from '@/api/trips';
+import { withInfiniteScroll } from '@/HOC/withInfiniteScroll';
 
 export const MainCard = () => {
   const {
@@ -32,45 +20,12 @@ export const MainCard = () => {
     endTime,
     setEndTime,
     search,
-    trips
+    trips,
+    loadMoreTrips,
+    hasMore
   } = useTripsContext();
 
-  const listRef = useRef<any>(null);
-
-  const isRowLoaded = ({ index }: { index: number }) => !!trips[index];
-  const rowCount = trips.length + 1;
-
-  const rowRenderer = ({
-    index,
-    key,
-    style,
-    parent
-  }: {
-    index: number;
-    key: string;
-    style: React.CSSProperties;
-    parent: MeasuredCellParent;
-  }) => {
-    const tripGroup = trips[index];
-    if (!tripGroup) {
-      return null;
-    }
-    return (
-      <CellMeasurer key={key} style={style} cache={measurerCache} index={index} parent={parent}>
-        {({ measure, registerChild }) => (
-          <div ref={registerChild}>
-            <TripCard
-              tripGroup={tripGroup}
-              measure={() => {
-                measure();
-                listRef.current?.recomputeRowHeights(index);
-              }}
-            />
-          </div>
-        )}
-      </CellMeasurer>
-    );
-  };
+  const InfiniteTripList = withInfiniteScroll(TripList);
 
   return (
     <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 h-full">
@@ -143,42 +98,23 @@ export const MainCard = () => {
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         <FormattedMessage id="COMMON.SEARCH" />
       </button>
-      {/* <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
-        {trips.map((tripGroup) => (
-          <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
-        ))}
-      </div> */}
-      <div style={{ width: '100%', height: '550px' }}>
-        <AutoSizer>
-          {({ width, height }) => (
-            <InfiniteLoader
-              isRowLoaded={isRowLoaded}
-              loadMoreRows={(() => {}) as any}
-              rowCount={rowCount}
-            >
-              {({ onRowsRendered, registerChild }) => (
-                <List
-                  style={{
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#ddddeb8d #edf2f70'
-                  }}
-                  ref={(ref) => {
-                    registerChild(ref);
-                    listRef.current = ref;
-                  }}
-                  height={height}
-                  rowHeight={measurerCache.rowHeight}
-                  width={width}
-                  onRowsRendered={onRowsRendered}
-                  rowCount={rowCount}
-                  rowRenderer={rowRenderer}
-                  deferredMeasurementCache={measurerCache}
-                />
-              )}
-            </InfiniteLoader>
-          )}
-        </AutoSizer>
+      <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
+        <InfiniteTripList trips={trips} loadMore={loadMoreTrips!} hasMore={hasMore!} />
       </div>
     </div>
   );
 };
+
+type TripsListProps = {
+  trips: TripGroup[];
+};
+
+function TripList({ trips }: TripsListProps) {
+  return (
+    <>
+      {trips.map((tripGroup) => (
+        <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
+      ))}
+    </>
+  );
+}
