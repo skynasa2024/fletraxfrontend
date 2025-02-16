@@ -120,7 +120,9 @@ const DriverDetailsPage = () => {
           />
         </div>
 
-        <TripList deviceIdent={driver.vehicle.imei} />
+        <div className="m-5">
+          <TripList deviceIdent={driver.vehicle.imei} />
+        </div>
         <div className="m-5">
           {driver.vehicle.id && <MaintenanceViolationTable id={driver.vehicle.id} />}
         </div>

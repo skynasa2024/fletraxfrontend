@@ -39,7 +39,7 @@ interface AdditionalVehicleInfo {
   plate: string;
   status: string;
   hgsNumber: string;
-  currentMileage: string;
+  currentMileage: number;
   maintenanceMileage: string;
   fuelConsumption: number;
   licenseImageFile?: string;
@@ -208,7 +208,7 @@ const AddVehiclePage = () => {
     kaskoEndDate: currentVehicle?.kaskoInsuranceEndDate || '',
     exhaustStartDate: currentVehicle?.exhaustStartDate || '',
     exhaustEndDate: currentVehicle?.exhaustEndDate || '',
-    currentMileage: currentVehicle?.currentMileage || '',
+    currentMileage: currentVehicle?.currentMileage || 0,
     maintenanceMileage: currentVehicle?.maintenanceMileage || '',
     fuelConsumption: currentVehicle?.fuelConsumption || 0,
     hgsNumber: currentVehicle?.hgsNumber || '',
@@ -222,7 +222,7 @@ const AddVehiclePage = () => {
   };
 
   const additionalVehicleInfoInitialValues: AdditionalVehicleInfo = {
-    currentMileage: '',
+    currentMileage: 0,
     fuelConsumption: 0,
     hgsNumber: '',
     maintenanceMileage: '',

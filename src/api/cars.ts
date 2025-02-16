@@ -80,7 +80,7 @@ export interface VehicleDTO {
   exhaustStartDate: string;
   exhaustEndDate: string;
   hgsNumber: string;
-  currentMileage: string;
+  currentMileage?: number;
   maintenanceMileage: string;
   fuelConsumption: number;
   licenseImage?: string | null;
@@ -90,7 +90,13 @@ export interface VehicleDTO {
   deviceId: string;
   deviceIdent: string;
   vehicleId: string;
+  engineHours?: number;
+  formatedEngineHours?: string | null;
+  mileage?: number;
+  formatedMileage?: string | null;
   scratches: ScratchDTO[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ScratchDTO {
@@ -303,7 +309,7 @@ export const getVehicles = async (
     },
     brandName: vehicle.brand,
     type: vehicle.gear,
-    mileage: vehicle.currentMileage,
+    mileage: (vehicle.currentMileage || 0).toString(),
     status: vehicle.status,
     deviceName: 'Device Name',
     carId: vehicle.id
