@@ -80,7 +80,7 @@ export interface VehicleDTO {
   exhaustStartDate: string;
   exhaustEndDate: string;
   hgsNumber: string;
-  currentMileage?: number;
+  currentMileage?: string;
   maintenanceMileage: string;
   fuelConsumption: number;
   licenseImage?: string | null;

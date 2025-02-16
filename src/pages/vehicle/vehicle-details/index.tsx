@@ -285,8 +285,8 @@ const VehicleInfo = () => {
           </div>
           <VehicleMetrics
             metrics={{
-              engineHours: vehicle?.engineHours?.toString() || '0',
-              mileage: ((vehicle?.mileage || 0) + (vehicle?.currentMileage || 0)).toFixed(0),
+              engineHours: vehicle?.formatedEngineHours || '0 min',
+              mileage: ((vehicle?.mileage || 0) + +(vehicle?.currentMileage || '0')).toFixed(0),
               fuelConsumption: vehicle?.fuelConsumption?.toString() || '0'
             }}
           />
