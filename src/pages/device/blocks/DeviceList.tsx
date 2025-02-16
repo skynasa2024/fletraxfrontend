@@ -21,6 +21,7 @@ import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 type DeviceListProps = {
   refetchStats?: () => void;
@@ -29,6 +30,7 @@ type DeviceListProps = {
 
 const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const [searchQuery, setSearchQuery] = useState('');
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const intl = useIntl();
@@ -123,6 +125,19 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
                   <MenuSub className="menu-default">
                     <MenuItem
                       onClick={async () => {
+                        if (
+                          !(await dialogs.confirm(
+                            intl.formatMessage({
+                              id: 'DEVICE.DELETE.MODAL_MESSAGE'
+                            }),
+                            {
+                              title: intl.formatMessage({ id: 'DEVICE.DELETE.MODAL_TITLE' }),
+                              okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                              cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                            }
+                          ))
+                        )
+                          return;
                         await deleteDevice(row.original.id);
                         enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.DELETE_SUCCESS' }), {
                           variant: 'success'
@@ -147,7 +162,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         )
       }
     ],
-    [enqueueSnackbar, getProtocolName, getTypeName, intl, refetch]
+    [dialogs, enqueueSnackbar, getProtocolName, getTypeName, intl, refetch]
   );
 
   return (

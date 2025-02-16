@@ -22,16 +22,31 @@ import {
 } from '@/api/maintenance-type.ts';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const MaintenanceTypeList = () => {
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const [searchQuery, setSearchQuery] = useState('');
   const intl = useIntl();
 
   const handleDelete = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      if (
+        !(await dialogs.confirm(
+          intl.formatMessage({
+            id: 'MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE'
+          }),
+          {
+            title: intl.formatMessage({ id: 'MAINTENANCE_TYPE.DELETE.MODAL_TITLE' }),
+            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+          }
+        ))
+      )
+        return;
       deleteMaintenanceType(id)
         .then((response) => {
           navigate('/maintenance/maintenance-type');
@@ -45,7 +60,7 @@ const MaintenanceTypeList = () => {
           });
         });
     },
-    [enqueueSnackbar, navigate]
+    [dialogs, enqueueSnackbar, intl, navigate]
   );
 
   const columns = useMemo<ColumnDef<IMaintenanceTypeTableData>[]>(

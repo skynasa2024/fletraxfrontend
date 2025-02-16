@@ -19,6 +19,7 @@ import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -137,6 +138,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
 const ActionsDropdown = ({ vehicleId, carId }: { vehicleId: string; carId: string }) => {
   const reload = useDataGrid().fetchServerSideData;
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const intl = useIntl();
 
   return (
@@ -169,6 +171,19 @@ const ActionsDropdown = ({ vehicleId, carId }: { vehicleId: string; carId: strin
           <MenuSub className="menu-default">
             <MenuItem
               onClick={async () => {
+                if (
+                  !(await dialogs.confirm(
+                    intl.formatMessage({
+                      id: 'VEHICLE.DELETE.MODAL_MESSAGE'
+                    }),
+                    {
+                      title: intl.formatMessage({ id: 'VEHICLE.DELETE.MODAL_TITLE' }),
+                      okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                      cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                    }
+                  ))
+                )
+                  return;
                 await deleteVehicle(carId);
                 enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.GRID.DELETE_SUCCESS' }), {
                   variant: 'success'

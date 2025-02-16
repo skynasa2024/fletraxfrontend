@@ -21,6 +21,7 @@ import { useSettings } from '@/providers';
 import { useAuthContext } from '@/auth';
 import { useSnackbar } from 'notistack';
 import { Link } from 'react-router';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const { settings } = useSettings();
@@ -60,6 +61,7 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ refetch }) => {
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const intl = useIntl();
   const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -151,6 +153,19 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                 <MenuSub className="menu-default">
                   <MenuItem
                     onClick={async () => {
+                      if (
+                        !(await dialogs.confirm(
+                          intl.formatMessage({
+                            id: 'USER.DELETE.MODAL_MESSAGE'
+                          }),
+                          {
+                            title: intl.formatMessage({ id: 'USER.DELETE.MODAL_TITLE' }),
+                            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                          }
+                        ))
+                      )
+                        return;
                       await deleteUser(info.row.original.id);
                       enqueueSnackbar(intl.formatMessage({ id: 'USER_PAGE.USER_DELETE_SUCCESS' }), {
                         variant: 'success'
@@ -177,7 +192,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
         }
       }
     ],
-    [enqueueSnackbar, refetch, intl, settings.themeMode]
+    [intl, refetch, settings.themeMode, dialogs, enqueueSnackbar]
   );
 
   const updateUsersStack = (user: User) => {

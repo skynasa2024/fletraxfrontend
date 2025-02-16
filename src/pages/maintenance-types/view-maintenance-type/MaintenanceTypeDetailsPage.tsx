@@ -11,12 +11,15 @@ import { useParams } from 'react-router';
 import { DeleteIcon, EditIcon } from '@/pages/driver/svg';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useSnackbar } from 'notistack';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const MaintenanceTypeDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
+  const intl = useIntl();
   const [model, setModel] = useState<MaintenanceTypeModel>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -48,8 +51,21 @@ const MaintenanceTypeDetailsPage = () => {
     navigate(-1);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (id) {
+      if (
+        !(await dialogs.confirm(
+          intl.formatMessage({
+            id: 'MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE'
+          }),
+          {
+            title: intl.formatMessage({ id: 'MAINTENANCE_TYPE.DELETE.MODAL_TITLE' }),
+            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+          }
+        ))
+      )
+        return;
       deleteMaintenanceType(id)
         .then((response) => {
           navigate('/maintenance/maintenance-type');

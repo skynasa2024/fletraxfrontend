@@ -10,6 +10,7 @@ import axios, { AxiosError } from 'axios';
 import { useSnackbar } from 'notistack';
 import { ResponseModel } from '@/api/response';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const CarScratches: React.FC = () => {
   const { id } = useParams();
@@ -172,6 +173,7 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const intl = useIntl();
+  const dialogs = useDialogs();
   const [place, setPlace] = useState(scratch.place);
   const [changed, setChanged] = useState(newScratch || false);
   const [file, setFile] = useState<File | undefined>(
@@ -185,6 +187,19 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
     }
     try {
       if (!scratch.id) return;
+      if (
+        !(await dialogs.confirm(
+          intl.formatMessage({
+            id: 'SCRATCH.DELETE.MODAL_MESSAGE'
+          }),
+          {
+            title: intl.formatMessage({ id: 'SCRATCH.DELETE.MODAL_TITLE' }),
+            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+          }
+        ))
+      )
+        return;
       await deleteScratch(scratch.id);
       enqueueSnackbar(
         intl.formatMessage({ id: 'VEHICLE.SCRATCHES.NOTIFICATIONS.DELETE_SUCCESS' }),

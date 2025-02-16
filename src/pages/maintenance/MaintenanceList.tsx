@@ -22,12 +22,14 @@ import { useSnackbar } from 'notistack';
 import { CarView } from '../dashboards/blocks/CarView.tsx';
 import { getMaintenanceTypes } from '@/api/maintenance-type.ts';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const MaintenanceList = (props: { fetchStats: () => void }) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const { settings } = useSettings();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const [searchQuery, setSearchQuery] = useState('');
   const [maintenanceTypes, setMaintenanceTypes] = useState<Record<string, string>>();
 
@@ -43,7 +45,20 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
   }, []);
 
   const handleDelete = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      if (
+        !(await dialogs.confirm(
+          intl.formatMessage({
+            id: 'MAINTENANCE.DELETE.MODAL_MESSAGE'
+          }),
+          {
+            title: intl.formatMessage({ id: 'MAINTENANCE.DELETE.MODAL_TITLE' }),
+            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+          }
+        ))
+      )
+        return;
       deleteMaintenance(id)
         .then((response) => {
           props?.fetchStats();
@@ -58,7 +73,7 @@ const MaintenanceList = (props: { fetchStats: () => void }) => {
           });
         });
     },
-    [enqueueSnackbar, navigate, props]
+    [dialogs, enqueueSnackbar, intl, navigate, props]
   );
 
   const columns = useMemo<ColumnDef<IMaintenanceTableData>[]>(

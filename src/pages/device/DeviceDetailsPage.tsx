@@ -19,9 +19,11 @@ import RoleComponent from '@/components/RoleComponent';
 import { toAbsoluteUrl } from '@/utils';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const { id } = useParams();
   const navigate = useNavigate();
   const { getProtocolName, getTypeName } = useDeviceProvider();
@@ -98,6 +100,19 @@ const DeviceDetailsPage = () => {
                       <MenuSub className="menu-default">
                         <MenuItem
                           onClick={async () => {
+                            if (
+                              !(await dialogs.confirm(
+                                intl.formatMessage({
+                                  id: 'DEVICE.DELETE.MODAL_MESSAGE'
+                                }),
+                                {
+                                  title: intl.formatMessage({ id: 'DEVICE.DELETE.MODAL_TITLE' }),
+                                  okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                                  cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                                }
+                              ))
+                            )
+                              return;
                             await deleteDevice(device.id);
                             enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.DELETE_SUCCESS' }), {
                               variant: 'success'

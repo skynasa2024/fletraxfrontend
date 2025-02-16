@@ -12,9 +12,11 @@ import { format } from 'date-fns';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
 import { CircularProgress } from '@mui/material';
 import Image from '@/components/image/Image';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const MaintenanceDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const dialogs = useDialogs();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [model, setModel] = useState<MaintenanceModel>();
@@ -44,8 +46,21 @@ const MaintenanceDetails = () => {
     navigate(-1);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (id) {
+      if (
+        !(await dialogs.confirm(
+          intl.formatMessage({
+            id: 'MAINTENANCE.DELETE.MODAL_MESSAGE'
+          }),
+          {
+            title: intl.formatMessage({ id: 'MAINTENANCE.DELETE.MODAL_TITLE' }),
+            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+          }
+        ))
+      )
+        return;
       deleteMaintenance(id)
         .then((response) => {
           navigate('/maintenance');

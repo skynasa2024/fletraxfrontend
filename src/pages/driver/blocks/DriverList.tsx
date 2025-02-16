@@ -19,6 +19,7 @@ import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const DriverListDropdown = (
   info: CellContext<DriverDetails, unknown> & { refetch: () => void }
@@ -56,6 +57,7 @@ interface DriverListProps {
 const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
   const intl = useIntl();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
@@ -146,6 +148,19 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
                 <MenuSub className="menu-default">
                   <MenuItem
                     onClick={async () => {
+                      if (
+                        !(await dialogs.confirm(
+                          intl.formatMessage({
+                            id: 'DRIVER.DELETE.MODAL_MESSAGE'
+                          }),
+                          {
+                            title: intl.formatMessage({ id: 'DRIVER.DELETE.MODAL_TITLE' }),
+                            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                          }
+                        ))
+                      )
+                        return;
                       await deleteDriver(row.original.id);
                       enqueueSnackbar(intl.formatMessage({ id: 'DRIVER.DELETE_SUCCESS' }), {
                         variant: 'success'
@@ -169,7 +184,7 @@ const DriverList: React.FC<DriverListProps> = ({ refetch }) => {
         )
       }
     ],
-    [enqueueSnackbar, refetch, intl]
+    [intl, refetch, dialogs, enqueueSnackbar]
   );
 
   return (

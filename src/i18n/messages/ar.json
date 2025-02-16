@@ -694,5 +694,22 @@
   "DRIVER.ADD.DOCUMENTS.LICENSE_PLACE": "مكان إصدار الرخصة",
   "DRIVER.ADD.DOCUMENTS.LICENSE_PLACE.PLACEHOLDER": "أدخل مكان الإصدار",
   "DRIVER.ADD.DOCUMENTS.FRONT_LICENSE_PHOTO": "صورة الوجه الأمامي لرخصة القيادة",
-  "DRIVER.ADD.DOCUMENTS.BACK_LICENSE_PHOTO": "صورة خلفية رخصة القيادة"
+  "DRIVER.ADD.DOCUMENTS.BACK_LICENSE_PHOTO": "صورة خلفية رخصة القيادة",
+  "DRIVER.DELETE.MODAL_TITLE": "حذف السائق",
+  "DRIVER.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا السائق؟",
+  "DEVICE.DELETE.MODAL_TITLE": "حذف الجهاز",
+  "DEVICE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا الجهاز؟",
+  "GEOFENCE.DELETE.MODAL_TITLE": "حذف السياج الجغرافي",
+  "GEOFENCE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا السياج الجغرافي؟",
+  "USER.DELETE.MODAL_TITLE": "حذف المستخدم",
+  "USER.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟",
+  "VEHICLE.DELETE.MODAL_TITLE": "حذف المركبة",
+  "VEHICLE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذه المركبة؟",
+  "SCRATCH.DELETE.MODAL_TITLE": "حذف الخدش",
+  "SCRATCH.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا الخدش؟",
+  "MAINTENANCE.DELETE.MODAL_TITLE": "حذف الصيانة",
+  "MAINTENANCE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذه الصيانة؟",
+  "MAINTENANCE_TYPE.DELETE.MODAL_TITLE": "حذف نوع الصيانة",
+  "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا النوع من الصيانة؟",
+  "COMMON.CANCEL": "إلغاء"
 }
