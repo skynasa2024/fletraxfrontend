@@ -20,6 +20,7 @@ import { toAbsoluteUrl } from '@/utils';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router';
 
 type DeviceListProps = {
   refetchStats?: () => void;
@@ -100,19 +101,20 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href={`/devices/device/${row.original.ident}`}>
+            <Link to={`/devices/device/${row.original.ident}`} className="size-7.5">
               <img
                 src={toAbsoluteUrl('/media/icons/view.svg')}
                 alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
               />
-            </a>
+            </Link>
             <RoleComponent role="admin">
-              <a href={`/devices/edit/${row.original.id}`}>
+              <Link to={`/devices/edit/${row.original.id}`} className="size-7.5">
                 <img
                   src={toAbsoluteUrl('/media/icons/edit.svg')}
                   alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+                  className="size-7.5"
                 />
-              </a>
+              </Link>
               <Menu>
                 <MenuItem toggle="dropdown" trigger="click">
                   <MenuToggle>
