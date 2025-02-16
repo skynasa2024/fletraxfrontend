@@ -213,7 +213,7 @@ const VehicleInfo = () => {
               </div>
             </div>
             {/* Image Section */}
-            <VehicleScratchesDisplay vehicleId={vehicle?.vehicleId} />
+            <VehicleScratchesDisplay vehicleId={id} />
           </div>
           <div className="container px-2 mx-auto pl-5 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}

@@ -421,6 +421,11 @@ export const createScratch = async (formData: FormData): Promise<ScratchDTO> => 
 };
 
 export const updateScratch = async (formData: FormData): Promise<ScratchDTO> => {
+  for (const [key, value] of [...formData.entries()]) {
+    if (!value || value === 'undefined' || (value instanceof File && value?.name === '')) {
+      formData.delete(key);
+    }
+  }
   const updatedScratch = await axios.put<ResponseModel<ScratchDTO>>(
     '/api/vehicles/scratches/update',
     formData,

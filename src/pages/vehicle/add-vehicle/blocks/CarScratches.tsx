@@ -13,13 +13,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 const CarScratches: React.FC = () => {
   const { id } = useParams();
-  const [selectedPlace, setSelectedPlace] = useState<string>('1');
   const [scratches, setScratches] = useState<ScratchDTO[]>();
   const [newScratch, setNewScratch] = useState<ScratchDTO>();
 
   const handleAddPlace = () => {
     setNewScratch({
-      place: +selectedPlace,
+      place: 1,
       explanationOf: '',
       vehicleId: id || '',
       image: null
@@ -63,17 +62,6 @@ const CarScratches: React.FC = () => {
               <FormattedMessage id="VEHICLE.SCRATCHES.CHOOSE_PLACE" />
             </label>
             <div className="flex gap-4">
-              <select
-                value={selectedPlace}
-                onChange={(e) => setSelectedPlace(e.target.value)}
-                className="select"
-              >
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                  <option key={num} value={String(num)}>
-                    {num}
-                  </option>
-                ))}
-              </select>
               <button
                 type="button"
                 onClick={() => handleAddPlace()}
@@ -105,6 +93,7 @@ const CarScratches: React.FC = () => {
                 handleRefresh();
               }}
               newScratch
+              onDelete={() => setNewScratch(undefined)}
             />
           )}
         </div>
@@ -172,17 +161,28 @@ interface CarScratchFormProps {
   scratch: ScratchDTO;
   onRefresh: () => void;
   newScratch?: boolean;
+  onDelete?: () => void;
 }
 
-const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, newScratch }) => {
+const CarScratchForm: React.FC<CarScratchFormProps> = ({
+  scratch,
+  onRefresh,
+  newScratch,
+  onDelete
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const intl = useIntl();
+  const [place, setPlace] = useState(scratch.place);
   const [changed, setChanged] = useState(newScratch || false);
   const [file, setFile] = useState<File | undefined>(
     scratch.image ? new File([], 'File') : undefined
   );
   const fileInpueRef = React.createRef<HTMLInputElement>();
   const handleRemove = async () => {
+    if (onDelete) {
+      onDelete();
+      return;
+    }
     try {
       if (!scratch.id) return;
       await deleteScratch(scratch.id);
@@ -235,6 +235,12 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
       onSubmit={(e) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
+        if (file?.name === 'File' && scratch.image) {
+          formData.set(`scratches[0].image`, scratch.image);
+        }
+        if (file && file.size > 0) {
+          formData.set(`scratches[0].imageFile`, file);
+        }
         handleSave(formData);
       }}
     >
@@ -242,7 +248,7 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
       <div className="p-4 border rounded-xl border-gray-600 relative">
         {/* Dynamic Place Label */}
         <h3 className="text-lg font-medium mb-4">
-          <FormattedMessage id="VEHICLE.SCRATCHES.PLACE" values={{ number: scratch.place }} />
+          <FormattedMessage id="VEHICLE.SCRATCHES.PLACE" values={{ number: place }} />
         </h3>
 
         {/* Delete Button */}
@@ -261,8 +267,11 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({ scratch, onRefresh, new
               <select
                 name={`scratches[0].place`}
                 className="select border rounded-lg border-gray-600 h-16 w-full"
-                defaultValue={scratch.place}
-                onChange={() => setChanged(true)}
+                value={place}
+                onChange={(e) => {
+                  setPlace(+e.target.value);
+                  setChanged(true);
+                }}
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
                   <option key={num} value={num}>
@@ -379,7 +388,7 @@ function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
           }}
           className="px-6 py-2 text-blue-500 border border-blue-500 rounded-md hover:bg-blue-50"
         >
-          View
+          <FormattedMessage id="COMMON.VIEW" />
         </button>
       </div>
 

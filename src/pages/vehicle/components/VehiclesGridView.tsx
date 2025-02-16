@@ -134,7 +134,7 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: string }) {
+const ActionsDropdown = ({ vehicleId, carId }: { vehicleId: string; carId: string }) => {
   const reload = useDataGrid().fetchServerSideData;
   const { enqueueSnackbar } = useSnackbar();
   const intl = useIntl();
@@ -146,14 +146,20 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
         title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
       >
-        <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
+        <img
+          src={toAbsoluteUrl('/media/icons/view-light.svg')}
+          alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+        />
       </Link>
       <Link
         to={'/vehicles/edit/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
         title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.EDIT' })}
       >
-        <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
+        <img
+          src={toAbsoluteUrl('/media/icons/edit-light.svg')}
+          alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+        />
       </Link>
       <Menu>
         <MenuItem toggle="dropdown" trigger="click">
@@ -184,7 +190,7 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
       </Menu>
     </div>
   );
-}
+};
 
 type StatusDropdownProps = {
   vehicleDetails: VehicleDetails;

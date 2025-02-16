@@ -1,7 +1,8 @@
 import { ScratchDTO } from '@/api/cars';
+import { getDocumentBase64 } from '@/api/documents';
 import { KeenIcon } from '@/components';
 import { Popover } from '@mui/material';
-import React from 'react';
+import React, { DetailedHTMLProps, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export type Scratch = {
@@ -79,11 +80,13 @@ function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
   return (
     <div className="flex gap-4 py-3 justify-start items-start">
       <div className="w-32 h-32 rounded-md overflow-hidden">
-        <img
-          src={image as string}
-          alt={intl.formatMessage({ id: 'VEHICLE.SCRATCHES.POPOVER.IMAGE_ALT' })}
-          className="object-cover"
-        />
+        {image && (
+          <DownloadableImage
+            src={image}
+            alt={intl.formatMessage({ id: 'VEHICLE.SCRATCHES.POPOVER.IMAGE_ALT' })}
+            className="object-cover"
+          />
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-start justify-start">
@@ -97,3 +100,24 @@ function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
     </div>
   );
 }
+
+const DownloadableImage = ({
+  src,
+  ...other
+}: DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => {
+  const [image, setImage] = React.useState<string>();
+
+  useEffect(() => {
+    if (!src) {
+      setImage(undefined);
+      return;
+    }
+    getDocumentBase64(src).then((res) => {
+      setImage(res);
+    });
+  }, [src]);
+
+  if (!image) return null;
+
+  return <img src={`data:image;base64${image}`} {...other} />;
+};
