@@ -143,7 +143,7 @@ const Information = ({ user }: AddUserPageProps) => {
           </div>
         </RoleComponent>
         <RoleComponent role="user">
-          <input type="hidden" name="status" value="false" />
+          <input type="hidden" name="status" value={`${user?.status || false}`} />
         </RoleComponent>
       </div>
     </div>

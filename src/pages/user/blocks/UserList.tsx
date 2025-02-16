@@ -20,6 +20,7 @@ import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField
 import { useSettings } from '@/providers';
 import { useAuthContext } from '@/auth';
 import { useSnackbar } from 'notistack';
+import { Link } from 'react-router';
 
 const UserListDropdown = (info: CellContext<UserModel, unknown> & { refetch: () => void }) => {
   const { settings } = useSettings();
@@ -136,12 +137,12 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                 />
               </div>
             </button>
-            <a href={`/users/user/${info.row.original.id}`} className="size-7.5">
+            <Link to={`/users/user/${info.row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/view.svg')} />
-            </a>
-            <a href={`/users/edit/${info.row.original.id}`} className="size-7.5">
+            </Link>
+            <Link to={`/users/edit/${info.row.original.id}`} className="size-7.5">
               <img src={toAbsoluteUrl('/media/icons/edit.svg')} />
-            </a>
+            </Link>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
                 <MenuToggle>

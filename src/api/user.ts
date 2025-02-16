@@ -127,7 +127,9 @@ export const getUserModel = async (id: string): Promise<UserModel> => {
 
 export const getUser = async (id: string): Promise<User | null> => {
   const client = await getUserModel(id);
-  if (client === null) { return null; }
+  if (client === null) {
+    return null;
+  }
   return {
     id: client.id,
     name: client.name,
@@ -173,9 +175,6 @@ export const createUser = async (data: FormData) => {
 
 export const updateUser = async (id: string, data: FormData) => {
   data.set('id', id.toString());
-  if (!data.get('status')) {
-    data.set('status', 'false');
-  }
 
   for (const key of data.keys()) {
     const value = data.get(key);
