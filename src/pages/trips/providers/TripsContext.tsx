@@ -10,6 +10,8 @@ import {
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+const PAGE_SIZE = 2;
+
 interface TripsContextProps {
   searchDeviceQuery: string;
   // eslint-disable-next-line no-unused-vars
@@ -32,6 +34,8 @@ interface TripsContextProps {
   // eslint-disable-next-line no-unused-vars
   setSelectedTrip: (trip?: TripGroup | Trip) => void;
   path?: TripPath[];
+  loadMoreTrips?: () => Promise<void>;
+  hasMore?: boolean;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -48,7 +52,9 @@ export const TripsContext = createContext<TripsContextProps>({
   setEndTime: () => {},
   search: () => {},
   trips: [],
-  setSelectedTrip: () => {}
+  setSelectedTrip: () => {},
+  loadMoreTrips: async () => {},
+  hasMore: false
 });
 
 export const TripsProvider = ({ children }: PropsWithChildren) => {
@@ -138,21 +144,52 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     [setSearchParams]
   );
   const [trips, setTrips] = useState<TripGroup[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+
   const search = useCallback(async () => {
     setSearchDeviceQuery(searchDeviceQuery);
     if (!searchDeviceQuery) {
       setTrips([]);
+      setHasMore(false);
       return;
     }
-    const trips = await searchTrips({
+    const initialTrips = await searchTrips({
       query: searchDeviceQuery,
       startDate,
       endDate,
       startTime,
-      endTime
+      endTime,
+      offset: { start: 0, end: PAGE_SIZE }
     });
-    setTrips(trips);
-  }, [endDate, endTime, searchDeviceQuery, setSearchDeviceQuery, startDate, startTime]);
+    setTrips(initialTrips);
+    setHasMore(initialTrips.length > 0);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [endDate, endTime, searchDeviceQuery, startDate, startTime]);
+
+  const loadMoreTrips = useCallback(async () => {
+    if (!hasMore) return;
+    const currentOffset = trips.length;
+    const moreTrips = await searchTrips({
+      query: searchDeviceQuery,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      offset: { start: currentOffset, end: currentOffset + PAGE_SIZE }
+    });
+    if (moreTrips.length === 0 || moreTrips.length < PAGE_SIZE) {
+      setHasMore(false);
+    }
+    setTrips((prevTrips) => {
+      const oldData = prevTrips ?? [];
+      const newData = [...oldData];
+      moreTrips.forEach((item, idx) => {
+        newData[currentOffset + idx] = item;
+      });
+      return newData;
+    });
+  }, [hasMore, trips.length, searchDeviceQuery, startDate, endDate, startTime, endTime]);
 
   useEffect(() => {
     search();
@@ -197,7 +234,9 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         trips,
         selectedTrip,
         setSelectedTrip,
-        path
+        path,
+        loadMoreTrips,
+        hasMore
       }}
     >
       {children}

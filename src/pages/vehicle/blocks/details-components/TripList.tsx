@@ -9,6 +9,8 @@ import { Marker, Polyline } from 'react-leaflet';
 import { getColor } from '@/pages/trips/blocks/PolylineColors';
 import { useIntl } from 'react-intl';
 
+const PAGE_SIZE = 2;
+
 interface TripListProps {
   deviceIdent?: string;
 }
@@ -19,6 +21,7 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
   const [trips, setTrips] = useState<TripGroup[]>();
   const map = useRef<L.Map>(null);
   const intl = useIntl();
+  const [hasMore, setHasMore] = useState(true);
 
   const providerValues = {
     searchDeviceQuery: '',
@@ -109,6 +112,57 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
     map.current?.flyToBounds(bounds);
   }, [bounds, map]);
 
+  const infiniteLoaderContainerRef = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  const loadMoreTrips = async () => {
+    if (!hasMore) return;
+    const currentOffset = trips?.length ?? 0;
+    const moreTrips = await searchTrips({
+      query: deviceIdent ?? '',
+      offset: { start: currentOffset, end: currentOffset + PAGE_SIZE }
+    });
+    if (moreTrips.length === 0 || moreTrips.length < PAGE_SIZE) {
+      setHasMore(false);
+    }
+    setTrips((prevTrips) => {
+      const oldData = prevTrips ?? [];
+      const newData = [...oldData];
+      moreTrips.forEach((item, idx) => {
+        newData[currentOffset + idx] = item;
+      });
+      return newData;
+    });
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreTrips?.();
+        }
+      },
+      {
+        root: infiniteLoaderContainerRef?.current,
+        rootMargin: '0px',
+        threshold: 1.0
+      }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaderRef, trips]);
+
   return (
     <TripsContext.Provider value={providerValues}>
       <div className="flex flex-col px-5 mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
@@ -134,7 +188,10 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
                 {intl.formatMessage({ id: 'TRIPS.LIST.NO_TRIPS' })}
               </div>
             ) : (
-              <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
+              <div
+                ref={infiniteLoaderContainerRef}
+                className="scrollable-y-auto pb-2 flex flex-col gap-[10px]"
+              >
                 {trips.map((tripGroup) => (
                   <TripCard
                     key={tripGroup.date.getTime()}
@@ -142,6 +199,14 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
                     animation={false}
                   />
                 ))}
+
+                {hasMore ? (
+                  <div ref={loaderRef} className="text-center text-gray-500 py-2">
+                    Loading...
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500 py-2">No more trips</div>
+                )}
               </div>
             )
           ) : deviceIdent ? (

@@ -73,7 +73,8 @@ export const searchTrips = async ({
   startDate,
   endDate,
   startTime,
-  endTime
+  endTime,
+  offset
 }: SearchTripsParams): Promise<TripGroup[]> => {
   const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
     params: {
@@ -83,7 +84,8 @@ export const searchTrips = async ({
       startTime: startTime,
       endTime: endTime,
       sort: 'startTime,desc',
-      size: 10
+      offset: offset?.start,
+      size: offset ? offset.end - offset.start : 2
     }
   });
 
