@@ -85,7 +85,7 @@ export const searchTrips = async ({
       endTime: endTime,
       sort: 'startTime,desc',
       offset: offset?.start,
-      size: offset ? offset.end - offset.start : 10
+      size: offset ? offset.end - offset.start : 2
     }
   });
 

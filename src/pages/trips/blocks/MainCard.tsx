@@ -4,8 +4,7 @@ import { toAbsoluteUrl } from '@/utils';
 import TripCard from './TripCard';
 import { TripsSearch } from './TripsSearch';
 import { FormattedMessage } from 'react-intl';
-import { TripGroup } from '@/api/trips';
-import { withInfiniteScroll } from '@/HOC/withInfiniteScroll';
+import { useEffect, useRef } from 'react';
 
 export const MainCard = () => {
   const {
@@ -25,7 +24,34 @@ export const MainCard = () => {
     hasMore
   } = useTripsContext();
 
-  const InfiniteTripList = withInfiniteScroll(TripList);
+  const infiniteLoaderContainerRef = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreTrips?.();
+        }
+      },
+      {
+        root: infiniteLoaderContainerRef?.current,
+        rootMargin: '0px',
+        threshold: 1.0
+      }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [loaderRef, trips]);
 
   return (
     <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 h-full">
@@ -98,23 +124,22 @@ export const MainCard = () => {
         <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         <FormattedMessage id="COMMON.SEARCH" />
       </button>
-      <div className="scrollable-y-auto pb-2 flex flex-col gap-[10px]">
-        <InfiniteTripList trips={trips} loadMore={loadMoreTrips!} hasMore={hasMore!} />
+      <div
+        ref={infiniteLoaderContainerRef}
+        className="scrollable-y-auto pb-2 flex flex-col gap-[10px]"
+      >
+        {trips.map((tripGroup) => (
+          <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
+        ))}
+
+        {hasMore ? (
+          <div ref={loaderRef} className="text-center text-gray-500 py-2">
+            Loading...
+          </div>
+        ) : (
+          <div className="text-center text-gray-500 py-2">No more trips</div>
+        )}
       </div>
     </div>
   );
 };
-
-type TripsListProps = {
-  trips: TripGroup[];
-};
-
-function TripList({ trips }: TripsListProps) {
-  return (
-    <>
-      {trips.map((tripGroup) => (
-        <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
-      ))}
-    </>
-  );
-}
