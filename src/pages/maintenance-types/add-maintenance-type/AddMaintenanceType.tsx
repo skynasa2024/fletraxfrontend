@@ -55,7 +55,9 @@ const AddMaintenanceType = () => {
   return (
     <form
       className="pb-10"
-      action={async (data) => {
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target as HTMLFormElement);
         try {
           type && type.id
             ? await updateMaintenanceType(type.id, data)

@@ -10,9 +10,11 @@ import { KeenIcon } from '@/components';
 import { Link } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 export const MainCard = () => {
   const intl = useIntl();
+  const dialogs = useDialogs();
   const {
     search,
     refetch,
@@ -113,6 +115,21 @@ export const MainCard = () => {
                                   e.preventDefault();
                                   e.stopPropagation();
 
+                                  if (
+                                    !(await dialogs.confirm(
+                                      intl.formatMessage({
+                                        id: 'GEOFENCE.DELETE.MODAL_MESSAGE'
+                                      }),
+                                      {
+                                        title: intl.formatMessage({
+                                          id: 'GEOFENCE.DELETE.MODAL_TITLE'
+                                        }),
+                                        okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                                        cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                                      }
+                                    ))
+                                  )
+                                    return;
                                   await deleteGeofence(geofence.id);
                                   enqueueSnackbar(
                                     intl.formatMessage({ id: 'GEOFENCE.CARD.DELETE_SUCCESS' }),

@@ -19,6 +19,7 @@ import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 type VehiclesGridViewProps = {
   searchQuery: string;
@@ -134,9 +135,10 @@ export default function VehiclesGridView({ searchQuery, refetchStats }: Vehicles
   );
 }
 
-function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: string }) {
+const ActionsDropdown = ({ vehicleId, carId }: { vehicleId: string; carId: string }) => {
   const reload = useDataGrid().fetchServerSideData;
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const intl = useIntl();
 
   return (
@@ -146,14 +148,20 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
         title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
       >
-        <img src={toAbsoluteUrl('/media/icons/view-light.svg')} alt="View" />
+        <img
+          src={toAbsoluteUrl('/media/icons/view-light.svg')}
+          alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+        />
       </Link>
       <Link
         to={'/vehicles/edit/' + vehicleId}
         className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
         title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.EDIT' })}
       >
-        <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} alt="Edit" />
+        <img
+          src={toAbsoluteUrl('/media/icons/edit-light.svg')}
+          alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+        />
       </Link>
       <Menu>
         <MenuItem toggle="dropdown" trigger="click">
@@ -163,6 +171,19 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
           <MenuSub className="menu-default">
             <MenuItem
               onClick={async () => {
+                if (
+                  !(await dialogs.confirm(
+                    intl.formatMessage({
+                      id: 'VEHICLE.DELETE.MODAL_MESSAGE'
+                    }),
+                    {
+                      title: intl.formatMessage({ id: 'VEHICLE.DELETE.MODAL_TITLE' }),
+                      okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                      cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                    }
+                  ))
+                )
+                  return;
                 await deleteVehicle(carId);
                 enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.GRID.DELETE_SUCCESS' }), {
                   variant: 'success'
@@ -184,7 +205,7 @@ function ActionsDropdown({ vehicleId, carId }: { vehicleId: string; carId: strin
       </Menu>
     </div>
   );
-}
+};
 
 type StatusDropdownProps = {
   vehicleDetails: VehicleDetails;

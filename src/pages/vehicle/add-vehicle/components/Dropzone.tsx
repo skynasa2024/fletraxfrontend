@@ -2,6 +2,7 @@ import React from 'react';
 import { useDropzone } from 'react-dropzone';
 
 interface DropzoneProps {
+  // eslint-disable-next-line no-unused-vars
   onDrop: (file: File | null) => void;
   children: React.ReactNode;
 }
@@ -11,7 +12,7 @@ export default function Dropzone({ onDrop, children }: DropzoneProps) {
     onDrop: (acceptedFiles) => {
       const imageFile = acceptedFiles.find((file) => file.type.startsWith('image/'));
       if (imageFile) {
-        onDrop(imageFile)
+        onDrop(imageFile);
       }
     },
     accept: { 'image/*': [] },

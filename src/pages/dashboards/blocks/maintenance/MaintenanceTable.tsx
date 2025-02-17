@@ -148,21 +148,25 @@ const MaintenanceTable = ({ searchQuery, id }: ViolationTableProps) => {
     ],
     [intl]
   );
+  const filters = useMemo(
+    () => [
+      ...(searchQuery.trim().length > 2
+        ? [
+            {
+              id: '__any',
+              value: searchQuery
+            }
+          ]
+        : []),
+      ...(id ? [{ id: 'vehicleId', value: id }] : [])
+    ],
+    [searchQuery, id]
+  );
 
   return (
     <DataGrid
       columns={columns}
-      filters={[
-        ...(searchQuery.trim().length > 2
-          ? [
-              {
-                id: '__any',
-                value: searchQuery
-              }
-            ]
-          : []),
-        ...(id ? [{ id: 'vehicleId', value: id }] : [])
-      ]}
+      filters={filters}
       serverSide={true}
       onFetchData={getMaintenance}
       pagination={{ sizes: [], size: 4 }}

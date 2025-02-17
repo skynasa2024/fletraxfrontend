@@ -18,3 +18,15 @@ export const downloadDocument = async (id: string, name: string): Promise<void> 
   window.URL.revokeObjectURL(url);
   document.body.removeChild(link);
 };
+
+export const getDocumentBase64 = async (id: string): Promise<string> => {
+  const response = await axios.get(`/api/documents/${id}`, {
+    responseType: 'blob'
+  });
+  const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(response.data);
+  });
+};

@@ -4,10 +4,12 @@ import { Container } from '@/components';
 import { deleteVehicle } from '@/api/cars';
 import { useSnackbar } from 'notistack';
 import { useIntl, FormattedMessage } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | null }) => {
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const navigate = useNavigate();
   const intl = useIntl();
 
@@ -44,6 +46,19 @@ const Toolbar = ({ carId, plate }: { carId?: string | null; plate?: string | nul
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 border-red-500 rounded-md"
           onClick={async () => {
             if (!carId) return;
+            if (
+              !(await dialogs.confirm(
+                intl.formatMessage({
+                  id: 'VEHICLE.DELETE.MODAL_MESSAGE'
+                }),
+                {
+                  title: intl.formatMessage({ id: 'VEHICLE.DELETE.MODAL_TITLE' }),
+                  okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                  cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                }
+              ))
+            )
+              return;
             await deleteVehicle(carId);
             enqueueSnackbar(intl.formatMessage({ id: 'VEHICLE.TOOLBAR.DELETE_SUCCESS' }), {
               variant: 'success'

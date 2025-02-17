@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import { useSnackbar } from 'notistack';
 import { useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 type VehicleCardProps = {
   vehicle?: VehicleDetails;
@@ -19,6 +20,7 @@ type VehicleCardProps = {
 export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: VehicleCardProps) {
   const { enqueueSnackbar } = useSnackbar();
   const intl = useIntl();
+  const dialogs = useDialogs();
   const { isRTL } = useLanguage();
 
   if (!vehicle) {
@@ -116,6 +118,19 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
           href="#"
           onClick={async (e) => {
             e.preventDefault();
+            if (
+              !(await dialogs.confirm(
+                intl.formatMessage({
+                  id: 'VEHICLE.DELETE.MODAL_MESSAGE'
+                }),
+                {
+                  title: intl.formatMessage({ id: 'VEHICLE.DELETE.MODAL_TITLE' }),
+                  okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                  cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                }
+              ))
+            )
+              return;
             await deleteVehicle(vehicle.carId);
             enqueueSnackbar(
               intl.formatMessage({

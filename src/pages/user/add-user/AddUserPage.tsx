@@ -4,6 +4,7 @@ import { UserModel } from '@/api/user';
 import { CompanyInformation } from './blocks/CompanyInformation';
 import { Device } from './blocks/Device';
 import { useLocation } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 
 export interface AddUserPageProps {
   user?: UserModel;
@@ -63,7 +64,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           }`}
           onClick={() => handleTabClick(informationRef, 'information')}
         >
-          Information
+          <FormattedMessage id="USER.ADD.TAB.INFORMATION" />
         </button>
         <button
           type="button"
@@ -74,7 +75,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           }`}
           onClick={() => handleTabClick(accountRef, 'account')}
         >
-          Account
+          <FormattedMessage id="USER.ADD.TAB.ACCOUNT" />
         </button>
         <button
           type="button"
@@ -85,7 +86,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           }`}
           onClick={() => handleTabClick(contactRef, 'contact')}
         >
-          Contact
+          <FormattedMessage id="USER.ADD.TAB.CONTACT" />
         </button>
         <button
           type="button"
@@ -96,7 +97,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           }`}
           onClick={() => handleTabClick(companyInformationRef, 'company info')}
         >
-          Company Information
+          <FormattedMessage id="USER.ADD.TAB.COMPANY_INFORMATION" />
         </button>
         <button
           type="button"
@@ -107,7 +108,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
           }`}
           onClick={() => handleTabClick(deviceRef, 'device')}
         >
-          Device
+          <FormattedMessage id="USER.ADD.TAB.DEVICE" />
         </button>
       </div>
 

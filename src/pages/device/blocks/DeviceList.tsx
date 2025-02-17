@@ -20,6 +20,8 @@ import { toAbsoluteUrl } from '@/utils';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 type DeviceListProps = {
   refetchStats?: () => void;
@@ -28,6 +30,7 @@ type DeviceListProps = {
 
 const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dialogs = useDialogs();
   const [searchQuery, setSearchQuery] = useState('');
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const intl = useIntl();
@@ -100,19 +103,20 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href={`/devices/device/${row.original.ident}`}>
+            <Link to={`/devices/device/${row.original.ident}`} className="size-7.5">
               <img
                 src={toAbsoluteUrl('/media/icons/view.svg')}
                 alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
               />
-            </a>
+            </Link>
             <RoleComponent role="admin">
-              <a href={`/devices/edit/${row.original.id}`}>
+              <Link to={`/devices/edit/${row.original.id}`} className="size-7.5">
                 <img
                   src={toAbsoluteUrl('/media/icons/edit.svg')}
                   alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+                  className="size-7.5"
                 />
-              </a>
+              </Link>
               <Menu>
                 <MenuItem toggle="dropdown" trigger="click">
                   <MenuToggle>
@@ -121,6 +125,19 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
                   <MenuSub className="menu-default">
                     <MenuItem
                       onClick={async () => {
+                        if (
+                          !(await dialogs.confirm(
+                            intl.formatMessage({
+                              id: 'DEVICE.DELETE.MODAL_MESSAGE'
+                            }),
+                            {
+                              title: intl.formatMessage({ id: 'DEVICE.DELETE.MODAL_TITLE' }),
+                              okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                              cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                            }
+                          ))
+                        )
+                          return;
                         await deleteDevice(row.original.id);
                         enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.DELETE_SUCCESS' }), {
                           variant: 'success'
@@ -145,7 +162,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
         )
       }
     ],
-    [enqueueSnackbar, getProtocolName, getTypeName, intl, refetch]
+    [dialogs, enqueueSnackbar, getProtocolName, getTypeName, intl, refetch]
   );
 
   return (

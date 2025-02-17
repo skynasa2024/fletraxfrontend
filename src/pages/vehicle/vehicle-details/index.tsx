@@ -194,7 +194,7 @@ const VehicleInfo = () => {
       <Toolbar carId={vehicle?.id} plate={vehicle?.plate} />
       <div className="px-10">
         <div className="flex flex-col lg:flex-row">
-          <div className="card hover:shadow-md w-full lg:w-2/3 grid grid-cols-1 mb-2 p-4">
+          <div className="card hover:shadow-md w-full lg:w-1/2 grid grid-cols-1 mb-2 p-4">
             <div className="flex justify-between">
               {/* Car Plate */}
               <div className="flex items-center justify-center mb-4">
@@ -213,14 +213,14 @@ const VehicleInfo = () => {
               </div>
             </div>
             {/* Image Section */}
-            <VehicleScratchesDisplay vehicleId={vehicle?.vehicleId} />
+            <VehicleScratchesDisplay vehicleId={id} />
           </div>
           <div className="container px-2 mx-auto pl-5 grid sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
             {/* Vehicle Info Section */}
             <div className="flex flex-col lg:flex-row h-full">
               {/* Vehicle Info Cards */}
               <div className="flex-grow me-0 lg:me-4 h-full">
-                <div className="grid grid-cols-3 lg:grid-cols-3 gap-4 h-full">
+                <div className="grid grid-cols-3 lg:grid-cols-3 gap-[11px] h-full">
                   {vehicleInfo.map(({ label, value, icon }, index) => (
                     <VehicleInfoCard key={index} label={label} value={value} icon={icon} />
                   ))}
@@ -242,19 +242,19 @@ const VehicleInfo = () => {
             </div>
 
             {/* Inspection and Insurance Section */}
-            <div className="card hover:shadow-md mb-2 p-4 mt-4">
+            <div className="card hover:shadow-md mb-2 p-4 mt-[11px]">
               <h2 className="text-xl font-semibold mb-2 border-b-2 pb-2">
                 <FormattedMessage id="VEHICLE.DETAILS.INSURANCE.TITLE" />
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-[26px]">
                 {items.map((item) => (
-                  <div key={item.title} className="flex items-start space-x-3 rounded-lg mb-4">
-                    <div className="rounded-lg p-3 bg-gray-200">
+                  <div key={item.title} className="flex items-start space-x-3 rounded-lg gap-6">
+                    <div className="rounded-lg p-[10px] bg-gray-200">
                       <VehicleInsuranceIcon />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">{item.title}</h3>
-                      <div className="mt-1 flex">
+                      <h3 className="font-semibold text-[14px]">{item.title}</h3>
+                      <div className="mt-1 flex text-[13px]">
                         <div>
                           <span className="font-semibold">
                             <FormattedMessage id="VEHICLE.DETAILS.INSURANCE.START" />
@@ -285,8 +285,8 @@ const VehicleInfo = () => {
           </div>
           <VehicleMetrics
             metrics={{
-              engineHours: '300 Hr',
-              mileage: vehicle?.currentMileage?.toString() || '0',
+              engineHours: vehicle?.formatedEngineHours || '0 min',
+              mileage: ((vehicle?.mileage || 0) + +(vehicle?.currentMileage || '0')).toFixed(0),
               fuelConsumption: vehicle?.fuelConsumption?.toString() || '0'
             }}
           />
@@ -302,7 +302,7 @@ const VehicleInfo = () => {
             /> */}
           </div>
           <div className="w-2/3">
-            <MaintenanceViolationTable id={vehicle?.vehicleId} />
+            {vehicle && <MaintenanceViolationTable id={vehicle?.vehicleId} />}
           </div>
         </div>
       </div>

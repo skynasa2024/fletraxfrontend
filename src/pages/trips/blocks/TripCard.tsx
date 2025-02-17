@@ -46,7 +46,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
 
   return (
     <div
-      className="flex flex-col gap-2 rounded-[10px] border-2 border-[#E7E8ED] dark:border-gray-200 overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
+      className="flex flex-col gap-2 mb-2.5 rounded-[10px] border-2 border-[#E7E8ED] dark:border-gray-200 overflow-hidden data-[selected=true]:border-[#5271FF] shrink-0"
       data-selected={selectedTrip === tripGroup}
     >
       <div

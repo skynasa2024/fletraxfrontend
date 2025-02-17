@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AddDevicePageProps } from '../AddDevicePage';
 import { UserSearch } from './UserSearch';
 import { getUser, getUserModel, getUsersUnderParent, UserModel } from '@/api/user';
@@ -13,10 +13,23 @@ const User = ({ device }: AddDevicePageProps) => {
     if (lastUser && lastUser.id) {
       getUsersUnderParent(lastUser.id, { start: 0, end: 0 }).then((users) => {
         if (users.totalCount > 0) {
-          setUserTree((prev) => [...prev, null]);
+          setUserTree((prev) => {
+            if (prev[prev.length - 1]?.id === lastUser.id) {
+              return prev.concat(null);
+            }
+            return prev;
+          });
         }
       });
     }
+  }, [userTree]);
+  const selectedUser = useMemo(() => {
+    for (let i = userTree.length - 1; i >= 0; i--) {
+      if (userTree[i]?.id?.length && userTree[i]?.id.length! > 0) {
+        return userTree[i];
+      }
+    }
+    return null;
   }, [userTree]);
 
   const getParent = async (id: string | UserModel) => {
@@ -98,7 +111,7 @@ const User = ({ device }: AddDevicePageProps) => {
           ))}
         </div>
       )}
-      <input type="hidden" name="userId" value={userTree[userTree.length - 1]?.id} />
+      <input type="hidden" name="userId" value={selectedUser?.id} />
     </div>
   );
 };

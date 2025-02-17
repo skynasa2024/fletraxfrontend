@@ -8,10 +8,12 @@ import { DriverDetails, getDriver } from '@/api/drivers';
 import { MaintenanceViolationTable } from '../dashboards/blocks/maintenance/MaintenanceViolation';
 import TripList from '../vehicle/blocks/details-components/TripList';
 import VehicleCurrentLocation from '../vehicle/vehicle-details/components/VehicleCurrentLocation';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const DriverDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const intl = useIntl();
 
   const [driver, setDriver] = useState<DriverDetails | null>(null);
   useEffect(() => {
@@ -31,18 +33,36 @@ const DriverDetailsPage = () => {
     const files: FileInfo[] = [];
 
     if (driver.identityType === 'National ID') {
-      files.push({ name: 'Front National ID', url: driver.frontNationalIdPhoto });
-      files.push({ name: 'Back National ID', url: driver.backNationalIdPhoto });
+      files.push({
+        name: intl.formatMessage({ id: 'DRIVER.ADD.FRONT_NATIONAL_ID_PHOTO' }),
+        url: driver.frontNationalIdPhoto
+      });
+      files.push({
+        name: intl.formatMessage({ id: 'DRIVER.ADD.BACK_NATIONAL_ID_PHOTO' }),
+        url: driver.backNationalIdPhoto
+      });
     }
     if (driver.identityType === 'Passport') {
-      files.push({ name: 'Passport Photo', url: driver.passportPhoto });
-      files.push({ name: 'Last Entry Photo', url: driver.lastEntryPhoto });
+      files.push({
+        name: intl.formatMessage({ id: 'DRIVER.ADD.PASSPORT_PHOTO' }),
+        url: driver.passportPhoto
+      });
+      files.push({
+        name: intl.formatMessage({ id: 'DRIVER.ADD.LAST_ENTRY_PHOTO' }),
+        url: driver.lastEntryPhoto
+      });
     }
-    files.push({ name: 'Front Driving License', url: driver.frontDrivingLicensePhoto });
-    files.push({ name: 'Back Driving License', url: driver.backDriverLicensePhoto });
+    files.push({
+      name: intl.formatMessage({ id: 'DRIVER.ADD.DOCUMENTS.FRONT_LICENSE_PHOTO' }),
+      url: driver.frontDrivingLicensePhoto
+    });
+    files.push({
+      name: intl.formatMessage({ id: 'DRIVER.ADD.DOCUMENTS.BACK_LICENSE_PHOTO' }),
+      url: driver.backDriverLicensePhoto
+    });
 
     return files;
-  }, [driver]);
+  }, [driver, intl]);
 
   if (!id) {
     navigate('/error/404');
@@ -100,13 +120,17 @@ const DriverDetailsPage = () => {
           />
         </div>
 
-        <TripList deviceIdent={driver.vehicle.imei} />
         <div className="m-5">
-          <MaintenanceViolationTable id={driver.vehicle.id} />
+          <TripList deviceIdent={driver.vehicle.imei} />
+        </div>
+        <div className="m-5">
+          {driver.vehicle.id && <MaintenanceViolationTable id={driver.vehicle.id} />}
         </div>
         <div className="flex h-full flex-grow mb-4 flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 m-5">
           <div className="w-full">
-            <h2 className="text-xl font-semibold mb-4">Documents</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              <FormattedMessage id="VEHICLE.DETAILS.DOCUMENTS" />
+            </h2>
             <FileList files={files} columns={2} />
           </div>
         </div>

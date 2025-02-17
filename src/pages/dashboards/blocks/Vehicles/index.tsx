@@ -28,8 +28,8 @@ export function VehicleList() {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const computedStart = isRTL() ? remoteRowCount - stopIndex - 1 : startIndex;
-    const computedStop = isRTL() ? remoteRowCount - startIndex - 1 : stopIndex;
+    const computedStart = isRTL() ? Math.max(remoteRowCount - stopIndex - 1, 0) : startIndex;
+    const computedStop = isRTL() ? Math.max(remoteRowCount - startIndex - 1, 0) : stopIndex;
     const vehicles = await getVehicles({ start: computedStart, end: computedStop });
     setVehicles((prev) => {
       const data = prev?.data ?? [];

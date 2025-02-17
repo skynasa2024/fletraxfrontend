@@ -36,14 +36,14 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
 
   return (
     <div
-      className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden"
+      className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden h-full"
       style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
     >
       <div
         className="h-1 w-full"
         style={{ backgroundColor: options[driver.status]?.color || '#212121' }}
       />
-      <div className="flex flex-col gap-3 px-8 py-6">
+      <div className="flex flex-col gap-3 px-8 py-6 grow">
         <div className="flex justify-between items-center">
           <img
             src={driver.driver.avatar || toAbsoluteUrl('/media/avatars/avatar-placeholder.png')}

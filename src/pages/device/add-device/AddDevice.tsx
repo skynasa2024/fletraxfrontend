@@ -45,7 +45,9 @@ const AddDevice = () => {
   return (
     <form
       className="pb-10"
-      action={async (data) => {
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target as HTMLFormElement);
         try {
           device ? await updateDevice(device.id, data) : await createDevice(data);
           enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.FORM.SAVE_SUCCESS' }), {

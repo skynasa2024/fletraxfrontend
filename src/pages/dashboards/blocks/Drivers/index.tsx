@@ -8,11 +8,13 @@ import { KeenIcon } from '@/components';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const CARD_WIDTH = 402; // Base card width
 
 const DriverList = () => {
   const intl = useIntl();
+  const dialogs = useDialogs();
   const { isRTL } = useLanguage();
   const { enqueueSnackbar } = useSnackbar();
   const [drivers, setDrivers] = useState<Paginated<DriverDetails>>();
@@ -30,15 +32,17 @@ const DriverList = () => {
     startIndex: number;
     stopIndex: number;
   }) => {
-    const drivers = await getDrivers({ start: startIndex, end: stopIndex });
+    const computedStart = isRTL() ? Math.max(remoteRowCount - stopIndex - 1, 0) : startIndex;
+    const computedStop = isRTL() ? Math.max(remoteRowCount - startIndex - 1, 0) : stopIndex;
+    const vehicles = await getDrivers({ start: computedStart, end: computedStop });
     setDrivers((prev) => {
       const data = prev?.data ?? [];
-      drivers.data.forEach((driver, index) => {
-        data[startIndex + index] = driver;
+      vehicles.data.forEach((vehicle, index) => {
+        data[computedStart + index] = vehicle;
       });
       return {
         data,
-        totalCount: drivers.totalCount
+        totalCount: vehicles.totalCount
       };
     });
   };
@@ -146,6 +150,25 @@ const DriverList = () => {
                               start: Math.max(0, index - 10),
                               end: index + 10
                             };
+                            if (
+                              !(await dialogs.confirm(
+                                intl.formatMessage({
+                                  id: 'DRIVER.DELETE.MODAL_MESSAGE'
+                                }),
+                                {
+                                  title: intl.formatMessage({
+                                    id: 'DRIVER.DELETE.MODAL_TITLE'
+                                  }),
+                                  okText: intl.formatMessage({
+                                    id: 'COMMON.DELETE'
+                                  }),
+                                  cancelText: intl.formatMessage({
+                                    id: 'COMMON.CANCEL'
+                                  })
+                                }
+                              ))
+                            )
+                              return;
                             await deleteDriver(drivers.data[index].id);
                             // Updated deletion message using intl.formatMessage
                             enqueueSnackbar(

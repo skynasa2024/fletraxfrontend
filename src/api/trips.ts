@@ -68,12 +68,15 @@ export interface SearchTripsParams {
   offset?: OffsetBounds;
 }
 
+export const TRIPS_PAGE_SIZE = 20;
+
 export const searchTrips = async ({
   query,
   startDate,
   endDate,
   startTime,
-  endTime
+  endTime,
+  offset
 }: SearchTripsParams): Promise<TripGroup[]> => {
   const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
     params: {
@@ -83,7 +86,8 @@ export const searchTrips = async ({
       startTime: startTime,
       endTime: endTime,
       sort: 'startTime,desc',
-      size: 10
+      page: offset ? Math.ceil(offset.start / TRIPS_PAGE_SIZE) : 0,
+      size: offset ? offset.end - offset.start : TRIPS_PAGE_SIZE
     }
   });
 

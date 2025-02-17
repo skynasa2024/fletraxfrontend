@@ -17,10 +17,13 @@ import { toAbsoluteUrl } from '@/utils';
 import { CarView } from '@/pages/vehicle/blocks/CarView';
 import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { useSnackbar } from 'notistack';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 const DriverListDropdown = (
   info: CellContext<DriverDetails, unknown> & { refetch: () => void }
 ) => {
+  const intl = useIntl();
   const reload = useDataGrid().fetchServerSideData;
   return (
     <StatusDropdown
@@ -33,11 +36,13 @@ const DriverListDropdown = (
       options={{
         'Under Review': {
           color: '#FFA800',
-          backgroundColor: '#FFF8EA'
+          backgroundColor: '#FFF8EA',
+          name: intl.formatMessage({ id: 'DRIVER.STATUS.UNDER_REVIEW' })
         },
         Active: {
           color: '#50CD89',
-          backgroundColor: '#EEFAF4'
+          backgroundColor: '#EEFAF4',
+          name: intl.formatMessage({ id: 'DRIVER.STATUS.ACTIVE' })
         }
       }}
     />
@@ -51,11 +56,13 @@ interface DriverListProps {
 
 const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const intl = useIntl();
+  const dialogs = useDialogs();
   const columns = useMemo<ColumnDef<DriverDetails>[]>(
     () => [
       {
         accessorKey: 'fullName',
-        header: 'Full Name',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.FULL_NAME' }),
         enableSorting: true,
         cell: ({ row }) => (
           <div className="flex items-center">
@@ -70,13 +77,13 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
       },
       {
         accessorKey: 'dateOfBirth',
-        header: 'Birth Date',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.BIRTH_DATE' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.dateOfBirth}</div>
       },
       {
         accessorKey: 'nationality',
-        header: 'Nationality',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.NATIONALITY' }),
         enableSorting: true,
         cell: ({ row }) => (
           <span className={'px-3 py-1 rounded-full bg-blue-100 text-blue-800'}>
@@ -86,44 +93,50 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
       },
       {
         accessorKey: 'idNumber',
-        header: 'ID Number',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.ID_NUMBER' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.idNumber}</div>
       },
       {
         accessorKey: 'licenseSerialNumber',
-        header: 'License Number',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.LICENSE_NUMBER' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseNumber}</div>
       },
       {
         accessorKey: 'licenseExpiryDate',
-        header: 'License Expiry',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.LICENSE_EXPIRY' }),
         enableSorting: true,
         cell: ({ row }) => <div>{row.original.licenseExpiry}</div>
       },
       {
         accessorKey: 'vehiclePlate',
-        header: 'Vehicle',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.VEHICLE' }),
         enableSorting: true,
         cell: ({ row }) => <CarView vehicle={row.original.vehicle} />
       },
       {
         accessorKey: 'status',
-        header: 'Status',
+        header: intl.formatMessage({ id: 'DRIVER.LIST.COLUMN.STATUS' }),
         enableSorting: true,
         cell: (info) => <DriverListDropdown refetch={refetch} {...info} />
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
             <a href={`/drivers/driver/${row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/view.svg')} alt="View" />
+              <img
+                src={toAbsoluteUrl('/media/icons/view.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+              />
             </a>
             <a href={`/drivers/edit/${row.original.id}`} className="size-7.5">
-              <img src={toAbsoluteUrl('/media/icons/edit.svg')} alt="Edit" />
+              <img
+                src={toAbsoluteUrl('/media/icons/edit.svg')}
+                alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
+              />
             </a>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
@@ -133,8 +146,21 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
                 <MenuSub className="menu-default">
                   <MenuItem
                     onClick={async () => {
+                      if (
+                        !(await dialogs.confirm(
+                          intl.formatMessage({
+                            id: 'DRIVER.DELETE.MODAL_MESSAGE'
+                          }),
+                          {
+                            title: intl.formatMessage({ id: 'DRIVER.DELETE.MODAL_TITLE' }),
+                            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+                            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+                          }
+                        ))
+                      )
+                        return;
                       await deleteDriver(row.original.id);
-                      enqueueSnackbar('Driver deleted successfully', {
+                      enqueueSnackbar(intl.formatMessage({ id: 'DRIVER.DELETE_SUCCESS' }), {
                         variant: 'success'
                       });
                       refetch();
@@ -144,7 +170,9 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
                       <MenuIcon>
                         <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
                       </MenuIcon>
-                      <MenuTitle>Delete</MenuTitle>
+                      <MenuTitle>
+                        <FormattedMessage id="COMMON.DELETE" />
+                      </MenuTitle>
                     </MenuLink>
                   </MenuItem>
                 </MenuSub>
@@ -154,7 +182,7 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
         )
       }
     ],
-    [enqueueSnackbar, refetch]
+    [intl, refetch, dialogs, enqueueSnackbar]
   );
 
   return (

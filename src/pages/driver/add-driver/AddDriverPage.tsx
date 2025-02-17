@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Information, InformationAccount, Contact, Documents } from './blocks';
 import { DriverDetails } from '@/api/drivers';
+import { FormattedMessage } from 'react-intl';
 
 export interface AddDriverPageProps {
   driver?: DriverDetails;
@@ -36,7 +37,7 @@ const AddDriverPage = ({ driver }: AddDriverPageProps) => {
 
   return (
     <div className="grid gap-5 lg:gap-7.5 xl:w-[60rem] mx-auto">
-      <div className="tabs flex " data-tabs="true">
+      <div className="tabs flex" data-tabs="true">
         <button
           type="button"
           className={`tab px-4 py-2 font-medium text-lg border-b-4 ${
@@ -46,7 +47,7 @@ const AddDriverPage = ({ driver }: AddDriverPageProps) => {
           }`}
           onClick={() => handleTabClick(informationRef, 'information')}
         >
-          Information
+          <FormattedMessage id="DRIVER.ADD.TAB.INFORMATION" />
         </button>
         <button
           type="button"
@@ -57,7 +58,7 @@ const AddDriverPage = ({ driver }: AddDriverPageProps) => {
           }`}
           onClick={() => handleTabClick(accountRef, 'account')}
         >
-          Account
+          <FormattedMessage id="DRIVER.ADD.TAB.ACCOUNT" />
         </button>
         <button
           type="button"
@@ -68,7 +69,7 @@ const AddDriverPage = ({ driver }: AddDriverPageProps) => {
           }`}
           onClick={() => handleTabClick(documentRef, 'documents')}
         >
-          Documents
+          <FormattedMessage id="DRIVER.ADD.TAB.DOCUMENTS" />
         </button>
         <button
           type="button"
@@ -79,7 +80,7 @@ const AddDriverPage = ({ driver }: AddDriverPageProps) => {
           }`}
           onClick={() => handleTabClick(contactRef, 'contact')}
         >
-          Contact
+          <FormattedMessage id="DRIVER.ADD.TAB.CONTACT" />
         </button>
       </div>
 

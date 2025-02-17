@@ -23,8 +23,6 @@ interface VehicleMetricsProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, percentage, color }) => {
-  const numericValue = typeof value === 'string' ? value.split(' ')[0] : value;
-
   return (
     <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center flex-1">
       <div className="mb-2">
@@ -34,9 +32,9 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
       <div className="w-24 h-24 mb-3">
         <CircularProgressbar
           value={percentage}
-          text={`${numericValue}`}
+          text={value.toString()}
           styles={buildStyles({
-            textSize: '20px',
+            textSize: '14px',
             pathColor: color,
             textColor: '#374151',
             trailColor: '#E5E7EB',

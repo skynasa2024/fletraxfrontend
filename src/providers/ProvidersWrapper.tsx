@@ -13,6 +13,7 @@ import {
 import { HelmetProvider } from 'react-helmet-async';
 import { MqttProvider } from './MqttProvider';
 import { DeviceProvider } from './DeviceProvider';
+import { DialogsProvider } from '@toolpad/core/useDialogs';
 
 const queryClient = new QueryClient();
 
@@ -23,17 +24,19 @@ const ProvidersWrapper = ({ children }: PropsWithChildren) => {
         <SettingsProvider>
           <TranslationProvider>
             <SnackbarProvider>
-              <HelmetProvider>
-                <LayoutProvider>
-                  <LoadersProvider>
-                    <DeviceProvider>
-                      <MqttProvider>
-                        <MenusProvider>{children}</MenusProvider>
-                      </MqttProvider>
-                    </DeviceProvider>
-                  </LoadersProvider>
-                </LayoutProvider>
-              </HelmetProvider>
+              <DialogsProvider>
+                <HelmetProvider>
+                  <LayoutProvider>
+                    <LoadersProvider>
+                      <DeviceProvider>
+                        <MqttProvider>
+                          <MenusProvider>{children}</MenusProvider>
+                        </MqttProvider>
+                      </DeviceProvider>
+                    </LoadersProvider>
+                  </LayoutProvider>
+                </HelmetProvider>
+              </DialogsProvider>
             </SnackbarProvider>
           </TranslationProvider>
         </SettingsProvider>

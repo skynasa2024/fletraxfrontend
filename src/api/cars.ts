@@ -80,7 +80,7 @@ export interface VehicleDTO {
   exhaustStartDate: string;
   exhaustEndDate: string;
   hgsNumber: string;
-  currentMileage: string;
+  currentMileage?: string;
   maintenanceMileage: string;
   fuelConsumption: number;
   licenseImage?: string | null;
@@ -90,7 +90,13 @@ export interface VehicleDTO {
   deviceId: string;
   deviceIdent: string;
   vehicleId: string;
+  engineHours?: number;
+  formatedEngineHours?: string | null;
+  mileage?: number;
+  formatedMileage?: string | null;
   scratches: ScratchDTO[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ScratchDTO {
@@ -303,7 +309,7 @@ export const getVehicles = async (
     },
     brandName: vehicle.brand,
     type: vehicle.gear,
-    mileage: vehicle.currentMileage,
+    mileage: (vehicle.currentMileage || 0).toString(),
     status: vehicle.status,
     deviceName: 'Device Name',
     carId: vehicle.id
@@ -421,6 +427,11 @@ export const createScratch = async (formData: FormData): Promise<ScratchDTO> => 
 };
 
 export const updateScratch = async (formData: FormData): Promise<ScratchDTO> => {
+  for (const [key, value] of [...formData.entries()]) {
+    if (!value || value === 'undefined' || (value instanceof File && value?.name === '')) {
+      formData.delete(key);
+    }
+  }
   const updatedScratch = await axios.put<ResponseModel<ScratchDTO>>(
     '/api/vehicles/scratches/update',
     formData,

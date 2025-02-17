@@ -32,12 +32,14 @@ export default function VehicleScratchesDisplay({ vehicleId }: { vehicleId?: str
 
   return (
     <div className="relative flex p-4 justify-center items-center col-span-full mb-4">
-      <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
-      {/* Corners */}
-      <div className="absolute top-10 left-[225px] w-20 h-32 border-t-2 border-l-2 border-info rounded-tl-full" />
-      <div className="absolute top-10 right-[225px] w-20 h-32 border-t-2 border-r-2 border-info rounded-tr-full" />
-      <div className="absolute bottom-10 left-[225px] w-20 h-32 border-b-2 border-l-2 border-info rounded-bl-full" />
-      <div className="absolute bottom-10 right-[225px] w-20 h-32 border-b-2 border-r-2 border-info rounded-br-full" />
+      <div className="relative">
+        <img src={toAbsoluteUrl('/media/images/car.png')} alt="Car" />
+        {/* Corners */}
+        <div className="absolute top-0 left-3 w-20 h-32 border-t-2 border-l-2 border-info rounded-tl-full" />
+        <div className="absolute top-0 right-3 w-20 h-32 border-t-2 border-r-2 border-info rounded-tr-full" />
+        <div className="absolute bottom-0 left-3 w-20 h-32 border-b-2 border-l-2 border-info rounded-bl-full" />
+        <div className="absolute bottom-0 right-3 w-20 h-32 border-b-2 border-r-2 border-info rounded-br-full" />
+      </div>
       {/* Top row */}
       <ScratchesPopover
         className="absolute top-3 left-1/3 -translate-x-1/2 border hover:shadow-md bg-gray-100 text-gray-600 rounded-full w-8 h-8 flex items-center justify-center"

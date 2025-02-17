@@ -2,31 +2,38 @@ import FileUpload from '@/components/FileUpload';
 import { useState } from 'react';
 import { AddDriverPageProps } from '../AddDriverPage';
 import { VehicleSearch } from './VehicleSearch';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const Information = ({ driver }: AddDriverPageProps) => {
+  const intl = useIntl();
   const [selectedType, setSelectedType] = useState(
     driver?.identityType === 'foreign' ? 'foreign' : 'turkish'
   );
+
   return (
     <div className="card pb-2.5">
       <div className="card-header" id="general_settings">
-        <h3 className="card-title">Information</h3>
+        <h3 className="card-title">{intl.formatMessage({ id: 'DRIVER.ADD.TAB.INFORMATION' })}</h3>
       </div>
       <div className="card-body grid gap-5">
         <div className="grid lg:grid-cols-2 gap-5">
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Full Name</label>
+            <label className="form-label">
+              <FormattedMessage id="DRIVER.ADD.FULL_NAME" />
+            </label>
             <input
               required
               type="text"
               className="input"
               name="fullName"
-              placeholder="Full Name"
+              placeholder={intl.formatMessage({ id: 'DRIVER.ADD.FULL_NAME' })}
               defaultValue={driver?.driver.name}
             />
           </div>
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Date Of Birth</label>
+            <label className="form-label">
+              <FormattedMessage id="DRIVER.ADD.DATE_OF_BIRTH" />
+            </label>
             <input
               required
               type="date"
@@ -39,11 +46,14 @@ const Information = ({ driver }: AddDriverPageProps) => {
         </div>
 
         <div className="flex flex-col gap-2.5">
-          <label className="form-label">Identity Type</label>
+          <label className="form-label">
+            <FormattedMessage id="DRIVER.ADD.IDENTITY_TYPE" />
+          </label>
           <div className="grid md:grid-cols-2 gap-4 w-full">
             {['Turkish', 'Foreign'].map((type) => (
               <button
                 key={type}
+                type="button"
                 onClick={() => setSelectedType(type.toLowerCase())}
                 className={`
               px-6 py-2 border border-dashed rounded-md dark:bg-light-active dark:light-active
@@ -62,7 +72,7 @@ const Information = ({ driver }: AddDriverPageProps) => {
                 }
               `}
                 />
-                {type}
+                <FormattedMessage id={`DRIVER.ADD.${type.toUpperCase()}`} />
               </button>
             ))}
           </div>
@@ -72,7 +82,9 @@ const Information = ({ driver }: AddDriverPageProps) => {
           <div className="flex flex-col gap-2.5">
             {selectedType === 'turkish' ? (
               <>
-                <label className="form-label">Front Photo Of National ID</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.FRONT_NATIONAL_ID_PHOTO" />
+                </label>
                 <FileUpload
                   name="frontNationalIdPhotoFile"
                   isUploaded={!!driver?.frontNationalIdPhoto}
@@ -80,7 +92,9 @@ const Information = ({ driver }: AddDriverPageProps) => {
               </>
             ) : (
               <>
-                <label className="form-label">Passport photo</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.PASSPORT_PHOTO" />
+                </label>
                 <FileUpload name="passportPhotoFile" isUploaded={!!driver?.passportPhoto} />
               </>
             )}
@@ -88,7 +102,9 @@ const Information = ({ driver }: AddDriverPageProps) => {
           <div className="flex flex-col gap-2.5">
             {selectedType === 'turkish' ? (
               <>
-                <label className="form-label">National ID Background Image</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.BACK_NATIONAL_ID_PHOTO" />
+                </label>
                 <FileUpload
                   name="backNationalIdPhotoFile"
                   isUploaded={!!driver?.backNationalIdPhoto}
@@ -96,7 +112,9 @@ const Information = ({ driver }: AddDriverPageProps) => {
               </>
             ) : (
               <>
-                <label className="form-label">Photo of the last entry stamp to Turkey</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.LAST_ENTRY_PHOTO" />
+                </label>
                 <FileUpload name="lastEntryPhotoFile" isUploaded={!!driver?.lastEntryPhoto} />
               </>
             )}
@@ -107,32 +125,36 @@ const Information = ({ driver }: AddDriverPageProps) => {
           <div className="flex flex-col gap-2.5">
             {selectedType === 'turkish' ? (
               <>
-                <label className="form-label">ID number</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.ID_NUMBER" />
+                </label>
                 <input
                   required
                   type="text"
                   className="input"
                   name="idNumber"
-                  placeholder="ID number"
+                  placeholder={intl.formatMessage({ id: 'DRIVER.ADD.ID_NUMBER' })}
                   defaultValue={driver?.idNumber}
                 />
               </>
             ) : (
               <>
-                <label className="form-label">Passport number</label>
+                <label className="form-label">
+                  <FormattedMessage id="DRIVER.ADD.PASSPORT_NUMBER" />
+                </label>
                 <input
                   required
                   type="text"
                   className="input"
                   name="passportNumber"
-                  placeholder="Passport number"
+                  placeholder={intl.formatMessage({ id: 'DRIVER.ADD.PASSPORT_NUMBER' })}
                   defaultValue={driver?.passportNumber}
                 />
               </>
             )}
           </div>
           <div className="flex flex-col gap-2.5">
-            <label className="form-label">Vehicle</label>
+            <label className="form-label">{intl.formatMessage({ id: 'DRIVER.ADD.VEHICLE' })}</label>
             <VehicleSearch
               initialSearch={
                 driver?.vehicle && {

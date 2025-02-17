@@ -215,6 +215,9 @@ export const MonitoringProvider = ({ children }: PropsWithChildren) => {
 
   const messageHandler = (_: string, payload: Buffer) => {
     const device: MqttResponse = JSON.parse(payload.toString('utf-8'));
+    if ('ident' in device === false) {
+      return;
+    }
 
     type RecursivePartial<T> = {
       [P in keyof T]?: Partial<T[P]>;

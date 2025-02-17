@@ -99,7 +99,8 @@ export const LocationCard = () => {
               <FormattedMessage id="LOCATION.FIELD.TIME" />
             </div>
             <div className="text-[#2D3748] dark:text-gray-50 text-xs">
-              {format(location.status.timestamp, 'yyyy/MM/dd HH:mm:ss')}
+              {!isNaN(+location.status.timestamp) &&
+                format(location.status.timestamp, 'yyyy/MM/dd HH:mm:ss')}
             </div>
           </div>
         </div>

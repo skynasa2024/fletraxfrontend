@@ -64,15 +64,16 @@ const Information = () => {
             <label className="form-label">
               <FormattedMessage id="VEHICLE.FORM.INFORMATION.MODEL_YEAR" />
             </label>
-            <div className="input">
-              <Field
-                type="number"
-                step="1"
-                name="modelYear"
-                placeholder={intl.formatMessage({ id: 'VEHICLE.FORM.INFORMATION.MODEL_YEAR' })}
-              />
-              <CalendarIcon />
-            </div>
+            <Field as="select" name="modelYear" className="select">
+              {Array.from(
+                { length: new Date().getFullYear() - 1990 + 1 },
+                (_, i) => new Date().getFullYear() - i
+              ).map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </Field>
           </div>
           <div className="grid gap-2.5">
             <label className="form-label">

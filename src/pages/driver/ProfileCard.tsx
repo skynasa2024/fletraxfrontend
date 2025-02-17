@@ -32,7 +32,7 @@ const ProfileCard: React.FC<ProfileProps> = ({
   address
 }) => {
   return (
-    <div className="flex items-start space-x-4 p-6">
+    <div className="flex items-start gap-4 p-6">
       {/* Profile Image and Basic Info */}
       <div className="flex-shrink-0 self-center h-full aspect-square">
         <Image
