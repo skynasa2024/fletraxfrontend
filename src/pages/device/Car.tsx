@@ -11,7 +11,7 @@ const Car = ({ direction }: CarProps) => {
   return (
     <div className="card flex flex-col justify-center h-full p-14">
       <div
-        className="relative w-64 h-64 mx-auto transition-transform duration-200"
+        className="relative w-64 h-64 mx-auto transition-transform duration-300 ease-out"
         style={{ transform: `rotate(${direction ?? 0}deg)` }}
       >
         {/* Rotating circles background */}
