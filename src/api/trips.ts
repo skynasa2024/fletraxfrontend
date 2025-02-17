@@ -86,7 +86,7 @@ export const searchTrips = async ({
       startTime: startTime,
       endTime: endTime,
       sort: 'startTime,desc',
-      page: offset ? offset.start / TRIPS_PAGE_SIZE : 0,
+      page: offset ? Math.ceil(offset.start / TRIPS_PAGE_SIZE) : 0,
       size: offset ? offset.end - offset.start : TRIPS_PAGE_SIZE
     }
   });
