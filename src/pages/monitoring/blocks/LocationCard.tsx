@@ -230,7 +230,7 @@ export const LocationCard = () => {
           </span>
         </a>
         <a
-          href={`/devices/device/${location.vehicle.imei}/telemetry`}
+          href={`/devices/device/${location.vehicle.imei}`}
           className="px-5 py-2 flex gap-2 !text-inherit"
         >
           <img src={toAbsoluteUrl('/media/icons/calendar-gray.svg')} />

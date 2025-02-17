@@ -11,11 +11,11 @@ const Car = ({ direction }: CarProps) => {
   return (
     <div className="card flex flex-col justify-center h-full p-14">
       <div
-        className="relative w-64 h-64 mx-auto"
+        className="relative w-64 h-64 mx-auto transition-transform duration-200"
         style={{ transform: `rotate(${direction ?? 0}deg)` }}
       >
         {/* Rotating circles background */}
-        <div className="absolute inset-0 animate-spin duration-3000 opacity-30">
+        <div className="absolute inset-0 duration-3000 opacity-30">
           {/* Upper Circle (Larger than the borders) */}
           <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-blue-100 rounded-full" />
 

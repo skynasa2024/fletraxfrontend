@@ -70,10 +70,7 @@ const AppRoutingSetup = (): ReactElement => {
           </Route>
 
           <Route path="/devices/device/" element={<Device />} />
-          <Route path="/devices/device/:id" element={<DeviceDetailsPage />}>
-            <Route index element={<Navigate to="telemetry" />} />
-            <Route path="telemetry" element={<Telemetry />} />
-          </Route>
+          <Route path="/devices/device/:id" element={<DeviceDetailsPage />} />
           <Route element={<RequireRole role="admin" />}>
             <Route path="/devices/add-device" element={<AddDevice />} />
             <Route path="/devices/edit/:id" element={<AddDevice />} />
