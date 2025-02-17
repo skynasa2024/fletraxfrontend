@@ -29,12 +29,12 @@ const DeviceDetailsPage = () => {
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const intl = useIntl();
 
-  const [device, sedivevice] = useState<DeviceDTO | null>(null);
+  const [device, setDevice] = useState<DeviceDTO | null>(null);
   useEffect(() => {
     if (!id) return;
     getDeviceModelByImei(id)
       .then((data) => {
-        sedivevice(data);
+        setDevice(data);
       })
       .catch(() => {
         navigate('/error/404');

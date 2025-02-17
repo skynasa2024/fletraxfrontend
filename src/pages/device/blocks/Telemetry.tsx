@@ -7,9 +7,14 @@ import { useEffect, useState } from 'react';
 import { Buffer } from 'buffer';
 import { useOutletContext } from 'react-router';
 import { DeviceDTO } from '@/api/devices';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import SignalStrenghtIcon from '../svg/SignalStrenghtIcon';
+import SignalIcon from '../svg/SignalIcon';
+import BatteryIcon from '../svg/BatteryIcon';
+import { toAbsoluteUrl } from '@/utils';
 
 const Telemetry = () => {
+  const intl = useIntl();
   const { mqttClient } = useMqttProvider();
   const [parameters, setParameters] = useState<
     Record<string, { data: any; timestamp: Date; latest: boolean }>
@@ -57,23 +62,34 @@ const Telemetry = () => {
 
   return (
     <div className="flex flex-col space-y-4 overflow-hidden">
-      <div className="flex justify-between gap-4 p-2">
+      <div className="flex justify-between gap-4">
         {/* Speed Gauge */}
         <div className="flex items-center justify-start">
-          <div className="card flex flex-col max-w-sm p-8 w-96 h-[454px]">
+          <div className="card flex flex-col max-w-sm p-4 w-96">
             <SpeedGauge value={parameters['position_speed']?.data} maxValue={160} />
-            <div className="flex flex-col gap-4 justify-center mt-4">
+
+            <div className="flex gap-4 justify-between items-center mt-4 bg-neutral-100 p-4 rounded-lg">
               <div>
-                <span className="font-bold">
-                  <FormattedMessage id="DEVICE.TELEMETRY.EXISTING_KILOMETERS" />:
-                </span>{' '}
-                <span>{parameters['existing_kilometers']?.data ?? '?'}</span>
+                <div className="flex gap-1 items-center">
+                  <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
+                  <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
+                    <FormattedMessage id="DEVICE.TELEMETRY.PARKING_TIME" />:
+                  </span>
+                </div>
+                <span className="font-semibold text-dark text-md">
+                  {parameters['parking_time']?.data ?? '?'}
+                </span>
               </div>
               <div>
-                <span className="font-bold">
-                  <FormattedMessage id="DEVICE.TELEMETRY.PARKING_TIME" />:
-                </span>{' '}
-                <span>{parameters['parking_time']?.data ?? '?'}</span>
+                <div className="flex gap-1 items-center">
+                  <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
+                  <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
+                    <FormattedMessage id="DEVICE.TELEMETRY.EXISTING_KILOMETERS" />:
+                  </span>
+                </div>
+                <span className="font-semibold text-dark text-md">
+                  {parameters['existing_kilometers']?.data ?? '?'}
+                </span>
               </div>
             </div>
           </div>
@@ -97,16 +113,47 @@ const Telemetry = () => {
 
         {/* Car */}
         <div className="flex items-center justify-end">
-          <Car
-            satalites={parameters['position_satellites']?.data}
-            signalStrength={parameters['gsm_signal_level']?.data}
-            battery={
-              parameters['battery_charging_status']?.data === true
-                ? 100
-                : parameters['battery_level']?.data
-            }
-            direction={parameters['position_direction']?.data}
-          />
+          <Car direction={parameters['position_direction']?.data} />
+        </div>
+      </div>
+
+      <div className="flex w-full justify-center gap-8 mb-8 p-4">
+        {/* Signal Icon */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#5151F9] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.SATELLITE.TITLE' })}
+          >
+            <SignalIcon />
+          </div>
+          <span className="text-gray-700">{parameters['position_satellites']?.data ?? '?'}</span>
+        </div>
+
+        {/* Signal Strength Icon */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#FFA800] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.SIGNAL.TITLE' })}
+          >
+            <SignalStrenghtIcon />
+          </div>
+          <span className="text-gray-700">{parameters['gsm_signal_level']?.data ?? '?'}%</span>
+        </div>
+
+        {/* Battery Icon */}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-8 h-8 rounded-lg bg-[#FF0000] flex items-center justify-center"
+            title={intl.formatMessage({ id: 'DEVICE.CAR.BATTERY.TITLE' })}
+          >
+            <BatteryIcon />
+          </div>
+          <span className="text-gray-700">
+            {parameters['battery_charging_status']?.data === true
+              ? 100
+              : (parameters['battery_level']?.data ?? '?')}
+            %
+          </span>
         </div>
       </div>
 
