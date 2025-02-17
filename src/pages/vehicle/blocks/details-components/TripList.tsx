@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { searchTrips, Trip, TripGroup, TripPath } from '@/api/trips';
+import { searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
 import TripCard from '@/pages/trips/blocks/TripCard';
 import { TripsContext } from '@/pages/trips/providers/TripsContext';
 import L from 'leaflet';
@@ -8,9 +8,6 @@ import AppMap from '@/components/AppMap';
 import { Marker, Polyline } from 'react-leaflet';
 import { getColor } from '@/pages/trips/blocks/PolylineColors';
 import { useIntl } from 'react-intl';
-
-const PAGE_SIZE = 2;
-
 interface TripListProps {
   deviceIdent?: string;
 }
@@ -120,9 +117,9 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
     const currentOffset = trips?.length ?? 0;
     const moreTrips = await searchTrips({
       query: deviceIdent ?? '',
-      offset: { start: currentOffset, end: currentOffset + PAGE_SIZE }
+      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE }
     });
-    if (moreTrips.length === 0 || moreTrips.length < PAGE_SIZE) {
+    if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
     }
     setTrips((prevTrips) => {

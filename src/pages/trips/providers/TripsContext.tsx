@@ -1,4 +1,4 @@
-import { searchTrips, Trip, TripGroup, TripPath } from '@/api/trips';
+import { searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
 import {
   createContext,
   PropsWithChildren,
@@ -9,8 +9,6 @@ import {
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-
-const PAGE_SIZE = 2;
 
 interface TripsContextProps {
   searchDeviceQuery: string;
@@ -159,7 +157,7 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       endDate,
       startTime,
       endTime,
-      offset: { start: 0, end: PAGE_SIZE }
+      offset: { start: 0, end: TRIPS_PAGE_SIZE }
     });
     setTrips(initialTrips);
     setHasMore(initialTrips.length > 0);
@@ -176,9 +174,9 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       endDate,
       startTime,
       endTime,
-      offset: { start: currentOffset, end: currentOffset + PAGE_SIZE }
+      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE }
     });
-    if (moreTrips.length === 0 || moreTrips.length < PAGE_SIZE) {
+    if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
     }
     setTrips((prevTrips) => {

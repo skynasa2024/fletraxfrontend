@@ -68,6 +68,8 @@ export interface SearchTripsParams {
   offset?: OffsetBounds;
 }
 
+export const TRIPS_PAGE_SIZE = 10;
+
 export const searchTrips = async ({
   query,
   startDate,
@@ -85,7 +87,7 @@ export const searchTrips = async ({
       endTime: endTime,
       sort: 'startTime,desc',
       offset: offset?.start,
-      size: offset ? offset.end - offset.start : 2
+      size: offset ? offset.end - offset.start : TRIPS_PAGE_SIZE
     }
   });
 
