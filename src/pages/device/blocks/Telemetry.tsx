@@ -8,10 +8,8 @@ import { Buffer } from 'buffer';
 import { useOutletContext } from 'react-router';
 import { DeviceDTO } from '@/api/devices';
 import { FormattedMessage, useIntl } from 'react-intl';
-import SignalStrenghtIcon from '../svg/SignalStrenghtIcon';
-import SignalIcon from '../svg/SignalIcon';
-import BatteryIcon from '../svg/BatteryIcon';
 import { toAbsoluteUrl } from '@/utils';
+import { format } from 'date-fns';
 
 const Telemetry = () => {
   const intl = useIntl();
@@ -117,43 +115,109 @@ const Telemetry = () => {
         </div>
       </div>
 
-      <div className="flex w-full justify-center gap-8 mb-8 p-4">
-        {/* Signal Icon */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-lg bg-[#5151F9] flex items-center justify-center"
-            title={intl.formatMessage({ id: 'DEVICE.CAR.SATELLITE.TITLE' })}
-          >
-            <SignalIcon />
+      <div className="flex w-full justify-between mb-8 py-4 px-20 md:px-32 lg:px-56 gap-8 bg-gray-200 rounded-lg">
+        {/* Timestamp */}
+        <div className="flex gap-1 items-center">
+          <img src={toAbsoluteUrl(`/media/icons/calendar.svg`)} className="size-8" />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.TIME" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {!isNaN(+new Date(+parameters['timestamp']?.data * 1000)) &&
+                format(new Date(+parameters['timestamp']?.data * 1000), 'yyyy/MM/dd HH:mm:ss')}
+            </div>
           </div>
-          <span className="text-gray-700">{parameters['position_satellites']?.data ?? '?'}</span>
         </div>
 
-        {/* Signal Strength Icon */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-lg bg-[#FFA800] flex items-center justify-center"
-            title={intl.formatMessage({ id: 'DEVICE.CAR.SIGNAL.TITLE' })}
-          >
-            <SignalStrenghtIcon />
+        {/* Battery */}
+        <div className="flex gap-1 items-center">
+          <img src={toAbsoluteUrl('/media/icons/battery-icon.svg')} className="size-8" />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.BATTERY_LEVEL" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {parameters['battery_charging_status']?.data === true
+                ? 100
+                : (parameters['battery_level']?.data ?? '?')}
+              %
+            </div>
           </div>
-          <span className="text-gray-700">{parameters['gsm_signal_level']?.data ?? '?'}%</span>
         </div>
 
-        {/* Battery Icon */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-lg bg-[#FF0000] flex items-center justify-center"
-            title={intl.formatMessage({ id: 'DEVICE.CAR.BATTERY.TITLE' })}
-          >
-            <BatteryIcon />
+        {/* Engine Status */}
+        <div className="flex gap-1 items-center">
+          <img
+            src={toAbsoluteUrl(
+              `/media/icons/${parameters['engine_ignition_status']?.data === 'true' ? 'on' : 'off'}.svg`
+            )}
+            className="size-8"
+          />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.ENGINE_STATUS" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {intl.formatMessage({
+                id:
+                  parameters['engine_ignition_status']?.data === 'UNKNOWN'
+                    ? undefined
+                    : parameters['engine_ignition_status']?.data === 'true'
+                      ? 'STATUS.ON'
+                      : 'STATUS.OFF'
+              })}
+            </div>
           </div>
-          <span className="text-gray-700">
-            {parameters['battery_charging_status']?.data === true
-              ? 100
-              : (parameters['battery_level']?.data ?? '?')}
-            %
-          </span>
+        </div>
+
+        {/* Engine Block Status */}
+        <div className="flex gap-1 items-center">
+          <img
+            src={toAbsoluteUrl(
+              `/media/icons/${parameters['engine_blocked_status']?.data ? 'engine-block-active' : 'engine-block-inactive'}.svg`
+            )}
+            className="size-8"
+          />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.ENGINE_BLOCKED_STATUS" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {intl.formatMessage({
+                id: parameters['engine_blocked_status']?.data ? 'STATUS.ACTIVE' : 'STATUS.INACTIVE'
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Speed Icon */}
+        <div className="flex gap-1 items-center">
+          <img
+            src={toAbsoluteUrl(
+              `/media/icons/${parameters['position_speed']?.data > 1 ? 'speed-moving' : 'speed-stop'}.svg`
+            )}
+            className="size-8"
+          />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.SPEED" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{`${parameters['position_speed']?.data.toFixed(0) || '?'} kmh`}</div>
+          </div>
+        </div>
+
+        {/* Satellites */}
+        <div className="flex gap-1 items-center">
+          <img src={toAbsoluteUrl('/media/icons/satellites.svg')} className="size-8" />
+          <div className="font-semibold">
+            <div className="text-[#A1A5B7] text-[10px]">
+              <FormattedMessage id="LOCATION.FIELD.SATELLITES" />
+            </div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {parameters['position_satellites']?.data ?? '?'}
+            </div>
+          </div>
         </div>
       </div>
 

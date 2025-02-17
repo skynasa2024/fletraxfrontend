@@ -1,4 +1,3 @@
-import DeviceNavigation from './DeviceNavigation';
 import DeviceIcon from './svg/device.svg?react';
 import { Outlet, useNavigate, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
@@ -135,7 +134,6 @@ const DeviceDetailsPage = () => {
                 </RoleComponent>
               </div>
             </div>
-            <DeviceNavigation />
           </div>
 
           <Outlet context={{ device }} />
