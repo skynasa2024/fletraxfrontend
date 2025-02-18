@@ -2,6 +2,7 @@ import { Field } from 'formik';
 import { STATUS_OPTIONS } from '../../constants';
 import FormikFileUpload from '../components/FormikFileUpload';
 import { useIntl, FormattedMessage } from 'react-intl';
+import { DeviceSearch } from './DeviceSearch';
 
 const AdditionalVehicleInfo = () => {
   const intl = useIntl();
@@ -12,6 +13,12 @@ const AdditionalVehicleInfo = () => {
           <FormattedMessage id="VEHICLE.FORM.ADDITIONAL_INFO.VEHICLE_IMAGE" />
         </label>
         <FormikFileUpload name="vehicleImage" />
+      </div>
+      <div className="card p-4 gap-4">
+        <label className="form-label card-title">
+          <FormattedMessage id="VEHICLE.FORM.ADDITIONAL_INFO.DEVICE" />
+        </label>
+        <DeviceSearch place="bottom" />
       </div>
       <div className="card p-4 gap-4">
         <label className="form-label card-title">

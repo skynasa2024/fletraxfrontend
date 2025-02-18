@@ -43,6 +43,9 @@ interface AdditionalVehicleInfo {
   maintenanceMileage: string;
   fuelConsumption: number;
   licenseImageFile?: string;
+  deviceIdent?: string;
+  deviceId?: string;
+  userId?: string;
 }
 
 export type FuelType = 'Hybrid' | 'Diesel' | 'Benzin' | 'LPG' | 'Kerosine' | 'Electric';
@@ -331,9 +334,6 @@ const AddVehiclePage = () => {
           owner: vehicle.owner || currentVehicle.owner,
           vehicleId: currentVehicle.vehicleId,
           id: currentVehicle.id,
-          deviceId: currentVehicle.deviceId,
-          userId: currentVehicle.userId,
-          deviceIdent: currentVehicle.deviceIdent,
           type: vehicle.registrationType,
           gear: vehicle.gearType,
           kaskoInsuranceEndDate: vehicle.kaskoEndDate,

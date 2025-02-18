@@ -9,6 +9,7 @@ export interface DeviceDTO {
   name: string;
   vehiclePlate: string;
   vehicleImage: string | null;
+  vehicleId?: string;
   phoneCode: string;
   phone: string;
   webNotification: boolean;

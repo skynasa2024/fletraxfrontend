@@ -86,9 +86,9 @@ export interface VehicleDTO {
   licenseImage?: string | null;
   licenseImageFile?: string;
   owner: string;
-  userId: string;
-  deviceId: string;
-  deviceIdent: string;
+  userId?: string;
+  deviceId?: string;
+  deviceIdent?: string;
   vehicleId: string;
   engineHours?: number;
   formatedEngineHours?: string | null;
@@ -299,7 +299,7 @@ export const getVehicles = async (
       id: vehicle.vehicleId,
       brandImage: vehicle.image ?? '',
       plate: vehicle.plate,
-      imei: vehicle.deviceIdent,
+      imei: vehicle.deviceIdent ?? '',
       name: `${vehicle.brand} ${vehicle.model} ${vehicle.modelSeries}`
     },
     customer: {
@@ -330,12 +330,14 @@ export const getVehicle = async (id: string): Promise<Vehicle | null> => {
     return null;
   }
 
-  const device = await getDevice(vehicle.data.result.deviceId);
+  const device = vehicle.data.result.deviceId
+    ? await getDevice(vehicle.data.result.deviceId)
+    : undefined;
   return {
     id: vehicle.data.result.id,
     brandImage: toAbsoluteUrl(`/media/car-brands/${vehicle.data.result.brand}.png`),
     plate: vehicle.data.result.plate,
-    imei: device.imei,
+    imei: device?.imei ?? '',
     name: `${vehicle.data.result.brand} ${vehicle.data.result.model}`
   };
 };
