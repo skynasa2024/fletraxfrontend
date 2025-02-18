@@ -19,6 +19,7 @@ import { StatusDropdown } from '@/pages/dashboards/blocks/StatusDropdown';
 import { useSnackbar } from 'notistack';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDialogs } from '@toolpad/core/useDialogs';
+import { Link } from 'react-router';
 
 const DriverListDropdown = (
   info: CellContext<DriverDetails, unknown> & { refetch: () => void }
@@ -126,18 +127,18 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex gap-3">
-            <a href={`/drivers/driver/${row.original.id}`} className="size-7.5">
+            <Link to={`/drivers/driver/${row.original.id}`} className="size-7.5">
               <img
                 src={toAbsoluteUrl('/media/icons/view.svg')}
                 alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
               />
-            </a>
-            <a href={`/drivers/edit/${row.original.id}`} className="size-7.5">
+            </Link>
+            <Link to={`/drivers/edit/${row.original.id}`} className="size-7.5">
               <img
                 src={toAbsoluteUrl('/media/icons/edit.svg')}
                 alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
               />
-            </a>
+            </Link>
             <Menu>
               <MenuItem toggle="dropdown" trigger="click">
                 <MenuToggle>
