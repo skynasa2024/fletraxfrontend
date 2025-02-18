@@ -112,7 +112,7 @@ export default function DriversCardView({
                   columnCount={COLUMN_COUNT}
                   columnWidth={widthWithoutScrollBar / COLUMN_COUNT}
                   rowCount={remoteRowCount}
-                  rowHeight={275}
+                  rowHeight={291}
                   overscanRowCount={2}
                   onSectionRendered={({ rowOverscanStartIndex, rowOverscanStopIndex }) =>
                     onRowsRendered({
@@ -132,7 +132,10 @@ export default function DriversCardView({
                       <div key={key} style={style} className="p-2">
                         <DriverCard
                           driver={driver}
-                          refetchStats={refetchStats}
+                          refetchStats={async () => {
+                            await refetchStats();
+                            await refetchAllLoadedRows();
+                          }}
                           onDelete={async () => {
                             await deleteDriver(drivers!.data[itemIndex].id);
                             enqueueSnackbar(
