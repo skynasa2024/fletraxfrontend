@@ -132,7 +132,10 @@ export default function DriversCardView({
                       <div key={key} style={style} className="p-2">
                         <DriverCard
                           driver={driver}
-                          refetchStats={refetchStats}
+                          refetchStats={async () => {
+                            await refetchStats();
+                            await refetchAllLoadedRows();
+                          }}
                           onDelete={async () => {
                             await deleteDriver(drivers!.data[itemIndex].id);
                             enqueueSnackbar(
