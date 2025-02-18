@@ -66,6 +66,33 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
   const [usersStack, setUsersStack] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      const confirmed = await dialogs.confirm(
+        intl.formatMessage({
+          id: 'USER.DELETE.MODAL_MESSAGE'
+        }),
+        {
+          title: intl.formatMessage({ id: 'USER.DELETE.MODAL_TITLE' }),
+          okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
+          cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
+        }
+      );
+
+      if (!confirmed) return;
+
+      await deleteUser(userId);
+      enqueueSnackbar(intl.formatMessage({ id: 'USER_PAGE.USER_DELETE_SUCCESS' }), {
+        variant: 'success'
+      });
+      refetch();
+    } catch (error: any) {
+      enqueueSnackbar(error?.message || intl.formatMessage({ id: 'USER_PAGE.USER_DELETE_ERROR' }), {
+        variant: 'error'
+      });
+    }
+  };
+
   const columns = useMemo<ColumnDef<UserModel>[]>(
     () => [
       {
@@ -151,28 +178,7 @@ const UserList: React.FC<UserListProps> = ({ refetch }) => {
                   <KeenIcon className="text-xl" icon="dots-vertical" />
                 </MenuToggle>
                 <MenuSub className="menu-default">
-                  <MenuItem
-                    onClick={async () => {
-                      if (
-                        !(await dialogs.confirm(
-                          intl.formatMessage({
-                            id: 'USER.DELETE.MODAL_MESSAGE'
-                          }),
-                          {
-                            title: intl.formatMessage({ id: 'USER.DELETE.MODAL_TITLE' }),
-                            okText: intl.formatMessage({ id: 'COMMON.DELETE' }),
-                            cancelText: intl.formatMessage({ id: 'COMMON.CANCEL' })
-                          }
-                        ))
-                      )
-                        return;
-                      await deleteUser(info.row.original.id);
-                      enqueueSnackbar(intl.formatMessage({ id: 'USER_PAGE.USER_DELETE_SUCCESS' }), {
-                        variant: 'success'
-                      });
-                      refetch();
-                    }}
-                  >
+                  <MenuItem onClick={() => handleDeleteUser(info.row.original.id)}>
                     <MenuLink>
                       <MenuIcon>
                         <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />

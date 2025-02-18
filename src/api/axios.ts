@@ -21,4 +21,19 @@ instance.interceptors.request.use(
   }
 );
 
+instance.interceptors.response.use(
+  (response) => {
+    if (response.data && response.data.success === false) {
+      return Promise.reject({
+        message: response.data.message,
+        response: response.data
+      });
+    }
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export { instance as axios };
