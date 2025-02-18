@@ -401,6 +401,7 @@ export const updateVehicle = async (vehicle: VehicleDTO): Promise<VehicleDTO> =>
       formData.delete(key);
     }
   }
+  formData.delete('scratches');
   const updatedVehicle = await axios.put<ResponseModel<VehicleDTO>>(
     `/api/vehicles/cars/update`,
     formData,
