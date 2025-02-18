@@ -53,7 +53,6 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
             selected={driver.status}
             setSelected={async (status) => {
               await updateDriverStatus(driver.id, status === 'Active');
-              onDelete();
               refetchStats?.();
             }}
             options={options}
