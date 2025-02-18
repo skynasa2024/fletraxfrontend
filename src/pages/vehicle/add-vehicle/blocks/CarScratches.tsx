@@ -11,6 +11,7 @@ import { useSnackbar } from 'notistack';
 import { ResponseModel } from '@/api/response';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDialogs } from '@toolpad/core/useDialogs';
+import { DownloadableImage } from '@/components/DownloadableImage';
 
 const CarScratches: React.FC = () => {
   const { id } = useParams();
@@ -309,7 +310,10 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
               >
                 {file ? (
                   <div className="flex items-center justify-center gap-2 border border-gray-600 p-4 h-16 rounded-lg">
-                    <UploadedFilePreview file={file ?? undefined} />
+                    <UploadedFilePreview
+                      file={file ?? undefined}
+                      imageUrl={scratch.image ?? undefined}
+                    />
                     <button
                       type="button"
                       onClick={(e) => {
@@ -369,9 +373,10 @@ const CarScratchForm: React.FC<CarScratchFormProps> = ({
 
 type UploadedFilePreviewProps = {
   file?: File;
+  imageUrl?: string;
 };
 
-function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
+function UploadedFilePreview({ file, imageUrl }: UploadedFilePreviewProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleModalClose = (e?: React.SyntheticEvent | MouseEvent | KeyboardEvent) => {
@@ -417,7 +422,11 @@ function UploadedFilePreview({ file }: UploadedFilePreviewProps) {
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-white rounded-lg shadow-lg p-4 flex justify-center items-center"
           onClick={(e) => e.stopPropagation()}
         >
-          <img src={URL.createObjectURL(file)} alt={file.name} className="object-contain" />
+          {file.size > 0 ? (
+            <img src={URL.createObjectURL(file)} alt={file.name} className="object-contain" />
+          ) : (
+            <DownloadableImage src={imageUrl} alt={file.name} className="object-contain" />
+          )}
         </div>
       </Modal>
     </>

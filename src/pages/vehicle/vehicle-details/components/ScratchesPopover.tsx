@@ -1,8 +1,8 @@
 import { ScratchDTO } from '@/api/cars';
-import { getDocumentBase64 } from '@/api/documents';
 import { KeenIcon } from '@/components';
+import { DownloadableImage } from '@/components/DownloadableImage';
 import { Popover } from '@mui/material';
-import React, { DetailedHTMLProps, useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export type Scratch = {
@@ -100,24 +100,3 @@ function ScratchDetailCard({ updatedAt, explanationOf, image }: ScratchDTO) {
     </div>
   );
 }
-
-const DownloadableImage = ({
-  src,
-  ...other
-}: DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) => {
-  const [image, setImage] = React.useState<string>();
-
-  useEffect(() => {
-    if (!src) {
-      setImage(undefined);
-      return;
-    }
-    getDocumentBase64(src).then((res) => {
-      setImage(res);
-    });
-  }, [src]);
-
-  if (!image) return null;
-
-  return <img src={`data:image;base64${image}`} {...other} />;
-};
