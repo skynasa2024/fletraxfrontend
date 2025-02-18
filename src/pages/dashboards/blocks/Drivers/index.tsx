@@ -51,6 +51,22 @@ const DriverList = () => {
     getDrivers({ start: 0, end: 10, search: searchQuery }).then(setDrivers);
   }, [searchQuery]);
 
+  const refetchStats = async (index: number) => {
+    const offset = {
+      start: Math.max(0, index - 10),
+      end: index + 10
+    };
+    const driverRequest = await getDrivers(offset);
+    let newDrivers: Paginated<DriverDetails> = {
+      totalCount: driverRequest.totalCount,
+      data: []
+    };
+    for (let i = offset.start; i <= offset.end; i++) {
+      newDrivers.data[i] = driverRequest.data[i];
+    }
+    setDrivers(newDrivers);
+  };
+
   const getColumnWidth = (width: number) => {
     const totalWidth = remoteRowCount * CARD_WIDTH;
     return width - totalWidth;
@@ -146,10 +162,6 @@ const DriverList = () => {
                         <DriverCard
                           driver={driver}
                           onDelete={async () => {
-                            const offset = {
-                              start: Math.max(0, index - 10),
-                              end: index + 10
-                            };
                             if (
                               !(await dialogs.confirm(
                                 intl.formatMessage({
@@ -178,15 +190,10 @@ const DriverList = () => {
                               }),
                               { variant: 'success' }
                             );
-                            const driverRequest = await getDrivers(offset);
-                            let newDrivers: Paginated<DriverDetails> = {
-                              totalCount: driverRequest.totalCount,
-                              data: []
-                            };
-                            for (let i = offset.start; i <= offset.end; i++) {
-                              newDrivers.data[i] = driverRequest.data[i];
-                            }
-                            setDrivers(newDrivers);
+                            await refetchStats(index);
+                          }}
+                          refetchStats={() => {
+                            refetchStats(index);
                           }}
                         />
                       </div>
