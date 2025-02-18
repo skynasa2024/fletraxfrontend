@@ -611,6 +611,7 @@
   "USER_PAGE.COLUMN.STATUS": "الحالة",
   "USER_PAGE.COLUMN.ACTIONS": "الإجراءات",
   "USER_PAGE.USER_DELETE_SUCCESS": "تم حذف المستخدم بنجاح",
+  "USER_PAGE.USER_DELETE_ERROR": "حدث خطأ أثناء حذف المستخدم",
   "USER_PAGE.USERS": "مستخدمين",
   "USER.ADD.TAB.INFORMATION": "معلومات",
   "USER.ADD.TAB.ACCOUNT": "حساب",

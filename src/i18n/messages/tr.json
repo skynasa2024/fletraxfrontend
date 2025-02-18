@@ -29,6 +29,7 @@
   "USER.PAGE.COLUMN.STATUS": "Durum",
   "USER.PAGE.COLUMN.ACTIONS": "Eylemler",
   "USER.PAGE.USER_DELETE_SUCCESS": "Kullanıcı başarıyla silindi",
+  "USER.PAGE.USER_DELETE_ERROR": "Kullanıcı silinirken bir hata oluştu",
   "USER.PAGE.USERS": "Kullanıcılar",
   "USER.FORM.SAVE_SUCCESS": "Kullanıcı başarıyla kaydedildi",
   "USER.EDIT.TITLE": "Kullanıcı Düzenle",
