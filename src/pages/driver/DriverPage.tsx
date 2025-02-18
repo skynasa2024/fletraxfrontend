@@ -5,6 +5,7 @@ import UserMiniCards from '../vehicle/mini-cards/UserMiniCards';
 import { DriverList } from './blocks';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router';
 
 const DriverPage = () => {
   const intl = useIntl();
@@ -50,11 +51,11 @@ const DriverPage = () => {
           <FormattedMessage id="DRIVER.LIST.TITLE" />
         </h3>
 
-        <a href="/drivers/add-driver">
+        <Link to="/drivers/add-driver">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm ml-auto">
             <FormattedMessage id="DRIVER.LIST.ADD_NEW" />
           </button>
-        </a>
+        </Link>
       </div>
 
       <UserMiniCards metrics={metrics} />
