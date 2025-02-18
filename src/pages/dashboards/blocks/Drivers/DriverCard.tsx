@@ -3,6 +3,7 @@ import { StatusDropdown, StatusDropdownProps } from '../StatusDropdown';
 import { toAbsoluteUrl } from '@/utils';
 import { useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
+import { Link } from 'react-router';
 
 interface DriverCardProps {
   driver?: DriverDetails;
@@ -36,7 +37,7 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
 
   return (
     <div
-      className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden h-full"
+      className="flex hover:shadow-md flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 overflow-hidden"
       style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
     >
       <div
@@ -82,16 +83,15 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
         </div>
       </div>
       <div className="text-xs border-t flex justify-center">
-        <a href={`/drivers/driver/${driver.id}`} className="px-5 py-2 flex gap-2">
+        <Link to={`/drivers/driver/${driver.id}`} className="px-5 py-2 flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>{intl.formatMessage({ id: 'DRIVER.VIEW', defaultMessage: 'View' })}</span>
-        </a>
-        <a href={`/drivers/edit/${driver.id}`} className="px-5 py-2 border-x flex gap-2">
+        </Link>
+        <Link to={`/drivers/edit/${driver.id}`} className="px-5 py-2 border-x flex gap-2">
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>{intl.formatMessage({ id: 'DRIVER.EDIT', defaultMessage: 'Edit' })}</span>
-        </a>
-        <a
-          href="#"
+        </Link>
+        <button
           className="px-5 py-2 flex gap-2"
           onClick={(e) => {
             e.preventDefault();
@@ -100,7 +100,7 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
         >
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
           <span>{intl.formatMessage({ id: 'DRIVER.DELETE', defaultMessage: 'Delete' })}</span>
-        </a>
+        </button>
       </div>
     </div>
   );

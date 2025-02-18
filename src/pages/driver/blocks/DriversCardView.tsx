@@ -112,7 +112,7 @@ export default function DriversCardView({
                   columnCount={COLUMN_COUNT}
                   columnWidth={widthWithoutScrollBar / COLUMN_COUNT}
                   rowCount={remoteRowCount}
-                  rowHeight={275}
+                  rowHeight={291}
                   overscanRowCount={2}
                   onSectionRendered={({ rowOverscanStartIndex, rowOverscanStopIndex }) =>
                     onRowsRendered({
