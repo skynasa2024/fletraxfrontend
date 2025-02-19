@@ -111,7 +111,7 @@ const User = ({ device }: AddDevicePageProps) => {
           ))}
         </div>
       )}
-      <input type="hidden" name="userId" value={selectedUser?.id} />
+      <input type="hidden" name="userId" value={selectedUser ? selectedUser.id : ''} />
     </div>
   );
 };
