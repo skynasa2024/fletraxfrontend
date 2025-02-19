@@ -88,7 +88,9 @@ const DriversGridView: React.FC<DriverListProps> = ({ refetch, searchQuery }) =>
         enableSorting: true,
         cell: ({ row }) => (
           <span className={'px-3 py-1 rounded-full bg-blue-100 text-blue-800'}>
-            {row.original.nationality}
+            {row.original.identityType === 'National ID'
+              ? intl.formatMessage({ id: 'DRIVER.NATIONALITY.TURKISH' })
+              : intl.formatMessage({ id: 'DRIVER.NATIONALITY.FOREIGN' })}
           </span>
         )
       },

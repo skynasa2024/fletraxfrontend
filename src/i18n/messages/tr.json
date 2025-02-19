@@ -724,5 +724,7 @@
   "MAINTENANCE.DELETE.MODAL_TITLE": "Bakımı Sil",
   "MAINTENANCE.DELETE.MODAL_MESSAGE": "Bu bakımı silmek istediğinizden emin misiniz?",
   "MAINTENANCE_TYPE.DELETE.MODAL_TITLE": "Bakım Türünü Sil",
-  "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Bu bakım türünü silmek istediğinizden emin misiniz?"
+  "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Bu bakım türünü silmek istediğinizden emin misiniz?",
+  "DRIVER.NATIONALITY.TURKISH": "Türk",
+  "DRIVER.NATIONALITY.FOREIGN": "Yabancı"
 }

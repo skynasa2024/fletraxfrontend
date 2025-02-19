@@ -713,5 +713,7 @@
   "MAINTENANCE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذه الصيانة؟",
   "MAINTENANCE_TYPE.DELETE.MODAL_TITLE": "حذف نوع الصيانة",
   "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "هل أنت متأكد أنك تريد حذف هذا النوع من الصيانة؟",
-  "COMMON.CANCEL": "إلغاء"
+  "COMMON.CANCEL": "إلغاء",
+  "DRIVER.NATIONALITY.TURKISH": "تركي",
+  "DRIVER.NATIONALITY.FOREIGN": "أجنبي"
 }

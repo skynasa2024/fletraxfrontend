@@ -715,5 +715,7 @@
   "MAINTENANCE.DELETE.MODAL_TITLE": "Delete Maintenance",
   "MAINTENANCE.DELETE.MODAL_MESSAGE": "Are you sure you want to delete this maintenance?",
   "MAINTENANCE_TYPE.DELETE.MODAL_TITLE": "Delete Maintenance Type",
-  "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Are you sure you want to delete this maintenance type?"
+  "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Are you sure you want to delete this maintenance type?",
+  "DRIVER.NATIONALITY.TURKISH": "Turkish",
+  "DRIVER.NATIONALITY.FOREIGN": "Foreign"
 }

@@ -7,7 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 const Information = ({ driver }: AddDriverPageProps) => {
   const intl = useIntl();
   const [selectedType, setSelectedType] = useState(
-    driver?.identityType === 'foreign' ? 'foreign' : 'turkish'
+    driver?.identityType === 'Passport' ? 'foreign' : 'turkish'
   );
 
   return (
