@@ -22,8 +22,9 @@ import { useDialogs } from '@toolpad/core/useDialogs';
 import { useMqttProvider } from '@/providers/MqttProvider';
 import { Buffer } from 'buffer';
 import Telemetry from './blocks/Telemetry';
-import ParameterList from './ParameterList';
 import { format } from 'date-fns';
+import { Notifications } from '../dashboards/blocks/Notifications';
+import DeviceReport from './blocks/DeviceReport';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -301,8 +302,15 @@ const DeviceDetailsPage = () => {
           </div>
 
           <Telemetry parameters={parameters} />
-
-          <ParameterList items={parameters} />
+          <div className="grid grid-cols-6 gap-4">
+            <div className="col-span-4 h-full">
+              <DeviceReport ident={device.ident} />
+            </div>
+            <div className="col-span-2 h-[499px]">
+              <Notifications />
+            </div>
+          </div>
+          {/* <ParameterList items={parameters} /> */}
         </div>
       </div>
     </div>

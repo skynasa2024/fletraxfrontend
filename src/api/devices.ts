@@ -273,3 +273,48 @@ export const reverseGeoLocation = async (
   );
   return location.data.display_name;
 };
+
+export interface DeviceStatistics {
+  id: string;
+  ident: string;
+  date: string;
+  dailyExistingKilometers: string;
+  weeklyExistingKilometers: string;
+  monthlyExistingKilometers: string;
+  yearlyExistingKilometers: string;
+  totalExistingKilometers: string;
+  existingKilometers: string;
+  dailyParkingTime: string;
+  weeklyParkingTime: string;
+  monthlyParkingTime: string;
+  yearlyParkingTime: string;
+  totalParkingTime: string;
+  parkingTime: string;
+  dailyEngineHours: string;
+  weeklyEngineHours: string;
+  monthlyEngineHours: string;
+  yearlyEngineHours: string;
+  totalEngineHours: string;
+  engineHours: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const getDeviceStatistics = async (
+  params: {
+    page: number;
+    size: number;
+  },
+  ident: string
+): Promise<Paginated<DeviceStatistics>> => {
+  const statistics = await axios.get<PaginatedResponseModel<DeviceStatistics>>(
+    `/api/statistics/getByIdent/${ident}`,
+    {
+      params
+    }
+  );
+  return {
+    data: statistics.data.result.content,
+    totalCount: statistics.data.result.totalElements
+  };
+};
