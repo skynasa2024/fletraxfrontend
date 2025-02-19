@@ -24,6 +24,7 @@ import { Buffer } from 'buffer';
 import Telemetry from './blocks/Telemetry';
 import { format } from 'date-fns';
 import { Notifications } from '../dashboards/blocks/Notifications';
+import DeviceReport from './blocks/DeviceReport';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -301,8 +302,10 @@ const DeviceDetailsPage = () => {
           </div>
 
           <Telemetry parameters={parameters} />
-          <div className="grid grid-cols-6">
-            <div className="col-span-4 h-full"></div>
+          <div className="grid grid-cols-6 gap-4">
+            <div className="col-span-4 h-full">
+              <DeviceReport ident={device.ident} />
+            </div>
             <div className="col-span-2 h-[499px]">
               <Notifications />
             </div>
