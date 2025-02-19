@@ -42,7 +42,6 @@ const formatDate = (date: string) => {
   return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
 };
 
-const MIN_HEIGHT_FOR_ICON = 50;
 const CAR_ICON_CONFIG = {
   path: toAbsoluteUrl('/media/icons/chart-car.svg'),
   width: 45,
@@ -51,10 +50,10 @@ const CAR_ICON_CONFIG = {
   offsetX: 0
 };
 
-const createPointAnnotation = (date: string, value: number) => ({
+const createPointAnnotation = (date: string, value: number, minHeightForIcon: number) => ({
   x: date,
   y: value,
-  ...(value > MIN_HEIGHT_FOR_ICON && {
+  ...(value > minHeightForIcon && {
     image: CAR_ICON_CONFIG
   }),
   marker: { size: -1 }
@@ -70,7 +69,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     })();
   }, [ident]);
 
-  // Filter data based on the selected option (lastWeek, lastMonth, etc.)
   const getFilteredData = () => {
     if (!statistics?.data) return [];
     const today = new Date();
@@ -96,6 +94,14 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
   };
 
   const filteredData = getFilteredData();
+
+  const values = filteredData.map((stat) =>
+    parseFloat(stat.dailyExistingKilometers.replace(' km', ''))
+  );
+  const maxValue = Math.max(...(values.length ? values : [0]));
+  // Set minimum height as 20% of max value
+  const minHeightForIcon = maxValue * 0.2;
+  console.log(minHeightForIcon);
 
   return (
     <div className="card h-full p-4 flex flex-col justify-between">
@@ -144,7 +150,7 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               points:
                 filteredData.map((stat) => {
                   const value = parseFloat(stat.dailyExistingKilometers.replace(' km', ''));
-                  return createPointAnnotation(stat.date, value);
+                  return createPointAnnotation(stat.date, value, minHeightForIcon);
                 }) || []
             },
             legend: {
