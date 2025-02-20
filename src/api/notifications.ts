@@ -1,4 +1,4 @@
-import { Paginated } from './common';
+import { OffsetBounds, Paginated } from './common';
 import { axios } from './axios';
 import { PaginatedResponseModel } from './response';
 
@@ -25,20 +25,18 @@ export interface NotificationDTO {
 }
 
 export const getNotifications = async ({
-  page,
-  size,
+  offset,
   search
 }: {
-  page: number;
-  size: number;
+  offset: OffsetBounds;
   search?: string;
 }): Promise<Paginated<Notification>> => {
   const notifications = await axios.get<PaginatedResponseModel<NotificationDTO>>(
     '/api/notifications/index',
     {
       params: {
-        page,
-        size,
+        offset: offset.start,
+        size: offset.end - offset.start + 1,
         sort: 'createdAt,desc',
         search
       }
