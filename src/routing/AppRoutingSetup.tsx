@@ -26,7 +26,6 @@ import { Device } from '@/pages/device';
 import DeviceDetailsPage from '@/pages/device/DeviceDetailsPage';
 import { AddDevice } from '@/pages/device/add-device';
 import { RequireRole } from '@/auth/RequireRole';
-import Telemetry from '@/pages/device/blocks/Telemetry';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import { AddVehicleScratches } from '@/pages/vehicle/add-vehicle/AddVehicleScratches';
 
