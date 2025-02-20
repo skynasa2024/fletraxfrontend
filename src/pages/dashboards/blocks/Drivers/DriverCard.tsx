@@ -62,7 +62,11 @@ export const DriverCard = ({ driver, onDelete, refetchStats }: DriverCardProps) 
         <div className="text-[#3F4254] dark:text-gray-50 font-bold text-[22px]">
           {driver.driver.name}
         </div>
-        <div className="text-[#B5B5C3] font-medium">{driver.nationality}</div>
+        <div className="text-[#B5B5C3] font-medium">
+          {driver.identityType === 'National ID'
+            ? intl.formatMessage({ id: 'DRIVER.NATIONALITY.TURKISH' })
+            : intl.formatMessage({ id: 'DRIVER.NATIONALITY.FOREIGN' })}
+        </div>
         <div className="grid grid-cols-2 gap-x-8 gap-y-3 font-medium text-sm text-[#B5B5C3] text-nowrap">
           <div className="flex gap-1 w-36">
             <img src={toAbsoluteUrl('/media/icons/email.svg')} />
