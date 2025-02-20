@@ -1,17 +1,20 @@
-import { getNotifications, Notification } from '@/api/notifications';
+import { getNotifications, NotificationDTO } from '@/api/notifications';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Paginated } from '@/api/common.ts';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
+import { format } from 'date-fns';
+import { CarPlate } from './CarPlate';
 
 const PAGE_SIZE = 10;
+const ROW_HEIGHT = 90;
 
 type NotificationsProps = {
   search?: string;
 };
 
 const Notifications = ({ search }: NotificationsProps) => {
-  const [notifications, setNotifications] = useState<Paginated<Notification>>();
+  const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
 
   const isRowLoaded = ({ index }: { index: number }) => !!notifications?.data[index];
   const rowCount = notifications?.totalCount;
@@ -100,7 +103,7 @@ const Notifications = ({ search }: NotificationsProps) => {
                   }}
                   ref={registerChild}
                   height={height}
-                  rowHeight={80}
+                  rowHeight={ROW_HEIGHT}
                   width={width}
                   onRowsRendered={onRowsRendered}
                   rowCount={rowCount || 0}
@@ -116,41 +119,53 @@ const Notifications = ({ search }: NotificationsProps) => {
 };
 
 type NotificationProps = {
-  notification?: Notification;
+  notification?: NotificationDTO;
 };
 
 function NotificationCard({ notification }: NotificationProps) {
   if (!notification)
     return (
-      <>
-        <div className="flex gap-4 p-4 pt-5">
-          <div className="size-12 rounded-md bg-slate-200 aspect-square animate-pulse" />
-
-          <div className="animate-pulse w-full">
-            <div className="bg-slate-200 h-4 w-1/2 rounded-md mb-2" />
-            <div className="bg-slate-200 h-3 w-4/5 rounded-md" />
+      <div className="flex flex-col gap-3 mt-3 ps-1 pe-2 h-20">
+        <div className="flex gap-4 items-center justify-between w-full">
+          <div className="flex gap-2 items-center">
+            <div className="size-12 rounded-md bg-slate-200 aspect-square animate-pulse" />
+            <div>
+              <div className="bg-slate-200 h-4 w-32 rounded-md mb-2 animate-pulse" />
+              <div className="bg-slate-200 h-3 w-24 rounded-md mb-2 animate-pulse" />
+              <div className="bg-slate-200 h-3 w-48 rounded-md animate-pulse" />
+            </div>
+          </div>
+          <div className="flex flex-col items-end justify-center gap-1">
+            <CarPlate />
+            <div className="bg-slate-200 h-4 w-20 rounded-md animate-pulse" />
           </div>
         </div>
-        <hr className="border-t-2 border-dashed" />
-      </>
+        <div className="border-t-2 border-dashed" />
+      </div>
     );
   return (
-    <>
-      <div className="flex gap-4 p-4 pt-5">
-        {notification.image ? (
-          <img src={notification.image} className="size-12 rounded-md object-cover aspect-square" />
-        ) : (
+    <div className="flex flex-col gap-3 mt-3 ps-1 pe-2 h-20">
+      <div className="flex gap-4 items-center justify-between w-full">
+        <div className="flex gap-2 items-center">
           <div className="size-12 rounded-md bg-slate-100 aspect-square" />
-        )}
-        <div>
-          <h4 className="text-gray-800 text-sm font-semibold">{notification.title}</h4>
-          <p className="text-gray-600 text-xs font-medium line-clamp-2 text-ellipsis text-pretty">
-            {notification.details}
-          </p>
+          <div>
+            <h4 className="text-gray-800 text-md font-semibold">{notification.type}</h4>
+            <p className="text-gray-600 text-xs font-medium line-clamp-1 text-ellipsis text-pretty">
+              {!isNaN(+new Date(+notification.createdAt * 1000)) &&
+                format(new Date(+notification.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss')}
+            </p>
+            <p className="text-gray-600 text-sm font-medium line-clamp-2 text-ellipsis text-pretty">
+              {notification.text}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-end justify-center gap-1">
+          <CarPlate plate={notification.vehiclePlate} />
+          <span className="text-sm font-monospace">{notification.deviceIdent}</span>
         </div>
       </div>
       <div className="border-t-2 border-dashed" />
-    </>
+    </div>
   );
 }
 
