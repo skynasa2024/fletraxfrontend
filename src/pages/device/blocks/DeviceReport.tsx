@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
+import { ButtonRadioGroup } from '../../dashboards/blocks/ButtonRadioGroup';
 
 type DeviceReportProps = {
   ident: string;
@@ -59,8 +60,36 @@ const createPointAnnotation = (date: string, value: number, minHeightForIcon: nu
   marker: { size: -1 }
 });
 
+const formatHoursAndMinutes = (hours: number) => {
+  const h = Math.floor(hours);
+  const m = Math.round((hours - h) * 60);
+  return `${h}h ${m}m`;
+};
+
+const safeParseFloat = (value: string) => {
+  if (!value) return 0;
+  const cleaned = value.replace(/[^\d.-]/g, '');
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+const safeParseEngineHours = (engineHours: string) => {
+  if (!engineHours) return 0;
+  try {
+    const [hoursStr = '0', minutesStr = '0'] = engineHours.split(' h , ');
+    const hours = parseInt(hoursStr.replace(/[^\d]/g, '')) || 0;
+    const minutes = parseInt(minutesStr.replace(/[^\d]/g, '')) || 0;
+    return Number((hours + minutes / 60).toFixed(2));
+  } catch (error) {
+    console.error('Error parsing engine hours:', error);
+    return 0;
+  }
+};
+
 export default function DeviceReport({ ident }: DeviceReportProps) {
+  const intl = useIntl();
   const [selected, setSelected] = useState('lastWeek');
+  const [metricType, setMetricType] = useState('Mileage'); // New state for metric type
   const [statistics, setStatistics] = useState<Paginated<DeviceStatistics> | null>(null);
 
   useEffect(() => {
@@ -93,11 +122,40 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     });
   };
 
-  const filteredData = getFilteredData();
+  const getChartData = () => {
+    const filteredData = getFilteredData().filter((stat) => !!stat.date); // Ensure valid dates
+    if (metricType === 'Mileage') {
+      return {
+        name: 'Daily Kilometers',
+        data: filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers))
+      };
+    } else {
+      return {
+        name: 'Engine Hours',
+        data: filteredData.map((stat) => safeParseEngineHours(stat.dailyEngineHours))
+      };
+    }
+  };
 
-  const values = filteredData.map((stat) =>
-    parseFloat(stat.dailyExistingKilometers.replace(' km', ''))
-  );
+  const getTooltipContent = (dataPointIndex: number) => {
+    const filteredData = getFilteredData();
+    const data = filteredData[dataPointIndex];
+    if (!data) return '';
+
+    const date = data.date;
+    const value = metricType === 'Mileage' ? data.dailyExistingKilometers : data.dailyEngineHours;
+
+    return `
+      <div class="p-2 text-xs bg-white rounded shadow-md">
+        <div class="font-semibold">${date}</div>
+        <hr class="my-1" />
+        <div class="font-semibold">${value}</div>
+      </div>
+    `;
+  };
+
+  const filteredData = getFilteredData();
+  const values = filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers));
   const maxValue = Math.max(...(values.length ? values : [0]));
   // Set minimum height as 20% of max value
   const minHeightForIcon = maxValue * 0.2;
@@ -111,7 +169,17 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             <FormattedMessage id="DASHBOARD.MILEAGE_ENGINE.TITLE" />
           </h3>
         </div>
-        <div>
+        <div className="flex gap-5 items-center">
+          <ButtonRadioGroup
+            selection={metricType}
+            setSelection={setMetricType}
+            selections={['Mileage', 'Engine']}
+            translations={{
+              Engine: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.ENGINE' }),
+              Mileage: intl.formatMessage({ id: 'DASHBOARD.MILEAGE_ENGINE.MILEAGE' })
+            }}
+            disabled={!statistics}
+          />
           <ReportFilterDropdown selected={selected} setSelected={setSelected} options={options} />
         </div>
       </div>
@@ -124,7 +192,7 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               toolbar: { show: false }
             },
             xaxis: {
-              categories: filteredData.map((stat) => stat.date) || [],
+              categories: getFilteredData().map((stat) => stat.date) || [],
               labels: {
                 style: { fontSize: '12px', colors: '#B5B5C3' },
                 formatter: (val) => formatDate(val)
@@ -134,7 +202,12 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             yaxis: {
               labels: {
                 style: { fontSize: '12px', colors: '#B5B5C3' },
-                formatter: (val) => `${val}`
+                formatter: (val) => {
+                  if (metricType === 'Mileage') {
+                    return `${val} km`;
+                  }
+                  return formatHoursAndMinutes(val);
+                }
               }
             },
             plotOptions: {
@@ -146,11 +219,12 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               }
             },
             annotations: {
-              points:
-                filteredData.map((stat) => {
-                  const value = parseFloat(stat.dailyExistingKilometers.replace(' km', ''));
+              points: getFilteredData()
+                .filter((stat) => !!stat.date && safeParseFloat(stat.dailyExistingKilometers) > 0)
+                .map((stat) => {
+                  const value = safeParseFloat(stat.dailyExistingKilometers);
                   return createPointAnnotation(stat.date, value, minHeightForIcon);
-                }) || []
+                })
             },
             legend: {
               show: false
@@ -160,35 +234,24 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             tooltip: {
               enabled: true,
               shared: false,
-              custom: ({ dataPointIndex }) => {
-                return `
-                  <div class="p-2 text-xs bg-white rounded shadow-md">
-                    <div class="font-semibold">${filteredData[dataPointIndex].date}</div>
-                    <hr class="my-1" />
-                    <div class="font-semibold">${
-                      filteredData[dataPointIndex].dailyExistingKilometers
-                    }</div>
-                  </div>
-                `;
-              }
+              custom: ({ dataPointIndex }: { dataPointIndex: number }) =>
+                getTooltipContent(dataPointIndex)
             },
             dataLabels: {
               enabled: true,
-              formatter: (val) => (val ? `${val} km` : ''),
+              formatter: (val: number) => {
+                if (typeof val !== 'number' || val === 0) return '';
+                if (metricType === 'Mileage') {
+                  return `${val} km`;
+                }
+                return formatHoursAndMinutes(val);
+              },
               style: { fontSize: '12px', colors: ['#252525'] },
               offsetY: -30,
               textAnchor: 'middle'
             }
           }}
-          series={[
-            {
-              name: 'Existing Kilometers',
-              data:
-                filteredData.map((stat) =>
-                  parseFloat(stat.dailyExistingKilometers.replace(' km', ''))
-                ) || []
-            }
-          ]}
+          series={[getChartData()]}
           type="bar"
           height={350}
         />
