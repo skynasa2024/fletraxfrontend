@@ -100,13 +100,12 @@ const Notifications = ({ search }: NotificationsProps) => {
     });
 
     setNotifications((prev) => {
-      const oldData = prev?.data ?? [];
-      const newData = [...oldData];
-      fetched.data.forEach((item, idx) => {
-        newData[startIndex + idx] = item;
+      const data = prev?.data ?? [];
+      fetched?.data.forEach((notification, index) => {
+        data[startIndex + index] = notification;
       });
       return {
-        data: newData,
+        data,
         totalCount: fetched.totalCount
       };
     });
@@ -204,7 +203,7 @@ function NotificationCard({ notification }: NotificationProps) {
               {!isNaN(+new Date(+notification.createdAt * 1000)) &&
                 format(new Date(+notification.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss')}
             </p>
-            <p className="text-gray-600 text-sm font-medium line-clamp-2 text-ellipsis text-pretty">
+            <p className="text-gray-600 text-sm font-medium line-clamp-1 text-ellipsis text-pretty">
               {notification.text}
             </p>
           </div>
