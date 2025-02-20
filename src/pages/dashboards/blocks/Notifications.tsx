@@ -5,9 +5,56 @@ import { Paginated } from '@/api/common.ts';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { format } from 'date-fns';
 import { CarPlate } from './CarPlate';
+import {
+  BatteryAlarmNotificationIcon,
+  DefaultNotificationIcon,
+  EngineOffNotificationIcon,
+  EngineOnNotificationIcon,
+  EnterGeofenceNotificationIcon,
+  ExceedSpeedNotificationIcon,
+  ExitGeofenceNotificationIcon,
+  PowerCutAlarmNotificationIcon,
+  SharpTurnNotificationIcon,
+  VibrationAlarmNotificationIcon
+} from '@/assets/svg';
 
 const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
+
+const NOTIFICATION_ICONS = {
+  BATTERY_ALARM: <BatteryAlarmNotificationIcon />,
+  engine_off: <EngineOffNotificationIcon />,
+  engine_on: <EngineOnNotificationIcon />,
+  ENTER_GEOFENCE: <EnterGeofenceNotificationIcon />,
+  EXIT_GEOFENCE: <ExitGeofenceNotificationIcon />,
+  speeding_alarm: <ExceedSpeedNotificationIcon />,
+  unplug: <PowerCutAlarmNotificationIcon />,
+  sharp_turn_alarm: <SharpTurnNotificationIcon />,
+  vibration_alarm: <VibrationAlarmNotificationIcon />
+} as const;
+
+const NOTIFICATION_PATTERNS = [
+  { pattern: /turn off the power switch/i, icon: 'engine_off' },
+  { pattern: /turn on the power switch/i, icon: 'engine_on' },
+  { pattern: /sharp turn alarm/i, icon: 'sharp_turn_alarm' },
+  { pattern: /vibration alarm/i, icon: 'vibration_alarm' },
+  { pattern: /battery/i, icon: 'BATTERY_ALARM' },
+  { pattern: /enter(ed)? (the )?(?:geo)?fence/i, icon: 'ENTER_GEOFENCE' },
+  { pattern: /exit(ed)? (the )?(?:geo)?fence/i, icon: 'EXIT_GEOFENCE' },
+  { pattern: /speed|speeding/i, icon: 'speeding_alarm' },
+  { pattern: /unplug|power cut/i, icon: 'unplug' }
+] as const;
+
+const findClosestNotificationIcon = (text: string) => {
+  // Find the first matching pattern
+  const match = NOTIFICATION_PATTERNS.find(({ pattern }) => pattern.test(text));
+
+  if (match) {
+    return NOTIFICATION_ICONS[match.icon as keyof typeof NOTIFICATION_ICONS];
+  }
+
+  return <DefaultNotificationIcon />;
+};
 
 type NotificationsProps = {
   search?: string;
@@ -147,7 +194,10 @@ function NotificationCard({ notification }: NotificationProps) {
     <div className="flex flex-col gap-3 mt-3 ps-1 pe-2 h-20">
       <div className="flex gap-4 items-center justify-between w-full">
         <div className="flex gap-2 items-center">
-          <div className="size-12 rounded-md bg-slate-100 aspect-square" />
+          <div className="size-12 rounded-md card border-none aspect-square flex items-center justify-center">
+            {NOTIFICATION_ICONS[notification.text as keyof typeof NOTIFICATION_ICONS] ||
+              findClosestNotificationIcon(notification.text)}
+          </div>
           <div>
             <h4 className="text-gray-800 text-md font-semibold">{notification.type}</h4>
             <p className="text-gray-600 text-xs font-medium line-clamp-1 text-ellipsis text-pretty">
