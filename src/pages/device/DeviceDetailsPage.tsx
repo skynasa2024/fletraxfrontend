@@ -75,7 +75,7 @@ const DeviceDetailsPage = () => {
 
   useEffect(() => {
     if (!mqttClient) return;
-
+    if (!device) return;
     if (!topic) return;
     if (mqttClient.connected) {
       mqttClient.subscribeAsync(topic);

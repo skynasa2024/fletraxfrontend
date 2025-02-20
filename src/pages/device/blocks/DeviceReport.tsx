@@ -101,7 +101,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
   const maxValue = Math.max(...(values.length ? values : [0]));
   // Set minimum height as 20% of max value
   const minHeightForIcon = maxValue * 0.2;
-  console.log(minHeightForIcon);
 
   return (
     <div className="card h-full p-4 flex flex-col justify-between">
