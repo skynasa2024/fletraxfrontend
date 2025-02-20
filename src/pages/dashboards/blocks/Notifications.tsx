@@ -198,12 +198,12 @@ function NotificationCard({ notification }: NotificationProps) {
               findClosestNotificationIcon(notification.text)}
           </div>
           <div>
-            <h4 className="text-gray-800 text-md font-semibold">{notification.type}</h4>
-            <p className="text-gray-600 text-xs font-medium line-clamp-1 text-ellipsis text-pretty">
+            <h4 className="text-gray-800 text-sm font-semibold">{notification.type}</h4>
+            <p className="text-gray-600 mb-0.5 text-[10px] leading-tight font-medium line-clamp-1 text-ellipsis text-pretty">
               {!isNaN(+new Date(+notification.createdAt * 1000)) &&
                 format(new Date(+notification.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss')}
             </p>
-            <p className="text-gray-600 text-sm font-medium line-clamp-1 text-ellipsis text-pretty">
+            <p className="text-gray-600 text-xs font-medium line-clamp-2 text-ellipsis text-pretty">
               {notification.text}
             </p>
           </div>
