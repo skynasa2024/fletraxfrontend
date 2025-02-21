@@ -188,6 +188,7 @@
   "TRIPS.FIELD.MILEAGE": "Mileage",
   "TRIPS.FIELD.MAX_SPEED": "Max Speed",
   "TRIPS.COUNT": "{count, plural, zero {No trips} other {# Trips}}",
+  "PARKINGS.COUNT": "{count, plural, zero {No parkings} other {# Parkings}}",
   "PLAYBACK.FIELD.START_DATE": "Start Date",
   "PLAYBACK.FIELD.END_DATE": "End Date",
   "PLAYBACK.FIELD.MILEAGE": "Mileage",

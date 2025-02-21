@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { formatRelative } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 import { toAbsoluteUrl } from '@/utils';
-import { TripGroup } from '@/api/trips';
+import { IntervalType, TripGroup } from '@/api/trips';
 import { enGB, ar, tr } from 'date-fns/locale';
 import { Collapse } from '@mui/material';
 import { KeenIcon } from '@/components';
@@ -11,6 +11,7 @@ import { useAnimationContext } from '../providers/AnimationContext';
 import { useAuthContext } from '@/auth';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
+import clsx from 'clsx';
 
 interface TripCardProps {
   tripGroup: TripGroup;
@@ -36,6 +37,7 @@ const getLocaleConfig = (intl: ReturnType<typeof useIntl>) => {
 };
 
 const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
+  const { intervalType } = useTripsContext();
   const intl = useIntl();
   const locale = useMemo(() => getLocaleConfig(intl), [intl]);
   const { isRTL } = useLanguage();
@@ -62,7 +64,10 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             {formatRelative(tripGroup.date, new Date(), { locale })}
           </div>
           <div className="text-xs font-semibold text-[#3F4254] dark:text-gray-50 mx-auto">
-            <FormattedMessage id="TRIPS.COUNT" values={{ count: tripGroup.trips.length }} />
+            <FormattedMessage
+              id={intervalType === IntervalType.Parking ? 'PARKINGS.COUNT' : 'TRIPS.COUNT'}
+              values={{ count: tripGroup.trips.length }}
+            />
           </div>
           {animation && (
             <div
@@ -96,7 +101,11 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
           )}
         </div>
         <div className="grid grid-cols-3 px-[6px] gap-2 relative">
-          <div className="flex flex-col gap-1">
+          <div
+            className={clsx('flex flex-col gap-1', {
+              'items-center col-span-3': intervalType === IntervalType.Parking
+            })}
+          >
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
               <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
@@ -111,29 +120,35 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-1 items-center">
-              <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
-                <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
-              </span>
-            </div>
-            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {tripGroup.trips.reduce((acc, trip) => acc + trip.mileage, 0).toFixed(2)} KM
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-1 items-center">
-              <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-              <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
-                <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
-              </span>
-            </div>
-            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {tripGroup.trips.reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0).toFixed(0)}{' '}
-              Km/h
-            </div>
-          </div>
+          {intervalType === IntervalType.Trip && (
+            <>
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-1 items-center">
+                  <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
+                  <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                    <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
+                  </span>
+                </div>
+                <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
+                  {tripGroup.trips.reduce((acc, trip) => acc + trip.mileage, 0).toFixed(2)} KM
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-1 items-center">
+                  <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
+                  <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                    <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
+                  </span>
+                </div>
+                <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
+                  {tripGroup.trips
+                    .reduce((acc, trip) => Math.max(acc, trip.maxSpeed), 0)
+                    .toFixed(0)}{' '}
+                  Km/h
+                </div>
+              </div>
+            </>
+          )}
           <div
             className="flex items-center justify-center absolute top-0 right-0 bottom-0 cursor-pointer w-8"
             onClick={(e) => {
@@ -193,7 +208,12 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                     </div>
                   )}
                 </div>
-                <div className="grid grid-cols-4 gap-2">
+                <div
+                  className={clsx('grid gap-2', {
+                    'grid-cols-4': intervalType === IntervalType.Trip,
+                    'grid-cols-2': intervalType === IntervalType.Parking
+                  })}
+                >
                   <div className="flex gap-1 items-center">
                     <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
                     {formatInTimeZone(
@@ -210,14 +230,18 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                       'yyyy/MM/dd HH:mm:ss'
                     )}
                   </div>
-                  <div className="flex gap-1 items-center">
-                    <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-                    {trip.mileage.toFixed(2)} KM
-                  </div>
-                  <div className="flex gap-1 items-center">
-                    <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-                    {trip.maxSpeed.toFixed(0)} Km/h
-                  </div>
+                  {intervalType === IntervalType.Trip && (
+                    <>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
+                        {trip.mileage.toFixed(2)} KM
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
+                        {trip.maxSpeed.toFixed(0)} Km/h
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
