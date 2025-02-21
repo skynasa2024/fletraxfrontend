@@ -7,9 +7,10 @@ import { PlaybackCard } from './blocks/PlaybackCard';
 import { AnimationProvider } from './providers/AnimationContext';
 import AppMap from '@/components/AppMap';
 import { useIntl } from 'react-intl';
+import { IntervalType } from '@/api/trips';
 
 const TripsMap = () => {
-  const { path } = useTripsContext();
+  const { path, intervalType } = useTripsContext();
   const intl = useIntl();
 
   return (
@@ -19,7 +20,7 @@ const TripsMap = () => {
         <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.TRIPS' })}>
           <MainCard />
         </MainControl>
-        {path && (
+        {path && intervalType === IntervalType.Trip && (
           <SubControl>
             <PlaybackCard />
           </SubControl>

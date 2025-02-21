@@ -9,11 +9,12 @@ import { useAnimationContext } from '../providers/AnimationContext';
 import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
 import { getColor } from './PolylineColors';
 import { useLanguage } from '@/i18n';
+import { IntervalType } from '@/api/trips';
 
 export const TripsLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
-  const { path, selectedTrip } = useTripsContext();
+  const { path, selectedTrip, intervalType } = useTripsContext();
   const trips = useMemo(() => {
     if (!selectedTrip) {
       return [];
@@ -63,27 +64,25 @@ export const TripsLayer = () => {
   );
 
   const denormailizedTime = useMemo(() => {
-    if (!path) {
+    if (!path || path.length === 0 || intervalType === IntervalType.Parking) {
       return 0;
     }
 
-    const startTime = path[0].timestamp.getTime();
-
-    // time is from 0 to 10,000
+    const startTime = path[0]?.timestamp.getTime() ?? 0;
     return startTime + time;
-  }, [time, path]);
+  }, [time, path, intervalType]);
 
   const interpolatedState = useMemo(() => {
-    if (!path) {
+    if (!path || path.length === 0 || intervalType === IntervalType.Parking) {
       return null;
     }
 
     return interpolateKeyframes(path, denormailizedTime);
-  }, [path, denormailizedTime]);
+  }, [path, denormailizedTime, intervalType]);
 
   useEffect(() => {
     setMetaData({
-      speed: interpolatedState?.speed,
+      speed: interpolatedState?.speed ?? 0,
       timestamp: denormailizedTime
     });
   }, [denormailizedTime, interpolatedState, setMetaData]);
@@ -118,6 +117,16 @@ export const TripsLayer = () => {
 
   if (!path) {
     return null;
+  }
+
+  if (intervalType === IntervalType.Parking) {
+    return (
+      <Marker
+        position={[path[0].latitude, path[0].longitude]}
+        icon={icon}
+        title={`Parking from ${path[0].timestamp.toLocaleString()}`}
+      />
+    );
   }
 
   return (

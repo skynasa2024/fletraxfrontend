@@ -1,15 +1,15 @@
-export interface ButtonRadioGroupProps {
-  selection: string;
+export interface ButtonRadioGroupProps<T = string> {
+  selection: T;
   // eslint-disable-next-line no-unused-vars
-  setSelection: (value: string) => void;
-  selections: string[];
+  setSelection: (value: T) => void;
+  selections: T[];
   translations?: Record<string, string>;
   className?: string;
   suffix?: Record<string, string>;
   disabled?: boolean;
 }
 
-export const ButtonRadioGroup = ({
+export const ButtonRadioGroup = <T extends string | number>({
   selection,
   setSelection,
   selections,
@@ -17,19 +17,19 @@ export const ButtonRadioGroup = ({
   translations,
   className = 'btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear',
   disabled
-}: ButtonRadioGroupProps) => {
+}: ButtonRadioGroupProps<T>) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-4">
       {selections.map((value) => (
         <button
-          key={value}
+          key={String(value)}
           data-selected={selection === value}
           className={className}
           onClick={() => setSelection(value)}
           disabled={disabled}
         >
-          {translations?.[value] ?? value}
-          {suffix?.[value] ?? ''}
+          {translations?.[String(value)] ?? value}
+          {suffix?.[String(value)] ?? ''}
         </button>
       ))}
     </div>

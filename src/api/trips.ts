@@ -42,6 +42,8 @@ export interface Trip {
   mileage: number;
   maxSpeed: number;
   path: TripPath[];
+  startLatitude: number;
+  startLongitude: number;
 }
 
 export interface TripPath {
@@ -59,6 +61,11 @@ export interface TripGroup {
   date: Date;
 }
 
+export enum IntervalType {
+  Trip = 'TRIP',
+  Parking = 'PARKING'
+}
+
 export interface SearchTripsParams {
   query: string;
   startDate?: string;
@@ -66,6 +73,7 @@ export interface SearchTripsParams {
   startTime?: string;
   endTime?: string;
   offset?: OffsetBounds;
+  intervalType: IntervalType;
 }
 
 export const TRIPS_PAGE_SIZE = 20;
@@ -76,7 +84,8 @@ export const searchTrips = async ({
   endDate,
   startTime,
   endTime,
-  offset
+  offset,
+  intervalType = IntervalType.Trip
 }: SearchTripsParams): Promise<TripGroup[]> => {
   const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
     params: {
@@ -85,6 +94,7 @@ export const searchTrips = async ({
       endDate: endDate,
       startTime: startTime,
       endTime: endTime,
+      intervalType,
       sort: 'startTime,desc',
       page: offset ? Math.ceil(offset.start / TRIPS_PAGE_SIZE) : 0,
       size: offset ? offset.end - offset.start : TRIPS_PAGE_SIZE
@@ -109,7 +119,9 @@ export const searchTrips = async ({
           direction: point.direction,
           speed: point.speed,
           timestamp: new Date(point.timestamp * 1000)
-        }))
+        })),
+        startLatitude: trip.startLatitude,
+        startLongitude: trip.startLongitude
       }))
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
   }));

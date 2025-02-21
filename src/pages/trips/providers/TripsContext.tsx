@@ -1,4 +1,4 @@
-import { searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
+import { IntervalType, searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
 import {
   createContext,
   PropsWithChildren,
@@ -34,6 +34,10 @@ interface TripsContextProps {
   path?: TripPath[];
   loadMoreTrips?: () => Promise<void>;
   hasMore?: boolean;
+  intervalType: IntervalType;
+  // eslint-disable-next-line no-unused-vars
+  setIntervalType: (intervalType: IntervalType) => void;
+  loading: boolean;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -52,12 +56,16 @@ export const TripsContext = createContext<TripsContextProps>({
   trips: [],
   setSelectedTrip: () => {},
   loadMoreTrips: async () => {},
-  hasMore: false
+  hasMore: false,
+  intervalType: IntervalType.Trip,
+  setIntervalType: () => {},
+  loading: false
 });
 
 export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
+  const [intervalType, setIntervalType] = useState<IntervalType>(IntervalType.Trip);
   const [path, setPath] = useState<TripPath[]>();
   const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
   const setSearchDeviceQuery = useCallback(
@@ -143,27 +151,33 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   );
   const [trips, setTrips] = useState<TripGroup[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const search = useCallback(async () => {
+    setLoading(true);
     setSearchDeviceQuery(searchDeviceQuery);
     if (!searchDeviceQuery) {
       setTrips([]);
       setHasMore(false);
+      setLoading(false);
       return;
     }
-    const initialTrips = await searchTrips({
-      query: searchDeviceQuery,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      offset: { start: 0, end: TRIPS_PAGE_SIZE }
-    });
-    setTrips(initialTrips);
-    setHasMore(initialTrips.length > 0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [endDate, endTime, searchDeviceQuery, startDate, startTime]);
+    try {
+      const initialTrips = await searchTrips({
+        query: searchDeviceQuery,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        offset: { start: 0, end: TRIPS_PAGE_SIZE },
+        intervalType
+      });
+      setTrips(initialTrips);
+      setHasMore(initialTrips.length > 0);
+    } finally {
+      setLoading(false);
+    }
+  }, [endDate, endTime, searchDeviceQuery, startDate, startTime, intervalType]);
 
   const loadMoreTrips = useCallback(async () => {
     if (!hasMore) return;
@@ -174,7 +188,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       endDate,
       startTime,
       endTime,
-      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE }
+      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE },
+      intervalType
     });
     if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
@@ -187,7 +202,16 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       });
       return newData;
     });
-  }, [hasMore, trips.length, searchDeviceQuery, startDate, endDate, startTime, endTime]);
+  }, [
+    hasMore,
+    trips.length,
+    searchDeviceQuery,
+    startDate,
+    endDate,
+    startTime,
+    endTime,
+    intervalType
+  ]);
 
   useEffect(() => {
     search();
@@ -196,6 +220,34 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!selectedTrip) {
       setPath(undefined);
+      return;
+    }
+
+    if (intervalType === IntervalType.Parking) {
+      if ('trips' in selectedTrip) {
+        const firstParking = selectedTrip.trips[0];
+        setPath([
+          {
+            tripId: firstParking.id,
+            latitude: firstParking.startLatitude ?? 0,
+            longitude: firstParking.startLongitude ?? 0,
+            timestamp: firstParking.startDate,
+            direction: 0,
+            speed: 0
+          }
+        ]);
+      } else {
+        setPath([
+          {
+            tripId: selectedTrip.id,
+            latitude: selectedTrip.startLatitude ?? 0,
+            longitude: selectedTrip.startLongitude ?? 0,
+            timestamp: selectedTrip.startDate,
+            direction: 0,
+            speed: 0
+          }
+        ]);
+      }
       return;
     }
 
@@ -213,7 +265,12 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     }
 
     setPath(Object.values(pathesMap).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
-  }, [selectedTrip]);
+  }, [selectedTrip, intervalType]);
+
+  useEffect(() => {
+    setSelectedTrip(undefined);
+    setTrips([]);
+  }, [intervalType]);
 
   return (
     <TripsContext.Provider
@@ -234,7 +291,10 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         setSelectedTrip,
         path,
         loadMoreTrips,
-        hasMore
+        hasMore,
+        intervalType,
+        setIntervalType,
+        loading
       }}
     >
       {children}

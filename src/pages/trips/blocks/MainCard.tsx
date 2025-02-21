@@ -5,6 +5,9 @@ import TripCard from './TripCard';
 import { TripsSearch } from './TripsSearch';
 import { FormattedMessage } from 'react-intl';
 import { useEffect, useRef } from 'react';
+import { ButtonRadioGroup } from '@/pages/dashboards/blocks/ButtonRadioGroup';
+import { IntervalType } from '@/api/trips';
+import { CircularProgress } from '@mui/material';
 
 export const MainCard = () => {
   const {
@@ -21,7 +24,10 @@ export const MainCard = () => {
     search,
     trips,
     loadMoreTrips,
-    hasMore
+    hasMore,
+    intervalType,
+    setIntervalType,
+    loading
   } = useTripsContext();
 
   const infiniteLoaderContainerRef = useRef<HTMLDivElement>(null);
@@ -51,7 +57,8 @@ export const MainCard = () => {
         observer.unobserve(currentLoader);
       }
     };
-  }, [loaderRef, trips]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasMore, loaderRef, trips]);
 
   return (
     <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 h-full">
@@ -116,30 +123,55 @@ export const MainCard = () => {
           </div>
         </div>
       </div>
+
       <button
         className="btn btn-info justify-center text-xs font-medium shrink-0"
         onClick={search}
-        disabled={!searchDeviceQuery}
+        disabled={!searchDeviceQuery || loading}
       >
-        <img src={toAbsoluteUrl('/media/icons/search.svg')} />
-        <FormattedMessage id="COMMON.SEARCH" />
-      </button>
-      <div
-        ref={infiniteLoaderContainerRef}
-        className="scrollable-y-auto pb-2 flex flex-col gap-[10px]"
-      >
-        {trips.map((tripGroup) => (
-          <TripCard key={tripGroup.date.getTime()} tripGroup={tripGroup} />
-        ))}
-
-        {hasMore ? (
-          <div ref={loaderRef} className="text-center text-gray-500 py-2">
-            Loading...
-          </div>
+        {loading ? (
+          <CircularProgress size={12} color="inherit" />
         ) : (
-          <div className="text-center text-gray-500 py-2">No more trips</div>
+          <img src={toAbsoluteUrl('/media/icons/search.svg')} />
         )}
-      </div>
+        <FormattedMessage id={'COMMON.SEARCH'} />
+      </button>
+      <ButtonRadioGroup<IntervalType>
+        selection={intervalType}
+        setSelection={setIntervalType}
+        selections={[IntervalType.Trip, IntervalType.Parking]}
+        className="w-full btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear items-center justify-center"
+      />
+      {loading ? (
+        <div className="text-center text-gray-500 h-full flex items-center justify-center py-2">
+          <CircularProgress size={24} color="inherit" />
+        </div>
+      ) : (
+        <div
+          ref={infiniteLoaderContainerRef}
+          className="scrollable-y-auto pb-2 flex flex-col gap-[10px]"
+        >
+          <>
+            {trips.map((tripGroup) => (
+              <TripCard
+                key={tripGroup.date.getTime()}
+                tripGroup={tripGroup}
+                animation={intervalType === IntervalType.Trip}
+              />
+            ))}
+
+            {hasMore ? (
+              <div ref={loaderRef} className="text-center text-gray-500 py-2">
+                <CircularProgress size={20} />
+              </div>
+            ) : (
+              <div className="text-center text-gray-500 py-2">
+                No more {intervalType === IntervalType.Parking ? 'parkings' : 'trips'}
+              </div>
+            )}
+          </>
+        </div>
+      )}
     </div>
   );
 };
