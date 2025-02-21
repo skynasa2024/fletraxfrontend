@@ -13,6 +13,13 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
 import clsx from 'clsx';
 
+function formatTotalDuration(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return `${hours} h , ${minutes} min , ${secs} sec`;
+}
+
 interface TripCardProps {
   tripGroup: TripGroup;
   animation?: boolean;
@@ -100,12 +107,13 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-3 px-[6px] gap-2 relative">
-          <div
-            className={clsx('flex flex-col gap-1', {
-              'items-center col-span-3': intervalType === IntervalType.Parking
-            })}
-          >
+        <div
+          className={clsx('grid px-[6px] gap-2 relative', {
+            'grid-cols-3': intervalType === IntervalType.Trip,
+            'grid-cols-2': intervalType === IntervalType.Parking
+          })}
+        >
+          <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
               <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
@@ -120,6 +128,21 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
               )}
             </div>
           </div>
+          {intervalType === IntervalType.Parking && (
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-1 items-center">
+                <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
+                <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                  <FormattedMessage id="TRIPS.FIELD.TOTAL_DURATION" />
+                </span>
+              </div>
+              <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
+                {formatTotalDuration(
+                  tripGroup.trips.reduce((acc, trip) => acc + trip.totalDuration, 0)
+                )}
+              </div>
+            </div>
+          )}
           {intervalType === IntervalType.Trip && (
             <>
               <div className="flex flex-col gap-1">
@@ -211,7 +234,7 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                 <div
                   className={clsx('grid gap-2', {
                     'grid-cols-4': intervalType === IntervalType.Trip,
-                    'grid-cols-2': intervalType === IntervalType.Parking
+                    'grid-cols-3': intervalType === IntervalType.Parking
                   })}
                 >
                   <div className="flex gap-1 items-center">
@@ -230,6 +253,12 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                       'yyyy/MM/dd HH:mm:ss'
                     )}
                   </div>
+                  {intervalType === IntervalType.Parking && (
+                    <div className="flex gap-1 items-center">
+                      <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
+                      {trip.formattedTotalDuration}
+                    </div>
+                  )}
                   {intervalType === IntervalType.Trip && (
                     <>
                       <div className="flex gap-1 items-center">

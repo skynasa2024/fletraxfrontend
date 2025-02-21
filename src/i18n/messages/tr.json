@@ -265,6 +265,7 @@
   "TRIPS.FIELD.TRIPS": "Seyahatler",
   "TRIPS.FIELD.MILEAGE": "Kilometre",
   "TRIPS.FIELD.MAX_SPEED": "Maksimum Hız",
+  "TRIPS.FIELD.TOTAL_DURATION": "Toplam Süre",
   "TRIPS.COUNT": "{count, plural, zero {Seyahat yok} other {# Seyahat}}",
   "PARKINGS.COUNT": "{count, plural, zero {Park yok} other {# Park}}",
   "PLAYBACK.FIELD.START_DATE": "Başlangıç Tarihi",
