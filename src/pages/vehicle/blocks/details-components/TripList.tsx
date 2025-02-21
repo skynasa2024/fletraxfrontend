@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
+import { IntervalType, searchTrips, Trip, TripGroup, TripPath, TRIPS_PAGE_SIZE } from '@/api/trips';
 import TripCard from '@/pages/trips/blocks/TripCard';
 import { TripsContext } from '@/pages/trips/providers/TripsContext';
 import L from 'leaflet';
@@ -8,6 +8,8 @@ import AppMap from '@/components/AppMap';
 import { Marker, Polyline } from 'react-leaflet';
 import { getColor } from '@/pages/trips/blocks/PolylineColors';
 import { useIntl } from 'react-intl';
+import { ButtonRadioGroup } from '@/pages/dashboards/blocks/ButtonRadioGroup';
+import { CircularProgress } from '@mui/material';
 interface TripListProps {
   deviceIdent?: string;
 }
@@ -19,6 +21,8 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
   const map = useRef<L.Map>(null);
   const intl = useIntl();
   const [hasMore, setHasMore] = useState(true);
+  const [intervalType, setIntervalType] = useState<IntervalType>(IntervalType.Trip);
+  const [loading, setLoading] = useState(false);
 
   const providerValues = {
     searchDeviceQuery: '',
@@ -34,18 +38,51 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
     search: () => {},
     trips: [],
     selectedTrip,
-    setSelectedTrip
+    setSelectedTrip,
+    intervalType,
+    setIntervalType,
+    loading
   };
 
   useEffect(() => {
     if (!deviceIdent) return;
-
-    searchTrips({ query: deviceIdent }).then(setTrips);
-  }, [deviceIdent]);
+    setLoading(true);
+    searchTrips({ query: deviceIdent, intervalType })
+      .then(setTrips)
+      .finally(() => setLoading(false));
+  }, [deviceIdent, intervalType]);
 
   useEffect(() => {
     if (!selectedTrip) {
       setPath(undefined);
+      return;
+    }
+
+    if (intervalType === IntervalType.Parking) {
+      if ('trips' in selectedTrip) {
+        const firstParking = selectedTrip.trips[0];
+        setPath([
+          {
+            tripId: firstParking.id,
+            latitude: firstParking.startLatitude ?? 0,
+            longitude: firstParking.startLongitude ?? 0,
+            timestamp: firstParking.startDate,
+            direction: 0,
+            speed: 0
+          }
+        ]);
+      } else {
+        setPath([
+          {
+            tripId: selectedTrip.id,
+            latitude: selectedTrip.startLatitude ?? 0,
+            longitude: selectedTrip.startLongitude ?? 0,
+            timestamp: selectedTrip.startDate,
+            direction: 0,
+            speed: 0
+          }
+        ]);
+      }
       return;
     }
 
@@ -63,7 +100,7 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
     }
 
     setPath(Object.values(pathesMap).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
-  }, [selectedTrip]);
+  }, [selectedTrip, intervalType]);
 
   const tripsToRender = useMemo(() => {
     if (!selectedTrip) {
@@ -102,6 +139,15 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
       }),
     []
   );
+  const icon = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      }),
+    []
+  );
   useEffect(() => {
     if (!bounds) {
       return;
@@ -117,7 +163,8 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
     const currentOffset = trips?.length ?? 0;
     const moreTrips = await searchTrips({
       query: deviceIdent ?? '',
-      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE }
+      offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE },
+      intervalType
     });
     if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
@@ -179,7 +226,17 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
                   : ''}
             </span>
           </div>
-          {trips ? (
+          <ButtonRadioGroup<IntervalType>
+            selection={intervalType}
+            setSelection={setIntervalType}
+            selections={[IntervalType.Trip, IntervalType.Parking]}
+            className="w-full btn data-[selected=true]:btn-dark btn-light data-[selected=false]:btn-clear items-center justify-center mb-4"
+          />
+          {loading ? (
+            <div className="text-center text-gray-500 h-full flex items-center justify-center py-2">
+              <CircularProgress size={24} color="inherit" />
+            </div>
+          ) : trips ? (
             trips.length === 0 ? (
               <div className="text-center text-gray-500 py-4">
                 {intl.formatMessage({ id: 'TRIPS.LIST.NO_TRIPS' })}
@@ -193,16 +250,18 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
                   <TripCard
                     key={tripGroup.date.getTime()}
                     tripGroup={tripGroup}
-                    animation={false}
+                    animation={intervalType === IntervalType.Trip}
                   />
                 ))}
 
                 {hasMore ? (
                   <div ref={loaderRef} className="text-center text-gray-500 py-2">
-                    Loading...
+                    <CircularProgress size={20} />
                   </div>
                 ) : (
-                  <div className="text-center text-gray-500 py-2">No more trips</div>
+                  <div className="text-center text-gray-500 py-2">
+                    No more {intervalType === IntervalType.Parking ? 'parkings' : 'trips'}
+                  </div>
                 )}
               </div>
             )
@@ -219,20 +278,33 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
         <div className="card hover:shadow-md w-full">
           <div className="w-full h-full rounded-lg overflow-hidden shadow-lg">
             <AppMap dragging={false} ref={map}>
-              {tripsToRender.map((trip) => (
-                <Polyline
-                  key={trip.id}
-                  pathOptions={{ color: getColor(trip.id) }}
-                  positions={trip.path.map((point) => [point.latitude, point.longitude])}
+              {intervalType === IntervalType.Parking && path && path.length > 0 ? (
+                <Marker
+                  position={[path[0].latitude, path[0].longitude]}
+                  icon={icon}
+                  title={`Parking from ${path[0].timestamp.toLocaleString()}`}
                 />
-              ))}
-              {path && path.length > 1 && (
+              ) : (
                 <>
-                  <Marker position={[path[0].latitude, path[0].longitude]} icon={iconStartTrip} />
-                  <Marker
-                    position={[path[path.length - 1].latitude, path[path.length - 1].longitude]}
-                    icon={iconEndTrip}
-                  />
+                  {tripsToRender.map((trip) => (
+                    <Polyline
+                      key={trip.id}
+                      pathOptions={{ color: getColor(trip.id) }}
+                      positions={trip.path.map((point) => [point.latitude, point.longitude])}
+                    />
+                  ))}
+                  {path && path.length > 1 && (
+                    <>
+                      <Marker
+                        position={[path[0].latitude, path[0].longitude]}
+                        icon={iconStartTrip}
+                      />
+                      <Marker
+                        position={[path[path.length - 1].latitude, path[path.length - 1].longitude]}
+                        icon={iconEndTrip}
+                      />
+                    </>
+                  )}
                 </>
               )}
             </AppMap>

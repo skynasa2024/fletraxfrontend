@@ -46,8 +46,6 @@ export const PlaybackCard = () => {
     }
   };
 
-  console.log(selectedTrip);
-
   return (
     <div className="card w-[50vw] flex flex-row p-5 h-56">
       <div className="flex flex-col justify-between items-center grow w-1/2">
