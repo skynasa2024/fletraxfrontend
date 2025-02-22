@@ -309,7 +309,7 @@ export const getVehicles = async (
     },
     brandName: vehicle.brand,
     type: vehicle.gear,
-    mileage: (vehicle.currentMileage || 0).toString(),
+    mileage: vehicle.maintenanceMileage || 'NA',
     status: vehicle.status,
     deviceName: 'Device Name',
     carId: vehicle.id
