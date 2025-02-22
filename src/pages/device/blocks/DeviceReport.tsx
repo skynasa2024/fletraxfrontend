@@ -1,17 +1,25 @@
-import { Paginated } from '@/api/common';
-import { DeviceStatistics, getDeviceStatistics } from '@/api/devices';
+import { DeviceStatistics, DeviceStatisticsParams, getDeviceStatistics } from '@/api/devices';
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
 import { ButtonRadioGroup } from '../../dashboards/blocks/ButtonRadioGroup';
+import { useSettings } from '@/providers';
 
 type DeviceReportProps = {
   ident: string;
 };
 
-const options = {
+type FilterOption = 'lastWeek' | 'lastMonth' | 'lastYear';
+
+const options: Record<
+  FilterOption,
+  {
+    name: string;
+    nameKey?: string;
+  }
+> = {
   lastWeek: {
     name: 'Last 7 days'
     // nameKey: 'DASHBOARD.REPORT.LAST_7_DAYS'
@@ -19,11 +27,11 @@ const options = {
   lastMonth: {
     name: 'Last Month'
     // nameKey: 'DASHBOARD.REPORT.LAST_MONTH'
+  },
+  lastYear: {
+    name: 'Last Year'
+    // nameKey: 'DASHBOARD.REPORT.LAST_YEAR'
   }
-  // lastYear: {
-  //   name: 'Last Year'
-  //   // nameKey: 'DASHBOARD.REPORT.LAST_YEAR'
-  // },
   // customDay: {
   //   name: 'Custom Day'
   //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_DAY'
@@ -43,7 +51,7 @@ const formatDate = (date: string) => {
   return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
 };
 
-const CAR_ICON_CONFIG = {
+const CAR_ICON = {
   path: toAbsoluteUrl('/media/icons/chart-car.svg'),
   width: 45,
   height: 45,
@@ -55,7 +63,7 @@ const createPointAnnotation = (date: string, value: number, minHeightForIcon: nu
   x: date,
   y: value,
   ...(value > minHeightForIcon && {
-    image: CAR_ICON_CONFIG
+    image: CAR_ICON
   }),
   marker: { size: -1 }
 });
@@ -66,14 +74,14 @@ const formatHoursAndMinutes = (hours: number) => {
   return `${h}h ${m}m`;
 };
 
-const safeParseFloat = (value: string) => {
+const safeParseFloat = (value: string): number => {
   if (!value) return 0;
   const cleaned = value.replace(/[^\d.-]/g, '');
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 };
 
-const safeParseEngineHours = (engineHours: string) => {
+const safeParseEngineHours = (engineHours: string): number => {
   if (!engineHours) return 0;
   try {
     const [hoursStr = '0', minutesStr = '0'] = engineHours.split(' h , ');
@@ -88,62 +96,98 @@ const safeParseEngineHours = (engineHours: string) => {
 
 export default function DeviceReport({ ident }: DeviceReportProps) {
   const intl = useIntl();
-  const [selected, setSelected] = useState('lastWeek');
-  const [metricType, setMetricType] = useState('Mileage'); // New state for metric type
-  const [statistics, setStatistics] = useState<Paginated<DeviceStatistics> | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<FilterOption>('lastWeek');
+  const [metricType, setMetricType] = useState('Mileage');
+  const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
+  const [isLoadingStatistics, setIsLoadingStatistics] = useState(true);
+  const { settings } = useSettings();
+  const isDarkMode = settings.themeMode === 'dark';
 
   useEffect(() => {
-    (async () => {
-      await getDeviceStatistics({ page: 0, size: 10 }, ident).then(setStatistics);
-    })();
-  }, [ident]);
-
-  const getFilteredData = () => {
-    if (!statistics?.data) return [];
-    const today = new Date();
-
-    return statistics.data.filter((stat) => {
-      const statDate = new Date(stat.date);
-      if (selected === 'lastWeek') {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(today.getDate() - 7);
-        return statDate >= sevenDaysAgo;
-      } else if (selected === 'lastMonth') {
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(today.getMonth() - 1);
-        return statDate >= oneMonthAgo;
-      } else if (selected === 'lastYear') {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(today.getFullYear() - 1);
-        return statDate >= oneYearAgo;
+    const fetchData = async () => {
+      setIsLoadingStatistics(true);
+      try {
+        const data = await getDeviceStatistics({
+          ident,
+          ...getQueryParams(selectedFilter)
+        });
+        setStatistics(data);
+      } catch (error) {
+        console.error('Error fetching device statistics:', error);
+      } finally {
+        setIsLoadingStatistics(false);
       }
-      // For customDay, customMonth, customYear, implement your own filtering logic or return all data
-      return true;
-    });
-  };
+    };
 
-  const getChartData = () => {
-    const filteredData = getFilteredData().filter((stat) => !!stat.date); // Ensure valid dates
-    if (metricType === 'Mileage') {
-      return {
-        name: 'Daily Kilometers',
-        data: filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers))
-      };
-    } else {
-      return {
-        name: 'Engine Hours',
-        data: filteredData.map((stat) => safeParseEngineHours(stat.dailyEngineHours))
-      };
+    fetchData();
+  }, [ident, selectedFilter]);
+
+  const getQueryParams = (selected: FilterOption): Omit<DeviceStatisticsParams, 'ident'> => {
+    switch (selected) {
+      case 'lastWeek': {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
+      case 'lastMonth': {
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        startDate.setDate(startDate.getDate() + 1);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
+      case 'lastYear': {
+        const startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'monthly'
+        };
+      }
+      default: {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
     }
   };
 
+  const getChartData = (statistics?: DeviceStatistics[] | null) => {
+    if (!statistics) return { name: '', data: [] };
+    if (metricType === 'Mileage') {
+      return {
+        name: 'Daily Kilometers',
+        data: statistics?.map((stat) => safeParseFloat(stat.existingKilometers))
+      };
+    }
+    return {
+      name: 'Engine Hours',
+      data: statistics?.map((stat) => safeParseEngineHours(stat.engineHours))
+    };
+  };
+
   const getTooltipContent = (dataPointIndex: number) => {
-    const filteredData = getFilteredData();
-    const data = filteredData[dataPointIndex];
+    const data = statistics?.[dataPointIndex];
     if (!data) return '';
 
     const date = data.date;
-    const value = metricType === 'Mileage' ? data.dailyExistingKilometers : data.dailyEngineHours;
+    const value = metricType === 'Mileage' ? data.existingKilometers : data.engineHours;
 
     return `
       <div class="p-2 text-xs bg-white rounded shadow-md">
@@ -154,9 +198,8 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     `;
   };
 
-  const filteredData = getFilteredData();
-  const values = filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers));
-  const maxValue = Math.max(...(values.length ? values : [0]));
+  const values = statistics?.map((stat) => safeParseFloat(stat.existingKilometers));
+  const maxValue = Math.max(...((values?.length ? values : [0]) ?? 0));
   // Set minimum height as 20% of max value
   const minHeightForIcon = maxValue * 0.2;
 
@@ -180,7 +223,11 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             }}
             disabled={!statistics}
           />
-          <ReportFilterDropdown selected={selected} setSelected={setSelected} options={options} />
+          <ReportFilterDropdown
+            selected={selectedFilter}
+            setSelected={setSelectedFilter}
+            options={options}
+          />
         </div>
       </div>
       <div>
@@ -192,10 +239,16 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               toolbar: { show: false }
             },
             xaxis: {
-              categories: getFilteredData().map((stat) => stat.date) || [],
+              categories: statistics?.map((stat) => stat.date) || [],
               labels: {
                 style: { fontSize: '12px', colors: '#B5B5C3' },
-                formatter: (val) => formatDate(val)
+                formatter: (val) => {
+                  if (selectedFilter === 'lastYear') {
+                    const d = new Date(val);
+                    return d.toLocaleString('default', { month: 'short' });
+                  }
+                  return formatDate(val);
+                }
               },
               axisBorder: { show: true, color: '#ccc' }
             },
@@ -219,10 +272,10 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               }
             },
             annotations: {
-              points: getFilteredData()
-                .filter((stat) => !!stat.date && safeParseFloat(stat.dailyExistingKilometers) > 0)
-                .map((stat) => {
-                  const value = safeParseFloat(stat.dailyExistingKilometers);
+              points: statistics
+                ?.filter((stat) => !!stat.date && safeParseFloat(stat.existingKilometers) > 0)
+                ?.map((stat) => {
+                  const value = safeParseFloat(stat.existingKilometers);
                   return createPointAnnotation(stat.date, value, minHeightForIcon);
                 })
             },
@@ -230,7 +283,11 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               show: false
             },
             colors: ['#545FAB'],
-            grid: { show: true, borderColor: '#ddd', strokeDashArray: 4 },
+            grid: {
+              show: true,
+              borderColor: isDarkMode ? '#dddddd53' : '#ddd',
+              strokeDashArray: 4
+            },
             tooltip: {
               enabled: true,
               shared: false,
@@ -246,12 +303,15 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
                 }
                 return formatHoursAndMinutes(val);
               },
-              style: { fontSize: '12px', colors: ['#252525'] },
+              style: {
+                fontSize: '12px',
+                colors: [isDarkMode ? '#dad1d1' : '#252525']
+              },
               offsetY: -30,
               textAnchor: 'middle'
             }
           }}
-          series={[getChartData()]}
+          series={[getChartData(statistics)]}
           type="bar"
           height={350}
         />
@@ -261,14 +321,14 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
 }
 
 export interface ReportFilterDropdownProps {
-  selected: string;
+  selected: FilterOption;
   // eslint-disable-next-line no-unused-vars
-  setSelected: (value: string) => void;
+  setSelected: (value: FilterOption) => void;
   readOnly?: boolean;
   options: Record<
-    string,
+    FilterOption,
     {
-      name?: string;
+      name: string;
       nameKey?: string;
     }
   >;
@@ -281,7 +341,7 @@ export const ReportFilterDropdown = ({
   readOnly = false
 }: ReportFilterDropdownProps) => {
   const intl = useIntl();
-  const getOptionLabel = (key: string) => {
+  const getOptionLabel = (key: FilterOption) => {
     const option = options[key];
     if (option?.nameKey) {
       return intl.formatMessage({
@@ -325,7 +385,7 @@ export const ReportFilterDropdown = ({
             <MenuItem
               key={key}
               onClick={() => {
-                setSelected(key);
+                setSelected(key as FilterOption);
               }}
             >
               <MenuLink>
