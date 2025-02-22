@@ -17,13 +17,13 @@ const Car = ({ direction }: CarProps) => {
         {/* Rotating circles background */}
         <div className="absolute inset-0 duration-3000 opacity-30">
           {/* Upper Circle (Larger than the borders) */}
-          <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-blue-100 rounded-full" />
+          <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-blue-100 dark:bg-blue-300/20 rounded-full" />
 
           {/* Middle Circle */}
-          <div className="absolute top-6 left-6 right-6 bottom-6 bg-blue-200 rounded-full" />
+          <div className="absolute top-6 left-6 right-6 bottom-6 bg-blue-200 dark:bg-blue-300/30 rounded-full" />
 
           {/* Inner Circle */}
-          <div className="absolute top-16 left-16 right-16 bottom-16 bg-blue-300 rounded-full" />
+          <div className="absolute top-16 left-16 right-16 bottom-16 bg-blue-300 dark:bg-blue-300/40 rounded-full" />
         </div>
 
         {/* Corners */}

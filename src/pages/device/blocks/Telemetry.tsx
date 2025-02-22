@@ -16,7 +16,7 @@ const Telemetry = ({ parameters }: TelemetryProps) => {
         <div className="card flex flex-col max-w-sm p-4 w-96">
           <SpeedGauge value={parameters['position_speed']?.data} maxValue={160} />
 
-          <div className="flex gap-4 justify-between items-center mt-4 bg-neutral-100 p-4 rounded-lg">
+          <div className="flex gap-4 justify-between items-center mt-4 bg-neutral-100 dark:bg-gray-200 p-4 rounded-lg">
             <div>
               <div className="flex gap-1 items-center">
                 <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
@@ -24,7 +24,7 @@ const Telemetry = ({ parameters }: TelemetryProps) => {
                   <FormattedMessage id="DEVICE.TELEMETRY.PARKING_TIME" />:
                 </span>
               </div>
-              <span className="font-semibold text-dark text-md">
+              <span className="font-semibold text-dark dark:text-white text-md">
                 {parameters['parking_time']?.data ?? '?'}
               </span>
             </div>
@@ -35,7 +35,7 @@ const Telemetry = ({ parameters }: TelemetryProps) => {
                   <FormattedMessage id="DEVICE.TELEMETRY.EXISTING_KILOMETERS" />:
                 </span>
               </div>
-              <span className="font-semibold text-dark text-md">
+              <span className="font-semibold text-dark dark:text-white text-md">
                 {parameters['existing_kilometers']?.data ?? '?'}
               </span>
             </div>
