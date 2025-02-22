@@ -37,7 +37,7 @@ export const StatusDropdown = ({
       <div
         className="btn btn-clear font-bold text-xs h-fit px-3 py-[6px] cursor-default"
         style={{
-          color: options[selected]?.color ?? 'white',
+          color: options[selected]?.color ? options[selected]?.color + 'AA' : 'white',
           backgroundColor: options[selected]?.backgroundColor ?? 'gray'
         }}
       >
@@ -67,7 +67,7 @@ export const StatusDropdown = ({
           className="btn btn-clear font-bold text-xs h-fit px-3 py-[6px]"
           style={{
             color: options[selected]?.color ?? 'white',
-            backgroundColor: options[selected]?.backgroundColor ?? 'gray'
+            backgroundColor: options[selected]?.color ? options[selected]?.color + '22' : 'gray'
           }}
         >
           {getOptionLabel(selected)}
