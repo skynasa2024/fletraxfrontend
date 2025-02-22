@@ -177,7 +177,7 @@ const DeviceList = ({ refetchStats: refetch, userId }: DeviceListProps) => {
           </div>
           <DebouncedSearchInput
             type="search"
-            className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+            className="w-64 pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
             placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
             onDebounce={setSearchQuery}
           />

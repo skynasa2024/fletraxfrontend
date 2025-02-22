@@ -1,7 +1,23 @@
 /* Tailwind core */
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 /* Demos */
-@import "demos/demo1";
+@import 'demos/demo1';
+
+.card {
+  @apply dark:border-gray-200;
+
+  .card-header {
+    @apply dark:border-gray-200;
+  }
+
+  .card-body {
+    @apply dark:border-gray-200;
+  }
+
+  .card-footer {
+    @apply dark:border-gray-200;
+  }
+}
