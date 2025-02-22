@@ -60,9 +60,10 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
           <NotificationSnackbar
             plate={notification.vehiclePlate}
             imei={notification.deviceIdent}
-            text={notification.text}
+            text={notification.textTrans}
             date={formatTimeAgo(notification.createdAt, intl)}
             info={notification.type}
+            type={notification.text}
           />
         </div>
       )

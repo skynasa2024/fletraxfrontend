@@ -1,28 +1,26 @@
 import { forwardRef } from 'react';
-import { KeenIcon } from '@/components';
-import { useSettings } from '@/providers';
 import { INotificationSnackbarProps } from '@/layouts/demo1/header/notifications/types.tsx';
 import { FormattedMessage } from 'react-intl';
+import { DefaultNotificationIcon } from '@/assets/svg';
+import { NOTIFICATION_ICONS } from '@/pages/dashboards/blocks/Notifications';
 
 const NotificationSnackbar = forwardRef<HTMLDivElement, INotificationSnackbarProps>(
-  ({ plate, imei, text, date, info }, ref) => {
-    const { settings } = useSettings();
+  ({ plate, imei, text, date, info, type }, ref) => {
     return (
       <div
         ref={ref}
-        className="flex justify-between grow gap-4 px-4 py-3 bg-white dark:bg-[#15171C] border-gray-300 rounded-md shadow-lg"
+        className="flex justify-between grow gap-2 px-4 py-3 bg-white dark:bg-[#15171C] border-gray-300 rounded-md shadow-lg"
       >
         <div className="flex justify-center items-center size-12 bg-gray-200 rounded-full">
-          <KeenIcon
-            icon="notification-on"
-            className={settings.themeMode === 'dark' ? 'text-white' : 'text-black'}
-          />
+          {NOTIFICATION_ICONS[type as keyof typeof NOTIFICATION_ICONS] ?? (
+            <DefaultNotificationIcon />
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <div className="text-gray-900 text-2sm mb-px">
             <FormattedMessage id="NOTIFICATIONS.VEHICLE_PLATE" values={{ plate }} />
           </div>
-          <div className="text-gray-900 text-2sm mb-px">
+          <div className="text-gray-900 text-2sm mb-px text-nowrap">
             <FormattedMessage id="NOTIFICATIONS.DEVICE_IMEI" values={{ imei }} />
           </div>
           <span className="text-2sm text-gray-700">

@@ -17,6 +17,7 @@ export interface INotificationSnackbarProps {
   text: string;
   date: string;
   info: string;
+  type: string;
 }
 
 export interface INotification {
@@ -32,4 +33,5 @@ export interface INotification {
   longitude: number;
   createdAt: number;
   read: boolean;
+  textTrans: string;
 }

@@ -21,7 +21,7 @@ import {
 const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
 
-const NOTIFICATION_ICONS = {
+export const NOTIFICATION_ICONS = {
   battery_alarm: <BatteryAlarmNotificationIcon />,
   engine_off: <EngineOffNotificationIcon />,
   engine_on: <EngineOnNotificationIcon />,
