@@ -22,39 +22,16 @@ const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
 
 const NOTIFICATION_ICONS = {
-  BATTERY_ALARM: <BatteryAlarmNotificationIcon />,
+  battery_alarm: <BatteryAlarmNotificationIcon />,
   engine_off: <EngineOffNotificationIcon />,
   engine_on: <EngineOnNotificationIcon />,
-  ENTER_GEOFENCE: <EnterGeofenceNotificationIcon />,
-  EXIT_GEOFENCE: <ExitGeofenceNotificationIcon />,
+  enter_geofence_alarm: <EnterGeofenceNotificationIcon />,
+  geofence_out_alarm: <ExitGeofenceNotificationIcon />,
   speeding_alarm: <ExceedSpeedNotificationIcon />,
   unplug: <PowerCutAlarmNotificationIcon />,
   sharp_turn_alarm: <SharpTurnNotificationIcon />,
   vibration_alarm: <VibrationAlarmNotificationIcon />
 } as const;
-
-const NOTIFICATION_PATTERNS = [
-  { pattern: /turn off the power switch/i, icon: 'engine_off' },
-  { pattern: /turn on the power switch/i, icon: 'engine_on' },
-  { pattern: /sharp turn alarm/i, icon: 'sharp_turn_alarm' },
-  { pattern: /vibration alarm/i, icon: 'vibration_alarm' },
-  { pattern: /battery/i, icon: 'BATTERY_ALARM' },
-  { pattern: /enter(ed)? (the )?(?:geo)?fence/i, icon: 'ENTER_GEOFENCE' },
-  { pattern: /exit(ed)? (the )?(?:geo)?fence/i, icon: 'EXIT_GEOFENCE' },
-  { pattern: /speed|speeding/i, icon: 'speeding_alarm' },
-  { pattern: /unplug|power cut/i, icon: 'unplug' }
-] as const;
-
-const findClosestNotificationIcon = (text: string) => {
-  // Find the first matching pattern
-  const match = NOTIFICATION_PATTERNS.find(({ pattern }) => pattern.test(text));
-
-  if (match) {
-    return NOTIFICATION_ICONS[match.icon as keyof typeof NOTIFICATION_ICONS];
-  }
-
-  return <DefaultNotificationIcon />;
-};
 
 type NotificationsProps = {
   search?: string;
@@ -194,17 +171,18 @@ function NotificationCard({ notification }: NotificationProps) {
       <div className="flex gap-4 items-center justify-between w-full">
         <div className="flex gap-2 items-center">
           <div className="size-12 rounded-md card border-none aspect-square flex items-center justify-center">
-            {NOTIFICATION_ICONS[notification.text as keyof typeof NOTIFICATION_ICONS] ||
-              findClosestNotificationIcon(notification.text)}
+            {NOTIFICATION_ICONS[notification.text as keyof typeof NOTIFICATION_ICONS] ?? (
+              <DefaultNotificationIcon />
+            )}
           </div>
           <div>
-            <h4 className="text-gray-800 text-sm font-semibold">{notification.type}</h4>
+            <h4 className="text-gray-800 text-sm font-semibold">{notification.typeTrans}</h4>
             <p className="text-gray-600 mb-0.5 text-[10px] leading-tight font-medium line-clamp-1 text-ellipsis text-pretty">
               {!isNaN(+new Date(+notification.createdAt * 1000)) &&
                 format(new Date(+notification.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss')}
             </p>
             <p className="text-gray-600 text-xs font-medium line-clamp-2 text-ellipsis text-pretty">
-              {notification.text}
+              {notification.textTrans}
             </p>
           </div>
         </div>

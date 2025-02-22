@@ -7,12 +7,15 @@ export interface NotificationDTO {
   deviceId: string;
   deviceIdent: string;
   geofenceId: string | null;
+  geofenceName: string | null;
   id: string;
   latitude: number;
   longitude: number;
   read: boolean;
   text: string;
+  textTrans: string;
   type: string;
+  typeTrans: string;
   userId: string | null;
   vehiclePlate: string;
 }
