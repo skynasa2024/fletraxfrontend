@@ -18,8 +18,8 @@ export default function DefaultNotificationIcon() {
           y2="20"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#5271FF" />
-          <stop offset="1" stop-color="#5271FF" stop-opacity="0.45" />
+          <stop stopColor="#5271FF" />
+          <stop offset="1" stopColor="#5271FF" stop-opacity="0.45" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_4611_63655"
@@ -29,8 +29,8 @@ export default function DefaultNotificationIcon() {
           y2="20"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#5271FF" />
-          <stop offset="1" stop-color="#5271FF" stop-opacity="0.45" />
+          <stop stopColor="#5271FF" />
+          <stop offset="1" stopColor="#5271FF" stop-opacity="0.45" />
         </linearGradient>
       </defs>
     </svg>
