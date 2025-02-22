@@ -65,7 +65,7 @@ const createPointAnnotation = (date: string, value: number, minHeightForIcon: nu
   ...(value > minHeightForIcon && {
     image: CAR_ICON
   }),
-  marker: { size: -1 }
+  marker: { size: 0, cssClass: 'hidden' }
 });
 
 const formatHoursAndMinutes = (hours: number) => {
