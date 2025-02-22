@@ -32,7 +32,7 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
   }
   return (
     <div
-      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] w-full h-full hover:shadow-lg transition-shadow duration-200"
+      className="flex flex-col flex-shrink-0 rounded-2xl border border-[#E7E8ED] dark:border-gray-200 w-full h-full hover:shadow-lg transition-shadow duration-200"
       style={{ direction: isRTL() ? 'rtl' : 'ltr' }}
     >
       <div className="flex flex-col gap-6 px-4 sm:px-6 lg:px-8 py-6 grow">
@@ -102,14 +102,14 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
       <div className="text-xs border-t grid grid-cols-3 w-full overflow-hidden rounded-b-2xl">
         <Link
           to={'/vehicles/vehicle/' + vehicle.vehicle.id}
-          className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50"
+          className="px-5 py-2 flex gap-2 border-e justify-center hover:bg-gray-50 dark:hover:bg-gray-200"
         >
           <img src={toAbsoluteUrl('/media/icons/view-light.svg')} />
           <span>{intl.formatMessage({ id: 'VEHICLE.CARD.VIEW', defaultMessage: 'View' })}</span>
         </Link>
         <Link
           to={'/vehicles/edit/' + vehicle.vehicle.id}
-          className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50"
+          className="px-5 py-2 border-e justify-center flex gap-2 hover:bg-gray-50 dark:hover:bg-gray-200"
         >
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>{intl.formatMessage({ id: 'VEHICLE.CARD.EDIT', defaultMessage: 'Edit' })}</span>
@@ -141,7 +141,7 @@ export default function VehicleCard({ vehicle, refetchStats, refetchVehicles }: 
             );
             refetchVehicles();
           }}
-          className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50"
+          className="px-5 py-2 flex gap-2 justify-center hover:bg-gray-50 dark:hover:bg-gray-200"
         >
           <img src={toAbsoluteUrl('/media/icons/delete-light.svg')} />
           <span>{intl.formatMessage({ id: 'VEHICLE.CARD.DELETE', defaultMessage: 'Delete' })}</span>
