@@ -120,9 +120,17 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     const fetchData = async () => {
       setIsLoadingStatistics(true);
       try {
+        const queryParams = getQueryParams(selectedFilter);
+        if (
+          selectedFilter !== 'customDay' &&
+          selectedFilter !== 'customMonth' &&
+          selectedFilter !== 'customYear'
+        ) {
+          setRangeFilter({ startDate: queryParams.startDate, endDate: queryParams.endDate });
+        }
         const data = await getDeviceStatistics({
           ident,
-          ...getQueryParams(selectedFilter)
+          ...queryParams
         });
         setStatistics(data);
       } catch (error) {
@@ -285,10 +293,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             }}
             options={options}
           />
-          <div>
-            <p>{rangeFilter.startDate}</p>
-            <p>{rangeFilter.endDate}</p>
-          </div>
           <Modal
             open={
               (selectedFilter === 'customDay' ||
@@ -317,6 +321,16 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             chart: {
               type: 'bar',
               toolbar: { show: false }
+            },
+            title: {
+              text: `${metricType} Report from ${rangeFilter.startDate} to ${rangeFilter.endDate}`,
+              align: 'center',
+              margin: 10,
+              style: {
+                fontSize: '12px',
+                fontWeight: 'bold',
+                color: isDarkMode ? '#dad1d1' : '#252525'
+              }
             },
             xaxis: {
               categories: statistics?.map((stat) => stat.date) || [],
