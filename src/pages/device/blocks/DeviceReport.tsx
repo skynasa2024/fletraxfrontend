@@ -28,28 +28,28 @@ const options: Record<
   }
 > = {
   lastWeek: {
-    name: 'Last 7 days'
-    // nameKey: 'DASHBOARD.REPORT.LAST_7_DAYS'
+    name: 'Last 7 days',
+    nameKey: 'DEVICE.REPORT.LAST_7_DAYS'
   },
   lastMonth: {
-    name: 'Last Month'
-    // nameKey: 'DASHBOARD.REPORT.LAST_MONTH'
+    name: 'Last Month',
+    nameKey: 'DEVICE.REPORT.LAST_MONTH'
   },
   lastYear: {
-    name: 'Last Year'
-    // nameKey: 'DASHBOARD.REPORT.LAST_YEAR'
+    name: 'Last Year',
+    nameKey: 'DEVICE.REPORT.LAST_YEAR'
   },
   customDay: {
-    name: 'Custom Day'
-    // nameKey: 'DASHBOARD.REPORT.CUSTOM_DAY'
+    name: 'Custom Day',
+    nameKey: 'DEVICE.REPORT.CUSTOM_DAYS'
   },
   customMonth: {
-    name: 'Custom Month'
-    // nameKey: 'DASHBOARD.REPORT.CUSTOM_MONTH'
+    name: 'Custom Month',
+    nameKey: 'DEVICE.REPORT.CUSTOM_MONTHS'
   },
   customYear: {
-    name: 'Custom Year'
-    // nameKey: 'DASHBOARD.REPORT.CUSTOM_YEAR'
+    name: 'Custom Year',
+    nameKey: 'DEVICE.REPORT.CUSTOM_YEARS'
   }
 };
 
@@ -261,7 +261,9 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     <div className="card h-full p-4 flex flex-col justify-between">
       <div className="flex justify-between">
         <div>
-          <h2 className="card-title">Device Report</h2>
+          <h2 className="card-title">
+            <FormattedMessage id="DEVICE.REPORT.TITLE" />
+          </h2>
           <h3 className="text-sm font-thin text-[#B5B5C3]">
             <FormattedMessage id="DASHBOARD.MILEAGE_ENGINE.TITLE" />
           </h3>
@@ -418,6 +420,7 @@ type FilterDateRangeProps = {
 };
 
 function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeProps) {
+  const intl = useIntl();
   const [start, setStart] = useState<string>('');
   const [end, setEnd] = useState<string>('');
 
@@ -471,11 +474,13 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
     <>
       <div className="card-header w-full">
         <h3 className="card-title">
-          {selectedFilter === 'customDay'
-            ? 'Custom Day'
-            : selectedFilter === 'customMonth'
-              ? 'Custom Month'
-              : 'Custom Year'}
+          {selectedFilter === 'customDay' ? (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_DAYS" />
+          ) : selectedFilter === 'customMonth' ? (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_MONTHS" />
+          ) : (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_YEARS" />
+          )}
         </h3>
       </div>
       <div className="card-body">
@@ -483,21 +488,29 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
           {selectedFilter === 'customDay' && (
             <div className="flex gap-4">
               <label htmlFor="startDate">
-                <span className="mr-2 form-label">From</span>
+                <span className="mr-2 form-label">
+                  <span className="mr-2 form-label">
+                    <FormattedMessage id="COMMON.FROM" />
+                  </span>
+                </span>
                 <input
                   type="date"
                   id="startDate"
                   className="input"
+                  placeholder={intl.formatMessage({ id: 'COMMON.DATE.FORMAT' })}
                   value={start}
                   onChange={(e) => setStart(e.target.value)}
                 />
               </label>
               <label htmlFor="endDate">
-                <span className="mr-2 form-label">To</span>
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
                 <input
                   type="date"
                   id="endDate"
                   className="input"
+                  placeholder={intl.formatMessage({ id: 'COMMON.DATE.FORMAT' })}
                   value={end}
                   min={start || undefined}
                   max={start ? getMaxDay(start) : undefined}
@@ -509,7 +522,12 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
           {selectedFilter === 'customMonth' && (
             <div className="flex gap-4">
               <label htmlFor="startDate">
-                <span className="mr-2 form-label">From</span>
+                <span className="mr-2 form-label">
+                  {' '}
+                  <span className="mr-2 form-label">
+                    <FormattedMessage id="COMMON.FROM" />
+                  </span>
+                </span>
                 <input
                   type="month"
                   id="startDate"
@@ -519,7 +537,9 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
                 />
               </label>
               <label htmlFor="endDate">
-                <span className="mr-2 form-label">To</span>
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
                 <input
                   type="month"
                   id="endDate"
@@ -534,7 +554,9 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
           {selectedFilter === 'customYear' && (
             <div className="flex gap-4">
               <label htmlFor="startDate">
-                <span className="mr-2 form-label">From</span>
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.FROM" />
+                </span>
                 <input
                   type="number"
                   id="startDate"
@@ -545,7 +567,9 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
                 />
               </label>
               <label htmlFor="endDate">
-                <span className="mr-2 form-label">To</span>
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
                 <input
                   type="number"
                   id="endDate"
@@ -563,10 +587,10 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
       </div>
       <div className="flex items-center w-full justify-end gap-4 mt-4">
         <button className="btn btn-light" onClick={onCancel}>
-          Cancel
+          <FormattedMessage id="COMMON.CANCEL" />
         </button>
         <button className="btn btn-primary" onClick={handleApply} disabled={isApplyDisabled}>
-          Apply
+          <FormattedMessage id="COMMON.APPLY" />
         </button>
       </div>
     </>
