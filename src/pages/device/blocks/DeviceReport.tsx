@@ -1,6 +1,6 @@
 import { DeviceStatistics, DeviceStatisticsParams, getDeviceStatistics } from '@/api/devices';
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
@@ -104,7 +104,6 @@ const safeParseEngineHours = (engineHours: string): number => {
 export default function DeviceReport({ ident }: DeviceReportProps) {
   const intl = useIntl();
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>('lastWeek');
-  // New state to hold the temporary filter choice
   const [pendingFilter, setPendingFilter] = useState<FilterOption | null>(null);
   const [metricType, setMetricType] = useState('Mileage');
   const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
@@ -409,20 +408,50 @@ type FilterDateRangeProps = {
 };
 
 function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeProps) {
-  const startDate = useRef<HTMLInputElement | null>(null);
-  const endDate = useRef<HTMLInputElement | null>(null);
+  const [start, setStart] = useState<string>('');
+  const [end, setEnd] = useState<string>('');
+
+  const getMaxDay = (startDate: string) => {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + 30);
+    return d.toISOString().split('T')[0];
+  };
+
+  let errorMessage = '';
+  if (start && end) {
+    if (selectedFilter === 'customYear') {
+      if (Number(start) > Number(end)) {
+        errorMessage = 'Start year cannot be after end year.';
+      }
+    } else {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      if (startDate > endDate) {
+        errorMessage = 'Start date cannot be after end date.';
+      }
+      if (selectedFilter === 'customDay') {
+        const diffInDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+        if (diffInDays > 30) {
+          errorMessage = 'Range of days cannot exceed 30 days.';
+        }
+      }
+    }
+  }
+
+  const isApplyDisabled = !start || !end || !!errorMessage;
 
   const handleApply = () => {
-    const startDateValue = startDate.current?.value;
-    const endDateValue = endDate.current?.value;
-    if (!startDateValue || !endDateValue) return;
+    if (isApplyDisabled) return;
     switch (selectedFilter) {
       case 'customDay':
-        return onApply({ startDate: startDateValue, endDate: endDateValue });
+        onApply({ startDate: start, endDate: end });
+        break;
       case 'customMonth':
-        return onApply({ startDate: `${startDateValue}-01`, endDate: `${endDateValue}-01` });
+        onApply({ startDate: `${start}-01`, endDate: `${end}-01` });
+        break;
       case 'customYear':
-        return onApply({ startDate: `${startDateValue}-01-01`, endDate: `${endDateValue}-12-31` });
+        onApply({ startDate: `${start}-01-01`, endDate: `${end}-12-31` });
+        break;
       default:
         return;
     }
@@ -440,50 +469,93 @@ function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeP
         </h3>
       </div>
       <div className="card-body">
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-col">
           {selectedFilter === 'customDay' && (
-            <>
+            <div className="flex gap-4">
               <label htmlFor="startDate">
                 <span className="mr-2 form-label">From</span>
-                <input type="date" id="startDate" className="input" ref={startDate} />
+                <input
+                  type="date"
+                  id="startDate"
+                  className="input"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
               </label>
               <label htmlFor="endDate">
                 <span className="mr-2 form-label">To</span>
-                <input type="date" id="endDate" className="input" ref={endDate} />
+                <input
+                  type="date"
+                  id="endDate"
+                  className="input"
+                  value={end}
+                  min={start || undefined}
+                  max={start ? getMaxDay(start) : undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
               </label>
-            </>
+            </div>
           )}
           {selectedFilter === 'customMonth' && (
-            <>
+            <div className="flex gap-4">
               <label htmlFor="startDate">
                 <span className="mr-2 form-label">From</span>
-                <input type="month" id="startDate" className="input" ref={startDate} />
+                <input
+                  type="month"
+                  id="startDate"
+                  className="input"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
               </label>
               <label htmlFor="endDate">
                 <span className="mr-2 form-label">To</span>
-                <input type="month" id="endDate" className="input" ref={endDate} />
+                <input
+                  type="month"
+                  id="endDate"
+                  className="input"
+                  value={end}
+                  min={start || undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
               </label>
-            </>
+            </div>
           )}
           {selectedFilter === 'customYear' && (
-            <>
+            <div className="flex gap-4">
               <label htmlFor="startDate">
                 <span className="mr-2 form-label">From</span>
-                <input type="number" id="startDate" className="input" ref={startDate} />
+                <input
+                  type="number"
+                  id="startDate"
+                  className="input"
+                  placeholder="YYYY"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
               </label>
               <label htmlFor="endDate">
                 <span className="mr-2 form-label">To</span>
-                <input type="number" id="endDate" className="input" ref={endDate} />
+                <input
+                  type="number"
+                  id="endDate"
+                  className="input"
+                  placeholder="YYYY"
+                  value={end}
+                  min={start || undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
               </label>
-            </>
+            </div>
           )}
+          {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
         </div>
       </div>
       <div className="flex items-center w-full justify-end gap-4 mt-4">
         <button className="btn btn-light" onClick={onCancel}>
           Cancel
         </button>
-        <button className="btn btn-primary" onClick={handleApply}>
+        <button className="btn btn-primary" onClick={handleApply} disabled={isApplyDisabled}>
           Apply
         </button>
       </div>
