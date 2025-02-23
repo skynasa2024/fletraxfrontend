@@ -738,5 +738,6 @@
   "MAINTENANCE_TYPE.DELETE.MODAL_TITLE": "Bakım Türünü Sil",
   "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Bu bakım türünü silmek istediğinizden emin misiniz?",
   "DRIVER.NATIONALITY.TURKISH": "Türk",
-  "DRIVER.NATIONALITY.FOREIGN": "Yabancı"
+  "DRIVER.NATIONALITY.FOREIGN": "Yabancı",
+  "DEVICE.REPORT.CHART.TITLE": "{type} Raporu - {startDate} ile {endDate} arası"
 }

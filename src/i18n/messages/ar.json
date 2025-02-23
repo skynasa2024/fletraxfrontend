@@ -608,6 +608,7 @@
   "DEVICE.REPORT.CUSTOM_DAYS": "أيام مخصصة",
   "DEVICE.REPORT.CUSTOM_MONTHS": "أشهر مخصصة",
   "DEVICE.REPORT.CUSTOM_YEARS": "سنوات مخصصة",
+  "DEVICE.REPORT.CHART.TITLE": "تقرير {type} من {startDate} إلى {endDate}",
   "PHONE_INPUT.PLACEHOLDER": "رقم الهاتف",
   "VEHICLE.SEARCH.PLACEHOLDER": "بحث المركبات",
   "USER_PAGE.TITLE": "صفحة المستخدم",

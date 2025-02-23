@@ -321,7 +321,19 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               toolbar: { show: false }
             },
             title: {
-              text: `${metricType} Report from ${rangeFilter.startDate} to ${rangeFilter.endDate}`,
+              text: intl.formatMessage(
+                { id: 'DEVICE.REPORT.CHART.TITLE' },
+                {
+                  type: intl.formatMessage({
+                    id:
+                      metricType === 'Mileage'
+                        ? 'DASHBOARD.MILEAGE_ENGINE.MILEAGE'
+                        : 'DASHBOARD.MILEAGE_ENGINE.ENGINE'
+                  }),
+                  startDate: rangeFilter.startDate,
+                  endDate: rangeFilter.endDate
+                }
+              ),
               align: 'center',
               margin: 10,
               style: {

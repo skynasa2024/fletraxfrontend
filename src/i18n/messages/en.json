@@ -611,6 +611,7 @@
   "DEVICE.REPORT.CUSTOM_DAYS": "Custom Days",
   "DEVICE.REPORT.CUSTOM_MONTHS": "Custom Months",
   "DEVICE.REPORT.CUSTOM_YEARS": "Custom Years",
+  "DEVICE.REPORT.CHART.TITLE": "{type} Report from {startDate} to {endDate}",
   "COMMON.FILTERS": "Filters",
   "COMMON.EXPORT": "Export",
   "COMMON.FILTERS.COUNT": "{count}",
