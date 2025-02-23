@@ -1,17 +1,24 @@
 import { DeviceStatistics, DeviceStatisticsParams, getDeviceStatistics } from '@/api/devices';
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
 import { ButtonRadioGroup } from '../../dashboards/blocks/ButtonRadioGroup';
 import { useSettings } from '@/providers';
+import { Modal } from '@mui/material';
 
 type DeviceReportProps = {
   ident: string;
 };
 
-type FilterOption = 'lastWeek' | 'lastMonth' | 'lastYear';
+type FilterOption =
+  | 'lastWeek'
+  | 'lastMonth'
+  | 'lastYear'
+  | 'customDay'
+  | 'customMonth'
+  | 'customYear';
 
 const options: Record<
   FilterOption,
@@ -31,19 +38,19 @@ const options: Record<
   lastYear: {
     name: 'Last Year'
     // nameKey: 'DASHBOARD.REPORT.LAST_YEAR'
+  },
+  customDay: {
+    name: 'Custom Day'
+    // nameKey: 'DASHBOARD.REPORT.CUSTOM_DAY'
+  },
+  customMonth: {
+    name: 'Custom Month'
+    // nameKey: 'DASHBOARD.REPORT.CUSTOM_MONTH'
+  },
+  customYear: {
+    name: 'Custom Year'
+    // nameKey: 'DASHBOARD.REPORT.CUSTOM_YEAR'
   }
-  // customDay: {
-  //   name: 'Custom Day'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_DAY'
-  // },
-  // customMonth: {
-  //   name: 'Custom Month'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_MONTH'
-  // },
-  // customYear: {
-  //   name: 'Custom Year'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_YEAR'
-  // }
 };
 
 const formatDate = (date: string) => {
@@ -97,11 +104,18 @@ const safeParseEngineHours = (engineHours: string): number => {
 export default function DeviceReport({ ident }: DeviceReportProps) {
   const intl = useIntl();
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>('lastWeek');
+  // New state to hold the temporary filter choice
+  const [pendingFilter, setPendingFilter] = useState<FilterOption | null>(null);
   const [metricType, setMetricType] = useState('Mileage');
   const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
   const [isLoadingStatistics, setIsLoadingStatistics] = useState(true);
   const { settings } = useSettings();
   const isDarkMode = settings.themeMode === 'dark';
+  const [rangeFilter, setRangeFilter] = useState({
+    startDate: '',
+    endDate: ''
+  });
+  const [isCustomDateRangeModalOpen, setIsCustomDateRangeModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,6 +134,8 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     };
 
     fetchData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ident, selectedFilter]);
 
   const getQueryParams = (selected: FilterOption): Omit<DeviceStatisticsParams, 'ident'> => {
@@ -153,6 +169,27 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
           startDate: startDate.toISOString().split('T')[0],
           endDate: endDate.toISOString().split('T')[0],
           groupedBy: 'monthly'
+        };
+      }
+      case 'customDay': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'daily'
+        };
+      }
+      case 'customMonth': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'monthly'
+        };
+      }
+      case 'customYear': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'yearly'
         };
       }
       default: {
@@ -203,6 +240,20 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
   // Set minimum height as 18% of max value
   const minHeightForIcon = maxValue * 0.18;
 
+  const handleCancelDateRange = () => {
+    setIsCustomDateRangeModalOpen(false);
+    setPendingFilter(null);
+  };
+
+  const handleApplyDateRange = ({ startDate, endDate }: { startDate: string; endDate: string }) => {
+    setRangeFilter({ startDate, endDate });
+    if (pendingFilter) {
+      setSelectedFilter(pendingFilter);
+    }
+    setIsCustomDateRangeModalOpen(false);
+    setPendingFilter(null);
+  };
+
   return (
     <div className="card h-full p-4 flex flex-col justify-between">
       <div className="flex justify-between">
@@ -225,9 +276,39 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
           />
           <ReportFilterDropdown
             selected={selectedFilter}
-            setSelected={setSelectedFilter}
+            setSelected={(key) => {
+              if (key === 'customDay' || key === 'customMonth' || key === 'customYear') {
+                setPendingFilter(key);
+                setIsCustomDateRangeModalOpen(true);
+              } else {
+                setSelectedFilter(key);
+              }
+            }}
             options={options}
           />
+          <div>
+            <p>{rangeFilter.startDate}</p>
+            <p>{rangeFilter.endDate}</p>
+          </div>
+          <Modal
+            open={
+              (selectedFilter === 'customDay' ||
+                selectedFilter === 'customMonth' ||
+                selectedFilter === 'customYear' ||
+                pendingFilter === 'customDay' ||
+                pendingFilter === 'customMonth' ||
+                pendingFilter === 'customYear') &&
+              isCustomDateRangeModalOpen
+            }
+          >
+            <div className="card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-4 flex justify-center items-center">
+              <FilterDateRange
+                selectedFilter={pendingFilter || selectedFilter}
+                onApply={handleApplyDateRange}
+                onCancel={handleCancelDateRange}
+              />
+            </div>
+          </Modal>
         </div>
       </div>
       <div>
@@ -317,6 +398,96 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
         />
       </div>
     </div>
+  );
+}
+
+type FilterDateRangeProps = {
+  selectedFilter: FilterOption;
+  // eslint-disable-next-line no-unused-vars
+  onApply: ({ startDate, endDate }: { startDate: string; endDate: string }) => void;
+  onCancel: () => void;
+};
+
+function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeProps) {
+  const startDate = useRef<HTMLInputElement | null>(null);
+  const endDate = useRef<HTMLInputElement | null>(null);
+
+  const handleApply = () => {
+    const startDateValue = startDate.current?.value;
+    const endDateValue = endDate.current?.value;
+    if (!startDateValue || !endDateValue) return;
+    switch (selectedFilter) {
+      case 'customDay':
+        return onApply({ startDate: startDateValue, endDate: endDateValue });
+      case 'customMonth':
+        return onApply({ startDate: `${startDateValue}-01`, endDate: `${endDateValue}-01` });
+      case 'customYear':
+        return onApply({ startDate: `${startDateValue}-01-01`, endDate: `${endDateValue}-12-31` });
+      default:
+        return;
+    }
+  };
+
+  return (
+    <>
+      <div className="card-header w-full">
+        <h3 className="card-title">
+          {selectedFilter === 'customDay'
+            ? 'Custom Day'
+            : selectedFilter === 'customMonth'
+              ? 'Custom Month'
+              : 'Custom Year'}
+        </h3>
+      </div>
+      <div className="card-body">
+        <div className="flex gap-4">
+          {selectedFilter === 'customDay' && (
+            <>
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">From</span>
+                <input type="date" id="startDate" className="input" ref={startDate} />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">To</span>
+                <input type="date" id="endDate" className="input" ref={endDate} />
+              </label>
+            </>
+          )}
+          {selectedFilter === 'customMonth' && (
+            <>
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">From</span>
+                <input type="month" id="startDate" className="input" ref={startDate} />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">To</span>
+                <input type="month" id="endDate" className="input" ref={endDate} />
+              </label>
+            </>
+          )}
+          {selectedFilter === 'customYear' && (
+            <>
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">From</span>
+                <input type="number" id="startDate" className="input" ref={startDate} />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">To</span>
+                <input type="number" id="endDate" className="input" ref={endDate} />
+              </label>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center w-full justify-end gap-4 mt-4">
+        <button className="btn btn-light" onClick={onCancel}>
+          Cancel
+        </button>
+        <button className="btn btn-primary" onClick={handleApply}>
+          Apply
+        </button>
+      </div>
+    </>
   );
 }
 
