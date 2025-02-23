@@ -302,7 +302,7 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               isCustomDateRangeModalOpen
             }
           >
-            <div className="card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-4 flex justify-center items-center">
+            <div className="card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-dark rounded-lg shadow-lg p-4 flex justify-center items-center">
               <FilterDateRange
                 selectedFilter={pendingFilter || selectedFilter}
                 onApply={handleApplyDateRange}
@@ -335,7 +335,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
                 }
               ),
               align: 'center',
-              margin: 10,
               style: {
                 fontSize: '12px',
                 fontWeight: 'bold',
