@@ -274,7 +274,7 @@ export const reverseGeoLocation = async (
   return location.data.display_name;
 };
 
-export interface DeviceStatistics {
+interface DeviceStatisticsDTO {
   id: string;
   ident: string;
   date: string;
@@ -296,25 +296,58 @@ export interface DeviceStatistics {
   yearlyEngineHours: string;
   totalEngineHours: string;
   engineHours: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string | null;
+  updatedAt: string | null;
 }
 
+export interface DeviceStatistics {
+  date: string;
+  existingKilometers: string;
+  engineHours: string;
+}
+
+type GroupByParam = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export type DeviceStatisticsParams = {
+  startDate: string;
+  endDate: string;
+  groupedBy: GroupByParam;
+  ident: string;
+};
+
 export const getDeviceStatistics = async (
-  params: {
-    page: number;
-    size: number;
-  },
-  ident: string
-): Promise<Paginated<DeviceStatistics>> => {
-  const statistics = await axios.get<PaginatedResponseModel<DeviceStatistics>>(
-    `/api/statistics/getByIdent/${ident}`,
+  params: DeviceStatisticsParams
+): Promise<DeviceStatistics[]> => {
+  const statistics = await axios.get<ResponseModel<DeviceStatisticsDTO[]>>(
+    `/api/statistics/getLastByIdent`,
     {
       params
     }
   );
-  return {
-    data: statistics.data.result.content,
-    totalCount: statistics.data.result.totalElements
-  };
+  switch (params.groupedBy) {
+    case 'daily':
+      return statistics.data.result.map((stat) => ({
+        date: stat.date,
+        existingKilometers: stat.dailyExistingKilometers,
+        engineHours: stat.dailyEngineHours
+      }));
+    case 'weekly':
+      return statistics.data.result.map((stat) => ({
+        date: stat.date,
+        existingKilometers: stat.weeklyExistingKilometers,
+        engineHours: stat.weeklyEngineHours
+      }));
+    case 'monthly':
+      return statistics.data.result.map((stat) => ({
+        date: stat.date,
+        existingKilometers: stat.monthlyExistingKilometers,
+        engineHours: stat.monthlyEngineHours
+      }));
+    case 'yearly':
+      return statistics.data.result.map((stat) => ({
+        date: stat.date,
+        existingKilometers: stat.yearlyExistingKilometers,
+        engineHours: stat.yearlyEngineHours
+      }));
+  }
 };

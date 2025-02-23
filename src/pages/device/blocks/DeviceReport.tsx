@@ -1,41 +1,56 @@
-import { Paginated } from '@/api/common';
-import { DeviceStatistics, getDeviceStatistics } from '@/api/devices';
+import { DeviceStatistics, DeviceStatisticsParams, getDeviceStatistics } from '@/api/devices';
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
 import { ButtonRadioGroup } from '../../dashboards/blocks/ButtonRadioGroup';
+import { useSettings } from '@/providers';
+import { Modal } from '@mui/material';
 
 type DeviceReportProps = {
   ident: string;
 };
 
-const options = {
+type FilterOption =
+  | 'lastWeek'
+  | 'lastMonth'
+  | 'lastYear'
+  | 'customDay'
+  | 'customMonth'
+  | 'customYear';
+
+const options: Record<
+  FilterOption,
+  {
+    name: string;
+    nameKey?: string;
+  }
+> = {
   lastWeek: {
-    name: 'Last 7 days'
-    // nameKey: 'DASHBOARD.REPORT.LAST_7_DAYS'
+    name: 'Last 7 days',
+    nameKey: 'DEVICE.REPORT.LAST_7_DAYS'
   },
   lastMonth: {
-    name: 'Last Month'
-    // nameKey: 'DASHBOARD.REPORT.LAST_MONTH'
+    name: 'Last Month',
+    nameKey: 'DEVICE.REPORT.LAST_MONTH'
+  },
+  lastYear: {
+    name: 'Last Year',
+    nameKey: 'DEVICE.REPORT.LAST_YEAR'
+  },
+  customDay: {
+    name: 'Custom Day',
+    nameKey: 'DEVICE.REPORT.CUSTOM_DAYS'
+  },
+  customMonth: {
+    name: 'Custom Month',
+    nameKey: 'DEVICE.REPORT.CUSTOM_MONTHS'
+  },
+  customYear: {
+    name: 'Custom Year',
+    nameKey: 'DEVICE.REPORT.CUSTOM_YEARS'
   }
-  // lastYear: {
-  //   name: 'Last Year'
-  //   // nameKey: 'DASHBOARD.REPORT.LAST_YEAR'
-  // },
-  // customDay: {
-  //   name: 'Custom Day'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_DAY'
-  // },
-  // customMonth: {
-  //   name: 'Custom Month'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_MONTH'
-  // },
-  // customYear: {
-  //   name: 'Custom Year'
-  //   // nameKey: 'DASHBOARD.REPORT.CUSTOM_YEAR'
-  // }
 };
 
 const formatDate = (date: string) => {
@@ -43,7 +58,7 @@ const formatDate = (date: string) => {
   return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
 };
 
-const CAR_ICON_CONFIG = {
+const CAR_ICON = {
   path: toAbsoluteUrl('/media/icons/chart-car.svg'),
   width: 45,
   height: 45,
@@ -55,9 +70,9 @@ const createPointAnnotation = (date: string, value: number, minHeightForIcon: nu
   x: date,
   y: value,
   ...(value > minHeightForIcon && {
-    image: CAR_ICON_CONFIG
+    image: CAR_ICON
   }),
-  marker: { size: -1 }
+  marker: { size: 0, cssClass: 'hidden' }
 });
 
 const formatHoursAndMinutes = (hours: number) => {
@@ -66,14 +81,14 @@ const formatHoursAndMinutes = (hours: number) => {
   return `${h}h ${m}m`;
 };
 
-const safeParseFloat = (value: string) => {
+const safeParseFloat = (value: string): number => {
   if (!value) return 0;
   const cleaned = value.replace(/[^\d.-]/g, '');
   const parsed = parseFloat(cleaned);
   return isNaN(parsed) ? 0 : parsed;
 };
 
-const safeParseEngineHours = (engineHours: string) => {
+const safeParseEngineHours = (engineHours: string): number => {
   if (!engineHours) return 0;
   try {
     const [hoursStr = '0', minutesStr = '0'] = engineHours.split(' h , ');
@@ -88,62 +103,131 @@ const safeParseEngineHours = (engineHours: string) => {
 
 export default function DeviceReport({ ident }: DeviceReportProps) {
   const intl = useIntl();
-  const [selected, setSelected] = useState('lastWeek');
-  const [metricType, setMetricType] = useState('Mileage'); // New state for metric type
-  const [statistics, setStatistics] = useState<Paginated<DeviceStatistics> | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<FilterOption>('lastWeek');
+  const [pendingFilter, setPendingFilter] = useState<FilterOption | null>(null);
+  const [metricType, setMetricType] = useState('Mileage');
+  const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
+  const { settings } = useSettings();
+  const isDarkMode = settings.themeMode === 'dark';
+  const [rangeFilter, setRangeFilter] = useState({
+    startDate: '',
+    endDate: ''
+  });
+  const [isCustomDateRangeModalOpen, setIsCustomDateRangeModalOpen] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      await getDeviceStatistics({ page: 0, size: 10 }, ident).then(setStatistics);
-    })();
-  }, [ident]);
-
-  const getFilteredData = () => {
-    if (!statistics?.data) return [];
-    const today = new Date();
-
-    return statistics.data.filter((stat) => {
-      const statDate = new Date(stat.date);
-      if (selected === 'lastWeek') {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(today.getDate() - 7);
-        return statDate >= sevenDaysAgo;
-      } else if (selected === 'lastMonth') {
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(today.getMonth() - 1);
-        return statDate >= oneMonthAgo;
-      } else if (selected === 'lastYear') {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(today.getFullYear() - 1);
-        return statDate >= oneYearAgo;
+    const fetchData = async () => {
+      try {
+        const queryParams = getQueryParams(selectedFilter);
+        if (
+          selectedFilter !== 'customDay' &&
+          selectedFilter !== 'customMonth' &&
+          selectedFilter !== 'customYear'
+        ) {
+          setRangeFilter({ startDate: queryParams.startDate, endDate: queryParams.endDate });
+        }
+        const data = await getDeviceStatistics({
+          ident,
+          ...queryParams
+        });
+        setStatistics(data);
+      } catch (error) {
+        console.error('Error fetching device statistics:', error);
       }
-      // For customDay, customMonth, customYear, implement your own filtering logic or return all data
-      return true;
-    });
-  };
+    };
 
-  const getChartData = () => {
-    const filteredData = getFilteredData().filter((stat) => !!stat.date); // Ensure valid dates
-    if (metricType === 'Mileage') {
-      return {
-        name: 'Daily Kilometers',
-        data: filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers))
-      };
-    } else {
-      return {
-        name: 'Engine Hours',
-        data: filteredData.map((stat) => safeParseEngineHours(stat.dailyEngineHours))
-      };
+    fetchData();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ident, selectedFilter]);
+
+  const getQueryParams = (selected: FilterOption): Omit<DeviceStatisticsParams, 'ident'> => {
+    switch (selected) {
+      case 'lastWeek': {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
+      case 'lastMonth': {
+        const startDate = new Date();
+        startDate.setMonth(startDate.getMonth() - 1);
+        startDate.setDate(startDate.getDate() + 1);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
+      case 'lastYear': {
+        const startDate = new Date();
+        startDate.setFullYear(startDate.getFullYear() - 1);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'monthly'
+        };
+      }
+      case 'customDay': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'daily'
+        };
+      }
+      case 'customMonth': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'monthly'
+        };
+      }
+      case 'customYear': {
+        return {
+          startDate: rangeFilter.startDate,
+          endDate: rangeFilter.endDate,
+          groupedBy: 'yearly'
+        };
+      }
+      default: {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+        const endDate = new Date();
+        return {
+          startDate: startDate.toISOString().split('T')[0],
+          endDate: endDate.toISOString().split('T')[0],
+          groupedBy: 'daily'
+        };
+      }
     }
   };
 
+  const getChartData = (statistics?: DeviceStatistics[] | null) => {
+    if (!statistics) return { name: '', data: [] };
+    if (metricType === 'Mileage') {
+      return {
+        name: 'Daily Kilometers',
+        data: statistics?.map((stat) => safeParseFloat(stat.existingKilometers))
+      };
+    }
+    return {
+      name: 'Engine Hours',
+      data: statistics?.map((stat) => safeParseEngineHours(stat.engineHours))
+    };
+  };
+
   const getTooltipContent = (dataPointIndex: number) => {
-    const filteredData = getFilteredData();
-    const data = filteredData[dataPointIndex];
+    const data = statistics?.[dataPointIndex];
     if (!data) return '';
 
     const date = data.date;
-    const value = metricType === 'Mileage' ? data.dailyExistingKilometers : data.dailyEngineHours;
+    const value = metricType === 'Mileage' ? data.existingKilometers : data.engineHours;
 
     return `
       <div class="p-2 text-xs bg-white rounded shadow-md">
@@ -154,17 +238,32 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     `;
   };
 
-  const filteredData = getFilteredData();
-  const values = filteredData.map((stat) => safeParseFloat(stat.dailyExistingKilometers));
-  const maxValue = Math.max(...(values.length ? values : [0]));
-  // Set minimum height as 20% of max value
-  const minHeightForIcon = maxValue * 0.2;
+  const values = statistics?.map((stat) => safeParseFloat(stat.existingKilometers));
+  const maxValue = Math.max(...((values?.length ? values : [0]) ?? 0));
+  // Set minimum height as 18% of max value
+  const minHeightForIcon = maxValue * 0.18;
+
+  const handleCancelDateRange = () => {
+    setIsCustomDateRangeModalOpen(false);
+    setPendingFilter(null);
+  };
+
+  const handleApplyDateRange = ({ startDate, endDate }: { startDate: string; endDate: string }) => {
+    setRangeFilter({ startDate, endDate });
+    if (pendingFilter) {
+      setSelectedFilter(pendingFilter);
+    }
+    setIsCustomDateRangeModalOpen(false);
+    setPendingFilter(null);
+  };
 
   return (
     <div className="card h-full p-4 flex flex-col justify-between">
       <div className="flex justify-between">
         <div>
-          <h2 className="card-title">Device Report</h2>
+          <h2 className="card-title">
+            <FormattedMessage id="DEVICE.REPORT.TITLE" />
+          </h2>
           <h3 className="text-sm font-thin text-[#B5B5C3]">
             <FormattedMessage id="DASHBOARD.MILEAGE_ENGINE.TITLE" />
           </h3>
@@ -180,7 +279,37 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
             }}
             disabled={!statistics}
           />
-          <ReportFilterDropdown selected={selected} setSelected={setSelected} options={options} />
+          <ReportFilterDropdown
+            selected={selectedFilter}
+            setSelected={(key) => {
+              if (key === 'customDay' || key === 'customMonth' || key === 'customYear') {
+                setPendingFilter(key);
+                setIsCustomDateRangeModalOpen(true);
+              } else {
+                setSelectedFilter(key);
+              }
+            }}
+            options={options}
+          />
+          <Modal
+            open={
+              (selectedFilter === 'customDay' ||
+                selectedFilter === 'customMonth' ||
+                selectedFilter === 'customYear' ||
+                pendingFilter === 'customDay' ||
+                pendingFilter === 'customMonth' ||
+                pendingFilter === 'customYear') &&
+              isCustomDateRangeModalOpen
+            }
+          >
+            <div className="card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-4 flex justify-center items-center">
+              <FilterDateRange
+                selectedFilter={pendingFilter || selectedFilter}
+                onApply={handleApplyDateRange}
+                onCancel={handleCancelDateRange}
+              />
+            </div>
+          </Modal>
         </div>
       </div>
       <div>
@@ -191,11 +320,39 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               type: 'bar',
               toolbar: { show: false }
             },
+            title: {
+              text: intl.formatMessage(
+                { id: 'DEVICE.REPORT.CHART.TITLE' },
+                {
+                  type: intl.formatMessage({
+                    id:
+                      metricType === 'Mileage'
+                        ? 'DASHBOARD.MILEAGE_ENGINE.MILEAGE'
+                        : 'DASHBOARD.MILEAGE_ENGINE.ENGINE'
+                  }),
+                  startDate: rangeFilter.startDate,
+                  endDate: rangeFilter.endDate
+                }
+              ),
+              align: 'center',
+              margin: 10,
+              style: {
+                fontSize: '12px',
+                fontWeight: 'bold',
+                color: isDarkMode ? '#dad1d1' : '#252525'
+              }
+            },
             xaxis: {
-              categories: getFilteredData().map((stat) => stat.date) || [],
+              categories: statistics?.map((stat) => stat.date) || [],
               labels: {
                 style: { fontSize: '12px', colors: '#B5B5C3' },
-                formatter: (val) => formatDate(val)
+                formatter: (val) => {
+                  if (selectedFilter === 'lastYear') {
+                    const d = new Date(val);
+                    return d.toLocaleString('default', { month: 'short' });
+                  }
+                  return formatDate(val);
+                }
               },
               axisBorder: { show: true, color: '#ccc' }
             },
@@ -219,10 +376,10 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               }
             },
             annotations: {
-              points: getFilteredData()
-                .filter((stat) => !!stat.date && safeParseFloat(stat.dailyExistingKilometers) > 0)
-                .map((stat) => {
-                  const value = safeParseFloat(stat.dailyExistingKilometers);
+              points: statistics
+                ?.filter((stat) => !!stat.date && safeParseFloat(stat.existingKilometers) > 0)
+                ?.map((stat) => {
+                  const value = safeParseFloat(stat.existingKilometers);
                   return createPointAnnotation(stat.date, value, minHeightForIcon);
                 })
             },
@@ -230,7 +387,11 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
               show: false
             },
             colors: ['#545FAB'],
-            grid: { show: true, borderColor: '#ddd', strokeDashArray: 4 },
+            grid: {
+              show: true,
+              borderColor: isDarkMode ? '#dddddd53' : '#ddd',
+              strokeDashArray: 4
+            },
             tooltip: {
               enabled: true,
               shared: false,
@@ -246,12 +407,15 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
                 }
                 return formatHoursAndMinutes(val);
               },
-              style: { fontSize: '12px', colors: ['#252525'] },
+              style: {
+                fontSize: '12px',
+                colors: [isDarkMode ? '#dad1d1' : '#252525']
+              },
               offsetY: -30,
               textAnchor: 'middle'
             }
           }}
-          series={[getChartData()]}
+          series={[getChartData(statistics)]}
           type="bar"
           height={350}
         />
@@ -260,15 +424,200 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
   );
 }
 
-export interface ReportFilterDropdownProps {
-  selected: string;
+type FilterDateRangeProps = {
+  selectedFilter: FilterOption;
   // eslint-disable-next-line no-unused-vars
-  setSelected: (value: string) => void;
+  onApply: ({ startDate, endDate }: { startDate: string; endDate: string }) => void;
+  onCancel: () => void;
+};
+
+function FilterDateRange({ selectedFilter, onApply, onCancel }: FilterDateRangeProps) {
+  const intl = useIntl();
+  const [start, setStart] = useState<string>('');
+  const [end, setEnd] = useState<string>('');
+
+  const getMaxDay = (startDate: string) => {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + 30);
+    return d.toISOString().split('T')[0];
+  };
+
+  let errorMessage = '';
+  if (start && end) {
+    if (selectedFilter === 'customYear') {
+      if (Number(start) > Number(end)) {
+        errorMessage = 'Start year cannot be after end year.';
+      }
+    } else {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      if (startDate > endDate) {
+        errorMessage = 'Start date cannot be after end date.';
+      }
+      if (selectedFilter === 'customDay') {
+        const diffInDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+        if (diffInDays > 30) {
+          errorMessage = 'Range of days cannot exceed 30 days.';
+        }
+      }
+    }
+  }
+
+  const isApplyDisabled = !start || !end || !!errorMessage;
+
+  const handleApply = () => {
+    if (isApplyDisabled) return;
+    switch (selectedFilter) {
+      case 'customDay':
+        onApply({ startDate: start, endDate: end });
+        break;
+      case 'customMonth':
+        onApply({ startDate: `${start}-01`, endDate: `${end}-01` });
+        break;
+      case 'customYear':
+        onApply({ startDate: `${start}-01-01`, endDate: `${end}-12-31` });
+        break;
+      default:
+        return;
+    }
+  };
+
+  return (
+    <>
+      <div className="card-header w-full">
+        <h3 className="card-title">
+          {selectedFilter === 'customDay' ? (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_DAYS" />
+          ) : selectedFilter === 'customMonth' ? (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_MONTHS" />
+          ) : (
+            <FormattedMessage id="DEVICE.REPORT.CUSTOM_YEARS" />
+          )}
+        </h3>
+      </div>
+      <div className="card-body">
+        <div className="flex gap-4 flex-col">
+          {selectedFilter === 'customDay' && (
+            <div className="flex gap-4">
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">
+                  <span className="mr-2 form-label">
+                    <FormattedMessage id="COMMON.FROM" />
+                  </span>
+                </span>
+                <input
+                  type="date"
+                  id="startDate"
+                  className="input"
+                  placeholder={intl.formatMessage({ id: 'COMMON.DATE.FORMAT' })}
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
+                <input
+                  type="date"
+                  id="endDate"
+                  className="input"
+                  placeholder={intl.formatMessage({ id: 'COMMON.DATE.FORMAT' })}
+                  value={end}
+                  min={start || undefined}
+                  max={start ? getMaxDay(start) : undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+          {selectedFilter === 'customMonth' && (
+            <div className="flex gap-4">
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">
+                  {' '}
+                  <span className="mr-2 form-label">
+                    <FormattedMessage id="COMMON.FROM" />
+                  </span>
+                </span>
+                <input
+                  type="month"
+                  id="startDate"
+                  className="input"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
+                <input
+                  type="month"
+                  id="endDate"
+                  className="input"
+                  value={end}
+                  min={start || undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+          {selectedFilter === 'customYear' && (
+            <div className="flex gap-4">
+              <label htmlFor="startDate">
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.FROM" />
+                </span>
+                <input
+                  type="number"
+                  id="startDate"
+                  className="input"
+                  placeholder="YYYY"
+                  value={start}
+                  onChange={(e) => setStart(e.target.value)}
+                />
+              </label>
+              <label htmlFor="endDate">
+                <span className="mr-2 form-label">
+                  <FormattedMessage id="COMMON.TO" />
+                </span>
+                <input
+                  type="number"
+                  id="endDate"
+                  className="input"
+                  placeholder="YYYY"
+                  value={end}
+                  min={start || undefined}
+                  onChange={(e) => setEnd(e.target.value)}
+                />
+              </label>
+            </div>
+          )}
+          {errorMessage && <p className="text-red-500 text-xs mt-1">{errorMessage}</p>}
+        </div>
+      </div>
+      <div className="flex items-center w-full justify-end gap-4 mt-4">
+        <button className="btn btn-light" onClick={onCancel}>
+          <FormattedMessage id="COMMON.CANCEL" />
+        </button>
+        <button className="btn btn-primary" onClick={handleApply} disabled={isApplyDisabled}>
+          <FormattedMessage id="COMMON.APPLY" />
+        </button>
+      </div>
+    </>
+  );
+}
+
+export interface ReportFilterDropdownProps {
+  selected: FilterOption;
+  // eslint-disable-next-line no-unused-vars
+  setSelected: (value: FilterOption) => void;
   readOnly?: boolean;
   options: Record<
-    string,
+    FilterOption,
     {
-      name?: string;
+      name: string;
       nameKey?: string;
     }
   >;
@@ -281,7 +630,7 @@ export const ReportFilterDropdown = ({
   readOnly = false
 }: ReportFilterDropdownProps) => {
   const intl = useIntl();
-  const getOptionLabel = (key: string) => {
+  const getOptionLabel = (key: FilterOption) => {
     const option = options[key];
     if (option?.nameKey) {
       return intl.formatMessage({
@@ -325,7 +674,7 @@ export const ReportFilterDropdown = ({
             <MenuItem
               key={key}
               onClick={() => {
-                setSelected(key);
+                setSelected(key as FilterOption);
               }}
             >
               <MenuLink>
