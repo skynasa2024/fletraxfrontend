@@ -107,7 +107,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
   const [pendingFilter, setPendingFilter] = useState<FilterOption | null>(null);
   const [metricType, setMetricType] = useState('Mileage');
   const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
-  const [isLoadingStatistics, setIsLoadingStatistics] = useState(true);
   const { settings } = useSettings();
   const isDarkMode = settings.themeMode === 'dark';
   const [rangeFilter, setRangeFilter] = useState({
@@ -118,7 +117,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoadingStatistics(true);
       try {
         const queryParams = getQueryParams(selectedFilter);
         if (
@@ -135,8 +133,6 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
         setStatistics(data);
       } catch (error) {
         console.error('Error fetching device statistics:', error);
-      } finally {
-        setIsLoadingStatistics(false);
       }
     };
 
