@@ -324,30 +324,36 @@ export const getDeviceStatistics = async (
       params
     }
   );
+  let result: DeviceStatistics[];
   switch (params.groupedBy) {
     case 'daily':
-      return statistics.data.result.map((stat) => ({
+      result = statistics.data.result.map((stat) => ({
         date: stat.date,
         existingKilometers: stat.dailyExistingKilometers,
         engineHours: stat.dailyEngineHours
       }));
+      break;
     case 'weekly':
-      return statistics.data.result.map((stat) => ({
+      result = statistics.data.result.map((stat) => ({
         date: stat.date,
         existingKilometers: stat.weeklyExistingKilometers,
         engineHours: stat.weeklyEngineHours
       }));
+      break;
     case 'monthly':
-      return statistics.data.result.map((stat) => ({
+      result = statistics.data.result.map((stat) => ({
         date: stat.date,
         existingKilometers: stat.monthlyExistingKilometers,
         engineHours: stat.monthlyEngineHours
       }));
+      break;
     case 'yearly':
-      return statistics.data.result.map((stat) => ({
+      result = statistics.data.result.map((stat) => ({
         date: stat.date,
         existingKilometers: stat.yearlyExistingKilometers,
         engineHours: stat.yearlyEngineHours
       }));
+      break;
   }
+  return result.sort((a, b) => a.date.localeCompare(b.date));
 };
