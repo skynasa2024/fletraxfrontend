@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-interface MileageData {
+interface EngineHoursData {
   id: string;
   plate: string;
   date: string;
@@ -23,12 +23,12 @@ interface SearchParams {
   endDate: string;
 }
 
-export default function MileageReport() {
+export default function EngineHoursReport() {
   const intl = useIntl();
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<MileageData[]>([]);
+  const [data, setData] = useState<EngineHoursData[]>([]);
 
-  const columns = useMemo<ColumnDef<MileageData>[]>(
+  const columns = useMemo<ColumnDef<EngineHoursData>[]>(
     () => [
       {
         accessorKey: 'id',

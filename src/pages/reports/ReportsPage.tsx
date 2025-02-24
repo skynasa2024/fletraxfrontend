@@ -3,6 +3,7 @@ import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import MileageReport from './blocks/MileageReport';
+import EngineHoursReport from './blocks/EngineHoursReport';
 
 type ReportTabType = {
   id: string;
@@ -22,7 +23,7 @@ const ReportTypes: ReportTabType[] = [
     id: 'engineHours',
     label: 'Engine Hours Report',
     description: 'Engine Hours Report',
-    report: <div>Engine Hours</div>
+    report: <EngineHoursReport />
   },
   {
     id: 'tripsAndParking',
