@@ -130,7 +130,7 @@ const SpeedGauge: React.FC<GaugeProps> = ({ maxValue = 100, unit = 'km/h', value
         className="text-4xl font-bold text-black dark:text-white"
         fill="currentColor"
       >
-        {value ?? '?'}
+        {value !== undefined && value !== null ? Math.round(value) : '?'}
       </text>
       <text x={center} y={center + 30} textAnchor="middle" className="text-sm" fill="#6b7280">
         {unit}
