@@ -350,6 +350,9 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
                     const d = new Date(val);
                     return d.toLocaleString('default', { month: 'short' });
                   }
+                  if (selectedFilter === 'customYear') {
+                    return val.split('-')[0];
+                  }
                   return formatDate(val);
                 }
               },
