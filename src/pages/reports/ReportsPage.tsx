@@ -1,50 +1,68 @@
 import { Container } from '@/components/container';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import MileageReport from './blocks/MileageReport';
 
-const ReportTypes = [
+type ReportTabType = {
+  id: string;
+  label: string;
+  description?: string;
+  report: React.ReactNode;
+};
+
+const ReportTypes: ReportTabType[] = [
   {
     id: 'mileage',
-    label: 'Mileage Report'
+    label: 'Mileage Report',
+    description: 'Mileage Report',
+    report: <MileageReport />
   },
   {
     id: 'engineHours',
-    label: 'Engine Hours Report'
+    label: 'Engine Hours Report',
+    description: 'Engine Hours Report',
+    report: <div>Engine Hours</div>
   },
   {
     id: 'tripsAndParking',
-    label: 'Trips/Parking Report'
+    label: 'Trips/Parking Report',
+    description: 'Trips/Parking Report',
+    report: <div>Trips/Parking</div>
   },
   {
     id: 'alarm',
-    label: 'Alarm Report'
+    label: 'Alarm Report',
+    description: 'Alarm Report',
+    report: <div>Alarm</div>
   }
 ];
 
 export default function ReportsPage() {
-  const [activeReport, setActiveReport] = useState(ReportTypes[0]);
+  const [activeReportTab, setActiveReportTab] = useState<ReportTabType>(ReportTypes[0]);
 
   return (
     <Container>
       <Toolbar>
         <ToolbarHeading
           title={<FormattedMessage id="SIDEBAR.MENU.REPORTS" />}
-          description={activeReport.label}
+          description={activeReportTab.label}
         />
       </Toolbar>
 
-      <div className="grid gap-4 grid-cols-4 lg:grid-cols-8 my-4">
+      <div className="grid gap-4 grid-cols-4 lg:grid-cols-8 mb-4">
         {ReportTypes.map((report) => (
           <button
             key={report.id}
-            onClick={() => setActiveReport(report)}
+            onClick={() => setActiveReportTab(report)}
             className="items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2"
           >
             {report.label}
           </button>
         ))}
       </div>
+
+      <div className="card">{activeReportTab.report}</div>
     </Container>
   );
 }
