@@ -19,6 +19,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
     fullScreen: true
   },
   {
+    title: 'SIDEBAR.MENU.REPORTS',
+    externalIcon: 'reports',
+    path: '/reports'
+  },
+  {
     title: 'SIDEBAR.MENU.GEOFENCE',
     externalIcon: 'geofence',
     children: [
