@@ -44,3 +44,33 @@ export const getNotifications = async ({
     data: notifications.data.result.content
   };
 };
+
+interface NotificationTypeDTO {
+  id: string;
+  code: string;
+  label: string;
+  showToUser: boolean;
+}
+
+export async function getNotificationTypes({
+  start,
+  end
+}: {
+  start: number;
+  end: number;
+}): Promise<Paginated<NotificationTypeDTO>> {
+  const types = await axios.get<PaginatedResponseModel<NotificationTypeDTO>>(
+    `/api/notifications/types/index`,
+    {
+      params: {
+        offset: start,
+        size: end - start + 1
+      }
+    }
+  );
+
+  return {
+    data: types.data.result.content,
+    totalCount: types.data.result.totalElements
+  };
+}
