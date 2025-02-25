@@ -105,7 +105,7 @@ export default function TripsAndParkingReport() {
   return (
     <>
       <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-[77%]">
+        <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
             <select

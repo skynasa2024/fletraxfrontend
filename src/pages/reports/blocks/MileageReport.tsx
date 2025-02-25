@@ -81,7 +81,7 @@ export default function MileageReport() {
   return (
     <>
       <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-[60%]">
+        <div className="flex gap-4 items-center justify-between p-4 w-[70%]">
           <div className="grid grid-cols-3 gap-4 grow">
             <VehicleSearch place="bottom" />
             <input
