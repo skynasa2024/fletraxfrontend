@@ -44,7 +44,7 @@ export interface StatisticsReport {
   total: string;
 }
 
-type StatisticsReportParams = {
+export type StatisticsReportParams = {
   vehicleId?: string;
   startDate?: string;
   endDate?: string;

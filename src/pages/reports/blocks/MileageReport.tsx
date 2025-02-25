@@ -1,4 +1,4 @@
-import { getStatisticsReport, StatisticsReport } from '@/api/reports';
+import { getStatisticsReport, StatisticsReport, StatisticsReportParams } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
@@ -112,7 +112,7 @@ export default function MileageReport() {
           columns={columns}
           serverSide
           onFetchData={async (params) => {
-            const queryParams = {
+            const queryParams: StatisticsReportParams = {
               ...params,
               type: 'Mileage',
               ...filters
