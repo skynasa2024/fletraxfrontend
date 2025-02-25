@@ -738,5 +738,11 @@
   "REPORTS.COLUMN.MONTHLY": "شهري",
   "REPORTS.COLUMN.YEARLY": "سنوي",
   "REPORTS.COLUMN.TOTAL": "الإجمالي",
-  "REPORTS.COLUMN.ACTION": "الإجراء"
+  "REPORTS.COLUMN.ACTION": "الإجراء",
+  "REPORTS.COLUMN.START_DATE": "تاريخ البدء",
+  "REPORTS.COLUMN.END_DATE": "تاريخ الانتهاء",
+  "REPORTS.COLUMN.DURATION": "المدة",
+  "REPORTS.COLUMN.MAX_SPEED": "السرعة القصوى",
+  "REPORTS.COLUMN.MILEAGE": "المسافة",
+  "REPORTS.COLUMN.TYPE": "النوع"
 }
