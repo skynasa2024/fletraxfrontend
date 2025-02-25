@@ -7,11 +7,8 @@ import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
-import clsx from 'clsx';
-import { useSettings } from '@/providers';
 
 export default function AlarmReport() {
-  const { settings } = useSettings();
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
 
@@ -92,17 +89,7 @@ export default function AlarmReport() {
           </button>
         </div>
       </form>
-      <div
-        className={clsx(
-          '[&_table>thead>tr>th]:border [&_table>thead>tr>th]:!rounded-t-none [&_table>tbody>tr>td]:border',
-          {
-            '[&_table>thead>tr>th]:border-[#F1F1F4] [&_table>thead>tr>th]:bg-[#FCFCFC] [&_table>tbody>tr>td]:border-[#F1F1F4]':
-              settings.themeMode === 'light',
-            '[&_table>thead>tr>th]:border-gray-200 [&_table>thead>tr>th]:bg-dark [&_table>tbody>tr>td]:border-gray-200':
-              settings.themeMode === 'dark'
-          }
-        )}
-      >
+      <div className="report-table-container">
         <DataGrid
           rowSelect
           columns={columns}
