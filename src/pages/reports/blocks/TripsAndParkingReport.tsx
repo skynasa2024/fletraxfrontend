@@ -98,7 +98,7 @@ export default function TripsAndParkingReport() {
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
-      intervalType: formData.get('type')?.toString() || ''
+      type: formData.get('intervalType')?.toString() || ''
     });
   };
 
@@ -108,7 +108,7 @@ export default function TripsAndParkingReport() {
         <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
-            <select name="type" className="select" defaultValue={filters.intervalType}>
+            <select name="intervalType" className="select" defaultValue={filters.type}>
               <option key="ALL" value="">
                 All
               </option>
@@ -148,7 +148,8 @@ export default function TripsAndParkingReport() {
           onFetchData={async (params) => {
             const queryParams: TripsAndParkingReportParams = {
               ...params,
-              ...filters
+              ...filters,
+              intervalType: filters.type
             };
             return await getTripsAndParkingReport(queryParams);
           }}

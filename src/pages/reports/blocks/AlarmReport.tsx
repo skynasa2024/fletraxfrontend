@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
+import { NotificationTypeSelect } from '../components/NotificationTypeSelect';
 
 export default function AlarmReport() {
   const intl = useIntl();
@@ -56,7 +57,8 @@ export default function AlarmReport() {
     updateFilters({
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
-      endDate: formData.get('endDate')?.toString() || ''
+      endDate: formData.get('endDate')?.toString() || '',
+      type: formData.get('alarmCode')?.toString() || ''
     });
   };
 
@@ -66,7 +68,7 @@ export default function AlarmReport() {
         <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
-            <select name="type" className="select"></select>
+            <NotificationTypeSelect />
             <input
               type="date"
               name="startDate"
@@ -97,7 +99,8 @@ export default function AlarmReport() {
           onFetchData={async (params) => {
             const queryParams: AlarmReportParams = {
               ...params,
-              ...filters
+              ...filters,
+              alarmCode: filters.type
             };
             return await getAlarmReport(queryParams);
           }}

@@ -223,6 +223,7 @@ export type AlarmReportParams = {
   pageIndex: number;
   pageSize: number;
   sort?: string;
+  alarmCode?: string;
 };
 
 export async function getAlarmReport(params: AlarmReportParams): Promise<Paginated<IAlarmReport>> {
@@ -235,7 +236,8 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
         vehicleId: params.vehicleId,
         startDate: params.startDate,
         endDate: params.endDate,
-        sort: params.sort || 'createdAt,desc'
+        sort: params.sort || 'createdAt,desc',
+        alarmCode: params.alarmCode
       }
     }
   );
