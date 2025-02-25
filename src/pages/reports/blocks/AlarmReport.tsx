@@ -102,6 +102,10 @@ export default function AlarmReport() {
             return await getAlarmReport(queryParams);
           }}
           filters={getDataGridFilters()}
+          pagination={{
+            size: 100,
+            sizes: undefined
+          }}
         />
       </div>
     </>

@@ -154,6 +154,10 @@ export default function TripsAndParkingReport() {
             return await getTripsAndParkingReport(queryParams);
           }}
           filters={getDataGridFilters()}
+          pagination={{
+            size: 100,
+            sizes: undefined
+          }}
         />
       </div>
     </>

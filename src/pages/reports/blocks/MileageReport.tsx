@@ -120,6 +120,10 @@ export default function MileageReport() {
             return await getStatisticsReport(queryParams);
           }}
           filters={getDataGridFilters()}
+          pagination={{
+            size: 100,
+            sizes: undefined
+          }}
         />
       </div>
     </>
