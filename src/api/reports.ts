@@ -188,3 +188,66 @@ export async function getTripsAndParkingReport(
     totalCount: report.data.result.totalElements
   };
 }
+
+interface AlarmReportDTO {
+  id: string;
+  type: string;
+  text: string;
+  typeTrans: string;
+  textTrans: string;
+  userId: string | null;
+  deviceId: string;
+  deviceIdent: string;
+  vehicleId: string;
+  vehiclePlate: string;
+  geofenceId: string | null;
+  geofenceName: string | null;
+  latitude: number;
+  longitude: number;
+  createdAt: number;
+  read: boolean;
+}
+
+export interface IAlarmReport {
+  id: string;
+  ident: string;
+  plate: string;
+  date: string;
+  type: string;
+}
+
+export type AlarmReportParams = {
+  vehicleId?: string;
+  startDate?: string;
+  endDate?: string;
+  pageIndex: number;
+  pageSize: number;
+  sort?: string;
+};
+
+export async function getAlarmReport(params: AlarmReportParams): Promise<Paginated<IAlarmReport>> {
+  const report = await axios.get<PaginatedResponseModel<AlarmReportDTO>>(
+    `/api/notifications/reports`,
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        vehicleId: params.vehicleId,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        sort: params.sort || 'createdAt,desc'
+      }
+    }
+  );
+
+  return {
+    data: report.data.result.content.map((item) => ({
+      id: item.id,
+      ident: item.deviceIdent,
+      plate: item.vehiclePlate,
+      date: new Date(item.createdAt * 1000).toLocaleString(),
+      type: item.textTrans
+    })),
+    totalCount: report.data.result.totalElements
+  };
+}
