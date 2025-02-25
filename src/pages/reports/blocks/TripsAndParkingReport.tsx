@@ -11,8 +11,6 @@ import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
-import clsx from 'clsx';
-import { useSettings } from '@/providers';
 import { IntervalType } from '@/api/trips';
 import { useAuthContext } from '@/auth';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -23,7 +21,6 @@ const IntervalTypeOptions = [
 ];
 
 export default function TripsAndParkingReport() {
-  const { settings } = useSettings();
   const intl = useIntl();
   const { currentUser } = useAuthContext();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
@@ -101,21 +98,20 @@ export default function TripsAndParkingReport() {
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
-      intervalType: formData.get('type')?.toString() || IntervalType.Trip
+      type: formData.get('intervalType')?.toString() || ''
     });
   };
 
   return (
     <>
       <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-[77%]">
+        <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
-            <select
-              name="type"
-              className="select"
-              defaultValue={filters.intervalType || IntervalType.Trip}
-            >
+            <select name="intervalType" className="select" defaultValue={filters.type}>
+              <option key="ALL" value="">
+                All
+              </option>
               {IntervalTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -144,17 +140,7 @@ export default function TripsAndParkingReport() {
           </button>
         </div>
       </form>
-      <div
-        className={clsx(
-          '[&_table>thead>tr>th]:border [&_table>thead>tr>th]:!rounded-t-none [&_table>tbody>tr>td]:border',
-          {
-            '[&_table>thead>tr>th]:border-[#F1F1F4] [&_table>thead>tr>th]:bg-[#FCFCFC] [&_table>tbody>tr>td]:border-[#F1F1F4]':
-              settings.themeMode === 'light',
-            '[&_table>thead>tr>th]:border-gray-200 [&_table>thead>tr>th]:bg-dark [&_table>tbody>tr>td]:border-gray-200':
-              settings.themeMode === 'dark'
-          }
-        )}
-      >
+      <div className="report-table-container">
         <DataGrid
           rowSelect
           columns={columns}
@@ -162,11 +148,16 @@ export default function TripsAndParkingReport() {
           onFetchData={async (params) => {
             const queryParams: TripsAndParkingReportParams = {
               ...params,
-              ...filters
+              ...filters,
+              intervalType: filters.type
             };
             return await getTripsAndParkingReport(queryParams);
           }}
           filters={getDataGridFilters()}
+          pagination={{
+            size: 100,
+            sizes: undefined
+          }}
         />
       </div>
     </>

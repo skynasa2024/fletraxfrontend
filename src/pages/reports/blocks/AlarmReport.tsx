@@ -1,4 +1,4 @@
-import { getStatisticsReport, StatisticsReport, StatisticsReportParams } from '@/api/reports';
+import { AlarmReportParams, getAlarmReport, IAlarmReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
@@ -7,13 +7,13 @@ import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
-import { Link } from 'react-router';
+import { NotificationTypeSelect } from '../components/NotificationTypeSelect';
 
-export default function MileageReport() {
+export default function AlarmReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
 
-  const columns = useMemo<ColumnDef<StatisticsReport>[]>(
+  const columns = useMemo<ColumnDef<IAlarmReport>[]>(
     () => [
       {
         accessorKey: 'ident',
@@ -30,30 +30,13 @@ export default function MileageReport() {
         enableSorting: true
       },
       {
-        accessorKey: 'daily',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
-      },
-      {
-        accessorKey: 'weekly',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
-      },
-      {
-        accessorKey: 'monthly',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
-      },
-      {
-        accessorKey: 'yearly',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
-      },
-      {
-        accessorKey: 'total',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.TOTAL' })
+        accessorKey: 'type',
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.TYPE' })
       },
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
         cell: () => (
-          <Link
-            to={''}
+          <button
             className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
             title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
           >
@@ -61,7 +44,7 @@ export default function MileageReport() {
               src={toAbsoluteUrl('/media/icons/view-light.svg')}
               alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
             />
-          </Link>
+          </button>
         )
       }
     ],
@@ -74,16 +57,18 @@ export default function MileageReport() {
     updateFilters({
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
-      endDate: formData.get('endDate')?.toString() || ''
+      endDate: formData.get('endDate')?.toString() || '',
+      type: formData.get('alarmCode')?.toString() || ''
     });
   };
 
   return (
     <>
       <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-[70%]">
-          <div className="grid grid-cols-3 gap-4 grow">
+        <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
+          <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
+            <NotificationTypeSelect />
             <input
               type="date"
               name="startDate"
@@ -112,12 +97,12 @@ export default function MileageReport() {
           columns={columns}
           serverSide
           onFetchData={async (params) => {
-            const queryParams: StatisticsReportParams = {
+            const queryParams: AlarmReportParams = {
               ...params,
-              type: 'Mileage',
-              ...filters
+              ...filters,
+              alarmCode: filters.type
             };
-            return await getStatisticsReport(queryParams);
+            return await getAlarmReport(queryParams);
           }}
           filters={getDataGridFilters()}
           pagination={{

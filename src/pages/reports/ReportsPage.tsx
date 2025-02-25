@@ -5,6 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import MileageReport from './blocks/MileageReport';
 import EngineHoursReport from './blocks/EngineHoursReport';
 import TripsAndParkingReport from './blocks/TripsAndParkingReport';
+import AlarmReport from './blocks/AlarmReport';
+import clsx from 'clsx';
 
 type ReportTabType = {
   id: string;
@@ -36,7 +38,7 @@ const ReportTypes: ReportTabType[] = [
     id: 'alarm',
     label: 'Alarm Report',
     description: 'Alarm Report',
-    report: <div>Alarm</div>
+    report: <AlarmReport />
   }
 ];
 
@@ -57,7 +59,10 @@ export default function ReportsPage() {
           <button
             key={report.id}
             onClick={() => setActiveReportTab(report)}
-            className="items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2"
+            className={clsx(
+              'items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2',
+              report.id !== activeReportTab.id && 'btn-light text-info hover:text-info'
+            )}
           >
             {report.label}
           </button>
