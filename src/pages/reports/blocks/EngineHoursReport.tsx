@@ -51,22 +51,22 @@ export default function EngineHoursReport() {
       {
         accessorKey: 'total',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.TOTAL' })
-      },
-      {
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
-        cell: () => (
-          <Link
-            to={''}
-            className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-            title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
-          >
-            <img
-              src={toAbsoluteUrl('/media/icons/view-light.svg')}
-              alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-            />
-          </Link>
-        )
       }
+      // {
+      //   header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
+      //   cell: () => (
+      //     <Link
+      //       to={''}
+      //       className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
+      //       title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
+      //     >
+      //       <img
+      //         src={toAbsoluteUrl('/media/icons/view-light.svg')}
+      //         alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
+      //       />
+      //     </Link>
+      //   )
+      // }
     ],
     [intl]
   );
