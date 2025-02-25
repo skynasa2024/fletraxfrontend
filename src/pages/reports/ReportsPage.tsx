@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import MileageReport from './blocks/MileageReport';
 import EngineHoursReport from './blocks/EngineHoursReport';
+import TripsAndParkingReport from './blocks/TripsAndParkingReport';
 
 type ReportTabType = {
   id: string;
@@ -29,7 +30,7 @@ const ReportTypes: ReportTabType[] = [
     id: 'tripsAndParking',
     label: 'Trips/Parking Report',
     description: 'Trips/Parking Report',
-    report: <div>Trips/Parking</div>
+    report: <TripsAndParkingReport />
   },
   {
     id: 'alarm',

@@ -1,6 +1,7 @@
 import { axios } from './axios';
 import { Paginated } from './common';
 import { PaginatedResponseModel } from './response';
+import { IntervalType } from './trips';
 
 interface StatisticsReportDTO {
   id: string;
@@ -101,5 +102,89 @@ export async function getStatisticsReport(
       throw new Error(`Unexpected statistics type: ${params.type}`);
     }),
     totalCount: statistics.data.result.totalElements
+  };
+}
+
+interface TripsAndParkingReportDTO {
+  id: string;
+  ident: string;
+  deviceId: string;
+  vehiclePlate: string;
+  vehicleId: string;
+  userId: string | null;
+  intervalType: IntervalType;
+  startTime: number;
+  endTime: number;
+  startLatitude: number;
+  startLongitude: number;
+  endLatitude: number;
+  endLongitude: number;
+  pointsList: any[];
+  totalDistance: number;
+  foramtedTotalDistance: string;
+  totalDuration: number;
+  formatedTotalDuration: string;
+  maxSpeed: number;
+  formatedMaxSpeed: string;
+  averageSpeed: number;
+  formatedAverageSpeed: string;
+  route: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ITripsAndParkingReport {
+  id: string;
+  ident: string;
+  plate: string;
+  intervalType: string;
+  startTime: number;
+  endTime: number;
+  totalDistance: string;
+  totalDuration: string;
+  maxSpeed: string;
+}
+
+export type TripsAndParkingReportParams = {
+  vehicleId?: string;
+  startDate?: string;
+  endDate?: string;
+  intervalType: IntervalType;
+  pageIndex: number;
+  pageSize: number;
+  sort?: string;
+};
+
+export async function getTripsAndParkingReport(
+  params: TripsAndParkingReportParams
+): Promise<Paginated<ITripsAndParkingReport>> {
+  const report = await axios.get<PaginatedResponseModel<TripsAndParkingReportDTO>>(
+    `/api/intervals/reports`,
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        vehicleId: params.vehicleId,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        intervalType: params.intervalType || IntervalType.Trip,
+        sort: params.sort || 'startTime,desc'
+      }
+    }
+  );
+
+  return {
+    data: report.data.result.content.map((item) => ({
+      id: item.id,
+      ident: item.ident,
+      plate: item.vehiclePlate,
+      intervalType: item.intervalType === IntervalType.Trip ? 'Trip' : 'Parking',
+      startTime: item.startTime,
+      endTime: item.endTime,
+      totalDistance: item.foramtedTotalDistance,
+      totalDuration: item.formatedTotalDuration,
+      maxSpeed: item.formatedMaxSpeed
+    })),
+    totalCount: report.data.result.totalElements
   };
 }

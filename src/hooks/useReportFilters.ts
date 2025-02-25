@@ -4,6 +4,7 @@ export interface ReportFilters {
   vehicleId?: string;
   startDate?: string;
   endDate?: string;
+  intervalType?: string;
 }
 
 export function useReportFilters() {
