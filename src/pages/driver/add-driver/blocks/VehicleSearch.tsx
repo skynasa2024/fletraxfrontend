@@ -130,7 +130,7 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
           </AutoSizer>
         </div>
       )}
-      <input type="hidden" name="vehicleId" value={selectedVehicleId} />
+      <input type="hidden" name="vehicleId" value={selectedVehicleId || ''} />
     </div>
   );
 };

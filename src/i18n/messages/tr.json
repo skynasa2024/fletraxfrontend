@@ -98,6 +98,7 @@
   "SIDEBAR.MENU.MAINTENANCE.MAINTENANCE_TYPE": "Bakım Türü",
   "SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE": "Bakım Ekle",
   "SIDEBAR.MENU.MAINTENANCE.ADD_MAINTENANCE_TYPE": "Bakım Türü Ekle",
+  "SIDEBAR.MENU.REPORTS": "Raporlar",
   "DASHBOARD.MOVING_DEVICE.TITLE": "Hareket & Cihaz",
   "DASHBOARD.MOVING_DEVICE.STATUS": "Durum",
   "DASHBOARD.MOVING_DEVICE.MOVING": "Hareket Halinde",
@@ -739,5 +740,14 @@
   "MAINTENANCE_TYPE.DELETE.MODAL_MESSAGE": "Bu bakım türünü silmek istediğinizden emin misiniz?",
   "DRIVER.NATIONALITY.TURKISH": "Türk",
   "DRIVER.NATIONALITY.FOREIGN": "Yabancı",
-  "DEVICE.REPORT.CHART.TITLE": "{type} Raporu - {startDate} ile {endDate} arası"
+  "DEVICE.REPORT.CHART.TITLE": "{type} Raporu - {startDate} ile {endDate} arası",
+  "REPORTS.COLUMN.IDENTIFY_NUMBER": "Tanımlama Numarası",
+  "REPORTS.COLUMN.PLATE": "Plaka",
+  "REPORTS.COLUMN.DATE": "Tarih",
+  "REPORTS.COLUMN.Daily": "Günlük",
+  "REPORTS.COLUMN.WEEKLY": "Haftalık",
+  "REPORTS.COLUMN.MONTHLY": "Aylık",
+  "REPORTS.COLUMN.YEARLY": "Yıllık",
+  "REPORTS.COLUMN.TOTAL": "Toplam",
+  "REPORTS.COLUMN.ACTION": "İşlem"
 }
