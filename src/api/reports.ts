@@ -167,7 +167,7 @@ export async function getTripsAndParkingReport(
         vehicleId: params.vehicleId,
         startDate: params.startDate,
         endDate: params.endDate,
-        intervalType: params.intervalType || IntervalType.Trip,
+        intervalType: params.intervalType,
         sort: params.sort || 'startTime,desc'
       }
     }

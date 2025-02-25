@@ -98,7 +98,7 @@ export default function TripsAndParkingReport() {
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
-      intervalType: formData.get('type')?.toString() || IntervalType.Trip
+      intervalType: formData.get('type')?.toString() || ''
     });
   };
 
@@ -108,11 +108,10 @@ export default function TripsAndParkingReport() {
         <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
             <VehicleSearch place="bottom" />
-            <select
-              name="type"
-              className="select"
-              defaultValue={filters.intervalType || IntervalType.Trip}
-            >
+            <select name="type" className="select" defaultValue={filters.intervalType}>
+              <option key="ALL" value="">
+                All
+              </option>
               {IntervalTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
