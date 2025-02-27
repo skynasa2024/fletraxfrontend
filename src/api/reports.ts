@@ -150,13 +150,13 @@ interface TripsAndParkingReportDTO {
 export interface ITripsAndParkingReport {
   id: string;
   ident: string;
-  plate: string;
+  vehiclePlate: string;
   intervalType: string;
   startTime: number;
   endTime: number;
-  totalDistance: string;
-  totalDuration: string;
-  maxSpeed: string;
+  foramtedTotalDistance: string;
+  formatedTotalDuration: string;
+  formatedMaxSpeed: string;
 }
 
 export type TripsAndParkingReportParams = {
@@ -191,13 +191,13 @@ export async function getTripsAndParkingReport(
     data: report.data.result.content.map((item) => ({
       id: item.id,
       ident: item.ident,
-      plate: item.vehiclePlate,
+      vehiclePlate: item.vehiclePlate,
       intervalType: item.intervalType === IntervalType.Trip ? 'Trip' : 'Parking',
       startTime: item.startTime,
       endTime: item.endTime,
-      totalDistance: item.foramtedTotalDistance,
-      totalDuration: item.formatedTotalDuration,
-      maxSpeed: item.formatedMaxSpeed
+      foramtedTotalDistance: item.foramtedTotalDistance,
+      formatedTotalDuration: item.formatedTotalDuration,
+      formatedMaxSpeed: item.formatedMaxSpeed
     })),
     totalCount: report.data.result.totalElements
   };

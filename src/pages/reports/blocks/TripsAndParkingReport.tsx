@@ -33,10 +33,10 @@ export default function TripsAndParkingReport() {
         enableSorting: true
       },
       {
-        accessorKey: 'plate',
+        accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
         enableSorting: true,
-        cell: ({ row }) => <CarPlate plate={row.original.plate} />
+        cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
         accessorKey: 'startTime',
@@ -55,15 +55,15 @@ export default function TripsAndParkingReport() {
           )
       },
       {
-        accessorKey: 'totalDuration',
+        accessorKey: 'formatedTotalDuration',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.DURATION' })
       },
       {
-        accessorKey: 'maxSpeed',
+        accessorKey: 'formatedMaxSpeed',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.MAX_SPEED' })
       },
       {
-        accessorKey: 'totalDistance',
+        accessorKey: 'foramtedTotalDistance',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.MILEAGE' })
       },
       {
