@@ -2,6 +2,7 @@ import { axios } from './axios';
 import { Paginated } from './common';
 import { PaginatedResponseModel } from './response';
 import { IntervalType } from './trips';
+import { format } from 'date-fns';
 
 interface StatisticsReportDTO {
   id: string;
@@ -261,7 +262,7 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
       id: item.id,
       deviceIdent: item.deviceIdent,
       vehiclePlate: item.vehiclePlate,
-      createdAt: new Date(item.createdAt * 1000).toLocaleString(),
+      createdAt: format(new Date(item.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss'),
       type: item.textTrans
     })),
     totalCount: report.data.result.totalElements
