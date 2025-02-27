@@ -2,6 +2,7 @@ import { axios } from './axios';
 import { Paginated } from './common';
 import { PaginatedResponseModel } from './response';
 import { IntervalType } from './trips';
+import { format } from 'date-fns';
 
 interface StatisticsReportDTO {
   id: string;
@@ -33,17 +34,31 @@ interface StatisticsReportDTO {
   updatedAt: string | null;
 }
 
-export interface StatisticsReport {
+export interface MileageStatisticsReport {
   id: string;
   ident: string;
-  plate: string;
+  vehiclePlate: string;
   date: string;
-  daily: string;
-  weekly: string;
-  monthly: string;
-  yearly: string;
-  total: string;
+  dailyExistingKilometers: string;
+  weeklyExistingKilometers: string;
+  monthlyExistingKilometers: string;
+  yearlyExistingKilometers: string;
+  totalExistingKilometers: string;
 }
+
+export interface EngineHoursStatisticsReport {
+  id: string;
+  ident: string;
+  vehiclePlate: string;
+  date: string;
+  dailyEngineHours: string;
+  weeklyEngineHours: string;
+  monthlyEngineHours: string;
+  yearlyEngineHours: string;
+  totalEngineHours: string;
+}
+
+type StatisticsReport = MileageStatisticsReport | EngineHoursStatisticsReport;
 
 export type StatisticsReportParams = {
   vehicleId?: string;
@@ -77,26 +92,26 @@ export async function getStatisticsReport(
         return {
           id: stat.id,
           ident: stat.ident,
-          plate: stat.vehiclePlate,
+          vehiclePlate: stat.vehiclePlate,
           date: stat.date,
-          daily: stat.dailyExistingKilometers,
-          weekly: stat.weeklyExistingKilometers,
-          monthly: stat.monthlyExistingKilometers,
-          yearly: stat.yearlyExistingKilometers,
-          total: stat.totalExistingKilometers
+          dailyExistingKilometers: stat.dailyExistingKilometers,
+          weeklyExistingKilometers: stat.weeklyExistingKilometers,
+          monthlyExistingKilometers: stat.monthlyExistingKilometers,
+          yearlyExistingKilometers: stat.yearlyExistingKilometers,
+          totalExistingKilometers: stat.totalExistingKilometers
         };
       }
       if (params.type === 'EngineHours') {
         return {
           id: stat.id,
           ident: stat.ident,
-          plate: stat.vehiclePlate,
+          vehiclePlate: stat.vehiclePlate,
           date: stat.date,
-          daily: stat.dailyEngineHours,
-          weekly: stat.weeklyEngineHours,
-          monthly: stat.monthlyEngineHours,
-          yearly: stat.yearlyEngineHours,
-          total: stat.totalEngineHours
+          dailyEngineHours: stat.dailyEngineHours,
+          weeklyEngineHours: stat.weeklyEngineHours,
+          monthlyEngineHours: stat.monthlyEngineHours,
+          yearlyEngineHours: stat.yearlyEngineHours,
+          totalEngineHours: stat.totalEngineHours
         };
       }
       throw new Error(`Unexpected statistics type: ${params.type}`);
@@ -136,13 +151,13 @@ interface TripsAndParkingReportDTO {
 export interface ITripsAndParkingReport {
   id: string;
   ident: string;
-  plate: string;
+  vehiclePlate: string;
   intervalType: string;
   startTime: number;
   endTime: number;
-  totalDistance: string;
-  totalDuration: string;
-  maxSpeed: string;
+  foramtedTotalDistance: string;
+  formatedTotalDuration: string;
+  formatedMaxSpeed: string;
 }
 
 export type TripsAndParkingReportParams = {
@@ -177,13 +192,13 @@ export async function getTripsAndParkingReport(
     data: report.data.result.content.map((item) => ({
       id: item.id,
       ident: item.ident,
-      plate: item.vehiclePlate,
+      vehiclePlate: item.vehiclePlate,
       intervalType: item.intervalType === IntervalType.Trip ? 'Trip' : 'Parking',
       startTime: item.startTime,
       endTime: item.endTime,
-      totalDistance: item.foramtedTotalDistance,
-      totalDuration: item.formatedTotalDuration,
-      maxSpeed: item.formatedMaxSpeed
+      foramtedTotalDistance: item.foramtedTotalDistance,
+      formatedTotalDuration: item.formatedTotalDuration,
+      formatedMaxSpeed: item.formatedMaxSpeed
     })),
     totalCount: report.data.result.totalElements
   };
@@ -210,9 +225,9 @@ interface AlarmReportDTO {
 
 export interface IAlarmReport {
   id: string;
-  ident: string;
-  plate: string;
-  date: string;
+  deviceIdent: string;
+  vehiclePlate: string;
+  createdAt: string;
   type: string;
 }
 
@@ -245,9 +260,9 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
   return {
     data: report.data.result.content.map((item) => ({
       id: item.id,
-      ident: item.deviceIdent,
-      plate: item.vehiclePlate,
-      date: new Date(item.createdAt * 1000).toLocaleString(),
+      deviceIdent: item.deviceIdent,
+      vehiclePlate: item.vehiclePlate,
+      createdAt: format(new Date(item.createdAt * 1000), 'yyyy/MM/dd HH:mm:ss'),
       type: item.textTrans
     })),
     totalCount: report.data.result.totalElements

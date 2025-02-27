@@ -1,19 +1,16 @@
-import {
-  getTripsAndParkingReport,
-  ITripsAndParkingReport,
-  TripsAndParkingReportParams
-} from '@/api/reports';
+import { getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
+import { formatInTimeZone } from 'date-fns-tz';
 import { IntervalType } from '@/api/trips';
 import { useAuthContext } from '@/auth';
-import { formatInTimeZone } from 'date-fns-tz';
+import { useReportFilters } from '@/hooks/useReportFilters';
+import { useReportSorting } from '@/hooks/useReportSorting';
 
 const IntervalTypeOptions = [
   { label: 'Trip', value: IntervalType.Trip },
@@ -24,17 +21,22 @@ export default function TripsAndParkingReport() {
   const intl = useIntl();
   const { currentUser } = useAuthContext();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const { handleFetchWithSort } = useReportSorting({
+    defaultSort: 'startTime,desc'
+  });
 
   const columns = useMemo<ColumnDef<ITripsAndParkingReport>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' }),
+        enableSorting: true
       },
       {
-        accessorKey: 'plate',
+        accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
-        cell: ({ row }) => <CarPlate plate={row.original.plate} />
+        enableSorting: true,
+        cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
         accessorKey: 'startTime',
@@ -58,15 +60,15 @@ export default function TripsAndParkingReport() {
           )
       },
       {
-        accessorKey: 'totalDuration',
+        accessorKey: 'formatedTotalDuration',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.DURATION' })
       },
       {
-        accessorKey: 'maxSpeed',
+        accessorKey: 'formatedMaxSpeed',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.MAX_SPEED' })
       },
       {
-        accessorKey: 'totalDistance',
+        accessorKey: 'foramtedTotalDistance',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.MILEAGE' })
       },
       {
@@ -145,14 +147,16 @@ export default function TripsAndParkingReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={async (params) => {
-            const queryParams: TripsAndParkingReportParams = {
-              ...params,
-              ...filters,
-              intervalType: filters.type
-            };
-            return await getTripsAndParkingReport(queryParams);
-          }}
+          onFetchData={(params) =>
+            handleFetchWithSort(
+              params,
+              {
+                ...filters,
+                intervalType: filters.type
+              },
+              getTripsAndParkingReport
+            )
+          }
           filters={getDataGridFilters()}
           pagination={{
             size: 100,

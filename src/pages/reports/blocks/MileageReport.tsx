@@ -1,28 +1,35 @@
-import { getStatisticsReport, StatisticsReport, StatisticsReportParams } from '@/api/reports';
+import { getStatisticsReport, MileageStatisticsReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
+import { useReportFilters } from '@/hooks/useReportFilters';
+import { useReportSorting } from '@/hooks/useReportSorting';
 
 export default function MileageReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const { handleFetchWithSort } = useReportSorting({
+    defaultSort: 'date,desc',
+    reportType: 'Mileage'
+  });
 
-  const columns = useMemo<ColumnDef<StatisticsReport>[]>(
+  const columns = useMemo<ColumnDef<MileageStatisticsReport>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' }),
+        enableSorting: true
       },
       {
-        accessorKey: 'plate',
+        accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
-        cell: ({ row }) => <CarPlate plate={row.original.plate} />
+        enableSorting: true,
+        cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
         accessorKey: 'date',
@@ -30,23 +37,23 @@ export default function MileageReport() {
         enableSorting: true
       },
       {
-        accessorKey: 'daily',
+        accessorKey: 'dailyExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
       },
       {
-        accessorKey: 'weekly',
+        accessorKey: 'weeklyExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
       },
       {
-        accessorKey: 'monthly',
+        accessorKey: 'monthlyExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
       },
       {
-        accessorKey: 'yearly',
+        accessorKey: 'yearlyExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
       },
       {
-        accessorKey: 'total',
+        accessorKey: 'totalExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.TOTAL' })
       },
       {
@@ -111,14 +118,7 @@ export default function MileageReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={async (params) => {
-            const queryParams: StatisticsReportParams = {
-              ...params,
-              type: 'Mileage',
-              ...filters
-            };
-            return await getStatisticsReport(queryParams);
-          }}
+          onFetchData={(params) => handleFetchWithSort(params, filters, getStatisticsReport)}
           filters={getDataGridFilters()}
           pagination={{
             size: 100,

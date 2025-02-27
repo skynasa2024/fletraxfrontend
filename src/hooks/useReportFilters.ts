@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export interface ReportFilters {
   vehicleId?: string;
@@ -14,8 +14,20 @@ export function useReportFilters() {
     const cleanFilters = Object.fromEntries(
       Object.entries(newFilters).filter(([, value]) => value != null && value !== '')
     );
-
     setFilters(cleanFilters);
+  };
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newFilters = {
+      vehicleId: formData.get('vehicleId')?.toString() || '',
+      startDate: formData.get('startDate')?.toString() || '',
+      endDate: formData.get('endDate')?.toString() || '',
+      type: formData.get('type')?.toString() || ''
+    };
+
+    updateFilters(newFilters);
   };
 
   const resetFilters = () => {
@@ -30,6 +42,7 @@ export function useReportFilters() {
 
   return {
     filters,
+    handleSearch,
     updateFilters,
     resetFilters,
     getDataGridFilters
