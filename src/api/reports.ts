@@ -224,9 +224,9 @@ interface AlarmReportDTO {
 
 export interface IAlarmReport {
   id: string;
-  ident: string;
-  plate: string;
-  date: string;
+  deviceIdent: string;
+  vehiclePlate: string;
+  createdAt: string;
   type: string;
 }
 
@@ -259,9 +259,9 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
   return {
     data: report.data.result.content.map((item) => ({
       id: item.id,
-      ident: item.deviceIdent,
-      plate: item.vehiclePlate,
-      date: new Date(item.createdAt * 1000).toLocaleString(),
+      deviceIdent: item.deviceIdent,
+      vehiclePlate: item.vehiclePlate,
+      createdAt: new Date(item.createdAt * 1000).toLocaleString(),
       type: item.textTrans
     })),
     totalCount: report.data.result.totalElements

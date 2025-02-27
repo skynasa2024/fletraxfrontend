@@ -20,18 +20,18 @@ export default function AlarmReport() {
   const columns = useMemo<ColumnDef<IAlarmReport>[]>(
     () => [
       {
-        accessorKey: 'ident',
+        accessorKey: 'deviceIdent',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' }),
         enableSorting: true
       },
       {
-        accessorKey: 'plate',
+        accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
         enableSorting: true,
-        cell: ({ row }) => <CarPlate plate={row.original.plate} />
+        cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
       {
-        accessorKey: 'date',
+        accessorKey: 'createdAt',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.DATE' }),
         enableSorting: true
       },
