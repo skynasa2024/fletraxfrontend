@@ -33,17 +33,31 @@ interface StatisticsReportDTO {
   updatedAt: string | null;
 }
 
-export interface StatisticsReport {
+export interface MileageStatisticsReport {
   id: string;
   ident: string;
-  plate: string;
+  vehiclePlate: string;
   date: string;
-  daily: string;
-  weekly: string;
-  monthly: string;
-  yearly: string;
-  total: string;
+  dailyExistingKilometers: string;
+  weeklyExistingKilometers: string;
+  monthlyExistingKilometers: string;
+  yearlyExistingKilometers: string;
+  totalExistingKilometers: string;
 }
+
+export interface EngineHoursStatisticsReport {
+  id: string;
+  ident: string;
+  vehiclePlate: string;
+  date: string;
+  dailyEngineHours: string;
+  weeklyEngineHours: string;
+  monthlyEngineHours: string;
+  yearlyEngineHours: string;
+  totalEngineHours: string;
+}
+
+type StatisticsReport = MileageStatisticsReport | EngineHoursStatisticsReport;
 
 export type StatisticsReportParams = {
   vehicleId?: string;
@@ -77,26 +91,26 @@ export async function getStatisticsReport(
         return {
           id: stat.id,
           ident: stat.ident,
-          plate: stat.vehiclePlate,
+          vehiclePlate: stat.vehiclePlate,
           date: stat.date,
-          daily: stat.dailyExistingKilometers,
-          weekly: stat.weeklyExistingKilometers,
-          monthly: stat.monthlyExistingKilometers,
-          yearly: stat.yearlyExistingKilometers,
-          total: stat.totalExistingKilometers
+          dailyExistingKilometers: stat.dailyExistingKilometers,
+          weeklyExistingKilometers: stat.weeklyExistingKilometers,
+          monthlyExistingKilometers: stat.monthlyExistingKilometers,
+          yearlyExistingKilometers: stat.yearlyExistingKilometers,
+          totalExistingKilometers: stat.totalExistingKilometers
         };
       }
       if (params.type === 'EngineHours') {
         return {
           id: stat.id,
           ident: stat.ident,
-          plate: stat.vehiclePlate,
+          vehiclePlate: stat.vehiclePlate,
           date: stat.date,
-          daily: stat.dailyEngineHours,
-          weekly: stat.weeklyEngineHours,
-          monthly: stat.monthlyEngineHours,
-          yearly: stat.yearlyEngineHours,
-          total: stat.totalEngineHours
+          dailyEngineHours: stat.dailyEngineHours,
+          weeklyEngineHours: stat.weeklyEngineHours,
+          monthlyEngineHours: stat.monthlyEngineHours,
+          yearlyEngineHours: stat.yearlyEngineHours,
+          totalEngineHours: stat.totalEngineHours
         };
       }
       throw new Error(`Unexpected statistics type: ${params.type}`);
