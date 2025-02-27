@@ -42,7 +42,12 @@ export default function TripsAndParkingReport() {
         accessorKey: 'startTime',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.START_DATE' }),
         enableSorting: true,
-        cell: ({ getValue }) => new Date(getValue<number>() * 1000).toLocaleString()
+        cell: ({ row }) =>
+          formatInTimeZone(
+            new Date(+row.original.startTime * 1000),
+            currentUser!.timezone,
+            'yyyy/MM/dd HH:mm:ss'
+          )
       },
       {
         accessorKey: 'endTime',
