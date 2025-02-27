@@ -1,27 +1,33 @@
-import { AlarmReportParams, getAlarmReport, IAlarmReport } from '@/api/reports';
+import { getAlarmReport, IAlarmReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
 import { NotificationTypeSelect } from '../components/NotificationTypeSelect';
+import { useReportFilters } from '@/hooks/useReportFilters';
+import { useReportSorting } from '@/hooks/useReportSorting';
 
 export default function AlarmReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const { handleFetchWithSort } = useReportSorting({
+    defaultSort: 'createdAt,desc'
+  });
 
   const columns = useMemo<ColumnDef<IAlarmReport>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' }),
+        enableSorting: true
       },
       {
         accessorKey: 'plate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
+        enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.plate} />
       },
       {
@@ -96,14 +102,16 @@ export default function AlarmReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={async (params) => {
-            const queryParams: AlarmReportParams = {
-              ...params,
-              ...filters,
-              alarmCode: filters.type
-            };
-            return await getAlarmReport(queryParams);
-          }}
+          onFetchData={(params) =>
+            handleFetchWithSort(
+              params,
+              {
+                ...filters,
+                alarmCode: filters.type
+              },
+              getAlarmReport
+            )
+          }
           filters={getDataGridFilters()}
           pagination={{
             size: 100,

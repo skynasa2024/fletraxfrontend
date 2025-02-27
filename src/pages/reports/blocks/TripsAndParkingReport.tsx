@@ -1,19 +1,16 @@
-import {
-  getTripsAndParkingReport,
-  ITripsAndParkingReport,
-  TripsAndParkingReportParams
-} from '@/api/reports';
+import { getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useReportFilters } from '@/hooks/useReportFilters';
 import { toAbsoluteUrl } from '@/utils';
+import { formatInTimeZone } from 'date-fns-tz';
 import { IntervalType } from '@/api/trips';
 import { useAuthContext } from '@/auth';
-import { formatInTimeZone } from 'date-fns-tz';
+import { useReportFilters } from '@/hooks/useReportFilters';
+import { useReportSorting } from '@/hooks/useReportSorting';
 
 const IntervalTypeOptions = [
   { label: 'Trip', value: IntervalType.Trip },
@@ -24,28 +21,28 @@ export default function TripsAndParkingReport() {
   const intl = useIntl();
   const { currentUser } = useAuthContext();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const { handleFetchWithSort } = useReportSorting({
+    defaultSort: 'startTime,desc'
+  });
 
   const columns = useMemo<ColumnDef<ITripsAndParkingReport>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IDENTIFY_NUMBER' }),
+        enableSorting: true
       },
       {
         accessorKey: 'plate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PLATE' }),
+        enableSorting: true,
         cell: ({ row }) => <CarPlate plate={row.original.plate} />
       },
       {
         accessorKey: 'startTime',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.START_DATE' }),
         enableSorting: true,
-        cell: ({ row }) =>
-          formatInTimeZone(
-            new Date(+row.original.startTime * 1000),
-            currentUser!.timezone,
-            'yyyy/MM/dd HH:mm:ss'
-          )
+        cell: ({ getValue }) => new Date(getValue<number>() * 1000).toLocaleString()
       },
       {
         accessorKey: 'endTime',
@@ -145,14 +142,16 @@ export default function TripsAndParkingReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={async (params) => {
-            const queryParams: TripsAndParkingReportParams = {
-              ...params,
-              ...filters,
-              intervalType: filters.type
-            };
-            return await getTripsAndParkingReport(queryParams);
-          }}
+          onFetchData={(params) =>
+            handleFetchWithSort(
+              params,
+              {
+                ...filters,
+                intervalType: filters.type
+              },
+              getTripsAndParkingReport
+            )
+          }
           filters={getDataGridFilters()}
           pagination={{
             size: 100,

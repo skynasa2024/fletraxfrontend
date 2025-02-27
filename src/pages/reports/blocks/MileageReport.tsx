@@ -3,14 +3,20 @@ import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useReportTable } from '@/hooks/useReportTable';
 import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
+import { useReportFilters } from '@/hooks/useReportFilters';
+import { useReportSorting } from '@/hooks/useReportSorting';
 
 export default function MileageReport() {
   const intl = useIntl();
+  const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const { handleFetchWithSort } = useReportSorting({
+    defaultSort: 'date,desc',
+    reportType: 'Mileage'
+  });
 
   const columns = useMemo<ColumnDef<MileageStatisticsReport>[]>(
     () => [
@@ -69,12 +75,15 @@ export default function MileageReport() {
     [intl]
   );
 
-  const { handleSearch, handleFetchData, filters, getDataGridFilters } = useReportTable({
-    columns,
-    defaultSort: 'date,desc',
-    type: 'Mileage',
-    fetchData: getStatisticsReport
-  });
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    updateFilters({
+      vehicleId: formData.get('vehicleId')?.toString() || '',
+      startDate: formData.get('startDate')?.toString() || '',
+      endDate: formData.get('endDate')?.toString() || ''
+    });
+  };
 
   return (
     <>
@@ -109,7 +118,7 @@ export default function MileageReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={handleFetchData}
+          onFetchData={(params) => handleFetchWithSort(params, filters, getStatisticsReport)}
           filters={getDataGridFilters()}
           pagination={{
             size: 100,
