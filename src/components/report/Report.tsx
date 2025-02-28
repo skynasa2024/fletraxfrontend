@@ -2,7 +2,6 @@ import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } fr
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
-import { toAbsoluteUrl } from '@/utils';
 import { useSettings } from '@/providers';
 import { Modal } from '@mui/material';
 import { getStatistics, Statistics, StatisticsParams } from '@/api/statistics';
@@ -59,23 +58,6 @@ const formatDate = (date: string) => {
   const d = new Date(date);
   return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
 };
-
-const CAR_ICON = {
-  path: toAbsoluteUrl('/media/icons/chart-car.svg'),
-  width: 45,
-  height: 45,
-  offsetY: 23,
-  offsetX: 0
-};
-
-const createPointAnnotation = (date: string, value: number, minHeightForIcon: number) => ({
-  x: date,
-  y: value,
-  ...(value > minHeightForIcon && {
-    image: CAR_ICON
-  }),
-  marker: { size: 0, cssClass: 'hidden' }
-});
 
 const formatHoursAndMinutes = (hours: number) => {
   const h = Math.floor(hours);
@@ -244,11 +226,6 @@ export default function Report({ vehicleId, ident, type }: ReportProps) {
     `;
   };
 
-  const values = statistics?.map((stat) => safeParseFloat(stat.existingKilometers));
-  const maxValue = Math.max(...((values?.length ? values : [0]) ?? 0));
-  // Set minimum height as 18% of max value
-  const minHeightForIcon = maxValue * 0.18;
-
   const handleCancelDateRange = () => {
     setIsCustomDateRangeModalOpen(false);
     setPendingFilter(null);
@@ -382,14 +359,6 @@ export default function Report({ vehicleId, ident, type }: ReportProps) {
                 dataLabels: { position: 'top' },
                 distributed: true
               }
-            },
-            annotations: {
-              points: statistics
-                ?.filter((stat) => !!stat.date && safeParseFloat(stat.existingKilometers) > 0)
-                ?.map((stat) => {
-                  const value = safeParseFloat(stat.existingKilometers);
-                  return createPointAnnotation(stat.date, value, minHeightForIcon);
-                })
             },
             legend: {
               show: false
