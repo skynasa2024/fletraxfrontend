@@ -1,15 +1,17 @@
-import { DeviceStatistics, DeviceStatisticsParams, getDeviceStatistics } from '@/api/devices';
 import { KeenIcon, Menu, MenuItem, MenuLink, MenuSub, MenuTitle, MenuToggle } from '@/components';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ApexCharts from 'react-apexcharts';
 import { toAbsoluteUrl } from '@/utils';
-import { ButtonRadioGroup } from '../../dashboards/blocks/ButtonRadioGroup';
 import { useSettings } from '@/providers';
 import { Modal } from '@mui/material';
+import { getStatistics, Statistics, StatisticsParams } from '@/api/statistics';
+import { ButtonRadioGroup } from '@/pages/dashboards/blocks/ButtonRadioGroup';
 
-type DeviceReportProps = {
+type ReportProps = {
   ident: string;
+  vehicleId?: string;
+  type: 'vehicle' | 'device';
 };
 
 type FilterOption =
@@ -101,12 +103,12 @@ const safeParseEngineHours = (engineHours: string): number => {
   }
 };
 
-export default function DeviceReport({ ident }: DeviceReportProps) {
+export default function Report({ vehicleId, ident, type }: ReportProps) {
   const intl = useIntl();
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>('lastWeek');
   const [pendingFilter, setPendingFilter] = useState<FilterOption | null>(null);
   const [metricType, setMetricType] = useState('Mileage');
-  const [statistics, setStatistics] = useState<DeviceStatistics[] | null>(null);
+  const [statistics, setStatistics] = useState<Statistics[] | null>(null);
   const { settings } = useSettings();
   const isDarkMode = settings.themeMode === 'dark';
   const [rangeFilter, setRangeFilter] = useState({
@@ -126,9 +128,11 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
         ) {
           setRangeFilter({ startDate: queryParams.startDate, endDate: queryParams.endDate });
         }
-        const data = await getDeviceStatistics({
+        const data = await getStatistics({
+          ...queryParams,
+          vehicleId,
           ident,
-          ...queryParams
+          type
         });
         setStatistics(data);
       } catch (error) {
@@ -139,9 +143,11 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     fetchData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ident, selectedFilter]);
+  }, [ident, vehicleId, selectedFilter]);
 
-  const getQueryParams = (selected: FilterOption): Omit<DeviceStatisticsParams, 'ident'> => {
+  const getQueryParams = (
+    selected: FilterOption
+  ): Omit<StatisticsParams, 'ident' | 'vehicleId' | 'type'> => {
     switch (selected) {
       case 'lastWeek': {
         const startDate = new Date();
@@ -208,7 +214,7 @@ export default function DeviceReport({ ident }: DeviceReportProps) {
     }
   };
 
-  const getChartData = (statistics?: DeviceStatistics[] | null) => {
+  const getChartData = (statistics?: Statistics[] | null) => {
     if (!statistics) return { name: '', data: [] };
     if (metricType === 'Mileage') {
       return {
