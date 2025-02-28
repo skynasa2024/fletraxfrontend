@@ -12,7 +12,8 @@ import {
   MenuLink,
   MenuSub,
   MenuTitle,
-  MenuToggle
+  MenuToggle,
+  Report
 } from '@/components';
 import RoleComponent from '@/components/RoleComponent';
 import { toAbsoluteUrl } from '@/utils';
@@ -24,7 +25,6 @@ import { Buffer } from 'buffer';
 import Telemetry from './blocks/Telemetry';
 import { format } from 'date-fns';
 import { Notifications } from '../dashboards/blocks/Notifications';
-import DeviceReport from './blocks/DeviceReport';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -304,7 +304,7 @@ const DeviceDetailsPage = () => {
           <Telemetry parameters={parameters} />
           <div className="grid grid-cols-6 gap-4">
             <div className="col-span-4 h-full">
-              <DeviceReport ident={device.ident} />
+              <Report ident={device.ident} type="device" />
             </div>
             <div className="col-span-2 h-[499px]">
               <Notifications search={device.ident} />
