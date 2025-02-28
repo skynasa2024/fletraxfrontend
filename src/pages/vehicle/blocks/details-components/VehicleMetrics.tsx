@@ -3,6 +3,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { EngineHours, Mileage, FuelConsumption } from '../svg';
 import { useIntl } from 'react-intl';
+import { useSettings } from '@/providers';
 
 interface MetricCardProps {
   icon: React.ComponentType;
@@ -23,6 +24,7 @@ interface VehicleMetricsProps {
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, percentage, color }) => {
+  const { settings } = useSettings();
   return (
     <div className="card hover:shadow-md p-4 rounded-lg text-center flex flex-col items-center justify-center flex-1">
       <div className="mb-2">
@@ -36,8 +38,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ icon: Icon, label, value, perce
           styles={buildStyles({
             textSize: '14px',
             pathColor: color,
-            textColor: '#374151',
-            trailColor: '#E5E7EB',
+            textColor: settings.themeMode === 'dark' ? '#E5E7EB' : '#374151',
+            trailColor: settings.themeMode === 'dark' ? '#374151' : '#D1D5DB',
             pathTransitionDuration: 0.5
           })}
         />
