@@ -5,6 +5,7 @@ import { Paginated } from '@/api/common.ts';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { format } from 'date-fns';
 import { CarPlate } from './CarPlate';
+import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import {
   BatteryAlarmNotificationIcon,
   DefaultNotificationIcon,
@@ -36,10 +37,12 @@ export const NOTIFICATION_ICONS = {
 
 type NotificationsProps = {
   search?: string;
+  withSearch?: boolean;
 };
 
-const Notifications = ({ search }: NotificationsProps) => {
+const Notifications = ({ search: externalSearch, withSearch = false }: NotificationsProps) => {
   const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
+  const [searchValue, setSearchValue] = useState<string>(externalSearch || '');
 
   const isRowLoaded = ({ index }: { index: number }) => !!notifications?.data[index];
   const rowCount = notifications?.totalCount;
@@ -74,7 +77,7 @@ const Notifications = ({ search }: NotificationsProps) => {
         start: startIndex,
         end: stopIndex
       },
-      search
+      search: searchValue
     });
 
     setNotifications((prev) => {
@@ -89,25 +92,62 @@ const Notifications = ({ search }: NotificationsProps) => {
     });
   };
 
+  const handleDebouncedSearch = (value: string) => {
+    setSearchValue(value);
+    getNotifications({
+      offset: {
+        start: 0,
+        end: PAGE_SIZE - 1
+      },
+      search: value
+    }).then(setNotifications);
+  };
+
   useEffect(() => {
     getNotifications({
       offset: {
         start: 0,
         end: PAGE_SIZE - 1
       },
-      search
+      search: searchValue
     }).then(setNotifications);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (externalSearch !== undefined && externalSearch !== searchValue) {
+      setSearchValue(externalSearch);
+      // Fetch new notifications when external search changes
+      getNotifications({
+        offset: {
+          start: 0,
+          end: PAGE_SIZE - 1
+        },
+        search: externalSearch
+      }).then(setNotifications);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalSearch]);
+
   return (
     <div className="card hover:shadow-md h-full">
       <div className="card-header">
-        <div className="card-title">
+        <div className="card-title flex justify-between items-center w-full">
           <h3>
             <FormattedMessage id="DASHBOARD.NOTIFICATIONS.TITLE" />
           </h3>
+          {withSearch && (
+            <div className="flex items-center">
+              <DebouncedSearchInput
+                type="text"
+                className="input"
+                placeholder="Search by ident..."
+                value={searchValue}
+                onDebounce={handleDebouncedSearch}
+              />
+            </div>
+          )}
         </div>
       </div>
 
