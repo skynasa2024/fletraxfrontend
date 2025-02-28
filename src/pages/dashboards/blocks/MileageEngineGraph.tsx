@@ -67,12 +67,12 @@ const MileageEngineGraph = () => {
   }, [sort, searchQuery]);
 
   useEffect(() => {
-    // Update every 5 seconds
+    // Update every 1 minute
     const interval = setInterval(() => {
       getCarsMileageAndEngine({ start: 0, end: largestIndex, search: searchQuery }, sort).then(
         setData
       );
-    }, 5000);
+    }, 60000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, searchQuery]);
