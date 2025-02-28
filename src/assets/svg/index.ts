@@ -28,3 +28,4 @@ export { default as ExitGeofenceNotificationIcon } from './ExitGeofenceNotificat
 export { default as PowerCutAlarmNotificationIcon } from './PowerCutAlarmNotificationIcon.tsx';
 export { default as SharpTurnNotificationIcon } from './SharpTurnNotificationIcon.tsx';
 export { default as VibrationAlarmNotificationIcon } from './VibrationAlarmNotificationIcon.tsx';
+export { default as NotificationsIcon } from './NotificationsIcon.tsx';
