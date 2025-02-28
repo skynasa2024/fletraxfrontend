@@ -307,7 +307,7 @@ const DeviceDetailsPage = () => {
               <Report ident={device.ident} type="device" />
             </div>
             <div className="col-span-2 h-[499px]">
-              <Notifications ident={device.ident} />
+              <Notifications ident={device.ident} withTypeFilter />
             </div>
           </div>
           {/* <ParameterList items={parameters} /> */}

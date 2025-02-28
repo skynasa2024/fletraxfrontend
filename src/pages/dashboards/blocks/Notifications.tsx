@@ -19,6 +19,7 @@ import {
   VibrationAlarmNotificationIcon,
   NotificationsIcon
 } from '@/assets/svg';
+import { NotificationTypeSelect } from '@/pages/reports/components/NotificationTypeSelect';
 
 const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
@@ -37,6 +38,7 @@ export const NOTIFICATION_ICONS = {
 
 type NotificationsProps = {
   withSearch?: boolean;
+  withTypeFilter?: boolean;
   search?: string;
   ident?: string;
   vehicleId?: string;
@@ -45,11 +47,13 @@ type NotificationsProps = {
 const Notifications = ({
   search: externalSearch,
   withSearch = false,
+  withTypeFilter = false,
   ident,
   vehicleId
 }: NotificationsProps) => {
   const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
   const [searchValue, setSearchValue] = useState<string>(externalSearch || '');
+  const [selectedAlarmType, setSelectedAlarmType] = useState<string | undefined>();
 
   const isRowLoaded = ({ index }: { index: number }) => !!notifications?.data[index];
   const rowCount = notifications?.totalCount;
@@ -86,7 +90,8 @@ const Notifications = ({
       },
       search: withSearch ? searchValue : undefined,
       ident,
-      vehicleId
+      vehicleId,
+      alarmType: selectedAlarmType
     });
 
     setNotifications((prev) => {
@@ -110,7 +115,22 @@ const Notifications = ({
       },
       search: value,
       ident,
-      vehicleId
+      vehicleId,
+      alarmType: selectedAlarmType
+    }).then(setNotifications);
+  };
+
+  const handleAlarmTypeChange = (type: { code: string; label: string } | undefined) => {
+    setSelectedAlarmType(type?.code);
+    getNotifications({
+      offset: {
+        start: 0,
+        end: PAGE_SIZE - 1
+      },
+      search: withSearch ? searchValue : undefined,
+      ident,
+      vehicleId,
+      alarmType: type?.code
     }).then(setNotifications);
   };
 
@@ -122,7 +142,8 @@ const Notifications = ({
       },
       search: withSearch ? searchValue : undefined,
       ident,
-      vehicleId
+      vehicleId,
+      alarmType: selectedAlarmType
     }).then(setNotifications);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +160,8 @@ const Notifications = ({
         },
         search: externalSearch,
         ident,
-        vehicleId
+        vehicleId,
+        alarmType: selectedAlarmType
       }).then(setNotifications);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,16 +174,19 @@ const Notifications = ({
           <h3>
             <FormattedMessage id="DASHBOARD.NOTIFICATIONS.TITLE" />
           </h3>
-          {withSearch && (
-            <div className="flex items-center">
-              <DebouncedSearchInput
-                type="text"
-                className="input"
-                placeholder="Search by ident..."
-                value={searchValue}
-                onDebounce={handleDebouncedSearch}
-              />
+          {withTypeFilter && (
+            <div className="w-56">
+              <NotificationTypeSelect onTypeChange={handleAlarmTypeChange} />
             </div>
+          )}
+          {withSearch && (
+            <DebouncedSearchInput
+              type="text"
+              className="input"
+              placeholder="Search by ident..."
+              value={searchValue}
+              onDebounce={handleDebouncedSearch}
+            />
           )}
         </div>
       </div>

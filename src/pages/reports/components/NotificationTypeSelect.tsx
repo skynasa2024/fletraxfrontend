@@ -11,9 +11,13 @@ interface NotificationTypeSelectProps {
     code: string;
     label: string;
   };
+  onTypeChange?: (type: { code: string; label: string } | undefined) => void;
 }
 
-export const NotificationTypeSelect = ({ initialValue }: NotificationTypeSelectProps) => {
+export const NotificationTypeSelect = ({
+  initialValue,
+  onTypeChange
+}: NotificationTypeSelectProps) => {
   const { formatMessage } = useIntl();
   const [selectedType, setSelectedType] = useState<{ code: string; label: string } | undefined>(
     initialValue
@@ -49,6 +53,11 @@ export const NotificationTypeSelect = ({ initialValue }: NotificationTypeSelectP
     getNotificationTypes({ start: 0, end: 10 }).then(setTypes);
   }, []);
 
+  const handleTypeSelect = (type: { code: string; label: string } | undefined) => {
+    setSelectedType(type);
+    onTypeChange?.(type);
+  };
+
   return (
     <div className="input shrink-0 relative">
       <input
@@ -63,7 +72,7 @@ export const NotificationTypeSelect = ({ initialValue }: NotificationTypeSelectP
         className="btn btn-icon"
         type="button"
         onClick={() => {
-          setSelectedType(undefined);
+          handleTypeSelect(undefined);
         }}
       >
         <KeenIcon icon="cross" />
@@ -106,7 +115,7 @@ export const NotificationTypeSelect = ({ initialValue }: NotificationTypeSelectP
                           <div
                             className="hover:bg-gray-100 cursor-pointer h-full flex items-center"
                             onClick={() => {
-                              setSelectedType(type);
+                              handleTypeSelect(type);
                               setHovered(false);
                             }}
                           >
