@@ -295,7 +295,7 @@ const VehicleInfo = () => {
           />
         </div>
         <div className="grid grid-cols-3 gap-4 mb-4 h-[500px]">
-          <Notifications search={vehicle?.deviceIdent} />
+          <Notifications vehicleId={vehicle?.vehicleId || ''} />
           <div className="col-span-2">
             <Report
               vehicleId={vehicle?.vehicleId || ''}

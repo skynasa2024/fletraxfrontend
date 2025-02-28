@@ -20,13 +20,21 @@ export interface NotificationDTO {
   vehiclePlate: string;
 }
 
-export const getNotifications = async ({
-  offset,
-  search
-}: {
+type NotificationParams = {
   offset: OffsetBounds;
   search?: string;
-}): Promise<Paginated<NotificationDTO>> => {
+  ident?: string;
+  vehicleId?: string;
+  alarmType?: string;
+};
+
+export const getNotifications = async ({
+  offset,
+  search,
+  ident,
+  vehicleId,
+  alarmType
+}: NotificationParams): Promise<Paginated<NotificationDTO>> => {
   const notifications = await axios.get<PaginatedResponseModel<NotificationDTO>>(
     '/api/notifications/index',
     {
@@ -34,7 +42,10 @@ export const getNotifications = async ({
         offset: offset.start,
         size: offset.end - offset.start + 1,
         sort: 'createdAt,desc',
-        search
+        search,
+        ident,
+        vehilceId: vehicleId,
+        alarmType
       }
     }
   );

@@ -36,11 +36,18 @@ export const NOTIFICATION_ICONS = {
 } as const;
 
 type NotificationsProps = {
-  search?: string;
   withSearch?: boolean;
+  search?: string;
+  ident?: string;
+  vehicleId?: string;
 };
 
-const Notifications = ({ search: externalSearch, withSearch = false }: NotificationsProps) => {
+const Notifications = ({
+  search: externalSearch,
+  withSearch = false,
+  ident,
+  vehicleId
+}: NotificationsProps) => {
   const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
   const [searchValue, setSearchValue] = useState<string>(externalSearch || '');
 
@@ -77,7 +84,9 @@ const Notifications = ({ search: externalSearch, withSearch = false }: Notificat
         start: startIndex,
         end: stopIndex
       },
-      search: searchValue
+      search: withSearch ? searchValue : undefined,
+      ident,
+      vehicleId
     });
 
     setNotifications((prev) => {
@@ -99,7 +108,9 @@ const Notifications = ({ search: externalSearch, withSearch = false }: Notificat
         start: 0,
         end: PAGE_SIZE - 1
       },
-      search: value
+      search: value,
+      ident,
+      vehicleId
     }).then(setNotifications);
   };
 
@@ -109,11 +120,13 @@ const Notifications = ({ search: externalSearch, withSearch = false }: Notificat
         start: 0,
         end: PAGE_SIZE - 1
       },
-      search: searchValue
+      search: withSearch ? searchValue : undefined,
+      ident,
+      vehicleId
     }).then(setNotifications);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ident, vehicleId]);
 
   useEffect(() => {
     if (externalSearch !== undefined && externalSearch !== searchValue) {
@@ -124,7 +137,9 @@ const Notifications = ({ search: externalSearch, withSearch = false }: Notificat
           start: 0,
           end: PAGE_SIZE - 1
         },
-        search: externalSearch
+        search: externalSearch,
+        ident,
+        vehicleId
       }).then(setNotifications);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
