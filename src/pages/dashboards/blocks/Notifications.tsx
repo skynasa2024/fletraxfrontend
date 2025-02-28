@@ -15,7 +15,8 @@ import {
   ExitGeofenceNotificationIcon,
   PowerCutAlarmNotificationIcon,
   SharpTurnNotificationIcon,
-  VibrationAlarmNotificationIcon
+  VibrationAlarmNotificationIcon,
+  NotificationsIcon
 } from '@/assets/svg';
 
 const PAGE_SIZE = 10;
@@ -111,31 +112,45 @@ const Notifications = ({ search }: NotificationsProps) => {
       </div>
 
       <div className="p-2 pt-0" style={{ width: '100%', height: '100%' }}>
-        <AutoSizer>
-          {({ width, height }) => (
-            <InfiniteLoader
-              isRowLoaded={isRowLoaded}
-              loadMoreRows={loadMoreRows}
-              rowCount={rowCount}
-            >
-              {({ onRowsRendered, registerChild }) => (
-                <List
-                  style={{
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: 'rgba(209, 213, 219, 0.8) rgba(209, 213, 219, 0)'
-                  }}
-                  ref={registerChild}
-                  height={height}
-                  rowHeight={ROW_HEIGHT}
-                  width={width}
-                  onRowsRendered={onRowsRendered}
-                  rowCount={rowCount || 0}
-                  rowRenderer={rowRenderer}
-                />
-              )}
-            </InfiniteLoader>
-          )}
-        </AutoSizer>
+        {notifications && notifications.totalCount > 0 ? (
+          <AutoSizer>
+            {({ width, height }) => (
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={loadMoreRows}
+                rowCount={rowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  <List
+                    style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: 'rgba(209, 213, 219, 0.8) rgba(209, 213, 219, 0)'
+                    }}
+                    ref={registerChild}
+                    height={height}
+                    rowHeight={ROW_HEIGHT}
+                    width={width}
+                    onRowsRendered={onRowsRendered}
+                    rowCount={rowCount || 0}
+                    rowRenderer={rowRenderer}
+                  />
+                )}
+              </InfiniteLoader>
+            )}
+          </AutoSizer>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="text-gray-500 mb-2">
+              <NotificationsIcon />
+            </div>
+            <h4 className="text-gray-700 font-medium">
+              <FormattedMessage
+                id="DASHBOARD.NOTIFICATIONS.NO_NOTIFICATIONS"
+                defaultMessage="No notifications available"
+              />
+            </h4>
+          </div>
+        )}
       </div>
     </div>
   );
