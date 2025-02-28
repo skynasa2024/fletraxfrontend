@@ -24,6 +24,7 @@ import VehicleCurrentLocation from './components/VehicleCurrentLocation.tsx';
 import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDisplay.tsx';
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
 import { useIntl, FormattedMessage } from 'react-intl';
+import { Report } from '@/components';
 
 // const geofences = [
 //   'ISTANBUL',
@@ -291,6 +292,16 @@ const VehicleInfo = () => {
               fuelConsumption: vehicle?.fuelConsumption?.toString() || '0'
             }}
           />
+        </div>
+        <div className="grid grid-cols-3 gap-8 mb-4 h-[500px]">
+          <div></div>
+          <div className="col-span-2">
+            <Report
+              vehicleId={vehicle?.vehicleId || ''}
+              ident={vehicle?.deviceIdent || ''}
+              type="vehicle"
+            />
+          </div>
         </div>
         <div className="w-full">
           {vehicle && <MaintenanceViolationTable id={vehicle?.vehicleId} />}
