@@ -12,11 +12,11 @@ import {
 } from '../blocks/svg/index.ts';
 import FileList from '@/pages/driver/details-components/FileList.tsx';
 import VehicleMetrics from '../blocks/details-components/VehicleMetrics.tsx';
-import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
+// import GeofenceList from '../blocks/details-components/GeofenceList.tsx';
 import TripList from '../blocks/details-components/TripList.tsx';
 import { useParams } from 'react-router-dom';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate.tsx';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import VehicleInfoCard from './components/VehicleInfoCard.tsx';
 import { getVehicleDetails, VehicleDTO } from '@/api/cars.ts';
 import { MaintenanceViolationTable } from '@/pages/dashboards/blocks/maintenance/MaintenanceViolation.tsx';
@@ -25,18 +25,19 @@ import VehicleScratchesDisplay from '../add-vehicle/blocks/VehicleScratchesDispl
 import VehicleInsuranceIcon from '../blocks/svg/VehicleInsuranceIcon.tsx';
 import { useIntl, FormattedMessage } from 'react-intl';
 
-const geofences = [
-  'ISTANBUL',
-  'ANKARA',
-  'IZMIR',
-  'ANTALYA',
-  'ANKARA',
-  'IZMIR',
-  'ANTALYA',
-  'ANKARA',
-  'IZMIR',
-  'ANTALYA'
-];
+// const geofences = [
+//   'ISTANBUL',
+//   'ANKARA',
+//   'IZMIR',
+//   'ANTALYA',
+//   'ANKARA',
+//   'IZMIR',
+//   'ANTALYA',
+//   'ANKARA',
+//   'IZMIR',
+//   'ANTALYA'
+// ];
+
 const VehicleInfo = () => {
   const { id } = useParams();
   const [vehicle, setVehicle] = useState<VehicleDTO | null>();
@@ -291,20 +292,20 @@ const VehicleInfo = () => {
             }}
           />
         </div>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div className="w-full">
+          {vehicle && <MaintenanceViolationTable id={vehicle?.vehicleId} />}
+        </div>
+        {/* <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <div className="w-1/3">
-            {/* <GeofenceList
+            <GeofenceList
               items={geofences}
               title="Geofences"
               className="mx-2"
               onItemClick={(item) => console.log(`Selected: ${item}`)}
               searchPlaceholder="Search..."
-            /> */}
+            />
           </div>
-          <div className="w-2/3">
-            {vehicle && <MaintenanceViolationTable id={vehicle?.vehicleId} />}
-          </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
