@@ -180,13 +180,15 @@ const Notifications = ({
             </div>
           )}
           {withSearch && (
-            <DebouncedSearchInput
-              type="text"
-              className="input"
-              placeholder="Search by ident..."
-              value={searchValue}
-              onDebounce={handleDebouncedSearch}
-            />
+            <div className="w-56">
+              <DebouncedSearchInput
+                type="text"
+                className="input"
+                placeholder="Search by ident..."
+                value={searchValue}
+                onDebounce={handleDebouncedSearch}
+              />
+            </div>
           )}
         </div>
       </div>
