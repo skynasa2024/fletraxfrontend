@@ -166,6 +166,7 @@ export default function ManageDevices() {
             columns={columns}
             serverSide={true}
             onFetchData={getDevices}
+            pagination={{ size: 100, sizes: undefined }}
             filters={[
               ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
             ]}
