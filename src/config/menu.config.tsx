@@ -26,6 +26,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
   {
     title: 'SIDEBAR.MENU.MANAGEMENT',
     externalIcon: 'reports',
+    role: 'admin',
     children: [
       {
         title: 'SIDEBAR.MENU.MANAGEMENT.DEVICES',
