@@ -30,8 +30,7 @@ export const MENU_SIDEBAR: TMenuConfig = [
       {
         title: 'SIDEBAR.MENU.MANAGEMENT.DEVICES',
         path: '/management/devices',
-        role: 'admin',
-        fullScreen: true
+        role: 'admin'
       }
     ]
   },

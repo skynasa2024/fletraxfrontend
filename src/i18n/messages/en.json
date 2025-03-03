@@ -65,6 +65,7 @@
   "DASHBOARD.NOTIFICATIONS.LOADING": "Loading notifications...",
   "DASHBOARD.NOTIFICATIONS.ERROR": "Error loading notifications",
   "DASHBOARD.NOTIFICATIONS.MARK_ALL_READ": "Mark all as read",
+  "MANAGEMENT.TOOLBAR.DESCRIPTION": "Management / Devices",
   "NOTIFICATIONS.VEHICLE_PLATE": "{plate}",
   "NOTIFICATIONS.DEVICE_IMEI": "{imei}",
   "NOTIFICATIONS.MESSAGE": "{text}",

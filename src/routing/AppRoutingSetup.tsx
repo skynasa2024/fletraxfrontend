@@ -34,6 +34,7 @@ import { AddMaintenance } from '@/pages/maintenance/add-maintenance/AddMaintenan
 import { AddMaintenanceType } from '@/pages/maintenance-types/add-maintenance-type/AddMaintenanceType';
 import { AddGeofence } from '@/pages/geofence/add-geofence';
 import ReportsPage from '@/pages/reports/ReportsPage';
+import ManageDevices from '@/pages/management/manage-devices';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -45,7 +46,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
 
-          <Route path="/management/devices" element={<div>Manage Devices</div>} />
+          <Route path="/management/devices" element={<ManageDevices />} />
 
           <Route path="/geofences" element={<GeofencePage />} />
           <Route path="/geofences/add" element={<AddGeofence />} />
