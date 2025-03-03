@@ -45,6 +45,8 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
 
+          <Route path="/management/devices" element={<div>Manage Devices</div>} />
+
           <Route path="/geofences" element={<GeofencePage />} />
           <Route path="/geofences/add" element={<AddGeofence />} />
           <Route path="/geofences/edit/:id" element={<AddGeofence />} />

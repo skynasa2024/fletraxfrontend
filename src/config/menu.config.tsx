@@ -24,6 +24,18 @@ export const MENU_SIDEBAR: TMenuConfig = [
     path: '/reports'
   },
   {
+    title: 'SIDEBAR.MENU.MANAGEMENT',
+    externalIcon: 'reports',
+    children: [
+      {
+        title: 'SIDEBAR.MENU.MANAGEMENT.DEVICES',
+        path: '/management/devices',
+        role: 'admin',
+        fullScreen: true
+      }
+    ]
+  },
+  {
     title: 'SIDEBAR.MENU.GEOFENCE',
     externalIcon: 'geofence',
     children: [
