@@ -4,47 +4,49 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { useMemo } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
+  const intl = useIntl();
+
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
       {
-        header: 'Identify Number',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER' }),
         enableSorting: true
       },
       {
-        header: 'Name',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.NAME' }),
         enableSorting: true
       },
       {
-        header: 'Phone',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PHONE' }),
         enableSorting: true
       },
       {
-        header: 'Protocol'
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PROTOCOL' })
       },
       {
-        header: 'Type'
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.TYPE' })
       },
       {
-        header: 'Plate',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PLATE' }),
         cell: () => <CarPlate />
       },
       {
-        header: 'Branch'
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.BRANCH' })
       },
       {
-        header: 'Start Date'
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.START_DATE' })
       },
       {
-        header: 'End Date'
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.END_DATE' })
       },
       {
-        header: 'Action'
+        header: intl.formatMessage({ id: 'COMMON.ACTIONS' })
       }
     ],
-    []
+    [intl]
   );
 
   return (
