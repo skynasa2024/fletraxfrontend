@@ -1,12 +1,16 @@
 import { Paginated } from '@/api/common';
-import { DeviceDTO, getDevices } from '@/api/devices';
+import { createDevice, DeviceDTO, getDevices } from '@/api/devices';
+import { ResponseModel } from '@/api/response';
 import { Container, DataGrid, KeenIcon } from '@/components';
+import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import axios, { AxiosError } from 'axios';
+import { enqueueSnackbar } from 'notistack';
+import React, { useEffect, useMemo, useState, useRef, FormEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
@@ -15,6 +19,8 @@ export default function ManageDevices() {
   const [searchQuery, setSearchQuery] = useState('');
   const [devices, setDevices] = useState<Paginated<DeviceDTO>>();
   const { getProtocolName, getTypeName } = useDeviceProvider();
+  const [protocolId, setProtocolId] = useState<string>('');
+  const [typeId, setTypeId] = useState<string>('');
 
   useEffect(() => {
     getDevices({
@@ -37,42 +43,74 @@ export default function ManageDevices() {
     }
   };
 
+  const handleFormSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      await createDevice(formData);
+      enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.FORM.SAVE_SUCCESS' }), {
+        variant: 'success'
+      });
+      form.reset();
+      setProtocolId('');
+      setTypeId('');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ResponseModel<never>>;
+
+        enqueueSnackbar(
+          axiosError.response?.data.message || intl.formatMessage({ id: 'COMMON.ERROR' }),
+          { variant: 'error' }
+        );
+      } else {
+        enqueueSnackbar(intl.formatMessage({ id: 'COMMON.ERROR' }), { variant: 'error' });
+      }
+    }
+    getDevices({
+      pageIndex: 0,
+      pageSize: 1
+    }).then((data) => {
+      setDevices(data);
+    });
+  };
+
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
     () => [
       {
         accessorKey: 'ident',
-        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER' }),
-        enableSorting: true
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER' })
+        // enableSorting: true
       },
       {
         accessorKey: 'name',
-        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.NAME' }),
-        enableSorting: true
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.NAME' })
+        // enableSorting: true
       },
       {
         accessorKey: 'phone',
-        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PHONE' }),
-        enableSorting: true
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PHONE' })
+        // enableSorting: true
       },
       {
         accessorKey: 'protocol',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PROTOCOL' }),
-        cell: ({ row }) => <span>{getProtocolName(row.original.protocolId)}</span>
+        cell: ({ row }) => (
+          <div className="w-[175px]">{getProtocolName(row.original.protocolId)}</div>
+        )
       },
       {
         accessorKey: 'type',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.TYPE' }),
-        cell: ({ row }) => <span>{getTypeName(row.original.typeId)}</span>
+        cell: ({ row }) => <div className="w-[175px]">{getTypeName(row.original.typeId)}</div>
       },
       {
         accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PLATE' }),
         cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
       },
-      // {
-      //   accessorKey: 'branch',
-      //   header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.BRANCH' })
-      // },
       {
         accessorKey: 'subscriptionStartDate',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.START_DATE' })
@@ -161,18 +199,131 @@ export default function ManageDevices() {
             </button>
           </div>
         </div>
-        <div className="report-table-container">
-          <DataGrid
-            columns={columns}
-            serverSide={true}
-            onFetchData={getDevices}
-            pagination={{ size: 100, sizes: undefined }}
-            filters={[
-              ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
-            ]}
-          />
-        </div>
+        <form onSubmit={handleFormSubmit}>
+          <div className="report-table-container">
+            <DataGrid
+              columns={columns}
+              serverSide={true}
+              onFetchData={getDevices}
+              pagination={{ size: 100, sizes: undefined }}
+              filters={[
+                ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
+              ]}
+              supplementaryHeaderRow={
+                <QuickAddDeviceFrom
+                  setProtocolId={setProtocolId}
+                  setTypeId={setTypeId}
+                  protocolId={protocolId}
+                  typeId={typeId}
+                />
+              }
+            />
+          </div>
+        </form>
       </div>
     </Container>
+  );
+}
+
+type QuickAddDeviceFromProps = {
+  setProtocolId: (value: string) => void;
+  setTypeId: (value: string) => void;
+  protocolId: string;
+  typeId: string;
+};
+
+function QuickAddDeviceFrom({
+  setProtocolId,
+  setTypeId,
+  protocolId,
+  typeId
+}: QuickAddDeviceFromProps) {
+  const intl = useIntl();
+  const { protocols, getTypesOfProtocol } = useDeviceProvider();
+  return (
+    <>
+      <th colSpan={1} className="!p-1">
+        <input
+          type="text"
+          name="ident"
+          className="input w-full"
+          required
+          placeholder="Enter identify number"
+        />
+      </th>
+      <th colSpan={1} className="!p-1">
+        <input type="text" name="name" className="input w-full" placeholder="Enter device name" />
+      </th>
+      <th colSpan={1} className="w-[175px] !p-1">
+        <div className="[&_input.select]:w-[60px] [&_input.select]:p-0">
+          <PhoneInput
+            required
+            phoneCodeName="phoneCode"
+            phoneCodeInitialValue="+90"
+            name="phone"
+            withPrefix={false}
+          />
+        </div>
+      </th>
+      <th colSpan={1} className="!p-1">
+        <select
+          className="select"
+          name="protocolId"
+          required
+          onChange={(e) => setProtocolId(e.target.value)}
+          value={protocolId}
+        >
+          <option value="">{intl.formatMessage({ id: 'DEVICE.FORM.SELECT_PROTOCOL' })}</option>
+          {Object.entries(protocols).map(([id, data]) => (
+            <option key={id} value={id}>
+              {data}
+            </option>
+          ))}
+        </select>
+      </th>
+      <th colSpan={1} className="!p-1">
+        <select
+          required
+          className="select"
+          name="typeId"
+          value={typeId}
+          onChange={(e) => setTypeId(e.target.value)}
+        >
+          {protocolId ? (
+            <>
+              <option value="">{intl.formatMessage({ id: 'DEVICE.FORM.SELECT_TYPE' })}</option>
+              {getTypesOfProtocol(protocolId).map((type) => (
+                <option key={type.id} value={type.id}>
+                  {type.name}
+                </option>
+              ))}
+            </>
+          ) : (
+            <option value="">
+              {intl.formatMessage({ id: 'DEVICE.FORM.SELECT_PROTOCOL_FIRST' })}
+            </option>
+          )}
+        </select>
+      </th>
+      <th colSpan={1} className="!p-1">
+        <input
+          type="text"
+          name="vehiclePlate"
+          className="input w-full"
+          placeholder="Enter plate number"
+        />
+      </th>
+      <th colSpan={1} className="!p-1">
+        <input type="date" name="subscriptionStartDate" className="input w-full" required />
+      </th>
+      <th colSpan={1} className="!p-1">
+        <input type="date" name="subscriptionEndDate" className="input w-full" required />
+      </th>
+      <th colSpan={1} className="!p-1">
+        <button type="submit" className="btn btn-success w-full flex items-center justify-center">
+          Add
+        </button>
+      </th>
+    </>
   );
 }

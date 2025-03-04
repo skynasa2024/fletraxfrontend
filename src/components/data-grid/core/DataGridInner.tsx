@@ -9,12 +9,12 @@ import {
   DataGridTableHead,
   DataGridTableHeadCell,
   DataGridTableEmpty,
-  DataGridToolbar,
+  DataGridToolbar
 } from '..'; // Ensure these imports are correct
 import { flexRender, Row, Cell } from '@tanstack/react-table'; // Import Row and Cell types
 
 const DataGridInner = <TData extends object>() => {
-  const { loading, table } = useDataGrid();
+  const { loading, table, props } = useDataGrid();
 
   return (
     <Fragment>
@@ -24,12 +24,15 @@ const DataGridInner = <TData extends object>() => {
             <DataGridTableHead>
               {table
                 .getHeaderGroups()
-                .map((headerGroup: { headers: any[]; }) =>
+                .map((headerGroup: { headers: any[] }) =>
                   headerGroup.headers.map((header, index) => (
                     <DataGridTableHeadCell key={index} header={header} />
                   ))
                 )}
             </DataGridTableHead>
+            {props.supplementaryHeaderRow && (
+              <DataGridTableHead>{props.supplementaryHeaderRow}</DataGridTableHead>
+            )}
             <DataGridTableBody>
               {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map((row: Row<TData>, rowIndex: number) => (
