@@ -41,6 +41,7 @@ export interface TDataGridProps<TData extends object> {
   filters?: { id: string; value: unknown }[];
   serverSide?: boolean;
   onFetchData?: (params: any) => Promise<any>;
+  supplementaryHeaderRow?: ReactNode;
 }
 
 const DataGrid = <TData extends object>(props: TDataGridProps<TData>) => {

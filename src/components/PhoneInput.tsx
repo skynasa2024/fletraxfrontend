@@ -10,9 +10,10 @@ export interface PhoneInputProps {
   name: string;
   initialValue?: string;
   required?: boolean;
+  withPrefix?: boolean;
 }
 
-const PhoneInput = (props: PhoneInputProps) => {
+const PhoneInput = ({ withPrefix = true, ...props }: PhoneInputProps) => {
   const { formatMessage } = useIntl();
   const [search, setSearch] = useState(props.phoneCodeInitialValue ?? '');
   const [selected, setSelected] = useState<string | null>(props.phoneCodeInitialValue ?? null);
@@ -50,9 +51,11 @@ const PhoneInput = (props: PhoneInputProps) => {
         options={phoneCodes}
         renderPrefix={(option) => {
           return (
-            <span
-              className={`fi fis fi-${phoneToCodes.get(option)?.toLowerCase()} rounded-full !size-5`}
-            />
+            !!withPrefix && (
+              <span
+                className={`fi fis fi-${phoneToCodes.get(option)?.toLowerCase()} rounded-full !size-5`}
+              />
+            )
           );
         }}
         renderValue={(option) => {
@@ -83,7 +86,7 @@ const PhoneInput = (props: PhoneInputProps) => {
       />
       <input
         required={props.required}
-        placeholder={formatMessage({ id: "PHONE_INPUT.PLACEHOLDER" })}
+        placeholder={formatMessage({ id: 'PHONE_INPUT.PLACEHOLDER' })}
         type="phone"
         defaultValue={props.initialValue}
         name={props.name}
