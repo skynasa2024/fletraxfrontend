@@ -124,6 +124,7 @@ export default function ManageDevices() {
         cell: () => (
           <div className="flex items-center gap-2">
             <button
+              type="button"
               className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
               title={intl.formatMessage({ id: 'COMMON.VIEW' })}
             >
@@ -134,6 +135,7 @@ export default function ManageDevices() {
             </button>
 
             <button
+              type="button"
               className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
               title={intl.formatMessage({ id: 'COMMON.EDIT' })}
             >
@@ -204,7 +206,7 @@ export default function ManageDevices() {
             <DataGrid
               columns={columns}
               serverSide={true}
-              onFetchData={getDevices}
+              onFetchData={(params) => getDevices({ ...params, sort: 'updatedAt, desc' })}
               pagination={{ size: 100, sizes: undefined }}
               filters={[
                 ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])

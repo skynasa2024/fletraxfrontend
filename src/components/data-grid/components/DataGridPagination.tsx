@@ -35,6 +35,7 @@ const DataGridPagination = () => {
     for (let i = currentGroupStart; i < currentGroupEnd; i++) {
       buttons.push(
         <button
+          type="button"
           key={i}
           className={`btn ${pageIndex === i ? 'active' : ''}`}
           onClick={() => table.setPageIndex(i)}
