@@ -246,7 +246,7 @@ function QuickAddDeviceFrom({
   const { protocols, getTypesOfProtocol } = useDeviceProvider();
   return (
     <>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <input
           type="text"
           name="ident"
@@ -255,10 +255,10 @@ function QuickAddDeviceFrom({
           placeholder="Enter identify number"
         />
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <input type="text" name="name" className="input w-full" placeholder="Enter device name" />
       </th>
-      <th colSpan={1} className="w-[175px] !p-1 !bg-green-700/10">
+      <th colSpan={1} className="w-[175px] !p-1 !bg-green-700/5">
         <div className="[&_input.select]:w-[60px] [&_input.select]:p-0">
           <PhoneInput
             required
@@ -269,7 +269,7 @@ function QuickAddDeviceFrom({
           />
         </div>
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <select
           className="select"
           name="protocolId"
@@ -285,7 +285,7 @@ function QuickAddDeviceFrom({
           ))}
         </select>
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <select
           required
           className="select"
@@ -309,7 +309,7 @@ function QuickAddDeviceFrom({
           )}
         </select>
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <input
           type="text"
           name="vehiclePlate"
@@ -317,13 +317,13 @@ function QuickAddDeviceFrom({
           placeholder="Enter plate number"
         />
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <input type="date" name="subscriptionStartDate" className="input w-full" required />
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <input type="date" name="subscriptionEndDate" className="input w-full" required />
       </th>
-      <th colSpan={1} className="!p-1 !bg-green-700/10">
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
         <button type="submit" className="btn btn-success w-full flex items-center justify-center">
           Add
         </button>
