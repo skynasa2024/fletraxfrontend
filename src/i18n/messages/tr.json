@@ -671,6 +671,7 @@
   "DEVICE.REPORT.CUSTOM_YEARS": "Özel Yıllar",
   "COMMON.FILTERS": "Filtreler",
   "COMMON.EXPORT": "Dışa Aktar",
+  "COMMON.IMPORT": "İçe Aktar",
   "COMMON.FILTERS.COUNT": "{count}",
   "DEVICE.FORM.NAME.PLACEHOLDER": "Cihaz adını girin",
   "DEVICE.FORM.IDENTIFY_NUMBER.PLACEHOLDER": "Kimlik numarasını girin",

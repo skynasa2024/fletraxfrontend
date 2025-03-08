@@ -1,7 +1,7 @@
 import { Paginated } from '@/api/common';
 import { createDevice, DeviceDTO, getDevices } from '@/api/devices';
 import { ResponseModel } from '@/api/response';
-import { Container, DataGrid, KeenIcon } from '@/components';
+import { Container, DataGrid } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
@@ -10,6 +10,7 @@ import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
+import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useMemo, useState, useRef, FormEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -169,12 +170,38 @@ export default function ManageDevices() {
               values={{ count: devices?.totalCount ?? 0 }}
             />
           </h2>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+                id="importFile"
+              />
+              <button
+                type="button"
+                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+                onClick={() => document.getElementById('importFile')?.click()}
+              >
+                <Upload size={16} />
+                <span>
+                  <FormattedMessage id="COMMON.IMPORT" />
+                </span>
+              </button>
+            </div>
 
-          <DebouncedSearchInput
-            onDebounce={setSearchQuery}
-            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
-            className="w-64 py-2 text-sm border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
-          />
+            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border">
+              <Download size={16} />
+              <span>
+                <FormattedMessage id="COMMON.EXPORT" />
+              </span>
+            </button>
+
+            <DebouncedSearchInput
+              onDebounce={setSearchQuery}
+              placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
+              className="w-64 py-2 text-sm border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
+            />
+          </div>
         </div>
         <form onSubmit={handleFormSubmit}>
           <div className="report-table-container">

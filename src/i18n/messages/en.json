@@ -619,6 +619,7 @@
   "DEVICE.REPORT.CHART.TITLE": "{type} Report from {startDate} to {endDate}",
   "COMMON.FILTERS": "Filters",
   "COMMON.EXPORT": "Export",
+  "COMMON.IMPORT": "Import",
   "COMMON.FILTERS.COUNT": "{count}",
   "PHONE_INPUT.PLACEHOLDER": "Phone number",
   "USER_PAGE.TITLE": "User Page",
