@@ -5,6 +5,7 @@ import { Container, DataGrid, KeenIcon } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
+import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
@@ -169,37 +170,11 @@ export default function ManageDevices() {
             />
           </h2>
 
-          <div className="flex items-center justify-center gap-4">
-            <div className="relative flex items-center">
-              <div className="absolute left-0 flex items-center pl-3 pointer-events-none">
-                <KeenIcon style="duotone" icon="magnifier" />
-              </div>
-              <input
-                ref={searchInputRef}
-                defaultValue=""
-                onKeyDown={handleKeyDown}
-                type="text"
-                placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
-                className="w-64 pl-10 pr-4 py-2 text-sm border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
-              />
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  searchInputRef.current!.value = '';
-                  searchInputRef.current?.focus();
-                }}
-                className="absolute right-0 flex items-center pr-3"
-              >
-                <KeenIcon style="solid" icon="cross-circle" className="font-light" />
-              </button>
-            </div>
-            <button onClick={handleSearch} className="btn btn-info rounded-lg">
-              <img src={toAbsoluteUrl('/media/icons/white-device.svg')} alt="Add" />
-              <span>
-                <FormattedMessage id="COMMON.DEVICE" />
-              </span>
-            </button>
-          </div>
+          <DebouncedSearchInput
+            onDebounce={setSearchQuery}
+            placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
+            className="w-64 py-2 text-sm border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
+          />
         </div>
         <form onSubmit={handleFormSubmit}>
           <div className="report-table-container">
