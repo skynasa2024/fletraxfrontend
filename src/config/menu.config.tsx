@@ -19,6 +19,12 @@ export const MENU_SIDEBAR: TMenuConfig = [
     fullScreen: true
   },
   {
+    title: 'SIDEBAR.MENU.REPLAY',
+    externalIcon: 'reports',
+    path: '/replay',
+    fullScreen: true
+  },
+  {
     title: 'SIDEBAR.MENU.REPORTS',
     externalIcon: 'reports',
     path: '/reports'
