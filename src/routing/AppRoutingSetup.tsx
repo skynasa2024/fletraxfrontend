@@ -35,7 +35,7 @@ import { AddMaintenanceType } from '@/pages/maintenance-types/add-maintenance-ty
 import { AddGeofence } from '@/pages/geofence/add-geofence';
 import ReportsPage from '@/pages/reports/ReportsPage';
 import ManageDevices from '@/pages/management/manage-devices';
-import ReplayPage from '@/pages/replay/ReplayPage';
+import { ReplayPage } from '@/pages/replay/ReplayPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
