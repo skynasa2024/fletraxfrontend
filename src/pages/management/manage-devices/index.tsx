@@ -12,12 +12,11 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
 import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
-import React, { useEffect, useMemo, useState, useRef, FormEvent } from 'react';
+import { useEffect, useMemo, useState, FormEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
   const intl = useIntl();
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [devices, setDevices] = useState<Paginated<DeviceDTO>>();
   const { getProtocolName, getTypeName } = useDeviceProvider();
@@ -32,18 +31,6 @@ export default function ManageDevices() {
       setDevices(data);
     });
   }, []);
-
-  const handleSearch = () => {
-    if (searchInputRef.current) {
-      setSearchQuery(searchInputRef.current.value);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
