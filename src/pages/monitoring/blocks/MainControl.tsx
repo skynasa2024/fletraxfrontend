@@ -8,9 +8,10 @@ import clsx from 'clsx';
 export interface MainControlProps extends PropsWithChildren {
   title: string;
   bar?: ReactElement;
+  fullHeight?: boolean;
 }
 
-export const MainControl = ({ children, title, bar }: MainControlProps) => {
+export const MainControl = ({ children, title, bar, fullHeight = true }: MainControlProps) => {
   const { isRTL } = useLanguage();
   const map = useMap();
   const [isOpen, setIsOpen] = useState(true);
@@ -25,7 +26,9 @@ export const MainControl = ({ children, title, bar }: MainControlProps) => {
     >
       <div className="leaflet-control flex flex-col gap-[10px] !mx-4 md:!mt-16 md:!ms-7 md:!mb-6 font-sans">
         <div
-          className="card group-data-[open=true]:h-full"
+          className={clsx('card', {
+            'group-data-[open=true]:h-full': fullHeight
+          })}
           onMouseOver={() => {
             map.doubleClickZoom.disable();
             map.dragging.disable();

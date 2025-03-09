@@ -35,6 +35,7 @@ import { AddMaintenanceType } from '@/pages/maintenance-types/add-maintenance-ty
 import { AddGeofence } from '@/pages/geofence/add-geofence';
 import ReportsPage from '@/pages/reports/ReportsPage';
 import ManageDevices from '@/pages/management/manage-devices';
+import { ReplayPage } from '@/pages/replay/ReplayPage';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -44,6 +45,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
+          <Route path="/replay" element={<ReplayPage />} />
           <Route path="/reports" element={<ReportsPage />} />
 
           <Route element={<RequireRole role="admin" />}>
