@@ -83,6 +83,8 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (path && path.length > 0) {
+      setCurrent(0);
+      setPlaying(false);
       const last = path[path.length - 1];
       setMax(last.timestamp.getTime() - path[0].timestamp.getTime());
     }
