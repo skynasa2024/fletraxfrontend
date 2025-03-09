@@ -27,9 +27,9 @@ export function interpolateKeyframes(keyframes: TripPath[], time: number) {
     time >= kfStart.timestamp.getTime() &&
     time <= kfEnd.timestamp.getTime()
   ) {
-    const t =
-      (time - kfStart.timestamp.getTime()) /
-      (kfEnd.timestamp.getTime() - kfStart.timestamp.getTime()); // Normalized time
+    const denominator = kfEnd.timestamp.getTime() - kfStart.timestamp.getTime();
+    const t = denominator === 0 ? 0 : (time - kfStart.timestamp.getTime()) / denominator; // Normalized time
+
     return {
       latitute: kfStart.latitude + t * (kfEnd.latitude - kfStart.latitude),
       longitude: kfStart.longitude + t * (kfEnd.longitude - kfStart.longitude),
