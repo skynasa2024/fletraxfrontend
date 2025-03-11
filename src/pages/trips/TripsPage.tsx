@@ -8,7 +8,7 @@ interface TripsPageProps {
 const TripsPage = ({ isNewTrips = false }: TripsPageProps) => {
   return (
     <div className="size-full">
-      <TripsProvider isNewTrips={isNewTrips}>
+      <TripsProvider isNewTrips={isNewTrips} key={isNewTrips ? 'new-trips' : 'trips'}>
         <TripsMap />
       </TripsProvider>
     </div>
