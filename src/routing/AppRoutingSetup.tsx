@@ -45,6 +45,7 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
           <Route path="/trips" element={<TripsPage />} />
+          <Route path="/new-trips" element={<TripsPage isNewTrips={true} />} />
           <Route path="/replay" element={<ReplayPage />} />
           <Route path="/reports" element={<ReportsPage />} />
 
