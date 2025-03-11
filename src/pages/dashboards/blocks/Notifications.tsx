@@ -1,6 +1,6 @@
 import { getNotifications, NotificationDTO } from '@/api/notifications';
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Paginated } from '@/api/common.ts';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { format } from 'date-fns';
@@ -20,6 +20,7 @@ import {
   NotificationsIcon
 } from '@/assets/svg';
 import { NotificationTypeSelect } from '@/pages/reports/components/NotificationTypeSelect';
+import clsx from 'clsx';
 
 const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
@@ -246,7 +247,12 @@ function NotificationCard({ notification }: NotificationProps) {
   if (!notification)
     return (
       <div className="flex flex-col gap-3 mt-3 ps-1 pe-2 h-20">
-        <div className="flex gap-4 items-center justify-between w-full">
+        <div
+          className={clsx('flex gap-4 items-center justify-between w-full', {
+            'flex-row-reverse': document.dir === 'rtl',
+            'flex-row': document.dir !== 'rtl'
+          })}
+        >
           <div className="flex gap-2 items-center">
             <div className="size-12 rounded-md bg-slate-200 aspect-square animate-pulse" />
             <div>
@@ -265,8 +271,18 @@ function NotificationCard({ notification }: NotificationProps) {
     );
   return (
     <div className="flex flex-col gap-3 mt-3 ps-1 pe-2 h-20">
-      <div className="flex gap-4 items-center justify-between w-full">
-        <div className="flex gap-2 items-center">
+      <div
+        className={clsx('flex gap-4 items-center justify-between w-full', {
+          'flex-row-reverse': document.dir === 'rtl',
+          'flex-row': document.dir !== 'rtl'
+        })}
+      >
+        <div
+          className={clsx('flex gap-2 items-center', {
+            'text-right flex-row-reverse': document.dir === 'rtl',
+            'text-left flex-row': document.dir !== 'rtl'
+          })}
+        >
           <div className="size-12 rounded-md card border-none aspect-square flex items-center justify-center">
             {NOTIFICATION_ICONS[notification.text as keyof typeof NOTIFICATION_ICONS] ?? (
               <DefaultNotificationIcon />
@@ -283,7 +299,12 @@ function NotificationCard({ notification }: NotificationProps) {
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-end justify-center gap-1">
+        <div
+          className={clsx('flex flex-col justify-center gap-1', {
+            'items-start': document.dir === 'rtl',
+            'items-end': document.dir !== 'rtl'
+          })}
+        >
           <CarPlate plate={notification.vehiclePlate} />
           <span className="text-sm font-monospace">{notification.deviceIdent}</span>
         </div>
