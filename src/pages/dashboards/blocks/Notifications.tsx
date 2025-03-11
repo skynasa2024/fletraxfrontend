@@ -55,7 +55,7 @@ const Notifications = ({
   const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
   const [searchValue, setSearchValue] = useState<string>(externalSearch || '');
   const [selectedAlarmType, setSelectedAlarmType] = useState<string | undefined>();
-
+  const { locale } = useIntl();
   const isRowLoaded = ({ index }: { index: number }) => !!notifications?.data[index];
   const rowCount = notifications?.totalCount;
 
@@ -148,7 +148,7 @@ const Notifications = ({
     }).then(setNotifications);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ident, vehicleId]);
+  }, [ident, vehicleId, locale]);
 
   useEffect(() => {
     if (externalSearch !== undefined && externalSearch !== searchValue) {
@@ -166,7 +166,7 @@ const Notifications = ({
       }).then(setNotifications);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalSearch]);
+  }, [externalSearch, locale]);
 
   return (
     <div className="card hover:shadow-md h-full">
