@@ -1,10 +1,14 @@
 import { TripsProvider } from './providers/TripsContext';
 import { TripsMap } from './TripsMap';
 
-const TripsPage = () => {
+interface TripsPageProps {
+  isNewTrips?: boolean;
+}
+
+const TripsPage = ({ isNewTrips = false }: TripsPageProps) => {
   return (
     <div className="size-full">
-      <TripsProvider>
+      <TripsProvider isNewTrips={isNewTrips}>
         <TripsMap />
       </TripsProvider>
     </div>

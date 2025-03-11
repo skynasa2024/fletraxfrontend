@@ -38,6 +38,7 @@ interface TripsContextProps {
   // eslint-disable-next-line no-unused-vars
   setIntervalType: (intervalType: IntervalType) => void;
   loading: boolean;
+  isNewTrips: boolean;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -59,10 +60,15 @@ export const TripsContext = createContext<TripsContextProps>({
   hasMore: false,
   intervalType: IntervalType.Trip,
   setIntervalType: () => {},
-  loading: false
+  loading: false,
+  isNewTrips: false
 });
 
-export const TripsProvider = ({ children }: PropsWithChildren) => {
+interface TripsProviderProps extends PropsWithChildren {
+  isNewTrips?: boolean;
+}
+
+export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
   const [intervalType, setIntervalType] = useState<IntervalType>(IntervalType.Trip);
@@ -170,14 +176,15 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         startTime,
         endTime,
         offset: { start: 0, end: TRIPS_PAGE_SIZE },
-        intervalType
+        intervalType,
+        isNewTrips
       });
       setTrips(initialTrips);
       setHasMore(initialTrips.length > 0);
     } finally {
       setLoading(false);
     }
-  }, [endDate, endTime, searchDeviceQuery, startDate, startTime, intervalType]);
+  }, [endDate, endTime, searchDeviceQuery, startDate, startTime, intervalType, isNewTrips]);
 
   const loadMoreTrips = useCallback(async () => {
     if (!hasMore) return;
@@ -189,7 +196,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
       startTime,
       endTime,
       offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE },
-      intervalType
+      intervalType,
+      isNewTrips
     });
     if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
@@ -210,7 +218,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
     endDate,
     startTime,
     endTime,
-    intervalType
+    intervalType,
+    isNewTrips
   ]);
 
   useEffect(() => {
@@ -294,7 +303,8 @@ export const TripsProvider = ({ children }: PropsWithChildren) => {
         hasMore,
         intervalType,
         setIntervalType,
-        loading
+        loading,
+        isNewTrips
       }}
     >
       {children}

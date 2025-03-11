@@ -10,14 +10,18 @@ import { useIntl } from 'react-intl';
 import { IntervalType } from '@/api/trips';
 
 const TripsMap = () => {
-  const { path, intervalType } = useTripsContext();
+  const { path, intervalType, isNewTrips } = useTripsContext();
   const intl = useIntl();
 
   return (
     <AppMap>
       <AnimationProvider>
         <TripsLayer />
-        <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.TRIPS' })}>
+        <MainControl
+          title={intl.formatMessage({
+            id: isNewTrips ? 'SIDEBAR.MENU.NEW_TRIPS' : 'SIDEBAR.MENU.TRIPS'
+          })}
+        >
           <MainCard />
         </MainControl>
         {path && intervalType === IntervalType.Trip && (
