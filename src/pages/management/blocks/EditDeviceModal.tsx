@@ -1,4 +1,4 @@
-import { Box, Modal } from '@mui/material';
+import { Box, CircularProgress, Modal } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { DeviceDTO, updateDevice } from '@/api/devices';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
@@ -231,14 +231,8 @@ export function EditDeviceModal({ open, device, onClose, onSuccess }: EditDevice
               <FormattedMessage id="COMMON.CANCEL" />
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="loading loading-spinner loading-sm"></span>
-                  <FormattedMessage id="COMMON.SAVING" />
-                </span>
-              ) : (
-                <FormattedMessage id="COMMON.SAVE" />
-              )}
+              {loading && <CircularProgress size={12} color="inherit" />}
+              <FormattedMessage id="COMMON.SAVE" />
             </button>
           </div>
         </form>
