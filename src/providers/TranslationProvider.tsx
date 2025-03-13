@@ -14,6 +14,7 @@ import { IntlProvider } from 'react-intl';
 import { I18N_CONFIG_KEY, I18N_DEFAULT_LANGUAGE, I18N_LANGUAGES, I18N_MESSAGES } from '@/i18n';
 import { type TLanguage, type ITranslationProviderProps } from '@/i18n';
 import { getData, setData } from '@/utils';
+import { updateUserLocale } from '@/api/user';
 
 const getInitialLanguage = () => {
   const currentLanguage = getData(I18N_CONFIG_KEY) as TLanguage | undefined;
@@ -53,9 +54,14 @@ const TranslationProvider = ({ children }: PropsWithChildren) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const changeLanguage = (language: TLanguage) => {
-    setData(I18N_CONFIG_KEY, language);
-    setCurrentLanguage(language);
+  const changeLanguage = async (language: TLanguage) => {
+    try {
+      await updateUserLocale(language.code);
+      setData(I18N_CONFIG_KEY, language);
+      setCurrentLanguage(language);
+    } catch (error) {
+      console.error('Error updating user locale:', error);
+    }
   };
 
   const isRTL = () => {
