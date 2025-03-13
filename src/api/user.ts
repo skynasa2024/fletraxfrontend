@@ -220,3 +220,8 @@ export const getUsersUnderParent = async (
     totalCount: clients.data.result.totalElements
   };
 };
+
+export const updateUserLocale = async (locale: string): Promise<ResponseModel<UserModel>> => {
+  const res = await axios.patch<ResponseModel<UserModel>>('/api/users/update-locale', { locale });
+  return res.data;
+};
