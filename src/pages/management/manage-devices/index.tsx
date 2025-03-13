@@ -5,6 +5,7 @@ import { Container, DataGrid } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
+import { EditDeviceModal } from '@/pages/management/blocks/EditDeviceModal';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { toAbsoluteUrl } from '@/utils';
@@ -22,15 +23,21 @@ export default function ManageDevices() {
   const { getProtocolName, getTypeName } = useDeviceProvider();
   const [protocolId, setProtocolId] = useState<string>('');
   const [typeId, setTypeId] = useState<string>('');
+  const [selectedDevice, setSelectedDevice] = useState<DeviceDTO | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
-    getDevices({
-      pageIndex: 0,
-      pageSize: 1
+    fetchDevices();
+  }, []);
+
+  const fetchDevices = (params = { pageIndex: 0, pageSize: 1 }) => {
+    return getDevices({
+      ...params
     }).then((data) => {
       setDevices(data);
+      return data;
     });
-  }, []);
+  };
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -46,6 +53,7 @@ export default function ManageDevices() {
       form.reset();
       setProtocolId('');
       setTypeId('');
+      fetchDevices();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
@@ -58,12 +66,15 @@ export default function ManageDevices() {
         enqueueSnackbar(intl.formatMessage({ id: 'COMMON.ERROR' }), { variant: 'error' });
       }
     }
-    getDevices({
-      pageIndex: 0,
-      pageSize: 1
-    }).then((data) => {
-      setDevices(data);
-    });
+  };
+
+  const openEditModal = (device: DeviceDTO) => {
+    setSelectedDevice(device);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
   };
 
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
@@ -110,7 +121,7 @@ export default function ManageDevices() {
       },
       {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -127,6 +138,7 @@ export default function ManageDevices() {
               type="button"
               className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
               title={intl.formatMessage({ id: 'COMMON.EDIT' })}
+              onClick={() => openEditModal(row.original)}
             >
               <img
                 src={toAbsoluteUrl('/media/icons/edit-light.svg')}
@@ -195,7 +207,7 @@ export default function ManageDevices() {
             <DataGrid
               columns={columns}
               serverSide={true}
-              onFetchData={(params) => getDevices({ ...params, sort: 'updatedAt, desc' })}
+              onFetchData={fetchDevices}
               pagination={{ size: 100, sizes: undefined }}
               filters={[
                 ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
@@ -212,6 +224,13 @@ export default function ManageDevices() {
           </div>
         </form>
       </div>
+
+      <EditDeviceModal
+        open={isEditModalOpen}
+        device={selectedDevice}
+        onClose={closeEditModal}
+        onSuccess={fetchDevices}
+      />
     </Container>
   );
 }
