@@ -227,12 +227,7 @@ export function EditDeviceModal({ open, device, onClose, onSuccess }: EditDevice
           </div>
 
           <div className="flex justify-end gap-3 mt-6">
-            <button
-              type="button"
-              className="btn btn-light"
-              onClick={onClose}
-              disabled={loading}
-            >
+            <button type="button" className="btn btn-light" onClick={onClose} disabled={loading}>
               <FormattedMessage id="COMMON.CANCEL" />
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>

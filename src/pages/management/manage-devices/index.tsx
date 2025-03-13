@@ -13,7 +13,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
 import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
-import { useEffect, useMemo, useState, FormEvent } from 'react';
+import { useEffect, useMemo, useState, FormEvent, useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
@@ -25,19 +25,25 @@ export default function ManageDevices() {
   const [typeId, setTypeId] = useState<string>('');
   const [selectedDevice, setSelectedDevice] = useState<DeviceDTO | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  useEffect(() => {
-    fetchDevices();
-  }, []);
-
-  const fetchDevices = (params = { pageIndex: 0, pageSize: 1 }) => {
+  // Use useCallback to memoize the fetchDevices function to prevent it from recreating on each render
+  const fetchDevices = useCallback((params = { pageIndex: 0, pageSize: 1 }) => {
     return getDevices({
       ...params
     }).then((data) => {
       setDevices(data);
       return data;
     });
-  };
+  }, []);
+
+  // Only fetch on initial mount
+  useEffect(() => {
+    if (isInitialLoad) {
+      fetchDevices();
+      setIsInitialLoad(false);
+    }
+  }, [fetchDevices, isInitialLoad]);
 
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -53,7 +59,7 @@ export default function ManageDevices() {
       form.reset();
       setProtocolId('');
       setTypeId('');
-      fetchDevices();
+      fetchDevices(); // Explicitly fetch after successful creation
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
@@ -75,7 +81,13 @@ export default function ManageDevices() {
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
+    setSelectedDevice(null); // Clear the selected device when closing modal
   };
+
+  // Create a dedicated handler for DataGrid fetch requests
+  const handleFetchData = useCallback((params: any) => {
+    return getDevices(params);
+  }, []);
 
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
     () => [
@@ -207,7 +219,7 @@ export default function ManageDevices() {
             <DataGrid
               columns={columns}
               serverSide={true}
-              onFetchData={fetchDevices}
+              onFetchData={handleFetchData} // Use the dedicated handler instead of fetchDevices
               pagination={{ size: 100, sizes: undefined }}
               filters={[
                 ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
@@ -229,7 +241,10 @@ export default function ManageDevices() {
         open={isEditModalOpen}
         device={selectedDevice}
         onClose={closeEditModal}
-        onSuccess={fetchDevices}
+        onSuccess={() => {
+          fetchDevices(); // Refresh data after a successful edit
+          closeEditModal();
+        }}
       />
     </Container>
   );
