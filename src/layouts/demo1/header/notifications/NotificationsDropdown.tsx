@@ -62,7 +62,7 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
             imei={notification.deviceIdent}
             text={notification.textTrans}
             date={formatTimeAgo(notification.createdAt, intl)}
-            info={notification.type}
+            info={notification.typeTrans}
             type={notification.text}
           />
         </div>
@@ -108,9 +108,10 @@ const NotificationsDropdown = ({ menuItemRef }: INotificationsDropdownProps) => 
                   badgeColor="badge-success"
                   plate={notification.vehiclePlate}
                   imei={notification.deviceIdent}
-                  text={notification.text}
+                  text={notification.textTrans}
                   date={formatTimeAgo(notification.createdAt, intl)}
-                  info={notification.type}
+                  info={notification.typeTrans}
+                  type={notification.text}
                 />
                 {index < notifications.length - 1 && (
                   <div className="border-b border-b-gray-200"></div>

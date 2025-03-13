@@ -8,6 +8,7 @@ export interface INotificationItemProps {
   text: string;
   date: string;
   info: string;
+  type: string;
   badgeColor: string;
 }
 
@@ -34,4 +35,5 @@ export interface INotification {
   createdAt: number;
   read: boolean;
   textTrans: string;
+  typeTrans: string;
 }

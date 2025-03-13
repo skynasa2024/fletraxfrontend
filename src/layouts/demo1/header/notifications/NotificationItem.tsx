@@ -1,18 +1,13 @@
 import { INotificationItemProps } from '@/layouts/demo1/header/notifications/types.tsx';
-import { KeenIcon } from '@/components';
-import { useSettings } from '@/providers';
 import { FormattedMessage } from 'react-intl';
+import { NOTIFICATION_ICONS } from '@/pages/dashboards/blocks/Notifications';
+import { DefaultNotificationIcon } from '@/assets/svg';
 
-const NotificationItem = ({ imei, plate, text, date, info }: INotificationItemProps) => {
-  const { settings } = useSettings();
-
+const NotificationItem = ({ imei, plate, text, date, info, type }: INotificationItemProps) => {
   return (
     <div className="flex grow gap-6 px-5 w-full">
       <div className="flex justify-center items-center size-14 bg-gray-200 rounded-full">
-        <KeenIcon
-          icon="notification-on"
-          className={settings.themeMode == 'dark' ? 'text-white' : 'text-black'}
-        />
+        {NOTIFICATION_ICONS[type as keyof typeof NOTIFICATION_ICONS] ?? <DefaultNotificationIcon />}
       </div>
 
       <div className="flex flex-col gap-1">
