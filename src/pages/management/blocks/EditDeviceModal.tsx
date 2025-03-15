@@ -52,7 +52,7 @@ export function EditDeviceModal({ open, device, onClose, onSuccess }: EditDevice
 
     try {
       await updateDevice(device.id, formData);
-      enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.FORM.UPDATE_SUCCESS' }), {
+      enqueueSnackbar(intl.formatMessage({ id: 'DEVICE.FORM.SAVE_SUCCESS' }), {
         variant: 'success'
       });
       onSuccess();
