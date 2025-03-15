@@ -10,4 +10,4 @@ export * from './drawer';
 export * from './tooltip';
 export * from './alert';
 export { default as Report } from './report/Report';
-export * from './ClearableTimePicker';
+export * from './TimePicker';

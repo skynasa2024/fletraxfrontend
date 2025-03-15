@@ -3,7 +3,7 @@ import { useReplayContext } from '../providers/ReplayContext';
 import { toAbsoluteUrl } from '@/utils';
 import { CircularProgress } from '@mui/material';
 import { TripsSearch } from '@/pages/trips/blocks/TripsSearch';
-import { ClearableTimePicker } from '@/components';
+import { TimePicker } from '@/components';
 
 export const ReplayMainCard = () => {
   const {
@@ -62,13 +62,13 @@ export const ReplayMainCard = () => {
           <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
             <FormattedMessage id="TRIPS.FIELD.START_TIME" />
           </div>
-          <ClearableTimePicker value={startTime || ''} onChange={setStartTime} />
+          <TimePicker value={startTime || ''} onChange={setStartTime} clearable={true} />
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
             <FormattedMessage id="TRIPS.FIELD.END_TIME" />
           </div>
-          <ClearableTimePicker value={endTime || ''} onChange={setEndTime} />
+          <TimePicker value={endTime || ''} onChange={setEndTime} clearable={true} />
         </div>
       </div>
 
