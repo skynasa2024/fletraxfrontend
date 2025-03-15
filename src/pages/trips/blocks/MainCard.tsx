@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import { ButtonRadioGroup } from '@/pages/dashboards/blocks/ButtonRadioGroup';
 import { IntervalType } from '@/api/trips';
 import { CircularProgress } from '@mui/material';
+import { ClearableTimePicker } from '@/components';
 
 export const MainCard = () => {
   const {
@@ -98,29 +99,13 @@ export const MainCard = () => {
           <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
             <FormattedMessage id="TRIPS.FIELD.START_TIME" />
           </div>
-          <div className="input input-sm h-[34px] shrink-0">
-            <input
-              type="time"
-              value={startTime ? startTime : ''}
-              onChange={(e) => {
-                setStartTime(e.target.value);
-              }}
-            />
-          </div>
+          <ClearableTimePicker value={startTime || ''} onChange={setStartTime} />
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
             <FormattedMessage id="TRIPS.FIELD.END_TIME" />
           </div>
-          <div className="input input-sm h-[34px] shrink-0">
-            <input
-              type="time"
-              value={endTime ? endTime : ''}
-              onChange={(e) => {
-                setEndTime(e.target.value);
-              }}
-            />
-          </div>
+          <ClearableTimePicker value={endTime || ''} onChange={setEndTime} />
         </div>
       </div>
 
