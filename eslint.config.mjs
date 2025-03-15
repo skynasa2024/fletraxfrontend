@@ -60,7 +60,7 @@ export default [
             '@typescript-eslint/naming-convention': 'off',
             '@typescript-eslint/restrict-template-expressions': 'off',
             '@typescript-eslint/restrict-plus-operands': 'off',
-            'prettier/prettier': 'warn',
+            'prettier/prettier': 'off',
         },
     },
 ];
