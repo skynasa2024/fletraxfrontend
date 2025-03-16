@@ -1,7 +1,6 @@
 import { axios } from './axios';
 import { ResponseModel } from './response';
-
-type replayIntervalType = 'TRIP/PARKING';
+import { IntervalType } from './trips';
 
 interface ReplayDTO {
   id: string;
@@ -10,7 +9,7 @@ interface ReplayDTO {
   vehiclePlate: string | null;
   vehicleId: string | null;
   userId: string | null;
-  intervalType: replayIntervalType;
+  intervalType: IntervalType;
   startTime: number;
   endTime: number;
   startLatitude: number;
@@ -29,7 +28,27 @@ interface ReplayDTO {
   route: string | null;
 }
 
-interface ReplayPoint {
+export interface ParkingRecord {
+  id: string;
+  startTime: number;
+  endTime: number;
+  startLatitude: number;
+  startLongitude: number;
+  totalDuration: number;
+}
+
+export interface TripRecord extends Omit<ReplayDTO, 'intervalType'> {
+  intervalType: IntervalType.Trip;
+}
+
+export interface IReplay {
+  parkings: ParkingRecord[];
+  replays: TripRecord[];
+  completePath: ReplayPoint[];
+}
+
+export interface ReplayPoint {
+  id: string;
   latitude: number;
   longitude: number;
   timestamp: number;
@@ -45,15 +64,44 @@ export interface SearchTripsParams {
   endTime?: string;
 }
 
-export async function searchReplays(params: SearchTripsParams): Promise<ReplayDTO> {
-  const replay = await axios.get<ResponseModel<ReplayDTO>>(
-    '/api/messages/calculateTrackingMetrics',
-    {
-      params: {
-        ...params
-      }
+export async function searchReplays(params: SearchTripsParams): Promise<IReplay> {
+  const replay = await axios.get<ResponseModel<ReplayDTO[]>>('/api/intervals/replay', {
+    params: {
+      ...params
     }
-  );
+  });
 
-  return replay.data.result;
+  const parkings: ParkingRecord[] = replay.data.result
+    ?.filter((item) => item.intervalType === IntervalType.Parking)
+    ?.map((item) => ({
+      id: item.id,
+      startTime: new Date(item.startTime * 1000).getTime(),
+      endTime: new Date(item.endTime * 1000).getTime(),
+      startLatitude: item.startLatitude,
+      startLongitude: item.startLongitude,
+      totalDuration: item.totalDuration
+    }));
+
+  const replays: TripRecord[] = replay.data.result
+    ?.filter((item) => item.intervalType === IntervalType.Trip)
+    ?.map((item) => ({
+      ...item,
+      intervalType: IntervalType.Trip
+    }));
+
+  const completePath: ReplayPoint[] = replays
+    ?.reduce((acc, replay) => {
+      const path = replay.pointsList.map((point) => ({
+        ...point,
+        timestamp: new Date(point.timestamp * 1000).getTime()
+      }));
+      return [...acc, ...path];
+    }, [] as ReplayPoint[])
+    .sort((a, b) => a.timestamp - b.timestamp);
+
+  return {
+    parkings: parkings,
+    replays: replays,
+    completePath: completePath
+  };
 }
