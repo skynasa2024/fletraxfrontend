@@ -26,7 +26,7 @@ export const ReplayPlaybackCard = () => {
     duration
   } = useReplayAnimationContext();
   const { currentUser } = useAuthContext();
-  const { replayData } = useReplayContext();
+  const { replayData, selectedTrip } = useReplayContext();
 
   const handleIncreasePlayBackSpeed = () => {
     const currentIdx = MultiplierOptions.indexOf(multiplier);
@@ -47,6 +47,28 @@ export const ReplayPlaybackCard = () => {
   if (!replayData) {
     return null;
   }
+
+  // Calculate metrics for display based on selected trip or all trips
+  const mileage = selectedTrip
+    ? selectedTrip.totalDistance
+    : replayData.trips.reduce((acc, trip) => acc + trip.totalDistance, 0);
+
+  const maxSpeed = selectedTrip
+    ? selectedTrip.maxSpeed
+    : Math.max(...replayData.trips.map((trip) => trip.maxSpeed), 0);
+
+  // Format timestamps for the current trip selection
+  const startTimestamp = selectedTrip
+    ? new Date(selectedTrip.startTime * 1000)
+    : replayData.trips.length > 0
+      ? new Date(Math.min(...replayData.trips.map((t) => t.startTime)) * 1000)
+      : new Date();
+
+  const endTimestamp = selectedTrip
+    ? new Date(selectedTrip.endTime * 1000)
+    : replayData.trips.length > 0
+      ? new Date(Math.max(...replayData.trips.map((t) => t.endTime)) * 1000)
+      : new Date();
 
   return (
     <div className="card w-[50vw] flex flex-row p-5 h-56">
@@ -103,8 +125,7 @@ export const ReplayPlaybackCard = () => {
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {replayData &&
-                formatInTimeZone(replayData.startDate, currentUser!.timezone, 'yyyy/MM/dd')}
+              {formatInTimeZone(startTimestamp, currentUser!.timezone, 'yyyy/MM/dd')}
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -115,7 +136,7 @@ export const ReplayPlaybackCard = () => {
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {replayData.mileage.toFixed(2)} KM
+              {mileage.toFixed(2)} KM
             </div>
           </div>
           <div className="flex flex-col gap-1">
@@ -126,7 +147,7 @@ export const ReplayPlaybackCard = () => {
               </span>
             </div>
             <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {replayData.maxSpeed.toFixed(0)} Km/h
+              {maxSpeed.toFixed(0)} Km/h
             </div>
           </div>
         </div>
@@ -141,10 +162,10 @@ export const ReplayPlaybackCard = () => {
           <div className="w-40">
             <SpeedGauge value={metaData?.speed?.toFixed()} maxValue={160} unit="km" />
           </div>
-          {(
+          {metaData?.timestamp && (
             <div className="flex justify-between bg-gray-200 text-gray-600 font-semibold text-sm text-center py-1 px-2 rounded-md">
               <div>
-                {new Date(metaData?.timestamp).toLocaleString('en-UK', {
+                {new Date(metaData.timestamp).toLocaleString('en-UK', {
                   timeZone: currentUser?.timezone
                 })}
               </div>
@@ -153,8 +174,7 @@ export const ReplayPlaybackCard = () => {
         </div>
         <div className="flex gap-5">
           <div className="font-semibold text-xs text-[#2D3748] dark:text-gray-900">
-            {replayData &&
-              formatInTimeZone(replayData.startDate, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
+            {formatInTimeZone(startTimestamp, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
           </div>
           <Slider
             value={current}
@@ -169,8 +189,7 @@ export const ReplayPlaybackCard = () => {
             className="[&>.MuiSlider-rail]:bg-neutral-200 [&>.MuiSlider-rail]:opacity-100 [&>.MuiSlider-track]:bg-gray-800 [&>.MuiSlider-track]:h-3 [&>.MuiSlider-track]:border-gray-800 [&>.MuiSlider-rail]:h-3 [&>.MuiSlider-thumb]:bg-gray-800 [&>.MuiSlider-thumb]:size-7"
           />
           <div className="font-semibold text-xs text-[#2D3748] dark:text-gray-900">
-            {replayData &&
-              formatInTimeZone(replayData.endDate, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
+            {formatInTimeZone(endTimestamp, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
           </div>
         </div>
       </div>
