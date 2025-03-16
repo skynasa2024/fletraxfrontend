@@ -8,6 +8,7 @@ import { interpolateKeyframes } from '@/pages/trips/utils/KeyframeInterpolate';
 import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
+import { ParkingPopup } from '../components/ParkingPopup';
 
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
@@ -168,7 +169,9 @@ export const ReplayLayer = () => {
             key={parking.id}
             position={[parking.startLatitude, parking.startLongitude]}
             icon={iconParkingPoint}
-          />
+          >
+            <ParkingPopup parking={parking} />
+          </Marker>
         ))}
 
       {latLng && rotation !== null && (

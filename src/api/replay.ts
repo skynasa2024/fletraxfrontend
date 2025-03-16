@@ -34,7 +34,7 @@ export interface ParkingRecord {
   endTime: number;
   startLatitude: number;
   startLongitude: number;
-  totalDuration: number;
+  totalDuration: string;
 }
 
 export interface TripRecord extends Omit<ReplayDTO, 'intervalType'> {
@@ -79,7 +79,7 @@ export async function searchReplays(params: SearchTripsParams): Promise<IReplay>
       endTime: new Date(item.endTime * 1000).getTime(),
       startLatitude: item.startLatitude,
       startLongitude: item.startLongitude,
-      totalDuration: item.totalDuration
+      totalDuration: item.formatedTotalDuration
     }));
 
   const replays: TripRecord[] = replay.data.result
