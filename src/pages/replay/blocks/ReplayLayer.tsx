@@ -13,12 +13,11 @@ import { ParkingPopup } from '../components/ParkingPopup';
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
-  const { replayData } = useReplayContext();
+  const { replayData, selectedTrip } = useReplayContext();
   const { current: time, setMetaData } = useReplayAnimationContext();
 
   const { parkings, trips } = replayData || {};
 
-  // Combine all points from all trips for bounds and animation
   const allPoints = useMemo(() => {
     if (!trips || trips.length === 0) {
       return [];
@@ -28,11 +27,30 @@ export const ReplayLayer = () => {
       .flatMap((trip) =>
         trip.pointsList.map((point) => ({
           ...point,
-          timestamp: new Date(point.timestamp * 1000).getTime()
+          timestamp: new Date(point.timestamp * 1000).getTime(),
+          tripId: trip.id
         }))
       )
       .sort((a, b) => a.timestamp - b.timestamp);
   }, [trips]);
+
+  // Get points for selected trip only for animation
+  const selectedTripPoints = useMemo(() => {
+    if (!selectedTrip || !trips) {
+      return allPoints;
+    }
+
+    return trips
+      .filter((trip) => trip.id === selectedTrip.id)
+      .flatMap((trip) =>
+        trip.pointsList.map((point) => ({
+          ...point,
+          timestamp: new Date(point.timestamp * 1000).getTime(),
+          tripId: trip.id
+        }))
+      )
+      .sort((a, b) => a.timestamp - b.timestamp);
+  }, [trips, selectedTrip, allPoints]);
 
   const bounds = useMemo(() => {
     if (!allPoints || allPoints.length === 0) {
@@ -86,22 +104,22 @@ export const ReplayLayer = () => {
   );
 
   const denormailizedTime = useMemo(() => {
-    if (!allPoints || allPoints.length === 0) {
+    if (!selectedTripPoints || selectedTripPoints.length === 0) {
       return 0;
     }
 
-    const startTime = allPoints[0]?.timestamp ?? 0;
+    const startTime = selectedTripPoints[0]?.timestamp ?? 0;
     return startTime + time;
-  }, [time, allPoints]);
+  }, [time, selectedTripPoints]);
 
   const interpolatedState = useMemo(() => {
-    if (!allPoints || allPoints.length === 0) {
+    if (!selectedTripPoints || selectedTripPoints.length === 0) {
       return null;
     }
 
     return interpolateKeyframes(
-      allPoints.map((point) => ({
-        tripId: point.id,
+      selectedTripPoints.map((point) => ({
+        tripId: point.tripId,
         latitude: point.latitude,
         longitude: point.longitude,
         timestamp: new Date(point.timestamp),
@@ -110,7 +128,7 @@ export const ReplayLayer = () => {
       })),
       denormailizedTime
     );
-  }, [allPoints, denormailizedTime]);
+  }, [selectedTripPoints, denormailizedTime]);
 
   useEffect(() => {
     setMetaData({
@@ -147,36 +165,92 @@ export const ReplayLayer = () => {
     );
   }, [bounds, isRTL, map]);
 
+  // Add a useEffect to pan to the selected trip when it changes
+  useEffect(() => {
+    if (selectedTrip && trips) {
+      const selectedTripData = trips.find((trip) => trip.id === selectedTrip.id);
+      if (selectedTripData && selectedTripData.pointsList.length > 0) {
+        // Create bounds for the selected trip points
+        const points = selectedTripData.pointsList;
+        const firstPoint = L.latLng([points[0].latitude, points[0].longitude]);
+        const tripBounds = points.reduce(
+          (acc, point) => acc.extend([point.latitude, point.longitude]),
+          L.latLngBounds(firstPoint, firstPoint)
+        );
+
+        // Fly to the bounds of the selected trip
+        map.flyToBounds(
+          tripBounds,
+          isRTL()
+            ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
+            : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
+        );
+      }
+    }
+  }, [selectedTrip, trips, map, isRTL]);
+
   if (!trips || !replayData) {
     return null;
   }
 
+  // Determine start and end markers positions
+  const startPoint = selectedTrip
+    ? { latitude: selectedTrip.startLatitude, longitude: selectedTrip.startLongitude }
+    : allPoints.length > 0
+      ? { latitude: allPoints[0].latitude, longitude: allPoints[0].longitude }
+      : null;
+
+  const endPoint = selectedTrip
+    ? { latitude: selectedTrip.endLatitude, longitude: selectedTrip.endLongitude }
+    : allPoints.length > 0
+      ? {
+          latitude: allPoints[allPoints.length - 1].latitude,
+          longitude: allPoints[allPoints.length - 1].longitude
+        }
+      : null;
+
   return (
     <>
+      {/* Render non-selected trips first */}
       {trips &&
         trips.length > 0 &&
-        trips.map((trip) => (
-          <Polyline
-            key={trip.id}
-            pathOptions={{ color: '#2563eb' }}
-            positions={trip.pointsList
-              .sort((a, b) => a.timestamp - b.timestamp)
-              .map((point) => [point.latitude, point.longitude])}
-          />
-        ))}
+        trips
+          .filter((trip) => !selectedTrip || trip.id !== selectedTrip.id)
+          .map((trip) => (
+            <Polyline
+              key={trip.id}
+              pathOptions={{
+                color: selectedTrip ? '#7d92f1' : '#2563eb'
+              }}
+              positions={trip.pointsList
+                .sort((a, b) => a.timestamp - b.timestamp)
+                .map((point) => [point.latitude, point.longitude])}
+            />
+          ))}
 
-      {allPoints && allPoints.length > 1 && (
-        <>
-          <Marker position={[allPoints[0].latitude, allPoints[0].longitude]} icon={iconStartTrip} />
-          <Marker
-            position={[
-              allPoints[allPoints.length - 1].latitude,
-              allPoints[allPoints.length - 1].longitude
-            ]}
-            icon={iconEndTrip}
-          />
-        </>
+      {/* Render selected trip last to appear on top */}
+      {selectedTrip &&
+        trips &&
+        trips.length > 0 &&
+        trips
+          .filter((trip) => trip.id === selectedTrip.id)
+          .map((trip) => (
+            <Polyline
+              key={trip.id}
+              pathOptions={{
+                color: '#2563eb'
+              }}
+              positions={trip.pointsList
+                .sort((a, b) => a.timestamp - b.timestamp)
+                .map((point) => [point.latitude, point.longitude])}
+            />
+          ))}
+
+      {startPoint && (
+        <Marker position={[startPoint.latitude, startPoint.longitude]} icon={iconStartTrip} />
       )}
+
+      {endPoint && <Marker position={[endPoint.latitude, endPoint.longitude]} icon={iconEndTrip} />}
 
       {parkings &&
         parkings.length > 0 &&
@@ -190,7 +264,7 @@ export const ReplayLayer = () => {
           </Marker>
         ))}
 
-      {latLng && rotation !== null && (
+      {latLng && rotation !== null && selectedTrip && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
       )}
     </>
