@@ -16,7 +16,7 @@ export const ReplayLayer = () => {
   const { replayData } = useReplayContext();
   const { current: time, setMetaData } = useReplayAnimationContext();
 
-  const { completePath, parkings } = replayData || {};
+  const { completePath, parkings, replays } = replayData || {};
 
   console.log('replayData', replayData);
 
@@ -139,12 +139,17 @@ export const ReplayLayer = () => {
 
   return (
     <>
-      {completePath && completePath.length > 0 && (
-        <Polyline
-          pathOptions={{ color: '#2563eb' }}
-          positions={completePath.map((point) => [point.latitude, point.longitude])}
-        />
-      )}
+      {replays &&
+        replays.length > 0 &&
+        replays.map((replay) => (
+          <Polyline
+            key={replay.id}
+            pathOptions={{ color: '#2563eb' }}
+            positions={completePath
+              .sort((a, b) => a.timestamp - b.timestamp)
+              .map((point) => [point.latitude, point.longitude])}
+          />
+        ))}
 
       {completePath && completePath.length > 1 && (
         <>
