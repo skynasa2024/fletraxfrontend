@@ -43,7 +43,7 @@ export interface TripRecord extends Omit<ReplayDTO, 'intervalType'> {
 
 export interface IReplay {
   parkings: ParkingRecord[];
-  replays: TripRecord[];
+  trips: TripRecord[];
   completePath: ReplayPoint[];
 }
 
@@ -82,14 +82,14 @@ export async function searchReplays(params: SearchTripsParams): Promise<IReplay>
       totalDuration: item.formatedTotalDuration
     }));
 
-  const replays: TripRecord[] = replay.data.result
+  const trips: TripRecord[] = replay.data.result
     ?.filter((item) => item.intervalType === IntervalType.Trip)
     ?.map((item) => ({
       ...item,
       intervalType: IntervalType.Trip
     }));
 
-  const completePath: ReplayPoint[] = replays
+  const completePath: ReplayPoint[] = trips
     ?.reduce((acc, replay) => {
       const path = replay.pointsList.map((point) => ({
         ...point,
@@ -100,8 +100,8 @@ export async function searchReplays(params: SearchTripsParams): Promise<IReplay>
     .sort((a, b) => a.timestamp - b.timestamp);
 
   return {
-    parkings: parkings,
-    replays: replays,
+    parkings,
+    trips,
     completePath: completePath
   };
 }
