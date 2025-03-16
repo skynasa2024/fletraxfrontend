@@ -32,7 +32,7 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
 });
 
 export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
-  const { path } = useReplayContext();
+  const { replayData, selectedTrip } = useReplayContext();
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [max, setMax] = useState(10000);
@@ -81,14 +81,27 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
     }
   }, [latency, max, multiplier, playing]);
 
+  // Set max duration based on selected trip or all points
   useEffect(() => {
-    if (path && path.length > 0) {
+    if (selectedTrip) {
+      // If a trip is selected, calculate duration based on that trip
       setCurrent(0);
       setPlaying(false);
-      const last = path[path.length - 1];
-      setMax(last.timestamp.getTime() - path[0].timestamp.getTime());
+      setMax(selectedTrip.endTime * 1000 - selectedTrip.startTime * 1000);
+    } else if (replayData?.trips && replayData.trips.length > 0) {
+      // If no trip is selected but we have trip data, calculate based on all trips
+      setCurrent(0);
+      setPlaying(false);
+
+      // const firstTrip = replayData.trips[0];
+      // const lastTrip = replayData.trips[replayData.trips.length - 1];
+
+      const startTime = Math.min(...replayData.trips.map((trip) => trip.startTime));
+      const endTime = Math.max(...replayData.trips.map((trip) => trip.endTime));
+
+      setMax((endTime - startTime) * 1000);
     }
-  }, [path]);
+  }, [replayData, selectedTrip]);
 
   const changeCurrent = (newValue: number) => {
     pause();

@@ -1,5 +1,4 @@
-import { searchReplays, SearchTripsParams } from '@/api/replay';
-import { TripPath } from '@/api/trips';
+import { IReplay, searchReplays, SearchTripsParams, TripRecord } from '@/api/replay';
 import {
   createContext,
   PropsWithChildren,
@@ -9,21 +8,6 @@ import {
   useState
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-
-interface ReplayData {
-  id: string;
-  imei: string;
-  startDate: Date;
-  endDate: Date;
-  mileage: number;
-  maxSpeed: number;
-  path: TripPath[];
-  startLatitude: number;
-  startLongitude: number;
-  formattedTotalDuration: string;
-  totalDuration: number;
-}
-
 interface ReplayContextProps {
   searchDeviceQuery: string;
   setSearchDeviceQuery: (query: string) => void;
@@ -36,9 +20,10 @@ interface ReplayContextProps {
   endTime?: string;
   setEndTime: (time: string | undefined) => void;
   search: () => void;
-  replayData?: ReplayData;
-  path?: TripPath[];
+  replayData?: IReplay;
   loading: boolean;
+  selectedTrip?: TripRecord;
+  setSelectedTrip: (trip?: TripRecord) => void;
 }
 
 const ReplayContext = createContext<ReplayContextProps>({
@@ -53,14 +38,15 @@ const ReplayContext = createContext<ReplayContextProps>({
   endTime: undefined,
   setEndTime: () => {},
   search: () => {},
-  loading: false
+  loading: false,
+  setSelectedTrip: () => {}
 });
 
 export const ReplayProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [path, setPath] = useState<TripPath[]>();
-  const [replayData, setReplayData] = useState<ReplayData>();
+  const [replayData, setReplayData] = useState<IReplay>();
   const [loading, setLoading] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState<TripRecord>();
 
   // Device query
   const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
@@ -145,7 +131,6 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
 
     if (!searchDeviceQuery) {
       setReplayData(undefined);
-      setPath(undefined);
       setLoading(false);
       return;
     }
@@ -161,33 +146,10 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
 
       const replayDto = await searchReplays(params);
 
-      const replayData: ReplayData = {
-        id: replayDto.id,
-        imei: replayDto.ident,
-        startDate: new Date(replayDto.startTime * 1000),
-        endDate: new Date(replayDto.endTime * 1000),
-        mileage: replayDto.totalDistance,
-        maxSpeed: replayDto.maxSpeed,
-        path: replayDto.pointsList.map((point) => ({
-          tripId: replayDto.id,
-          latitude: point.latitude,
-          longitude: point.longitude,
-          direction: point.direction,
-          speed: point.speed,
-          timestamp: new Date(point.timestamp * 1000)
-        })),
-        startLatitude: replayDto.startLatitude,
-        startLongitude: replayDto.startLongitude,
-        formattedTotalDuration: replayDto.formatedTotalDuration,
-        totalDuration: replayDto.totalDuration
-      };
-
-      setReplayData(replayData);
-      setPath(replayData.path);
+      setReplayData(replayDto);
     } catch (error) {
       console.error('Failed to search for replay data:', error);
       setReplayData(undefined);
-      setPath(undefined);
     } finally {
       setLoading(false);
     }
@@ -214,8 +176,9 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
         setEndTime,
         search,
         replayData,
-        path,
-        loading
+        loading,
+        selectedTrip,
+        setSelectedTrip
       }}
     >
       {children}

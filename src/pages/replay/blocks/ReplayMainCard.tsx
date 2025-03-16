@@ -5,6 +5,7 @@ import { CircularProgress } from '@mui/material';
 import { TripsSearch } from '@/pages/trips/blocks/TripsSearch';
 import { TimePicker } from '@/components';
 import React, { useEffect, useMemo, useState } from 'react';
+import ReplayTripCard from './ReplayTripCard';
 
 export const ReplayMainCard = () => {
   const {
@@ -19,7 +20,8 @@ export const ReplayMainCard = () => {
     endTime,
     setEndTime,
     search,
-    loading
+    loading,
+    replayData
   } = useReplayContext();
 
   const [errors, setErrors] = useState({
@@ -98,90 +100,96 @@ export const ReplayMainCard = () => {
   }, [searchDeviceQuery, startDate, endDate]);
 
   return (
-    <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 h-full">
-      <form onSubmit={handleSubmit}>
-        <TripsSearch
-          search={searchDeviceQuery || ''}
-          setSearch={setSearchDeviceQuery}
-          onSearch={() => validateForm() && search()}
-        />
-        <div className="grid grid-cols-2 gap-y-4 mt-4 gap-x-4 shrink-0">
-          <div className="flex flex-col gap-2">
-            <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
-              <FormattedMessage id="TRIPS.FIELD.START_DATE" />
-              <span className="text-red-500 ml-1">*</span>
+    <div className="flex flex-col h-full">
+      <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 shrink-0">
+        <form onSubmit={handleSubmit}>
+          <TripsSearch
+            search={searchDeviceQuery || ''}
+            setSearch={setSearchDeviceQuery}
+            onSearch={() => validateForm() && search()}
+          />
+          <div className="grid grid-cols-2 gap-y-4 mt-4 gap-x-4 shrink-0">
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+                <FormattedMessage id="TRIPS.FIELD.START_DATE" />
+                <span className="text-red-500 ml-1">*</span>
+              </div>
+              <div className="input input-sm h-[34px] shrink-0">
+                <input
+                  type="date"
+                  className={`dark:[color-scheme:dark] ${errors.startDate ? 'border-red-500' : ''}`}
+                  value={startDate || ''}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  min={dateConstraints.startMin}
+                  max={dateConstraints.startMax}
+                  required
+                />
+              </div>
             </div>
-            <div className="input input-sm h-[34px] shrink-0">
-              <input
-                type="date"
-                className={`dark:[color-scheme:dark] ${errors.startDate ? 'border-red-500' : ''}`}
-                value={startDate || ''}
-                onChange={(e) => setStartDate(e.target.value)}
-                min={dateConstraints.startMin}
-                max={dateConstraints.startMax}
-                required
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+                <FormattedMessage id="TRIPS.FIELD.END_DATE" />
+                <span className="text-red-500 ml-1">*</span>
+              </div>
+              <div className="input input-sm h-[34px] shrink-0">
+                <input
+                  type="date"
+                  className={`dark:[color-scheme:dark] ${errors.endDate ? 'border-red-500' : ''}`}
+                  value={endDate || ''}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  min={dateConstraints.endMin}
+                  max={dateConstraints.endMax}
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+                <FormattedMessage id="TRIPS.FIELD.START_TIME" />
+              </div>
+              <TimePicker
+                value={startTime || ''}
+                onChange={(value) => setStartTime(value)}
+                clearable={true}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+                <FormattedMessage id="TRIPS.FIELD.END_TIME" />
+              </div>
+              <TimePicker
+                value={endTime || ''}
+                onChange={(value) => setEndTime(value)}
+                clearable={true}
               />
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
-              <FormattedMessage id="TRIPS.FIELD.END_DATE" />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <div className="input input-sm h-[34px] shrink-0">
-              <input
-                type="date"
-                className={`dark:[color-scheme:dark] ${errors.endDate ? 'border-red-500' : ''}`}
-                value={endDate || ''}
-                onChange={(e) => setEndDate(e.target.value)}
-                min={dateConstraints.endMin}
-                max={dateConstraints.endMax}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
-              <FormattedMessage id="TRIPS.FIELD.START_TIME" />
-            </div>
-            <TimePicker
-              value={startTime || ''}
-              onChange={(value) => setStartTime(value)}
-              clearable={true}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
-              <FormattedMessage id="TRIPS.FIELD.END_TIME" />
-            </div>
-            <TimePicker
-              value={endTime || ''}
-              onChange={(value) => setEndTime(value)}
-              clearable={true}
-            />
-          </div>
-        </div>
-        <button
-          type="submit"
-          className="btn btn-info justify-center text-xs font-medium shrink-0 mt-2 w-full"
-          disabled={
-            loading ||
-            !!errors.searchDeviceQuery ||
-            !!errors.startDate ||
-            !!errors.endDate ||
-            !searchDeviceQuery ||
-            !startDate ||
-            !endDate
-          }
-        >
-          {loading ? (
-            <CircularProgress size={12} color="inherit" />
-          ) : (
-            <img src={toAbsoluteUrl('/media/icons/search.svg')} />
-          )}
-          <FormattedMessage id={'COMMON.SEARCH'} />
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="btn btn-info justify-center text-xs font-medium shrink-0 mt-2 w-full"
+            disabled={
+              loading ||
+              !!errors.searchDeviceQuery ||
+              !!errors.startDate ||
+              !!errors.endDate ||
+              !searchDeviceQuery ||
+              !startDate ||
+              !endDate
+            }
+          >
+            {loading ? (
+              <CircularProgress size={12} color="inherit" />
+            ) : (
+              <img src={toAbsoluteUrl('/media/icons/search.svg')} />
+            )}
+            <FormattedMessage id={'COMMON.SEARCH'} />
+          </button>
+        </form>
+      </div>
+
+      {replayData?.trips && replayData.trips.length > 0 && (
+        <ReplayTripCard trips={replayData.trips} />
+      )}
     </div>
   );
 };

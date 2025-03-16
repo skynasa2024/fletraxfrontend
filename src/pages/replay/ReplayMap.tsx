@@ -9,17 +9,17 @@ import { ReplayAnimationProvider } from './providers/ReplayAnimationContext';
 import { ReplayPlaybackCard } from './blocks/ReplayPlaybackCard';
 
 const ReplayMap = () => {
-  const { path } = useReplayContext();
+  const { replayData, selectedTrip } = useReplayContext();
   const intl = useIntl();
 
   return (
     <AppMap>
       <ReplayAnimationProvider>
         <ReplayLayer />
-        <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.REPLAY' })} fullHeight={false}>
+        <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.REPLAY' })}>
           <ReplayMainCard />
         </MainControl>
-        {path?.length && (
+        {selectedTrip && replayData?.trips && replayData?.trips?.length > 0 && (
           <SubControl>
             <ReplayPlaybackCard />
           </SubControl>
