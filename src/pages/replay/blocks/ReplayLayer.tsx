@@ -12,19 +12,23 @@ import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
-  const { path, replayData } = useReplayContext();
+  const { replayData } = useReplayContext();
   const { current: time, setMetaData } = useReplayAnimationContext();
 
+  const { completePath, parkings } = replayData || {};
+
+  console.log('replayData', replayData);
+
   const bounds = useMemo(() => {
-    if (!path || path.length === 0) {
+    if (!completePath || completePath.length === 0) {
       return undefined;
     }
-    const latLng = L.latLng([path[0].latitude, path[0].longitude]);
-    return path.reduce(
+    const latLng = L.latLng([completePath[0].latitude, completePath[0].longitude]);
+    return completePath.reduce(
       (acc, point) => acc.extend([point.latitude, point.longitude]),
       L.latLngBounds(latLng, latLng)
     );
-  }, [path]);
+  }, [completePath]);
 
   const icon = useMemo(
     () =>
@@ -56,22 +60,42 @@ export const ReplayLayer = () => {
     []
   );
 
+  const iconParkingPoint = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/parking-point.svg'),
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      }),
+    []
+  );
+
   const denormailizedTime = useMemo(() => {
-    if (!path || path.length === 0) {
+    if (!completePath || completePath.length === 0) {
       return 0;
     }
 
-    const startTime = path[0]?.timestamp.getTime() ?? 0;
+    const startTime = new Date(completePath[0]?.timestamp * 1000).getTime() ?? 0;
     return startTime + time;
-  }, [time, path]);
+  }, [time, completePath]);
 
   const interpolatedState = useMemo(() => {
-    if (!path || path.length === 0) {
+    if (!completePath || completePath.length === 0) {
       return null;
     }
 
-    return interpolateKeyframes(path, denormailizedTime);
-  }, [path, denormailizedTime]);
+    return interpolateKeyframes(
+      completePath.map((point) => ({
+        tripId: point.id,
+        latitude: point.latitude,
+        longitude: point.longitude,
+        timestamp: new Date(point.timestamp * 1000),
+        speed: point.speed,
+        direction: point.direction
+      })),
+      denormailizedTime
+    );
+  }, [completePath, denormailizedTime]);
 
   useEffect(() => {
     setMetaData({
@@ -108,26 +132,44 @@ export const ReplayLayer = () => {
     );
   }, [bounds, isRTL, map]);
 
-  if (!path || !replayData) {
+  if (!completePath || !replayData) {
     return null;
   }
 
   return (
     <>
-      <Polyline
-        pathOptions={{ color: '#2563eb' }}
-        positions={path.map((point) => [point.latitude, point.longitude])}
-      />
+      {completePath && completePath.length > 0 && (
+        <Polyline
+          pathOptions={{ color: '#2563eb' }}
+          positions={completePath.map((point) => [point.latitude, point.longitude])}
+        />
+      )}
 
-      {path && path.length > 1 && (
+      {completePath && completePath.length > 1 && (
         <>
-          <Marker position={[path[0].latitude, path[0].longitude]} icon={iconStartTrip} />
           <Marker
-            position={[path[path.length - 1].latitude, path[path.length - 1].longitude]}
+            position={[completePath[0].latitude, completePath[0].longitude]}
+            icon={iconStartTrip}
+          />
+          <Marker
+            position={[
+              completePath[completePath.length - 1].latitude,
+              completePath[completePath.length - 1].longitude
+            ]}
             icon={iconEndTrip}
           />
         </>
       )}
+
+      {parkings &&
+        parkings.length > 0 &&
+        parkings.map((parking) => (
+          <Marker
+            key={parking.id}
+            position={[parking.startLatitude, parking.startLongitude]}
+            icon={iconParkingPoint}
+          />
+        ))}
 
       {latLng && rotation !== null && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
