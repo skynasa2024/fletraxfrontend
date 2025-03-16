@@ -16,20 +16,34 @@ export const ReplayLayer = () => {
   const { replayData } = useReplayContext();
   const { current: time, setMetaData } = useReplayAnimationContext();
 
-  const { completePath, parkings, trips } = replayData || {};
+  const { parkings, trips } = replayData || {};
 
-  console.log('replayData', replayData);
+  // Combine all points from all trips for bounds and animation
+  const allPoints = useMemo(() => {
+    if (!trips || trips.length === 0) {
+      return [];
+    }
+
+    return trips
+      .flatMap((trip) =>
+        trip.pointsList.map((point) => ({
+          ...point,
+          timestamp: new Date(point.timestamp * 1000).getTime()
+        }))
+      )
+      .sort((a, b) => a.timestamp - b.timestamp);
+  }, [trips]);
 
   const bounds = useMemo(() => {
-    if (!completePath || completePath.length === 0) {
+    if (!allPoints || allPoints.length === 0) {
       return undefined;
     }
-    const latLng = L.latLng([completePath[0].latitude, completePath[0].longitude]);
-    return completePath.reduce(
+    const latLng = L.latLng([allPoints[0].latitude, allPoints[0].longitude]);
+    return allPoints.reduce(
       (acc, point) => acc.extend([point.latitude, point.longitude]),
       L.latLngBounds(latLng, latLng)
     );
-  }, [completePath]);
+  }, [allPoints]);
 
   const icon = useMemo(
     () =>
@@ -72,31 +86,31 @@ export const ReplayLayer = () => {
   );
 
   const denormailizedTime = useMemo(() => {
-    if (!completePath || completePath.length === 0) {
+    if (!allPoints || allPoints.length === 0) {
       return 0;
     }
 
-    const startTime = new Date(completePath[0]?.timestamp * 1000).getTime() ?? 0;
+    const startTime = allPoints[0]?.timestamp ?? 0;
     return startTime + time;
-  }, [time, completePath]);
+  }, [time, allPoints]);
 
   const interpolatedState = useMemo(() => {
-    if (!completePath || completePath.length === 0) {
+    if (!allPoints || allPoints.length === 0) {
       return null;
     }
 
     return interpolateKeyframes(
-      completePath.map((point) => ({
+      allPoints.map((point) => ({
         tripId: point.id,
         latitude: point.latitude,
         longitude: point.longitude,
-        timestamp: new Date(point.timestamp * 1000),
+        timestamp: new Date(point.timestamp),
         speed: point.speed,
         direction: point.direction
       })),
       denormailizedTime
     );
-  }, [completePath, denormailizedTime]);
+  }, [allPoints, denormailizedTime]);
 
   useEffect(() => {
     setMetaData({
@@ -133,7 +147,7 @@ export const ReplayLayer = () => {
     );
   }, [bounds, isRTL, map]);
 
-  if (!completePath || !replayData) {
+  if (!trips || !replayData) {
     return null;
   }
 
@@ -145,22 +159,19 @@ export const ReplayLayer = () => {
           <Polyline
             key={trip.id}
             pathOptions={{ color: '#2563eb' }}
-            positions={completePath
+            positions={trip.pointsList
               .sort((a, b) => a.timestamp - b.timestamp)
               .map((point) => [point.latitude, point.longitude])}
           />
         ))}
 
-      {completePath && completePath.length > 1 && (
+      {allPoints && allPoints.length > 1 && (
         <>
-          <Marker
-            position={[completePath[0].latitude, completePath[0].longitude]}
-            icon={iconStartTrip}
-          />
+          <Marker position={[allPoints[0].latitude, allPoints[0].longitude]} icon={iconStartTrip} />
           <Marker
             position={[
-              completePath[completePath.length - 1].latitude,
-              completePath[completePath.length - 1].longitude
+              allPoints[allPoints.length - 1].latitude,
+              allPoints[allPoints.length - 1].longitude
             ]}
             icon={iconEndTrip}
           />
