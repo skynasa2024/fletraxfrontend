@@ -10,4 +10,5 @@ export * from './drawer';
 export * from './tooltip';
 export * from './alert';
 export { default as Report } from './report/Report';
+export { default as HalfCircleProgressBar } from './HalfCircleProgressBar';
 export * from './TimePicker';
