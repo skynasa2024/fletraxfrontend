@@ -50,7 +50,7 @@ export default function HalfCircleProgressBar({
 
   return (
     <div className={clsx('relative flex flex-col items-center', className)}>
-      <svg className="w-full h-16" viewBox="0 0 100 50">
+      <svg className="w-full h-[75px]" viewBox="0 0 100 50">
         {/* Background path (gray semicircle) */}
         <path
           d="M5,45 A45,45 0 0,1 95,45"
@@ -77,7 +77,7 @@ export default function HalfCircleProgressBar({
         />
       </svg>
 
-      <div className="absolute bottom-3 flex flex-col items-center justify-center">
+      <div className="absolute bottom-4 flex flex-col items-center justify-center">
         <div className="text-xs font-medium leading-4">{unit}</div>
         <div className="text-xl font-bold leading-4">{displayValue.toFixed(0)}</div>
       </div>
