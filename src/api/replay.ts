@@ -2,7 +2,7 @@ import { axios } from './axios';
 import { ResponseModel } from './response';
 import { IntervalType } from './trips';
 
-interface ReplayDTO {
+export interface ReplayDTO {
   id: string;
   ident: string;
   deviceId: string | null;
@@ -42,8 +42,9 @@ export interface TripRecord extends Omit<ReplayDTO, 'intervalType'> {
 }
 
 export interface IReplay {
-  parkings: ParkingRecord[];
+  allData: ReplayDTO[];
   trips: TripRecord[];
+  parkings: ParkingRecord[];
 }
 
 export interface ReplayPoint {
@@ -89,6 +90,7 @@ export async function searchReplays(params: SearchTripsParams): Promise<IReplay>
     }));
 
   return {
+    allData: replay.data.result,
     parkings,
     trips
   };
