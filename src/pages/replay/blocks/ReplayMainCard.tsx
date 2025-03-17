@@ -7,7 +7,7 @@ import { TimePicker } from '@/components';
 import React, { useEffect, useMemo, useState } from 'react';
 import ReplayTripCard from './ReplayTripCard';
 
-export const ReplayMainCard = () => {
+export default function ReplayMainCard() {
   const {
     searchDeviceQuery,
     setSearchDeviceQuery,
@@ -188,8 +188,8 @@ export const ReplayMainCard = () => {
       </div>
 
       {replayData?.trips && replayData.trips.length > 0 && (
-        <ReplayTripCard trips={replayData.trips} />
+        <ReplayTripCard trips={replayData.allData} />
       )}
     </div>
   );
-};
+}
