@@ -220,7 +220,7 @@ export const ReplayLayer = () => {
             <Polyline
               key={trip.id}
               pathOptions={{
-                color: selectedTrip ? '#7d92f1' : '#2563eb'
+                color: '#006AE6'
               }}
               positions={trip.pointsList
                 .sort((a, b) => a.timestamp - b.timestamp)
@@ -238,7 +238,7 @@ export const ReplayLayer = () => {
             <Polyline
               key={trip.id}
               pathOptions={{
-                color: '#2563eb'
+                color: '#01BF73'
               }}
               positions={trip.pointsList
                 .sort((a, b) => a.timestamp - b.timestamp)
