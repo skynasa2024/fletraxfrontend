@@ -24,6 +24,7 @@ export const ReplayLayer = () => {
     }
 
     return trips
+      .filter((trip) => trip && trip.pointsList) // Add this filter to ensure trip and pointsList exist
       .flatMap((trip) =>
         trip.pointsList.map((point) => ({
           ...point,
@@ -41,7 +42,7 @@ export const ReplayLayer = () => {
     }
 
     return trips
-      .filter((trip) => trip.id === selectedTrip.id)
+      .filter((trip) => trip && trip.pointsList && trip.id === selectedTrip.id)
       .flatMap((trip) =>
         trip.pointsList.map((point) => ({
           ...point,
@@ -216,6 +217,7 @@ export const ReplayLayer = () => {
         trips.length > 0 &&
         trips
           .filter((trip) => !selectedTrip || trip.id !== selectedTrip.id)
+          .filter((trip) => trip && trip.pointsList)
           .map((trip) => (
             <Polyline
               key={trip.id}
@@ -233,7 +235,7 @@ export const ReplayLayer = () => {
         trips &&
         trips.length > 0 &&
         trips
-          .filter((trip) => trip.id === selectedTrip.id)
+          .filter((trip) => trip && trip.pointsList && trip.id === selectedTrip.id) // Add null check here too
           .map((trip) => (
             <Polyline
               key={trip.id}
