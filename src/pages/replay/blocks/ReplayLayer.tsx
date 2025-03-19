@@ -2,19 +2,24 @@ import { Marker, Polyline, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { interpolateKeyframes } from '@/pages/trips/utils/KeyframeInterpolate';
 import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
 import { ParkingPopup } from '../components/ParkingPopup';
+import { IntervalType } from '@/api/trips';
+import ParkingMarker from '../components/ParkingMarker';
+import { renderToString } from 'react-dom/server';
 
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
   const { replayData, selectedTrip } = useReplayContext();
   const { current: time, setMetaData } = useReplayAnimationContext();
+  const [openPopupId, setOpenPopupId] = useState<string | null>(null);
+  const markerRefs = useRef<{ [key: string]: L.Marker | null }>({});
 
   const { parkings, trips } = replayData || {};
 
@@ -94,15 +99,16 @@ export const ReplayLayer = () => {
     []
   );
 
-  const iconParkingPoint = useMemo(
-    () =>
-      L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/parking-point.svg'),
-        iconSize: [30, 30],
-        iconAnchor: [15, 30]
-      }),
-    []
-  );
+  const createParkingIcon = useCallback((isSelected: boolean) => {
+    const svgString = renderToString(<ParkingMarker color={isSelected ? '#FF0000' : '#FF6F1E'} />);
+
+    return L.divIcon({
+      html: svgString,
+      className: '',
+      iconSize: [30, 31],
+      iconAnchor: [15, 31]
+    });
+  }, []);
 
   const denormailizedTime = useMemo(() => {
     if (!selectedTripPoints || selectedTripPoints.length === 0) {
@@ -120,12 +126,12 @@ export const ReplayLayer = () => {
 
     return interpolateKeyframes(
       selectedTripPoints.map((point) => ({
-        tripId: point.tripId,
         latitude: point.latitude,
         longitude: point.longitude,
         timestamp: new Date(point.timestamp),
         speed: point.speed,
-        direction: point.direction
+        direction: point.direction,
+        tripId: point.tripId
       })),
       denormailizedTime
     );
@@ -142,7 +148,6 @@ export const ReplayLayer = () => {
     if (!interpolatedState) {
       return null;
     }
-
     return L.latLng(interpolatedState.latitute, interpolatedState.longitude);
   }, [interpolatedState]);
 
@@ -150,7 +155,6 @@ export const ReplayLayer = () => {
     if (!interpolatedState) {
       return null;
     }
-
     return interpolatedState.direction;
   }, [interpolatedState]);
 
@@ -169,26 +173,54 @@ export const ReplayLayer = () => {
   // Add a useEffect to pan to the selected trip when it changes
   useEffect(() => {
     if (selectedTrip && trips) {
-      const selectedTripData = trips.find((trip) => trip.id === selectedTrip.id);
-      if (selectedTripData && selectedTripData.pointsList.length > 0) {
-        // Create bounds for the selected trip points
-        const points = selectedTripData.pointsList;
-        const firstPoint = L.latLng([points[0].latitude, points[0].longitude]);
-        const tripBounds = points.reduce(
-          (acc, point) => acc.extend([point.latitude, point.longitude]),
-          L.latLngBounds(firstPoint, firstPoint)
+      if (selectedTrip.intervalType === IntervalType.Trip && trips) {
+        const selectedTripData = trips.find((trip) => trip.id === selectedTrip.id);
+        if (selectedTripData && selectedTripData.pointsList.length > 0) {
+          // Create bounds for the selected trip points
+          const points = selectedTripData.pointsList;
+          const firstPoint = L.latLng([points[0].latitude, points[0].longitude]);
+          const tripBounds = points.reduce(
+            (acc, point) => acc.extend([point.latitude, point.longitude]),
+            L.latLngBounds(firstPoint, firstPoint)
+          );
+
+          // Fly to the bounds of the selected trip
+          map.flyToBounds(
+            tripBounds,
+            isRTL()
+              ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
+              : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
+          );
+        }
+      } else if (selectedTrip.intervalType === IntervalType.Parking) {
+        // Fly to the parking location
+        map.flyTo(
+          [selectedTrip.startLatitude, selectedTrip.startLongitude],
+          16 // zoom level
         );
 
-        // Fly to the bounds of the selected trip
-        map.flyToBounds(
-          tripBounds,
-          isRTL()
-            ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
-            : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
-        );
+        // Set the popup to open
+        setOpenPopupId(selectedTrip.id);
+
+        // Use a small delay to ensure the marker reference is available
+        setTimeout(() => {
+          const marker = markerRefs.current[selectedTrip.id];
+          if (marker) {
+            marker.openPopup();
+          }
+        }, 100);
       }
     }
   }, [selectedTrip, trips, map, isRTL]);
+
+  // Close popup when selection changes
+  useEffect(() => {
+    // Close previous popup if exists
+    const previousMarker = markerRefs.current[openPopupId as string];
+    if (previousMarker && openPopupId !== selectedTrip?.id) {
+      previousMarker.closePopup();
+    }
+  }, [openPopupId, selectedTrip]);
 
   if (!trips || !replayData) {
     return null;
@@ -256,15 +288,24 @@ export const ReplayLayer = () => {
 
       {parkings &&
         parkings.length > 0 &&
-        parkings.map((parking) => (
-          <Marker
-            key={parking.id}
-            position={[parking.startLatitude, parking.startLongitude]}
-            icon={iconParkingPoint}
-          >
-            <ParkingPopup parking={parking} />
-          </Marker>
-        ))}
+        parkings.map((parking) => {
+          const isSelected = selectedTrip?.id === parking.id;
+
+          return (
+            <Marker
+              key={parking.id}
+              ref={(ref) => {
+                if (ref) {
+                  markerRefs.current[parking.id] = ref;
+                }
+              }}
+              position={[parking.startLatitude, parking.startLongitude]}
+              icon={createParkingIcon(isSelected)}
+            >
+              <ParkingPopup parking={parking} />
+            </Marker>
+          );
+        })}
 
       {latLng && rotation !== null && selectedTrip && (
         <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
