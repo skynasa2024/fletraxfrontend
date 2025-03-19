@@ -765,5 +765,6 @@
   "MANAGEMENT.DEVICES.COLUMN.END_DATE": "تاريخ الانتهاء",
   "REPLAY.PARKING.START_TIME": "وقت البدء",
   "REPLAY.PARKING.END_TIME": "وقت الانتهاء",
-  "REPLAY.PARKING.DURATION": "المدة"
+  "REPLAY.PARKING.DURATION": "المدة",
+  "REPLAY.PARKING.PARKED": "مركونة"
 }

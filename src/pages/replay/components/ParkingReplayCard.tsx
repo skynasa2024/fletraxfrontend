@@ -3,6 +3,7 @@ import { useReplayContext } from '../providers/ReplayContext';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useAuthContext } from '@/auth';
 import clsx from 'clsx';
+import { FormattedMessage } from 'react-intl';
 
 type ParkingReplayCardProps = {
   parking: ReplayDTO;
@@ -37,7 +38,9 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
       <div className="grid items-center grid-cols-4 gap-1">
         <div className="flex gap-2 items-center">
           <div className="flex-col gap-2 items-center justify-center">
-            <div className="flex gap-1 items-center text-sm">Parking</div>
+            <div className="flex gap-1 items-center text-sm">
+              <FormattedMessage id="REPLAY.PARKING.PARKED" />
+            </div>
             <div className="text-xs text-gray-600">{parking.formatedTotalDuration}</div>
           </div>
           <div className="flex flex-col justify-center items-center gap-1">
