@@ -36,8 +36,19 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       role="button"
       aria-pressed={selectedTrip?.id === trip.id}
     >
-      <div className="grid items-center grid-cols-4 gap-2">
-        <div className="flex gap-1 items-center text-sm">{trip.totalDistance.toFixed(2)} KM</div>
+      <div className="grid items-center grid-cols-4 gap-1">
+        <div className="flex gap-2 items-center">
+          <div className="flex-col gap-2 items-center justify-center">
+            <div className="flex gap-1 items-center text-sm">
+              {trip.totalDistance.toFixed(2)} KM
+            </div>
+            <div className="text-xs text-gray-600">{trip.formatedTotalDuration}</div>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-1">
+            <div className="size-4 rounded-full border-green-500 bg-white border-4" />
+            <div className="w-1 rounded-full h-14 bg-neutral-300/50 grow" />
+          </div>
+        </div>
         <div className="flex flex-col gap-1">
           <div className="text-sm font-medium">
             {formatInTimeZone(new Date(trip.startTime * 1000), timezone, 'yyyy/MM/dd')}
