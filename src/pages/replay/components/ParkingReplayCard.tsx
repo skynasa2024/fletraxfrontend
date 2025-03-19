@@ -3,7 +3,6 @@ import { useReplayContext } from '../providers/ReplayContext';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useAuthContext } from '@/auth';
 import clsx from 'clsx';
-import { HalfCircleProgressBar } from '@/components';
 
 type ParkingReplayCardProps = {
   parking: ReplayDTO;
@@ -62,9 +61,6 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
             {formatInTimeZone(new Date(parking.endTime * 1000), timezone, 'HH:mm:ss')}
           </div>
         </div>
-        {/* <div className="flex flex-col items-center justify-center hidden">
-          <HalfCircleProgressBar value={0} maxValue={160} unit="Km/h" animated={false} />
-        </div> */}
       </div>
     </div>
   );
