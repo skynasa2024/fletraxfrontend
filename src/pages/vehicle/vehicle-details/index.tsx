@@ -295,8 +295,8 @@ const VehicleInfo = () => {
           />
         </div>
         <div className="grid grid-cols-3 gap-4 mb-4 h-[500px]">
-          <Notifications 
-            vehicleId={vehicle?.vehicleId || ''} 
+          <Notifications
+            vehicleId={vehicle?.vehicleId || ''}
             ident={vehicle?.deviceIdent || ''}
             withTypeFilter
           />

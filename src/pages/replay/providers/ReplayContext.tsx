@@ -1,4 +1,4 @@
-import { IReplay, searchReplays, SearchTripsParams, TripRecord } from '@/api/replay';
+import { IReplay, ReplayDTO, searchReplays, SearchTripsParams } from '@/api/replay';
 import {
   createContext,
   PropsWithChildren,
@@ -22,8 +22,8 @@ interface ReplayContextProps {
   search: () => void;
   replayData?: IReplay;
   loading: boolean;
-  selectedTrip?: TripRecord;
-  setSelectedTrip: (trip?: TripRecord) => void;
+  selectedTrip?: ReplayDTO;
+  setSelectedTrip: (trip?: ReplayDTO) => void;
 }
 
 const ReplayContext = createContext<ReplayContextProps>({
@@ -46,7 +46,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [replayData, setReplayData] = useState<IReplay>();
   const [loading, setLoading] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<TripRecord>();
+  const [selectedTrip, setSelectedTrip] = useState<ReplayDTO>();
 
   // Device query
   const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
