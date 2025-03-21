@@ -21,6 +21,7 @@ import {
 } from '@/assets/svg';
 import { NotificationTypeSelect } from '@/pages/reports/components/NotificationTypeSelect';
 import clsx from 'clsx';
+import { KeenIcon } from '@/components';
 
 const PAGE_SIZE = 10;
 const ROW_HEIGHT = 90;
@@ -55,6 +56,8 @@ const Notifications = ({
   const [notifications, setNotifications] = useState<Paginated<NotificationDTO>>();
   const [searchValue, setSearchValue] = useState<string>(externalSearch || '');
   const [selectedAlarmType, setSelectedAlarmType] = useState<string | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [largestIndex, setLargestIndex] = useState(PAGE_SIZE - 1);
   const { locale } = useIntl();
   const isRowLoaded = ({ index }: { index: number }) => !!notifications?.data[index];
   const rowCount = notifications?.totalCount;
@@ -105,6 +108,28 @@ const Notifications = ({
         totalCount: fetched.totalCount
       };
     });
+    setLargestIndex(Math.max(largestIndex, stopIndex));
+  };
+
+  const fetchData = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const data = await getNotifications({
+        offset: {
+          start: 0,
+          end: largestIndex
+        },
+        search: withSearch ? searchValue : undefined,
+        ident,
+        vehicleId,
+        alarmType: selectedAlarmType
+      });
+      setNotifications(data);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDebouncedSearch = (value: string) => {
@@ -136,17 +161,7 @@ const Notifications = ({
   };
 
   useEffect(() => {
-    getNotifications({
-      offset: {
-        start: 0,
-        end: PAGE_SIZE - 1
-      },
-      search: withSearch ? searchValue : undefined,
-      ident,
-      vehicleId,
-      alarmType: selectedAlarmType
-    }).then(setNotifications);
-
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ident, vehicleId, locale]);
 
@@ -154,16 +169,7 @@ const Notifications = ({
     if (externalSearch !== undefined && externalSearch !== searchValue) {
       setSearchValue(externalSearch);
       // Fetch new notifications when external search changes
-      getNotifications({
-        offset: {
-          start: 0,
-          end: PAGE_SIZE - 1
-        },
-        search: externalSearch,
-        ident,
-        vehicleId,
-        alarmType: selectedAlarmType
-      }).then(setNotifications);
+      fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [externalSearch, locale]);
@@ -175,22 +181,31 @@ const Notifications = ({
           <h3>
             <FormattedMessage id="DASHBOARD.NOTIFICATIONS.TITLE" />
           </h3>
-          {withTypeFilter && (
-            <div className="w-56">
-              <NotificationTypeSelect onTypeChange={handleAlarmTypeChange} />
-            </div>
-          )}
-          {withSearch && (
-            <div className="w-56">
-              <DebouncedSearchInput
-                type="text"
-                className="input"
-                placeholder="Search by ident..."
-                value={searchValue}
-                onDebounce={handleDebouncedSearch}
-              />
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <button
+              className="btn btn-light flex items-center justify-center size-10 text-dark rounded-lg"
+              onClick={fetchData}
+              disabled={isLoading}
+            >
+              <KeenIcon icon={'arrows-circle'} className={isLoading ? 'animate-spin' : undefined} />
+            </button>
+            {withTypeFilter && (
+              <div className="w-56">
+                <NotificationTypeSelect onTypeChange={handleAlarmTypeChange} />
+              </div>
+            )}
+            {withSearch && (
+              <div className="w-56">
+                <DebouncedSearchInput
+                  type="text"
+                  className="input"
+                  placeholder="Search by ident..."
+                  value={searchValue}
+                  onDebounce={handleDebouncedSearch}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
