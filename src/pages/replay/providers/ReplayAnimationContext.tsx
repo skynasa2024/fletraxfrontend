@@ -1,21 +1,21 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState, useMemo } from 'react';
 import { useReplayContext } from './ReplayContext';
+import { ReplayPoint } from '@/api/replay';
 
 interface AnimationContextProps {
   playing: boolean;
   current: number;
-  // eslint-disable-next-line no-unused-vars
   setCurrent: (current: number) => void;
   duration: number;
   play: () => void;
   pause: () => void;
   stop: () => void;
   metaData?: any;
-  // eslint-disable-next-line no-unused-vars
   setMetaData: (metaData?: any) => void;
   multiplier: number;
-  // eslint-disable-next-line no-unused-vars
   setMultiplier: (multiplier: number) => void;
+  currentPointIndex: number;
+  messagePoints: ReplayPoint[];
 }
 
 const ReplayAnimationContext = createContext<AnimationContextProps>({
@@ -28,8 +28,12 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
   stop: () => {},
   setMetaData: () => {},
   multiplier: 1,
-  setMultiplier: () => {}
+  setMultiplier: () => {},
+  currentPointIndex: 0,
+  messagePoints: []
 });
+
+const BASE_INTERVAL = 10000; // 10 seconds
 
 export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
   const { replayData, selectedTrip } = useReplayContext();
@@ -38,13 +42,25 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
   const [max, setMax] = useState(10000);
   const [multiplier, setMultiplier] = useState(1);
   const [metaData, setMetaData] = useState<any>();
-  const frameRate = 60;
-  const latency = 1000 / frameRate;
+  const [currentPointIndex, setCurrentPointIndex] = useState(0);
+
+  const messagePoints = useMemo(() => {
+    if (selectedTrip && selectedTrip.pointsList) {
+      return [...selectedTrip.pointsList].sort((a, b) => a.timestamp - b.timestamp);
+    }
+    return [];
+  }, [selectedTrip]);
+
+  const snapPositions = useMemo(() => {
+    return messagePoints.map(
+      (_, index) => (index / (messagePoints.length > 1 ? messagePoints.length - 1 : 1)) * max
+    );
+  }, [messagePoints, max]);
 
   const play = () => {
-    if (current === max) {
+    if (current >= max && messagePoints.length > 0) {
       setCurrent(0);
-      // Wait for 200 ms then play
+      setCurrentPointIndex(0);
       setTimeout(() => {
         setPlaying(true);
       }, 200);
@@ -60,52 +76,64 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
   const stop = () => {
     setPlaying(false);
     setCurrent(0);
+    setCurrentPointIndex(0);
   };
 
   useEffect(() => {
-    if (playing) {
-      const interval = setInterval(() => {
-        setCurrent((prev) => {
-          const next = prev + latency * multiplier;
-          if (next >= max) {
-            pause();
-            return max;
-          }
-          return next;
-        });
-      }, latency);
+    if (playing && messagePoints.length > 0) {
+      const interval = setTimeout(() => {
+        const nextIndex = currentPointIndex + 1;
+
+        if (nextIndex >= messagePoints.length) {
+          pause();
+          setCurrent(max);
+          return;
+        }
+
+        setCurrentPointIndex(nextIndex);
+
+        const newPosition = snapPositions[nextIndex];
+        setCurrent(newPosition);
+      }, BASE_INTERVAL / multiplier);
 
       return () => {
-        clearInterval(interval);
+        clearTimeout(interval);
       };
     }
-  }, [latency, max, multiplier, playing]);
+  }, [playing, currentPointIndex, messagePoints, multiplier, max, snapPositions]);
 
-  // Set max duration based on selected trip or all points
+  useEffect(() => {
+    if (messagePoints.length > 0 && currentPointIndex < messagePoints.length) {
+      const point = messagePoints[currentPointIndex];
+      setMetaData({
+        speed: point.speed ?? 0,
+        timestamp: point.timestamp * 1000
+      });
+    }
+  }, [currentPointIndex, messagePoints]);
+
   useEffect(() => {
     if (selectedTrip) {
-      // If a trip is selected, calculate duration based on that trip
       setCurrent(0);
+      setCurrentPointIndex(0);
       setPlaying(false);
       setMax(selectedTrip.endTime * 1000 - selectedTrip.startTime * 1000);
-    } else if (replayData?.trips && replayData.trips.length > 0) {
-      // If no trip is selected but we have trip data, calculate based on all trips
-      setCurrent(0);
-      setPlaying(false);
-
-      // const firstTrip = replayData.trips[0];
-      // const lastTrip = replayData.trips[replayData.trips.length - 1];
-
-      const startTime = Math.min(...replayData.trips.map((trip) => trip.startTime));
-      const endTime = Math.max(...replayData.trips.map((trip) => trip.endTime));
-
-      setMax((endTime - startTime) * 1000);
     }
   }, [replayData, selectedTrip]);
 
   const changeCurrent = (newValue: number) => {
     pause();
     setCurrent(newValue);
+
+    // Find the closest snap position
+    if (snapPositions.length > 0) {
+      const closestIndex = snapPositions.reduce((prev, curr, index) => {
+        return Math.abs(curr - newValue) < Math.abs(snapPositions[prev] - newValue) ? index : prev;
+      }, 0);
+
+      setCurrentPointIndex(closestIndex);
+      setCurrent(snapPositions[closestIndex]);
+    }
   };
 
   return (
@@ -121,7 +149,9 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         multiplier,
         setMultiplier,
         metaData,
-        setMetaData
+        setMetaData,
+        currentPointIndex,
+        messagePoints
       }}
     >
       {children}

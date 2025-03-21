@@ -9,8 +9,9 @@ import { FormattedMessage } from 'react-intl';
 import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
+import { useMemo } from 'react';
 
-const MultiplierOptions = [0.25, 0.5, 1, 2, 3, 5, 10, 20];
+const MultiplierOptions = [0.5, 1, 2, 3, 5];
 
 export const ReplayPlaybackCard = () => {
   const { isRTL } = useLanguage();
@@ -23,7 +24,9 @@ export const ReplayPlaybackCard = () => {
     metaData,
     multiplier,
     setMultiplier,
-    duration
+    duration,
+    currentPointIndex,
+    messagePoints
   } = useReplayAnimationContext();
   const { currentUser } = useAuthContext();
   const { replayData, selectedTrip } = useReplayContext();
@@ -42,6 +45,21 @@ export const ReplayPlaybackCard = () => {
       const prevIdx = currentIdx - 1;
       setMultiplier(MultiplierOptions[prevIdx]);
     }
+  };
+
+  const marks = useMemo(() => {
+    if (messagePoints.length <= 1) return [];
+
+    return messagePoints.map((_, index) => ({
+      value: (index / (messagePoints.length - 1)) * duration
+    }));
+  }, [messagePoints, duration]);
+
+  const getMessageInfo = () => {
+    if (messagePoints.length > 0 && currentPointIndex < messagePoints.length) {
+      return `Message ${currentPointIndex + 1} of ${messagePoints.length}`;
+    }
+    return '';
   };
 
   if (!replayData) {
@@ -71,7 +89,7 @@ export const ReplayPlaybackCard = () => {
       : new Date();
 
   return (
-    <div className="card w-[50vw] flex flex-row p-5 h-56">
+    <div className="card w-[50vw] flex flex-row p-5 h-60">
       <div className="flex flex-col justify-between items-center grow w-1/2">
         <div className="flex gap-6 items-center p-4">
           <button
@@ -162,15 +180,18 @@ export const ReplayPlaybackCard = () => {
           <div className="w-40">
             <SpeedGauge value={metaData?.speed?.toFixed()} maxValue={160} unit="km" />
           </div>
-          {metaData?.timestamp && (
-            <div className="flex justify-between bg-gray-200 text-gray-600 font-semibold text-sm text-center py-1 px-2 rounded-md">
-              <div>
-                {new Date(metaData.timestamp).toLocaleString('en-UK', {
-                  timeZone: currentUser?.timezone
-                })}
+          <div className="flex flex-col items-center gap-1">
+            {metaData?.timestamp && (
+              <div className="flex justify-between bg-gray-200 text-gray-600 font-semibold text-sm text-center py-1 px-2 rounded-md">
+                <div>
+                  {new Date(metaData.timestamp).toLocaleString('en-UK', {
+                    timeZone: currentUser?.timezone
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+            <div className="text-xs font-medium text-info">{getMessageInfo()}</div>
+          </div>
         </div>
         <div className="flex gap-5">
           <div className="font-semibold text-xs text-[#2D3748] dark:text-gray-900">
@@ -186,7 +207,9 @@ export const ReplayPlaybackCard = () => {
             }}
             min={0}
             max={duration}
-            className="[&>.MuiSlider-rail]:bg-neutral-200 [&>.MuiSlider-rail]:opacity-100 [&>.MuiSlider-track]:bg-gray-800 [&>.MuiSlider-track]:h-3 [&>.MuiSlider-track]:border-gray-800 [&>.MuiSlider-rail]:h-3 [&>.MuiSlider-thumb]:bg-gray-800 [&>.MuiSlider-thumb]:size-7"
+            marks={marks}
+            step={null}
+            className="[&>.MuiSlider-rail]:bg-neutral-200 [&>.MuiSlider-rail]:opacity-100 [&>.MuiSlider-track]:bg-gray-700 [&>.MuiSlider-track]:h-3 [&>.MuiSlider-track]:border-gray-600 [&>.MuiSlider-rail]:h-3 [&>.MuiSlider-thumb]:bg-gray-800 [&>.MuiSlider-thumb]:size-7 [&>.MuiSlider-mark]:bg-gray-900 [&>.MuiSlider-mark]:w-0.5 [&>.MuiSlider-mark]:h-3 [&>.MuiSlider-mark]:rounded-full"
           />
           <div className="font-semibold text-xs text-[#2D3748] dark:text-gray-900">
             {formatInTimeZone(endTimestamp, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
