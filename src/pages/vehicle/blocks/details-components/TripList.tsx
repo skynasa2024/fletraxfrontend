@@ -208,7 +208,7 @@ const TripList: React.FC<TripListProps> = ({ deviceIdent }) => {
   }, [loaderRef, trips]);
 
   return (
-    <TripsContext.Provider value={{ ...providerValues, isNewTrips: false }}>
+    <TripsContext.Provider value={{ ...providerValues }}>
       <div className="flex flex-col mb-4 md:flex-row space-y-4 md:space-x-4 h-full w-600 mt-0">
         <div className="p-4 card hover:shadow-md lg:w-1/2 mt-4 h-[450px]">
           <div className="flex justify-between items-center mb-4">
