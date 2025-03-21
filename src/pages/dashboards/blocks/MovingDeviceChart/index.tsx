@@ -7,11 +7,14 @@ import { ButtonRadioGroup } from '../ButtonRadioGroup';
 import { toAbsoluteUrl } from '@/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 import './style.css';
+import { KeenIcon } from '@/components';
 
 const MovingDeviceChart = () => {
   const intl = useIntl();
   const [selection, setSelection] = useState('Device');
   const [allData, setAllData] = useState<Record<string, number>>();
+  const [isLoading, setIsLoading] = useState(false);
+
   const data = useMemo(() => {
     if (allData) {
       return selection === 'Moving'
@@ -20,6 +23,7 @@ const MovingDeviceChart = () => {
     }
     return null;
   }, [allData, selection]);
+
   const labels = useMemo(() => {
     if (allData) {
       return selection === 'Moving'
@@ -34,6 +38,7 @@ const MovingDeviceChart = () => {
     }
     return null;
   }, [allData, selection, intl]);
+
   const colors: string[] = ['var(--tw-success)', 'var(--tw-danger)'];
 
   const options: ApexOptions = {
@@ -79,17 +84,20 @@ const MovingDeviceChart = () => {
     ]
   };
 
-  useEffect(() => {
-    getCarCount().then((data) => {
-      setAllData(data);
-    });
-    const interval = setInterval(() => {
-      getCarCount().then((data) => {
-        setAllData(data);
-      });
-    }, 5000);
+  const fetchData = async () => {
+    if (isLoading) return;
 
-    return () => clearInterval(interval);
+    setIsLoading(true);
+    try {
+      const data = await getCarCount();
+      setAllData(data);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   if (!data || !labels) {
@@ -114,15 +122,24 @@ const MovingDeviceChart = () => {
           </h4>
         </div>
 
-        <ButtonRadioGroup
-          selection={selection}
-          setSelection={setSelection}
-          selections={['Moving', 'Device']}
-          translations={{
-            Moving: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.MOVING' }),
-            Device: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.DEVICE' })
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <button
+            className="btn btn-light flex items-center justify-center size-10 text-dark rounded-lg"
+            onClick={fetchData}
+            disabled={isLoading}
+          >
+            <KeenIcon icon={'arrows-circle'} className={isLoading ? 'animate-spin' : undefined} />
+          </button>
+          <ButtonRadioGroup
+            selection={selection}
+            setSelection={setSelection}
+            selections={['Moving', 'Device']}
+            translations={{
+              Moving: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.MOVING' }),
+              Device: intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.DEVICE' })
+            }}
+          />
+        </div>
       </div>
 
       <div className="card-body flex flex-col gap-4 justify-center items-center px-3 py-1 pb-6">
