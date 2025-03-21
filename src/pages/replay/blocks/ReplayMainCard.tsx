@@ -48,6 +48,7 @@ export default function ReplayMainCard() {
       newErrors.startDate = 'Start date is required';
     } else {
       const startDateObj = new Date(startDate);
+      startDateObj.setHours(0, 0, 0, 0);
       if (startDateObj > today) {
         newErrors.startDate = 'Start date cannot be in the future';
       }
@@ -55,18 +56,24 @@ export default function ReplayMainCard() {
 
     if (!endDate) {
       newErrors.endDate = 'End date is required';
-    } else if (startDate && new Date(endDate) < new Date(startDate)) {
-      newErrors.endDate = 'End date must be after start date';
-    } else if (new Date(endDate) > today) {
-      newErrors.endDate = 'End date cannot be in the future';
     } else if (startDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const startDateObj = new Date(startDate);
+      const endDateObj = new Date(endDate);
 
-      if (diffDays > 30) {
-        newErrors.endDate = 'Date range cannot exceed 30 days';
+      startDateObj.setHours(0, 0, 0, 0);
+      endDateObj.setHours(0, 0, 0, 0);
+
+      if (endDateObj < startDateObj) {
+        newErrors.endDate = 'End date must be after start date';
+      } else if (endDateObj > today) {
+        newErrors.endDate = 'End date cannot be in the future';
+      } else {
+        const diffTime = Math.abs(endDateObj.getTime() - startDateObj.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 30) {
+          newErrors.endDate = 'Date range cannot exceed 30 days';
+        }
       }
     }
 
