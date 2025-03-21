@@ -147,6 +147,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
       const replayDto = await searchReplays(params);
 
       setReplayData(replayDto);
+      setSelectedTrip(undefined);
     } catch (error) {
       console.error('Failed to search for replay data:', error);
       setReplayData(undefined);
