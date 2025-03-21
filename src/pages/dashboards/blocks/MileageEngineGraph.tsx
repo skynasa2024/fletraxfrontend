@@ -14,15 +14,19 @@ const MileageEngineGraph = () => {
   const { isRTL } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selection, setSelection] = useState('All');
+  const [isLoading, setIsLoading] = useState(false);
+
   const sort: 'kilometers' | 'engine' = useMemo(() => {
     if (selection === 'Engine') {
       return 'engine';
     }
     return 'kilometers';
   }, [selection]);
+
   const [data, setData] = useState<Paginated<CarMileageAndEngine>>();
   const remoteRowCount = useMemo(() => data?.totalCount ?? 0, [data]);
   const [largestIndex, setLargestIndex] = useState(10);
+
   const [largestMileage, largestEngine] = useMemo(() => {
     if (!data) {
       return [0, 0];
@@ -34,6 +38,7 @@ const MileageEngineGraph = () => {
   }, [data]);
 
   const isRowLoaded = ({ index }: { index: number }) => !!data?.data[index];
+
   const loadMoreRows = async ({
     startIndex,
     stopIndex
@@ -58,22 +63,24 @@ const MileageEngineGraph = () => {
     setLargestIndex(Math.max(largestIndex, stopIndex));
   };
 
-  useEffect(() => {
-    setData(undefined);
-    getCarsMileageAndEngine({ start: 0, end: largestIndex, search: searchQuery }, sort).then(
-      setData
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, searchQuery]);
+  const fetchData = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const newData = await getCarsMileageAndEngine(
+        { start: 0, end: largestIndex, search: searchQuery },
+        sort
+      );
+      setData(newData);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Update every 1 minute
-    const interval = setInterval(() => {
-      getCarsMileageAndEngine({ start: 0, end: largestIndex, search: searchQuery }, sort).then(
-        setData
-      );
-    }, 60000);
-    return () => clearInterval(interval);
+    setData(undefined);
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, searchQuery]);
 
@@ -90,6 +97,13 @@ const MileageEngineGraph = () => {
         </div>
 
         <div className="flex gap-5 items-center">
+          <button
+            className="btn btn-light flex items-center justify-center size-10 text-dark rounded-lg"
+            onClick={fetchData}
+            disabled={isLoading}
+          >
+            <KeenIcon icon={'arrows-circle'} className={isLoading ? 'animate-spin' : undefined} />
+          </button>
           <div className="input max-w-48">
             <KeenIcon icon="magnifier" />
             <input
