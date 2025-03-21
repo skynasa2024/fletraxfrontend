@@ -10,6 +10,7 @@ import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
 import { useMemo } from 'react';
+import clsx from 'clsx';
 
 const MultiplierOptions = [0.5, 1, 2, 3, 5];
 
@@ -190,7 +191,7 @@ export const ReplayPlaybackCard = () => {
                 </div>
               </div>
             )}
-            <div className="text-xs font-medium text-info">{getMessageInfo()}</div>
+            <div className="text-sm font-semibold text-gray-700">{getMessageInfo()}</div>
           </div>
         </div>
         <div className="flex gap-5">
@@ -209,7 +210,13 @@ export const ReplayPlaybackCard = () => {
             max={duration}
             marks={marks}
             step={null}
-            className="[&>.MuiSlider-rail]:bg-neutral-200 [&>.MuiSlider-rail]:opacity-100 [&>.MuiSlider-track]:bg-gray-700 [&>.MuiSlider-track]:h-3 [&>.MuiSlider-track]:border-gray-600 [&>.MuiSlider-rail]:h-3 [&>.MuiSlider-thumb]:bg-gray-800 [&>.MuiSlider-thumb]:size-7 [&>.MuiSlider-mark]:bg-gray-900 [&>.MuiSlider-mark]:w-0.5 [&>.MuiSlider-mark]:h-3 [&>.MuiSlider-mark]:rounded-full"
+            size="medium"
+            className={clsx(
+              '[&>.MuiSlider-rail]:bg-neutral-200 [&>.MuiSlider-rail]:opacity-100 [&>.MuiSlider-rail]:h-3',
+              '[&>.MuiSlider-track]:bg-gray-700 [&>.MuiSlider-track]:h-3 [&>.MuiSlider-track]:border-gray-600',
+              '[&>.MuiSlider-thumb]:bg-gray-800 [&>.MuiSlider-thumb]:size-7',
+              '[&>.MuiSlider-mark]:hidden'
+            )}
           />
           <div className="font-semibold text-xs text-[#2D3748] dark:text-gray-900">
             {formatInTimeZone(endTimestamp, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
