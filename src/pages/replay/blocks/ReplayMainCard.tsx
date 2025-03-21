@@ -101,7 +101,7 @@ export default function ReplayMainCard() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 shrink-0">
+      <div className="card-body md:w-[411px] flex flex-col gap-2 px-3 py-3 grow-0">
         <form onSubmit={handleSubmit}>
           <TripsSearch
             search={searchDeviceQuery || ''}
