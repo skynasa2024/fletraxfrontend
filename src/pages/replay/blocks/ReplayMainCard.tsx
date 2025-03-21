@@ -41,14 +41,24 @@ export default function ReplayMainCard() {
       newErrors.searchDeviceQuery = 'Device is required';
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     if (!startDate) {
       newErrors.startDate = 'Start date is required';
+    } else {
+      const startDateObj = new Date(startDate);
+      if (startDateObj > today) {
+        newErrors.startDate = 'Start date cannot be in the future';
+      }
     }
 
     if (!endDate) {
       newErrors.endDate = 'End date is required';
     } else if (startDate && new Date(endDate) < new Date(startDate)) {
       newErrors.endDate = 'End date must be after start date';
+    } else if (new Date(endDate) > today) {
+      newErrors.endDate = 'End date cannot be in the future';
     } else if (startDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
@@ -72,7 +82,13 @@ export default function ReplayMainCard() {
   };
 
   const dateConstraints = useMemo(() => {
-    const constraints = { startMin: '', startMax: '', endMin: '', endMax: '' };
+    const today = new Date().toISOString().split('T')[0];
+    const constraints = {
+      startMin: '',
+      startMax: today,
+      endMin: '',
+      endMax: today
+    };
 
     if (startDate) {
       constraints.endMin = startDate;
@@ -80,7 +96,9 @@ export default function ReplayMainCard() {
       const start = new Date(startDate);
       const maxEndDate = new Date(start);
       maxEndDate.setDate(maxEndDate.getDate() + 30);
-      constraints.endMax = maxEndDate.toISOString().split('T')[0];
+
+      const maxEndDateStr = maxEndDate.toISOString().split('T')[0];
+      constraints.endMax = maxEndDateStr < today ? maxEndDateStr : today;
     }
 
     if (endDate) {
