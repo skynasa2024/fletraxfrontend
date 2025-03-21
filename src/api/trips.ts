@@ -76,7 +76,6 @@ export interface SearchTripsParams {
   endTime?: string;
   offset?: OffsetBounds;
   intervalType: IntervalType;
-  isNewTrips?: boolean;
 }
 
 export const TRIPS_PAGE_SIZE = 20;
@@ -88,12 +87,9 @@ export const searchTrips = async ({
   startTime,
   endTime,
   offset,
-  intervalType = IntervalType.Trip,
-  isNewTrips = false
+  intervalType = IntervalType.Trip
 }: SearchTripsParams): Promise<TripGroup[]> => {
-  const endpoint = isNewTrips ? '/api/new-intervals/search' : '/api/intervals/search';
-
-  const trips = await axios.get<ResponseModel<TripGroupsDTO>>(endpoint, {
+  const trips = await axios.get<ResponseModel<TripGroupsDTO>>('/api/intervals/search', {
     params: {
       ident: query,
       startDate: startDate,

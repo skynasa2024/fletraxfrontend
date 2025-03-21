@@ -38,7 +38,6 @@ interface TripsContextProps {
   // eslint-disable-next-line no-unused-vars
   setIntervalType: (intervalType: IntervalType) => void;
   loading: boolean;
-  isNewTrips: boolean;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -60,115 +59,105 @@ export const TripsContext = createContext<TripsContextProps>({
   hasMore: false,
   intervalType: IntervalType.Trip,
   setIntervalType: () => {},
-  loading: false,
-  isNewTrips: false
+  loading: false
 });
 
-interface TripsProviderProps extends PropsWithChildren {
-  isNewTrips?: boolean;
-}
-
-export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderProps) => {
+export const TripsProvider = ({ children }: PropsWithChildren) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTrip, setSelectedTrip] = useState<TripGroup | Trip>();
   const [intervalType, setIntervalType] = useState<IntervalType>(IntervalType.Trip);
   const [path, setPath] = useState<TripPath[]>();
 
-  // Use prefixed URL parameters to isolate state between regular trips and new trips
-  const paramPrefix = isNewTrips ? 'new_' : '';
-
-  const [searchDeviceQuery, _setSearchDeviceQuery] = useState(
-    searchParams.get(`${paramPrefix}device`) ?? ''
-  );
+  const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
 
   const setSearchDeviceQuery = useCallback(
     (query: string) => {
       setSearchParams((params) => {
         if (!query) {
-          params.delete(`${paramPrefix}device`);
+          params.delete('device');
           return params;
         }
-        params.set(`${paramPrefix}device`, query);
+        params.set('device', query);
         return params;
       });
     },
-    [setSearchParams, paramPrefix]
+    [setSearchParams]
   );
 
   const startDate = useMemo(() => {
-    const date = searchParams.get(`${paramPrefix}startDate`) || undefined;
+    const date = searchParams.get('startDate') || undefined;
     return date;
-  }, [searchParams, paramPrefix]);
+  }, [searchParams]);
 
   const setStartDate = useCallback(
     (date: string | undefined) => {
       setSearchParams((params) => {
         if (!date) {
-          params.delete(`${paramPrefix}startDate`);
+          params.delete('startDate');
           return params;
         }
-        params.set(`${paramPrefix}startDate`, date);
+        params.set('startDate', date);
         return params;
       });
     },
-    [setSearchParams, paramPrefix]
+    [setSearchParams]
   );
 
   const endDate = useMemo(() => {
-    const date = searchParams.get(`${paramPrefix}endDate`) || undefined;
+    const date = searchParams.get(`endDate`) || undefined;
     return date;
-  }, [searchParams, paramPrefix]);
+  }, [searchParams]);
 
   const setEndDate = useCallback(
     (date: string | undefined) => {
       setSearchParams((params) => {
         if (!date) {
-          params.delete(`${paramPrefix}endDate`);
+          params.delete('endDate');
           return params;
         }
-        params.set(`${paramPrefix}endDate`, date);
+        params.set('endDate', date);
         return params;
       });
     },
-    [setSearchParams, paramPrefix]
+    [setSearchParams]
   );
 
   const startTime = useMemo(() => {
-    const time = searchParams.get(`${paramPrefix}startTime`) || undefined;
+    const time = searchParams.get('startTime') || undefined;
     return time;
-  }, [searchParams, paramPrefix]);
+  }, [searchParams]);
 
   const setStartTime = useCallback(
     (time: string | undefined) => {
       setSearchParams((params) => {
         if (!time) {
-          params.delete(`${paramPrefix}startTime`);
+          params.delete('startTime');
           return params;
         }
-        params.set(`${paramPrefix}startTime`, time);
+        params.set('startTime', time);
         return params;
       });
     },
-    [setSearchParams, paramPrefix]
+    [setSearchParams]
   );
 
   const endTime = useMemo(() => {
-    const time = searchParams.get(`${paramPrefix}endTime`) || undefined;
+    const time = searchParams.get('endTime') || undefined;
     return time;
-  }, [searchParams, paramPrefix]);
+  }, [searchParams]);
 
   const setEndTime = useCallback(
     (time: string | undefined) => {
       setSearchParams((params) => {
         if (!time) {
-          params.delete(`${paramPrefix}endTime`);
+          params.delete('endTime');
           return params;
         }
-        params.set(`${paramPrefix}endTime`, time);
+        params.set('endTime', time);
         return params;
       });
     },
-    [setSearchParams, paramPrefix]
+    [setSearchParams]
   );
 
   const [trips, setTrips] = useState<TripGroup[]>([]);
@@ -192,15 +181,14 @@ export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderPro
         startTime,
         endTime,
         offset: { start: 0, end: TRIPS_PAGE_SIZE },
-        intervalType,
-        isNewTrips
+        intervalType
       });
       setTrips(initialTrips);
       setHasMore(initialTrips.length > 0);
     } finally {
       setLoading(false);
     }
-  }, [endDate, endTime, searchDeviceQuery, startDate, startTime, intervalType, isNewTrips]);
+  }, [endDate, endTime, searchDeviceQuery, startDate, startTime, intervalType]);
 
   const loadMoreTrips = useCallback(async () => {
     if (!hasMore) return;
@@ -212,8 +200,7 @@ export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderPro
       startTime,
       endTime,
       offset: { start: currentOffset, end: currentOffset + TRIPS_PAGE_SIZE },
-      intervalType,
-      isNewTrips
+      intervalType
     });
     if (moreTrips.length === 0 || moreTrips.length < TRIPS_PAGE_SIZE) {
       setHasMore(false);
@@ -234,8 +221,7 @@ export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderPro
     endDate,
     startTime,
     endTime,
-    intervalType,
-    isNewTrips
+    intervalType
   ]);
 
   useEffect(() => {
@@ -297,13 +283,6 @@ export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderPro
     setTrips([]);
   }, [intervalType]);
 
-  // Add a new effect to reset state when isNewTrips changes
-  useEffect(() => {
-    // Reset state when switching between Trips and New Trips
-    setSelectedTrip(undefined);
-    setPath(undefined);
-  }, [isNewTrips]);
-
   return (
     <TripsContext.Provider
       value={{
@@ -326,8 +305,7 @@ export const TripsProvider = ({ children, isNewTrips = false }: TripsProviderPro
         hasMore,
         intervalType,
         setIntervalType,
-        loading,
-        isNewTrips
+        loading
       }}
     >
       {children}
