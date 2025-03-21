@@ -19,13 +19,6 @@ export const MENU_SIDEBAR: TMenuConfig = [
     fullScreen: true
   },
   {
-    title: 'SIDEBAR.MENU.NEW_TRIPS',
-    externalIcon: 'trips',
-    path: '/new-trips',
-    fullScreen: true,
-    role: 'admin'
-  },
-  {
     title: 'SIDEBAR.MENU.REPLAY',
     externalIcon: 'reports',
     path: '/replay',
