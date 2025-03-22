@@ -6,6 +6,17 @@ import { TripsSearch } from '@/pages/trips/blocks/TripsSearch';
 import { TimePicker } from '@/components';
 import React, { useEffect, useMemo, useState } from 'react';
 import ReplayTripCard from './ReplayTripCard';
+import { useAuthContext } from '@/auth';
+import {
+  format,
+  isAfter,
+  isBefore,
+  addDays,
+  differenceInDays,
+  parseISO,
+  startOfDay
+} from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 export default function ReplayMainCard() {
   const {
@@ -24,6 +35,8 @@ export default function ReplayMainCard() {
     replayData
   } = useReplayContext();
 
+  const { currentUser } = useAuthContext();
+
   const [errors, setErrors] = useState({
     searchDeviceQuery: '',
     startDate: '',
@@ -41,39 +54,54 @@ export default function ReplayMainCard() {
       newErrors.searchDeviceQuery = 'Device is required';
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Get current date in user's timezone or default to system timezone
+    const userTimezone = currentUser?.timezone || 'UTC';
+    const nowInUserTz = toZonedTime(new Date(), userTimezone);
+    const todayInUserTz = startOfDay(nowInUserTz);
 
     if (!startDate) {
       newErrors.startDate = 'Start date is required';
     } else {
-      const startDateObj = new Date(startDate);
-      startDateObj.setHours(0, 0, 0, 0);
-      if (startDateObj > today) {
-        newErrors.startDate = 'Start date cannot be in the future';
+      try {
+        // Convert the selected date to user's timezone
+        const startDateObj = parseISO(startDate);
+        const startDateInUserTz = toZonedTime(startDateObj, userTimezone);
+
+        if (isAfter(startOfDay(startDateInUserTz), todayInUserTz)) {
+          newErrors.startDate = 'Start date cannot be in the future';
+        }
+      } catch (error) {
+        newErrors.startDate = 'Invalid date format';
       }
     }
 
     if (!endDate) {
       newErrors.endDate = 'End date is required';
     } else if (startDate) {
-      const startDateObj = new Date(startDate);
-      const endDateObj = new Date(endDate);
+      try {
+        // Convert dates to user's timezone for comparison
+        const startDateObj = parseISO(startDate);
+        const endDateObj = parseISO(endDate);
 
-      startDateObj.setHours(0, 0, 0, 0);
-      endDateObj.setHours(0, 0, 0, 0);
+        const startDateInUserTz = toZonedTime(startDateObj, userTimezone);
+        const endDateInUserTz = toZonedTime(endDateObj, userTimezone);
 
-      if (endDateObj < startDateObj) {
-        newErrors.endDate = 'End date must be after start date';
-      } else if (endDateObj > today) {
-        newErrors.endDate = 'End date cannot be in the future';
-      } else {
-        const diffTime = Math.abs(endDateObj.getTime() - startDateObj.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (isBefore(startOfDay(endDateInUserTz), startOfDay(startDateInUserTz))) {
+          newErrors.endDate = 'End date must be after start date';
+        } else if (isAfter(startOfDay(endDateInUserTz), todayInUserTz)) {
+          newErrors.endDate = 'End date cannot be in the future';
+        } else {
+          const diffDays = differenceInDays(
+            startOfDay(endDateInUserTz),
+            startOfDay(startDateInUserTz)
+          );
 
-        if (diffDays > 30) {
-          newErrors.endDate = 'Date range cannot exceed 30 days';
+          if (diffDays > 30) {
+            newErrors.endDate = 'Date range cannot exceed 30 days';
+          }
         }
+      } catch (error) {
+        newErrors.endDate = 'Invalid date format';
       }
     }
 
@@ -89,36 +117,55 @@ export default function ReplayMainCard() {
   };
 
   const dateConstraints = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0];
-    const constraints = {
-      startMin: '',
-      startMax: today,
-      endMin: '',
-      endMax: today
-    };
+    // Get today's date in user's timezone or default to UTC
+    const userTimezone = currentUser?.timezone || 'UTC';
+    try {
+      const nowInUserTz = toZonedTime(new Date(), userTimezone);
+      const today = format(nowInUserTz, 'yyyy-MM-dd');
 
-    if (startDate) {
-      constraints.endMin = startDate;
+      const constraints = {
+        startMin: '',
+        startMax: today,
+        endMin: '',
+        endMax: today
+      };
 
-      const start = new Date(startDate);
-      const maxEndDate = new Date(start);
-      maxEndDate.setDate(maxEndDate.getDate() + 30);
+      if (startDate) {
+        constraints.endMin = startDate;
 
-      const maxEndDateStr = maxEndDate.toISOString().split('T')[0];
-      constraints.endMax = maxEndDateStr < today ? maxEndDateStr : today;
+        // Calculate max end date (start date + 30 days) in user's timezone
+        const startDateObj = parseISO(startDate);
+        const startDateInUserTz = toZonedTime(startDateObj, userTimezone);
+        const maxEndDateInUserTz = addDays(startDateInUserTz, 30);
+        const maxEndDateStr = format(maxEndDateInUserTz, 'yyyy-MM-dd');
+
+        constraints.endMax = isBefore(parseISO(maxEndDateStr), parseISO(today))
+          ? maxEndDateStr
+          : today;
+      }
+
+      if (endDate) {
+        constraints.startMax = endDate;
+
+        // Calculate min start date (end date - 30 days) in user's timezone
+        const endDateObj = parseISO(endDate);
+        const endDateInUserTz = toZonedTime(endDateObj, userTimezone);
+        const minStartDateInUserTz = addDays(endDateInUserTz, -30);
+
+        constraints.startMin = format(minStartDateInUserTz, 'yyyy-MM-dd');
+      }
+
+      return constraints;
+    } catch (error) {
+      // Fallback to basic constraints if any date parsing fails
+      return {
+        startMin: '',
+        startMax: new Date().toISOString().split('T')[0],
+        endMin: '',
+        endMax: new Date().toISOString().split('T')[0]
+      };
     }
-
-    if (endDate) {
-      constraints.startMax = endDate;
-
-      const end = new Date(endDate);
-      const minStartDate = new Date(end);
-      minStartDate.setDate(minStartDate.getDate() - 30);
-      constraints.startMin = minStartDate.toISOString().split('T')[0];
-    }
-
-    return constraints;
-  }, [startDate, endDate]);
+  }, [startDate, endDate, currentUser?.timezone]);
 
   useEffect(() => {
     validateForm();
