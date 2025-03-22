@@ -10,6 +10,8 @@ interface AnimationContextProps {
   play: () => void;
   pause: () => void;
   stop: () => void;
+  next: () => void;
+  prev: () => void;
   metaData?: any;
   setMetaData: (metaData?: any) => void;
   multiplier: number;
@@ -26,6 +28,8 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
   play: () => {},
   pause: () => {},
   stop: () => {},
+  next: () => {},
+  prev: () => {},
   setMetaData: () => {},
   multiplier: 1,
   setMultiplier: () => {},
@@ -77,6 +81,24 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
     setPlaying(false);
     setCurrent(0);
     setCurrentPointIndex(0);
+  };
+
+  const next = () => {
+    const nextIndex = currentPointIndex + 1;
+    if (nextIndex < messagePoints.length) {
+      setCurrentPointIndex(nextIndex);
+      const newPosition = snapPositions[nextIndex];
+      setCurrent(newPosition);
+    }
+  };
+
+  const prev = () => {
+    const prevIndex = currentPointIndex - 1;
+    if (prevIndex >= 0) {
+      setCurrentPointIndex(prevIndex);
+      const newPosition = snapPositions[prevIndex];
+      setCurrent(newPosition);
+    }
   };
 
   useEffect(() => {
@@ -146,6 +168,8 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         play,
         pause,
         stop,
+        next,
+        prev,
         multiplier,
         setMultiplier,
         metaData,
