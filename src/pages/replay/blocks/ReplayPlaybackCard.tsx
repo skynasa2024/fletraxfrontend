@@ -91,13 +91,6 @@ export const ReplayPlaybackCard = () => {
       ? new Date(Math.max(...replayData.trips.map((t) => t.endTime)) * 1000)
       : new Date();
 
-  console.log({
-    duration,
-    current,
-    currentPointIndex,
-    messagePoints
-  });
-
   return (
     <div className="card w-[50vw] flex flex-row p-5 h-60">
       <div className="flex flex-col justify-between items-center grow w-1/2">
