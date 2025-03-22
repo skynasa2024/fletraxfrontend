@@ -6,7 +6,6 @@ import { useTripsContext } from '../providers/TripsContext';
 import { useEffect, useMemo } from 'react';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { useAnimationContext } from '../providers/AnimationContext';
-import { interpolateKeyframes } from '../utils/KeyframeInterpolate';
 import { getColor } from './PolylineColors';
 import { useLanguage } from '@/i18n';
 import { IntervalType } from '@/api/trips';
@@ -24,7 +23,7 @@ export const TripsLayer = () => {
     }
     return [selectedTrip];
   }, [selectedTrip]);
-  const { current: time, setMetaData } = useAnimationContext();
+  const { currentPointIndex, messagePoints } = useAnimationContext();
   const bounds = useMemo(() => {
     if (!path || path.length === 0) {
       return undefined;
@@ -63,45 +62,17 @@ export const TripsLayer = () => {
     []
   );
 
-  const denormailizedTime = useMemo(() => {
-    if (!path || path.length === 0 || intervalType === IntervalType.Parking) {
-      return 0;
-    }
-
-    const startTime = path[0]?.timestamp.getTime() ?? 0;
-    return startTime + time;
-  }, [time, path, intervalType]);
-
-  const interpolatedState = useMemo(() => {
-    if (!path || path.length === 0 || intervalType === IntervalType.Parking) {
+  const currentPosition = useMemo(() => {
+    if (!messagePoints || messagePoints.length === 0 || currentPointIndex >= messagePoints.length) {
       return null;
     }
-
-    return interpolateKeyframes(path, denormailizedTime);
-  }, [path, denormailizedTime, intervalType]);
-
-  useEffect(() => {
-    setMetaData({
-      speed: interpolatedState?.speed ?? 0,
-      timestamp: denormailizedTime
-    });
-  }, [denormailizedTime, interpolatedState, setMetaData]);
-
-  const latLng = useMemo(() => {
-    if (!interpolatedState) {
-      return null;
-    }
-
-    return L.latLng(interpolatedState.latitute, interpolatedState.longitude);
-  }, [interpolatedState]);
-
-  const rotation = useMemo(() => {
-    if (!interpolatedState) {
-      return null;
-    }
-
-    return interpolatedState.direction;
-  }, [interpolatedState]);
+    const point = messagePoints[currentPointIndex];
+    return {
+      latLng: L.latLng(point.latitude, point.longitude),
+      direction: point.direction,
+      speed: point.speed
+    };
+  }, [messagePoints, currentPointIndex]);
 
   useEffect(() => {
     if (!bounds) {
@@ -147,8 +118,12 @@ export const TripsLayer = () => {
           />
         </>
       )}
-      {latLng && rotation !== null && (
-        <RotatableMarker position={latLng} icon={icon} rotationAngle={rotation} />
+      {currentPosition && (
+        <RotatableMarker
+          position={currentPosition.latLng}
+          icon={icon}
+          rotationAngle={currentPosition.direction}
+        />
       )}
     </>
   );
