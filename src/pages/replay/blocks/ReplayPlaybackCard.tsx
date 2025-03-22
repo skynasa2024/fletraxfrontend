@@ -20,6 +20,8 @@ export const ReplayPlaybackCard = () => {
     playing,
     play,
     pause,
+    next,
+    prev,
     current,
     setCurrent,
     metaData,
@@ -92,45 +94,62 @@ export const ReplayPlaybackCard = () => {
   return (
     <div className="card w-[50vw] flex flex-row p-5 h-60">
       <div className="flex flex-col justify-between items-center grow w-1/2">
-        <div className="flex gap-6 items-center p-4">
-          <button
-            className="btn btn-icon rounded-lg btn-info -scale-x-100 size-10"
-            style={{
-              transform: isRTL() ? 'none' : 'scaleX(-1)'
-            }}
-            onClick={handleDecreasePlayBackSpeed}
-            disabled={MultiplierOptions.indexOf(multiplier) === 0}
-          >
-            <PiFastForward size={22} />
-          </button>
+        <div className="flex gap-12 items-center justify-center p-4">
+          <div className="flex gap-6 items-center">
+            <button
+              className="btn btn-icon rounded-lg btn-info -scale-x-100 size-10"
+              style={{
+                transform: isRTL() ? 'none' : 'scaleX(-1)'
+              }}
+              onClick={prev}
+              disabled={current === 0}
+            >
+              <PiFastForward size={22} />
+            </button>
 
-          <button
-            className="btn btn-icon text-info bg-transparent size-10"
-            onClick={() => {
-              if (playing) {
-                pause();
-              } else {
-                play();
-              }
-            }}
-          >
-            {playing ? <FaPause size={28} /> : <FaPlay size={28} />}
-          </button>
+            <button
+              className="btn btn-icon text-info bg-transparent size-10"
+              onClick={() => {
+                if (playing) {
+                  pause();
+                } else {
+                  play();
+                }
+              }}
+            >
+              {playing ? <FaPause size={28} /> : <FaPlay size={28} />}
+            </button>
 
-          <button
-            className="btn btn-icon rounded-lg btn-info size-10"
-            style={{
-              transform: isRTL() ? 'scaleX(-1)' : 'none'
-            }}
-            onClick={handleIncreasePlayBackSpeed}
-            disabled={MultiplierOptions.indexOf(multiplier) === MultiplierOptions.length - 1}
-          >
-            <PiFastForward size={22} />
-          </button>
-
-          <button className="btn btn-warning text-xs rounded-full p-4 size-9 flex justify-center items-center">
-            x{multiplier}
-          </button>
+            <button
+              className="btn btn-icon rounded-lg btn-info size-10"
+              style={{
+                transform: isRTL() ? 'scaleX(-1)' : 'none'
+              }}
+              onClick={next}
+              disabled={current === duration}
+            >
+              <PiFastForward size={22} />
+            </button>
+          </div>
+          <div className="flex gap-2 items-center">
+            <button
+              className="text-lg p-0 font-semibold text-gray-700 disabled:text-gray-400 hover:text-gray-900"
+              onClick={handleDecreasePlayBackSpeed}
+              disabled={MultiplierOptions.indexOf(multiplier) === 0}
+            >
+              -
+            </button>
+            <button className="btn btn-warning text-xs rounded-full p-4 size-9 flex justify-center items-center">
+              x{multiplier}
+            </button>
+            <button
+              className="text-lg p-0 font-semibold text-gray-700 disabled:text-gray-400 hover:text-gray-900"
+              onClick={handleIncreasePlayBackSpeed}
+              disabled={MultiplierOptions.indexOf(multiplier) === MultiplierOptions.length - 1}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         <Divider className="w-full !border-dashed" />
