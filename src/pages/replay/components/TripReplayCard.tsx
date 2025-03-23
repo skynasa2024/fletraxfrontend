@@ -27,8 +27,8 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       className={clsx(
         'rounded-lg border py-2 px-3 h-full flex justify-center items-center cursor-pointer',
         selectedTrip?.id === trip.id
-          ? 'border-green-500 bg-green-100'
-          : 'border-green-100 bg-green-50'
+          ? 'border-green-500 bg-green-100 dark:border-green-500 dark:bg-green-500/20'
+          : 'border-green-100 bg-green-50 dark:border-green-500/10 dark:bg-green-500/10'
       )}
       onClick={handleSelectTrip}
       onKeyDown={(e) => e.key === 'Enter' && handleSelectTrip()}
@@ -39,10 +39,12 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       <div className="grid items-center grid-cols-4 gap-1">
         <div className="flex gap-2 items-center">
           <div className="flex-col gap-2 items-center justify-center">
-            <div className="flex gap-1 items-center text-sm">
+            <div className="flex gap-1 items-center text-sm dark:text-white">
               {trip.totalDistance.toFixed(2)} KM
             </div>
-            <div className="text-xs text-gray-600">{trip.formatedTotalDuration}</div>
+            <div className="text-xs text-gray-600 dark:text-white/80">
+              {trip.formatedTotalDuration}
+            </div>
           </div>
           <div className="flex flex-col justify-center items-center gap-1">
             <div className="size-4 rounded-full border-green-500 bg-white border-4" />
@@ -50,18 +52,18 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="text-sm font-medium">
+          <div className="text-sm font-medium dark:text-white">
             {formatInTimeZone(new Date(trip.startTime * 1000), timezone, 'yyyy/MM/dd')}
           </div>
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 dark:text-white/80">
             {formatInTimeZone(new Date(trip.startTime * 1000), timezone, 'HH:mm:ss')}
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="text-sm font-medium">
+          <div className="text-sm font-medium dark:text-white">
             {formatInTimeZone(new Date(trip.endTime * 1000), timezone, 'yyyy/MM/dd')}
           </div>
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 dark:text-white/80">
             {formatInTimeZone(new Date(trip.endTime * 1000), timezone, 'HH:mm:ss')}
           </div>
         </div>
