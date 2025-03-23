@@ -39,24 +39,6 @@ export const ReplayLayer = () => {
       .sort((a, b) => a.timestamp - b.timestamp);
   }, [trips]);
 
-  // Get points for selected trip only for animation
-  const selectedTripPoints = useMemo(() => {
-    if (!selectedTrip || !trips) {
-      return allPoints;
-    }
-
-    return trips
-      .filter((trip) => trip && trip.pointsList && trip.id === selectedTrip.id)
-      .flatMap((trip) =>
-        trip.pointsList.map((point) => ({
-          ...point,
-          timestamp: new Date(point.timestamp * 1000).getTime(),
-          tripId: trip.id
-        }))
-      )
-      .sort((a, b) => a.timestamp - b.timestamp);
-  }, [trips, selectedTrip, allPoints]);
-
   const bounds = useMemo(() => {
     if (!allPoints || allPoints.length === 0) {
       return undefined;
@@ -186,6 +168,11 @@ export const ReplayLayer = () => {
     }
   }, [openPopupId, selectedTrip]);
 
+  const tripColors = {
+    primary: ['#0c0fd1', '#915404'],
+    secondary: ['#6a77c9', '#a88967'] // Darker versions of the secondary colors
+  };
+
   if (!trips || !replayData) {
     return null;
   }
@@ -205,37 +192,47 @@ export const ReplayLayer = () => {
         trips
           .filter((trip) => !selectedTrip || trip.id !== selectedTrip.id)
           .filter((trip) => trip && trip.pointsList)
-          .map((trip) => (
-            <Polyline
-              key={trip.id}
-              pathOptions={{
-                color:
-                  selectedTrip && selectedTrip.intervalType === IntervalType.Trip
-                    ? '#4f92dd'
-                    : '#006AE6'
-              }}
-              positions={trip.pointsList
-                .sort((a, b) => a.timestamp - b.timestamp)
-                .map((point) => [point.latitude, point.longitude])}
-            />
-          ))}
+          .map((trip) => {
+            const tripIndex = trips.findIndex((t) => t.id === trip.id);
+            const colorIndex = tripIndex % 2;
+            const colorPalette = selectedTrip ? tripColors.secondary : tripColors.primary;
+
+            return (
+              <Polyline
+                key={trip.id}
+                pathOptions={{
+                  color: colorPalette[colorIndex],
+                  weight: 3
+                }}
+                positions={trip.pointsList
+                  .sort((a, b) => a.timestamp - b.timestamp)
+                  .map((point) => [point.latitude, point.longitude])}
+              />
+            );
+          })}
 
       {selectedTrip &&
         trips &&
         trips.length > 0 &&
         trips
           .filter((trip) => trip && trip.pointsList && trip.id === selectedTrip.id)
-          .map((trip) => (
-            <Polyline
-              key={trip.id}
-              pathOptions={{
-                color: '#0fb673'
-              }}
-              positions={trip.pointsList
-                .sort((a, b) => a.timestamp - b.timestamp)
-                .map((point) => [point.latitude, point.longitude])}
-            />
-          ))}
+          .map((trip) => {
+            const tripIndex = trips.findIndex((t) => t.id === trip.id);
+            const colorIndex = tripIndex % 2;
+
+            return (
+              <Polyline
+                key={trip.id}
+                pathOptions={{
+                  color: tripColors.primary[colorIndex],
+                  weight: 4
+                }}
+                positions={trip.pointsList
+                  .sort((a, b) => a.timestamp - b.timestamp)
+                  .map((point) => [point.latitude, point.longitude])}
+              />
+            );
+          })}
 
       {parkings &&
         parkings.length > 0 &&
