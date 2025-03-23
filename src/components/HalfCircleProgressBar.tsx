@@ -34,11 +34,11 @@ export default function HalfCircleProgressBar({
 
   const getColor = (percent: number) => {
     if (percent <= 33.33) {
-      return '#10B981';
+      return '#10b956';
     } else if (percent <= 66.66) {
-      return '#F59E0B';
+      return '#f38506';
     } else {
-      return '#EF4444';
+      return '#db1a1a';
     }
   };
 
@@ -55,7 +55,7 @@ export default function HalfCircleProgressBar({
         <path
           d="M5,45 A45,45 0 0,1 95,45"
           fill="none"
-          stroke="#e6e6e6"
+          stroke="#ddddddb0"
           strokeWidth="10"
           strokeLinecap="round"
         />
@@ -78,8 +78,8 @@ export default function HalfCircleProgressBar({
       </svg>
 
       <div className="absolute bottom-4 flex flex-col items-center justify-center">
-        <div className="text-xs font-medium leading-4">{unit}</div>
-        <div className="text-xl font-bold leading-4">{displayValue.toFixed(0)}</div>
+        <div className="text-xs font-medium leading-4 dark:text-white/80">{unit}</div>
+        <div className="text-xl font-bold leading-4 dark:text-white">{displayValue.toFixed(0)}</div>
       </div>
     </div>
   );
