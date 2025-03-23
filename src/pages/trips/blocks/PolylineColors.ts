@@ -1,4 +1,4 @@
-export const PolylineColors = ['#5271FF', '#FF0000'];
+export const PolylineColors = ['#0c0fd1', '#915404'];
 
 export const getColor = (index: string) => {
   // Hash string to number
