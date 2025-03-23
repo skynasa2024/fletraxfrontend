@@ -25,7 +25,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       key={trip.id}
       data-selected={selectedTrip?.id === trip.id}
       className={clsx(
-        'rounded-lg border py-2 px-3 h-full flex justify-center items-center cursor-pointer',
+        'rounded-lg border p-2 h-full flex justify-center items-center cursor-pointer',
         selectedTrip?.id === trip.id
           ? 'border-green-500 bg-green-100 dark:border-green-500 dark:bg-green-500/20'
           : 'border-green-100 bg-green-50 dark:border-green-500/10 dark:bg-green-500/10'
@@ -36,13 +36,13 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       role="button"
       aria-pressed={selectedTrip?.id === trip.id}
     >
-      <div className="grid items-center grid-cols-4 gap-1">
+      <div className="flex items-center gap-2">
         <div className="flex gap-2 items-center">
-          <div className="flex-col gap-2 items-center justify-center">
-            <div className="flex gap-1 items-center text-sm dark:text-white">
+          <div className="flex-col gap-2 items-center justify-center w-16">
+            <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               {trip.totalDistance.toFixed(2)} KM
             </div>
-            <div className="text-xs text-gray-600 dark:text-white/80">
+            <div className="text-xs text-gray-600 text-nowrap dark:text-white/80">
               {trip.formatedTotalDuration}
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
             {formatInTimeZone(new Date(trip.endTime * 1000), timezone, 'HH:mm:ss')}
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-[85px]">
           <HalfCircleProgressBar
             value={trip.maxSpeed}
             maxValue={160}
