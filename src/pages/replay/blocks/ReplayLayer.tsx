@@ -170,7 +170,7 @@ export const ReplayLayer = () => {
 
   const tripColors = {
     primary: ['#0c0fd1', '#915404'],
-    secondary: ['#6a77c9', '#a88967'] // Darker versions of the secondary colors
+    secondary: ['#6a77c9', '#a88967']
   };
 
   if (!trips || !replayData) {
