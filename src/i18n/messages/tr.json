@@ -762,6 +762,7 @@
   "REPORTS.COLUMN.MAX_SPEED": "Maksimum Hız",
   "REPORTS.COLUMN.MILEAGE": "Kilometre",
   "REPORTS.COLUMN.TYPE": "Tür",
+  "REPORTS.LABEL.GROUP": "Grup",
   "NOTIFICATION_TYPE_SELECT.PLACEHOLDER": "Bildirim Türünü Seçin",
   "MANAGEMENT.DEVICES.DEVICE_COUNT": "{count, plural, zero {cihaz yok} one {bir cihaz} other {# cihaz}}",
   "MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER": "Kimlik Numarası",

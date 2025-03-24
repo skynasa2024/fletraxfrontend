@@ -4,19 +4,49 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 
+type GroupByOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
+
+const groupByOptions: {
+  label: React.ReactNode;
+  value: GroupByOption;
+}[] = [
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.Daily" />,
+    value: 'Daily'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.WEEKLY" />,
+    value: 'Weekly'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.MONTHLY" />,
+    value: 'Monthly'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.YEARLY" />,
+    value: 'Yearly'
+  }
+];
+
 export default function MileageReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
+  const [selectedGroup, setSelectedGroup] = React.useState<GroupByOption>('Daily');
+
   const { handleFetchWithSort } = useReportSorting({
     defaultSort: 'date,desc',
     reportType: 'Mileage'
   });
+
+  const handleGroupByChange = (option: GroupByOption) => {
+    setSelectedGroup(option);
+  };
 
   const columns = useMemo<ColumnDef<MileageStatisticsReport>[]>(
     () => [
@@ -36,22 +66,38 @@ export default function MileageReport() {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.DATE' }),
         enableSorting: true
       },
-      {
-        accessorKey: 'dailyExistingKilometers',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
-      },
-      {
-        accessorKey: 'weeklyExistingKilometers',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
-      },
-      {
-        accessorKey: 'monthlyExistingKilometers',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
-      },
-      {
-        accessorKey: 'yearlyExistingKilometers',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
-      },
+      ...(selectedGroup === 'Daily'
+        ? [
+            {
+              accessorKey: 'dailyExistingKilometers',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
+            }
+          ]
+        : []),
+      ...(selectedGroup === 'Weekly'
+        ? [
+            {
+              accessorKey: 'weeklyExistingKilometers',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
+            }
+          ]
+        : []),
+      ...(selectedGroup === 'Monthly'
+        ? [
+            {
+              accessorKey: 'monthlyExistingKilometers',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
+            }
+          ]
+        : []),
+      ...(selectedGroup === 'Yearly'
+        ? [
+            {
+              accessorKey: 'yearlyExistingKilometers',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
+            }
+          ]
+        : []),
       {
         accessorKey: 'totalExistingKilometers',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.TOTAL' })
@@ -72,7 +118,7 @@ export default function MileageReport() {
         )
       }
     ],
-    [intl]
+    [intl, selectedGroup] // Added selectedGroup as dependency
   );
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -87,32 +133,52 @@ export default function MileageReport() {
 
   return (
     <>
-      <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-[70%]">
-          <div className="grid grid-cols-3 gap-4 grow">
-            <VehicleSearch place="bottom" />
-            <input
-              type="date"
-              name="startDate"
-              className="input"
-              placeholder="Start Date"
-              max={new Date().toISOString().split('T')[0]}
-              defaultValue={filters.startDate}
-            />
-            <input
-              type="date"
-              name="endDate"
-              className="input"
-              placeholder="End Date"
-              max={new Date().toISOString().split('T')[0]}
-              defaultValue={filters.endDate}
-            />
+      <div className="grid grid-cols-10 items-center justify-start gap-4 p-4 bg-white rounded-lg w-full">
+        <form onSubmit={handleSearch} className="col-span-7">
+          <div className="flex gap-4 items-center justify-between">
+            <div className="grid grid-cols-3 gap-4 grow">
+              <VehicleSearch place="bottom" />
+              <input
+                type="date"
+                name="startDate"
+                className="input"
+                placeholder="Start Date"
+                max={new Date().toISOString().split('T')[0]}
+                defaultValue={filters.startDate}
+              />
+              <input
+                type="date"
+                name="endDate"
+                className="input"
+                placeholder="End Date"
+                max={new Date().toISOString().split('T')[0]}
+                defaultValue={filters.endDate}
+              />
+            </div>
+            <button type="submit" className="btn btn-info w-28 items-center justify-center">
+              <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
+            </button>
           </div>
-          <button type="submit" className="btn btn-info w-28 items-center justify-center">
-            <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
-          </button>
+        </form>
+        <div className="flex gap-4 items-center col-span-3">
+          <span className="text-sm font-medium">
+            <FormattedMessage id="REPORTS.LABEL.GROUP" />:{' '}
+          </span>
+          {groupByOptions.map((option) => (
+            <label key={option.value} className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="groupBy"
+                className="radio radio-sm checked:!bg-info checked:!border-info hover:!border-info"
+                value={option.value}
+                checked={selectedGroup === option.value}
+                onChange={() => handleGroupByChange(option.value)}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
         </div>
-      </form>
+      </div>
       <div className="report-table-container">
         <DataGrid
           rowSelect
