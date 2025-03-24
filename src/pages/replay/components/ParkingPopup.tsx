@@ -16,7 +16,7 @@ export const ParkingPopup = ({ parking }: ParkingPopupProps) => {
   const { isRTL } = useLanguage();
 
   return (
-    <Popup>
+    <Popup offset={[0, -20]}>
       <div className="min-w-36 flex flex-col gap-2">
         <div className={clsx('flex gap-1 items-center', { 'flex-row-reverse': isRTL() })}>
           <img src={toAbsoluteUrl(`/media/icons/flag.svg`)} className="size-[21px]" />
