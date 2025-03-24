@@ -196,10 +196,31 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                   setSelectedTrip(selectedTrip === trip ? undefined : trip);
                 }}
               >
-                <div className="flex justify-between border-b-2 border-dashed py-1">
+                <div className="flex gap-2 justify-between items-center border-b-2 border-dashed py-2 px-1">
                   <div className="text-xs text-[#3F4254] dark:text-gray-50 font-semibold">
                     {idx + 1}
                   </div>
+                  {intervalType === IntervalType.Trip && (
+                    <>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
+                        {formatInTimeZone(
+                          new Date(+trip.startDate * 1000),
+                          currentUser!.timezone,
+                          'yyyy/MM/dd HH:mm:ss'
+                        )}
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
+                        {formatInTimeZone(
+                          new Date(+trip.endDate * 1000),
+                          currentUser!.timezone,
+                          'yyyy/MM/dd HH:mm:ss'
+                        )}
+                      </div>
+                    </>
+                  )}
+
                   {animation && (
                     <div
                       className="cursor-pointer"
@@ -232,32 +253,34 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                   )}
                 </div>
                 <div
-                  className={clsx('grid gap-2', {
-                    'grid-cols-4': intervalType === IntervalType.Trip,
-                    'grid-cols-3': intervalType === IntervalType.Parking
+                  className={clsx('grid gap-2 p-2', {
+                    'grid-cols-3': intervalType === IntervalType.Trip,
+                    'grid-cols-4': intervalType === IntervalType.Parking
                   })}
                 >
-                  <div className="flex gap-1 items-center">
-                    <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-                    {formatInTimeZone(
-                      new Date(+trip.startDate * 1000),
-                      currentUser!.timezone,
-                      'yyyy/MM/dd HH:mm:ss'
-                    )}
-                  </div>
-                  <div className="flex gap-1 items-center">
-                    <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
-                    {formatInTimeZone(
-                      new Date(+trip.endDate * 1000),
-                      currentUser!.timezone,
-                      'yyyy/MM/dd HH:mm:ss'
-                    )}
-                  </div>
                   {intervalType === IntervalType.Parking && (
-                    <div className="flex gap-1 items-center">
-                      <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
-                      {trip.formattedTotalDuration}
-                    </div>
+                    <>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
+                        {formatInTimeZone(
+                          new Date(+trip.startDate * 1000),
+                          currentUser!.timezone,
+                          'yyyy/MM/dd HH:mm:ss'
+                        )}
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
+                        {formatInTimeZone(
+                          new Date(+trip.endDate * 1000),
+                          currentUser!.timezone,
+                          'yyyy/MM/dd HH:mm:ss'
+                        )}
+                      </div>
+                      <div className="flex gap-1 items-center">
+                        <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
+                        {trip.formattedTotalDuration}
+                      </div>
+                    </>
                   )}
                   {intervalType === IntervalType.Trip && (
                     <>
@@ -271,6 +294,10 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                       </div>
                     </>
                   )}
+                  <div className="flex gap-1 items-center">
+                    <img src={toAbsoluteUrl('/media/icons/clock.svg')} />
+                    {trip.totalIdling ? formatTotalDuration(trip.totalIdling) : 'NA'}
+                  </div>
                 </div>
               </div>
             ))}

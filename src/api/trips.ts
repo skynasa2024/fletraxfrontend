@@ -24,6 +24,7 @@ interface TripDTO {
   maxSpeed: number;
   averageSpeed: string;
   route: string;
+  totalIdling: number | null;
 }
 
 interface TripPoint {
@@ -46,6 +47,7 @@ export interface Trip {
   startLongitude: number;
   formattedTotalDuration: string;
   totalDuration: number;
+  totalIdling: number | null;
 }
 
 export interface TripPath {
@@ -125,7 +127,8 @@ export const searchTrips = async ({
         startLatitude: trip.startLatitude,
         startLongitude: trip.startLongitude,
         formattedTotalDuration: trip.formatedTotalDuration,
-        totalDuration: trip.totalDuration
+        totalDuration: trip.totalDuration,
+        totalIdling: trip.totalIdling
       }))
       .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
   }));
