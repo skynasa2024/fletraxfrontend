@@ -37,7 +37,7 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
     >
       <div className="flex items-center gap-2">
         <div className="flex gap-2 items-center">
-          <div className="flex-col gap-2 items-center justify-center w-16">
+          <div className="flex-col gap-2 items-center justify-center w-16 me-1">
             <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               <FormattedMessage id="REPLAY.PARKING.PARKED" />
             </div>

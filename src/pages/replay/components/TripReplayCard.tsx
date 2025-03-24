@@ -38,7 +38,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
     >
       <div className="flex items-center gap-2">
         <div className="flex gap-2 items-center">
-          <div className="flex-col gap-2 items-center justify-center w-16">
+          <div className="flex-col gap-2 items-center justify-center w-16 me-1">
             <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               {trip.totalDistance.toFixed(2)} KM
             </div>
