@@ -35,6 +35,8 @@ export default function ReplayMainCard() {
     replayData
   } = useReplayContext();
 
+  console.log(replayData?.allData);
+
   const { currentUser } = useAuthContext();
 
   const [errors, setErrors] = useState({
@@ -259,7 +261,7 @@ export default function ReplayMainCard() {
         </form>
       </div>
 
-      {replayData?.trips && replayData.trips.length > 0 && (
+      {replayData?.allData && replayData.allData.length > 0 && (
         <ReplayTripCard trips={replayData.allData} />
       )}
     </div>
