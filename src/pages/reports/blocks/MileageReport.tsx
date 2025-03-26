@@ -9,6 +9,7 @@ import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
+import clsx from 'clsx';
 
 const PAGE_LIMIT = 100;
 
@@ -170,7 +171,7 @@ export default function MileageReport() {
 
   return (
     <>
-      <div className="grid grid-cols-10 items-center justify-start gap-4 p-4 bg-white rounded-lg w-full">
+      <div className="grid grid-cols-10 items-center justify-start gap-8 p-4 bg-white rounded-lg w-full">
         <form onSubmit={handleSearch} className="col-span-7">
           <div className="flex gap-4 items-center justify-between">
             <div className="grid grid-cols-3 gap-4 grow">
@@ -198,11 +199,14 @@ export default function MileageReport() {
           </div>
         </form>
         <div className="flex gap-4 items-center col-span-3">
-          <span className="text-sm font-medium">
-            <FormattedMessage id="REPORTS.LABEL.GROUP" />:{' '}
-          </span>
           {groupByOptions.map((option) => (
-            <label key={option.value} className="flex items-center gap-2 text-sm">
+            <label
+              key={option.value}
+              className={clsx(
+                'flex items-center gap-2 text-sm',
+                !filters.vehicleId && 'opacity-60 cursor-not-allowed'
+              )}
+            >
               <input
                 type="radio"
                 name="groupBy"
@@ -210,6 +214,7 @@ export default function MileageReport() {
                 value={option.value}
                 checked={selectedGroup === option.value}
                 onChange={() => handleGroupByChange(option.value)}
+                disabled={!filters.vehicleId}
               />
               <span>{option.label}</span>
             </label>
