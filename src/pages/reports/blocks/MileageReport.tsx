@@ -10,6 +10,8 @@ import { Link } from 'react-router';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 
+const PAGE_LIMIT = 100;
+
 type GroupByOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 
 const groupByOptions: {
@@ -46,6 +48,41 @@ export default function MileageReport() {
 
   const handleGroupByChange = (option: GroupByOption) => {
     setSelectedGroup(option);
+  };
+
+  const handleFilterDataByGroup = async (params: any) => {
+    const res = await handleFetchWithSort(params, filters, getStatisticsReport);
+    if (selectedGroup === 'Weekly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          return new Date(statistic.date).getDay() === 0;
+        })
+      };
+    }
+    if (selectedGroup === 'Monthly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          const date = new Date(statistic.date);
+          const nextDay = new Date(date);
+          nextDay.setDate(date.getDate() + 1);
+          return nextDay.getMonth() !== date.getMonth();
+        })
+      };
+    }
+    if (selectedGroup === 'Yearly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          const date = new Date(statistic.date);
+          const nextDay = new Date(date);
+          nextDay.setDate(date.getDate() + 1);
+          return nextDay.getFullYear() !== date.getFullYear();
+        })
+      };
+    }
+    return res;
   };
 
   const columns = useMemo<ColumnDef<MileageStatisticsReport>[]>(
@@ -184,10 +221,16 @@ export default function MileageReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={(params) => handleFetchWithSort(params, filters, getStatisticsReport)}
-          filters={getDataGridFilters()}
+          onFetchData={(params) => handleFilterDataByGroup(params)}
+          filters={[
+            ...getDataGridFilters(),
+            {
+              id: 'GROUP',
+              value: selectedGroup
+            }
+          ]}
           pagination={{
-            size: 100,
+            size: PAGE_LIMIT,
             sizes: undefined
           }}
         />
