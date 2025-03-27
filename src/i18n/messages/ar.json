@@ -751,6 +751,7 @@
   "REPORTS.COLUMN.MAX_SPEED": "السرعة القصوى",
   "REPORTS.COLUMN.MILEAGE": "المسافة",
   "REPORTS.COLUMN.TYPE": "النوع",
+  "REPORTS.SELECT_VEHICLE_FIRST": "اختر المركبة أولاً",
   "NOTIFICATION_TYPE_SELECT.PLACEHOLDER": "اختر نوع",
   "MANAGEMENT.DEVICES.DEVICE_COUNT": "{count, plural, zero {لا توجد أجهزة} one {جهاز واحد} two {جهازين} few {# أجهزة} many {# جهازاً} other {# جهاز}}",
   "MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER": "رقم التعريف",
