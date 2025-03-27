@@ -753,7 +753,7 @@
   "REPORTS.COLUMN.MAX_SPEED": "Max Speed",
   "REPORTS.COLUMN.MILEAGE": "Mileage",
   "REPORTS.COLUMN.TYPE": "Type",
-  "REPORTS.LABEL.GROUP": "Group",
+  "REPORTS.SELECT_VEHICLE_FIRST": "Select a vehicle first",
   "NOTIFICATION_TYPE_SELECT.PLACEHOLDER": "Select Type",
   "MANAGEMENT.DEVICES.DEVICE_COUNT": "{count, plural, zero {no devices} one {one device} other {# devices}}",
   "MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER": "Identify Number",

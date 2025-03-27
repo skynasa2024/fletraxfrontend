@@ -206,6 +206,12 @@ export default function MileageReport() {
                 'flex items-center gap-2 text-sm',
                 !filters.vehicleId && 'opacity-60 cursor-not-allowed'
               )}
+              title={
+                !filters.vehicleId
+                  ? intl.formatMessage({ id: 'REPORTS.SELECT_VEHICLE_FIRST' }) ||
+                    'Please select a vehicle first to filter by group'
+                  : ''
+              }
             >
               <input
                 type="radio"
