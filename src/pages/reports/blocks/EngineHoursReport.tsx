@@ -9,6 +9,7 @@ import { toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
+import clsx from 'clsx';
 
 type GroupByOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 
@@ -46,6 +47,41 @@ export default function EngineHoursReport() {
 
   const handleGroupByChange = (option: GroupByOption) => {
     setSelectedGroup(option);
+  };
+
+  const handleFilterDataByGroup = async (params: any) => {
+    const res = await handleFetchWithSort(params, filters, getStatisticsReport);
+    if (selectedGroup === 'Weekly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          return new Date(statistic.date).getDay() === 0;
+        })
+      };
+    }
+    if (selectedGroup === 'Monthly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          const date = new Date(statistic.date);
+          const nextDay = new Date(date);
+          nextDay.setDate(date.getDate() + 1);
+          return nextDay.getMonth() !== date.getMonth();
+        })
+      };
+    }
+    if (selectedGroup === 'Yearly') {
+      return {
+        ...res,
+        data: res.data.filter((statistic: any) => {
+          const date = new Date(statistic.date);
+          const nextDay = new Date(date);
+          nextDay.setDate(date.getDate() + 1);
+          return nextDay.getFullYear() !== date.getFullYear();
+        })
+      };
+    }
+    return res;
   };
 
   const columns = useMemo<ColumnDef<EngineHoursStatisticsReport>[]>(
@@ -133,7 +169,7 @@ export default function EngineHoursReport() {
 
   return (
     <>
-      <div className="grid grid-cols-10 items-center justify-start gap-4 p-4 bg-white rounded-lg w-full">
+      <div className="grid grid-cols-10 items-center justify-start gap-8 p-4 bg-white rounded-lg w-full">
         <form onSubmit={handleSearch} className="col-span-7">
           <div className="flex gap-4 items-center justify-between">
             <div className="grid grid-cols-3 gap-4 grow">
@@ -161,11 +197,14 @@ export default function EngineHoursReport() {
           </div>
         </form>
         <div className="flex gap-4 items-center col-span-3">
-          <span className="text-sm font-medium">
-            <FormattedMessage id="REPORTS.LABEL.GROUP" />:{' '}
-          </span>
           {groupByOptions.map((option) => (
-            <label key={option.value} className="flex items-center gap-2 text-sm">
+            <label
+              key={option.value}
+              className={clsx(
+                'flex items-center gap-2 text-sm',
+                !filters.vehicleId && 'opacity-60 cursor-not-allowed'
+              )}
+            >
               <input
                 type="radio"
                 name="groupBy"
@@ -173,6 +212,7 @@ export default function EngineHoursReport() {
                 value={option.value}
                 checked={selectedGroup === option.value}
                 onChange={() => handleGroupByChange(option.value)}
+                disabled={!filters.vehicleId}
               />
               <span>{option.label}</span>
             </label>
@@ -184,8 +224,14 @@ export default function EngineHoursReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={(params) => handleFetchWithSort(params, filters, getStatisticsReport)}
-          filters={getDataGridFilters()}
+          onFetchData={(params) => handleFilterDataByGroup(params)}
+          filters={[
+            ...getDataGridFilters(),
+            {
+              id: 'GROUP',
+              value: selectedGroup
+            }
+          ]}
           pagination={{
             size: 100,
             sizes: undefined
