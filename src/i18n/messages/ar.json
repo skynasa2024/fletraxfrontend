@@ -208,6 +208,7 @@
   "LOCATION.FIELD.DEFENSE_STATUS": "حالة الدفاع",
   "LOCATION.FIELD.SIGNAL_LEVEL": "مستوى الإشارة",
   "LOCATION.FIELD.EXISTING_KILOMETERS": "الكيلومترات الحالية",
+  "LOCATION.FIELD.ODOMETER": "عداد المسافات",
   "LOCATION.ACTION.REPORT": "تقرير",
   "LOCATION.ACTION.PLAY_BACK": "إعادة التشغيل",
   "LOCATION.ACTION.TRACKING": "تتبع",

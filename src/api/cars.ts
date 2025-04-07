@@ -4,7 +4,7 @@ import { Driver } from './drivers';
 import { getUser, User } from './user';
 import { axios } from './axios';
 import { PaginatedResponseModel, ResponseModel } from './response';
-import { getDevice } from './devices';
+import { getDevice, getDeviceModelByImei } from './devices';
 import { objectToFormData, toAbsoluteUrl } from '@/utils';
 import { CarType, FuelType, GearType, RegistrationType } from '@/pages/vehicle/add-vehicle';
 
@@ -145,6 +145,11 @@ export interface CarMileageAndEngine {
   engine: number;
   formattedMilage: string;
   formattedEngine: string;
+}
+
+export interface VehicleTotalMileage {
+  totalMileage: number;
+  formatedTtotalMileage: string;
 }
 
 export const getCarsMileageAndEngine = async (
@@ -469,4 +474,18 @@ export const deleteScratch = async (id: string): Promise<void> => {
 
 export const deleteVehicle = async (id: string): Promise<void> => {
   await axios.get(`/api/vehicles/cars/delete/${id}`);
+};
+
+export const getVehicleTotalMileage = async (
+  ident: string
+): Promise<VehicleTotalMileage | null> => {
+  const device = await getDeviceModelByImei(ident);
+  if (device) {
+    const data = await axios.get<ResponseModel<VehicleTotalMileage>>(
+      `/api/vehicles/cars/get-total-mileage/${device.vehicleId}`
+    );
+    return data.data.result;
+  }
+
+  return null;
 };
