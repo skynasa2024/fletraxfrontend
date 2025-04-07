@@ -202,21 +202,35 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                   </div>
                   {intervalType === IntervalType.Trip && (
                     <>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-                        {formatInTimeZone(
-                          new Date(+trip.startDate * 1000),
-                          currentUser!.timezone,
-                          'yyyy/MM/dd HH:mm:ss'
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.START_DATE" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {formatInTimeZone(
+                            new Date(+trip.startDate * 1000),
+                            currentUser!.timezone,
+                            'yyyy/MM/dd | HH:mm:ss'
+                          )}
+                        </div>
                       </div>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
-                        {formatInTimeZone(
-                          new Date(+trip.endDate * 1000),
-                          currentUser!.timezone,
-                          'yyyy/MM/dd HH:mm:ss'
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.END_DATE" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {formatInTimeZone(
+                            new Date(+trip.endDate * 1000),
+                            currentUser!.timezone,
+                            'yyyy/MM/dd | HH:mm:ss'
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
@@ -253,50 +267,92 @@ const TripCard: React.FC<TripCardProps> = ({ tripGroup, animation = true }) => {
                   )}
                 </div>
                 <div
-                  className={clsx('grid gap-2 p-2', {
+                  className={clsx('grid gap-2.5 p-2', {
                     'grid-cols-3': intervalType === IntervalType.Trip,
                     'grid-cols-4': intervalType === IntervalType.Parking
                   })}
                 >
                   {intervalType === IntervalType.Parking && (
                     <>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-                        {formatInTimeZone(
-                          new Date(+trip.startDate * 1000),
-                          currentUser!.timezone,
-                          'yyyy/MM/dd HH:mm:ss'
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.START_DATE" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {formatInTimeZone(
+                            new Date(+trip.startDate * 1000),
+                            currentUser!.timezone,
+                            'yyyy/MM/dd HH:mm:ss'
+                          )}
+                        </div>
                       </div>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
-                        {formatInTimeZone(
-                          new Date(+trip.endDate * 1000),
-                          currentUser!.timezone,
-                          'yyyy/MM/dd HH:mm:ss'
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/destination.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.END_DATE" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {formatInTimeZone(
+                            new Date(+trip.endDate * 1000),
+                            currentUser!.timezone,
+                            'yyyy/MM/dd HH:mm:ss'
+                          )}
+                        </div>
                       </div>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
-                        {trip.formattedTotalDuration}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl(`/media/icons/clock.svg`)} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.TOTAL_DURATION" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {trip.formattedTotalDuration}
+                        </div>
                       </div>
                     </>
                   )}
                   {intervalType === IntervalType.Trip && (
                     <>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-                        {trip.mileage.toFixed(2)} KM
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {trip.mileage.toFixed(2)} KM
+                        </div>
                       </div>
-                      <div className="flex gap-1 items-center">
-                        <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-                        {trip.maxSpeed.toFixed(0)} Km/h
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1 items-center">
+                          <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
+                          <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                            <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
+                          </span>
+                        </div>
+                        <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                          {trip.maxSpeed.toFixed(0)} Km/h
+                        </div>
                       </div>
                     </>
                   )}
-                  <div className="flex gap-1 items-center">
-                    <img src={toAbsoluteUrl('/media/icons/clock.svg')} />
-                    {trip.totalIdling ? formatTotalDuration(trip.totalIdling) : 'NA'}
+                  <div className="flex flex-col gap-1">
+                    <div className="flex gap-1 items-center">
+                      <img src={toAbsoluteUrl('/media/icons/clock.svg')} />
+                      <span className="text-[10px] font-medium text-[#5E6278] dark:text-gray-700">
+                        <FormattedMessage id="TRIPS.TOTAL_IDLING" />
+                      </span>
+                    </div>
+                    <div className="font-semibold text-[#2D3748] dark:text-gray-900">
+                      {trip.totalIdling ? formatTotalDuration(trip.totalIdling) : 'NA'}
+                    </div>
                   </div>
                 </div>
               </div>

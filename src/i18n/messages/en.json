@@ -195,6 +195,7 @@
   "TRIPS.FIELD.MAX_SPEED": "Max Speed",
   "TRIPS.FIELD.TOTAL_DURATION": "Total Duration",
   "TRIPS.COUNT": "{count, plural, zero {No trips} other {# Trips}}",
+  "TRIPS.TOTAL_IDLING": "Total Idling",
   "PARKINGS.COUNT": "{count, plural, zero {No parkings} other {# Parkings}}",
   "PLAYBACK.FIELD.START_DATE": "Start Date",
   "PLAYBACK.FIELD.END_DATE": "End Date",

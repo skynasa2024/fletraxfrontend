@@ -273,6 +273,7 @@
   "TRIPS.FIELD.MAX_SPEED": "Maksimum Hız",
   "TRIPS.FIELD.TOTAL_DURATION": "Toplam Süre",
   "TRIPS.COUNT": "{count, plural, zero {Seyahat yok} other {# Seyahat}}",
+  "TRIPS.TOTAL_IDLING": "Toplam Rölanti",
   "PARKINGS.COUNT": "{count, plural, zero {Park yok} other {# Park}}",
   "PLAYBACK.FIELD.START_DATE": "Başlangıç Tarihi",
   "PLAYBACK.FIELD.END_DATE": "Bitiş Tarihi",

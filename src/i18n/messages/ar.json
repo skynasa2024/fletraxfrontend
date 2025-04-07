@@ -224,6 +224,7 @@
   "TRIPS.FIELD.MAX_SPEED": "السرعة القصوى",
   "TRIPS.FIELD.TOTAL_DURATION": "المدة الإجمالية",
   "TRIPS.COUNT": "{count, plural, zero {لا توجد رحلات} one {رحلة واحدة} two {رحلتين} few {# رحلات} many {# رحلة} other {# رحلة}}",
+  "TRIPS.TOTAL_IDLING": "إجمالي التوقف",
   "PARKINGS.COUNT": "{count, plural, zero {لا توجد مواقف} one {موقف واحد} two {موقفين} few {# مواقف} many {# موقف} other {# موقف}}",
   "DATE.YESTERDAY": "أمس",
   "DATE.TODAY": "اليوم",
