@@ -169,7 +169,7 @@ export default function ManageDevices() {
       <Toolbar>
         <ToolbarHeading
           title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT" />}
-          description={<FormattedMessage id="MANAGEMENT.TOOLBAR.DESCRIPTION" />}
+          description={<FormattedMessage id="MANAGEMENT.DEVICES.TOOLBAR.DESCRIPTION" />}
         />
       </Toolbar>
 
