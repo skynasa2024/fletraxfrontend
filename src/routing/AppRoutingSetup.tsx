@@ -36,6 +36,7 @@ import { AddGeofence } from '@/pages/geofence/add-geofence';
 import ReportsPage from '@/pages/reports/ReportsPage';
 import ManageDevices from '@/pages/management/manage-devices';
 import { ReplayPage } from '@/pages/replay/ReplayPage';
+import ManageNotifications from '@/pages/management/manage-notifications';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -50,6 +51,7 @@ const AppRoutingSetup = (): ReactElement => {
 
           <Route element={<RequireRole role="admin" />}>
             <Route path="/management/devices" element={<ManageDevices />} />
+            <Route path="/management/notifications" element={<ManageNotifications />} />
           </Route>
 
           <Route path="/geofences" element={<GeofencePage />} />
