@@ -787,5 +787,6 @@
   "REPLAY.PARKING.START_TIME": "Başlangıç Zamanı",
   "REPLAY.PARKING.END_TIME": "Bitiş Zamanı",
   "REPLAY.PARKING.DURATION": "Süre",
-  "REPLAY.PARKING.PARKED": "Park Edildi"
+  "REPLAY.PARKING.PARKED": "Park Edildi",
+  "USER.SELECT.PLACEHOLDER": "Kullanıcı Seçin"
 }
