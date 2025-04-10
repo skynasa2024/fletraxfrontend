@@ -38,6 +38,11 @@ export const MENU_SIDEBAR: TMenuConfig = [
         title: 'SIDEBAR.MENU.MANAGEMENT.DEVICES',
         path: '/management/devices',
         role: 'admin'
+      },
+      {
+        title: 'SIDEBAR.MENU.MANAGEMENT.NOTIFICATIONS',
+        path: '/management/notifications',
+        role: 'admin'
       }
     ]
   },
