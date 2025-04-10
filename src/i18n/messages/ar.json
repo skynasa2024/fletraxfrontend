@@ -777,5 +777,7 @@
   "REPLAY.PARKING.END_TIME": "وقت الانتهاء",
   "REPLAY.PARKING.DURATION": "المدة",
   "REPLAY.PARKING.PARKED": "مركونة",
-  "USER.SELECT.PLACEHOLDER": "اختر المستخدم"
+  "USER.SELECT.PLACEHOLDER": "اختر المستخدم",
+  "NOTIFICATIONS.SETTINGS_SAVED": "تم حفظ الإعدادات بنجاح",
+  "NOTIFICATIONS.USER_REQUIRED": "المستخدم مطلوب"
 }

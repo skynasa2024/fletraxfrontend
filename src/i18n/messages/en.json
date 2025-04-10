@@ -779,5 +779,7 @@
   "REPLAY.PARKING.END_TIME": "End Time",
   "REPLAY.PARKING.DURATION": "Duration",
   "REPLAY.PARKING.PARKED": "Parked",
-  "USER.SELECT.PLACEHOLDER": "Select User"
+  "USER.SELECT.PLACEHOLDER": "Select User",
+  "NOTIFICATIONS.SETTINGS_SAVED": "Settings saved successfully",
+  "NOTIFICATIONS.USER_REQUIRED": "User is required"
 }

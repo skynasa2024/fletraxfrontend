@@ -1,6 +1,7 @@
 import { Paginated } from '@/api/common';
 import {
   getNotificationSettings,
+  linkNotificationSettings,
   NotificationSettings,
   NotificationSettingType
 } from '@/api/notifications';
@@ -13,12 +14,14 @@ import axios, { AxiosError } from 'axios';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useMemo, useState, FormEvent, useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { UserSelect } from './components';
 
 export default function ManageNotifications() {
   const intl = useIntl();
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState<Paginated<NotificationSettings>>();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchNotifications = useCallback(
     (
@@ -46,10 +49,75 @@ export default function ManageNotifications() {
     }
   }, [fetchNotifications, isInitialLoad]);
 
-  // Create a dedicated handler for DataGrid fetch requests
   const handleFetchData = useCallback((params: any) => {
     return getNotificationSettings(params);
   }, []);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const webType = (formData.get('webType') as NotificationSettingType) || 'normal';
+    const webStatus = formData.get('webStatus') === 'on';
+    const selectedUserId = formData.get('userId') as string;
+
+    if (!selectedUserId) {
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'NOTIFICATIONS.USER_REQUIRED' },
+          {
+            defaultMessage: 'Please select a user'
+          }
+        ),
+        {
+          variant: 'error'
+        }
+      );
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      await linkNotificationSettings({
+        notificationTypeId: null,
+        notificationTypeCode: 'web',
+        userId: selectedUserId,
+        webType,
+        webStatus
+      });
+
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'NOTIFICATIONS.SETTINGS_SAVED' },
+          {
+            defaultMessage: 'Notification settings saved successfully'
+          }
+        ),
+        {
+          variant: 'success'
+        }
+      );
+
+      // Refresh the notification settings list without resetting the form
+      fetchNotifications();
+    } catch (error) {
+      let errorMessage = intl.formatMessage(
+        { id: 'COMMON.ERROR' },
+        {
+          defaultMessage: 'An error occurred while saving notification settings'
+        }
+      );
+
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<ResponseModel<any>>;
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      }
+
+      enqueueSnackbar(errorMessage, { variant: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const columns = useMemo<ColumnDef<NotificationSettings>[]>(
     () => [
@@ -125,20 +193,8 @@ export default function ManageNotifications() {
       },
       {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            {/* <button
-              type="button"
-              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#50CD89]/10"
-              title={intl.formatMessage({ id: 'COMMON.EDIT' })}
-              onClick={() => openEditModal(row.original)}
-            >
-              <img
-                src={toAbsoluteUrl('/media/icons/edit-light.svg')}
-                alt={intl.formatMessage({ id: 'COMMON.EDIT' })}
-              />
-            </button> */}
-          </div>
+        cell: () => (
+          <div className="flex items-center gap-2">{/* Action buttons would go here */}</div>
         )
       }
     ],
@@ -168,7 +224,8 @@ export default function ManageNotifications() {
             className="w-64 py-2 text-sm border rounded-l-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info input"
           />
         </div>
-        <form>
+
+        <form onSubmit={handleSubmit}>
           <div className="report-table-container">
             <DataGrid
               columns={columns}
@@ -178,7 +235,7 @@ export default function ManageNotifications() {
               filters={[
                 ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
               ]}
-              supplementaryHeaderRow={<QuickAddNotificationsUserFrom />}
+              supplementaryHeaderRow={<QuickAddNotificationsUserFrom isSubmitting={isSubmitting} />}
             />
           </div>
         </form>
@@ -187,7 +244,66 @@ export default function ManageNotifications() {
   );
 }
 
-function QuickAddNotificationsUserFrom() {
-  // const intl = useIntl();
-  return <></>;
+interface QuickAddNotificationsUserFromProps {
+  isSubmitting: boolean;
+}
+
+function QuickAddNotificationsUserFrom({ isSubmitting }: QuickAddNotificationsUserFromProps) {
+  return (
+    <>
+      <th colSpan={1} className="!p-1 !bg-green-700/5">
+        <UserSelect place="bottom" />
+      </th>
+      <th colSpan={1} className="!py-1 !px-4 !bg-green-700/5">
+        <input
+          type="radio"
+          className="radio radio-sm checked:!bg-danger checked:!border-danger hover:!border-danger"
+          value="urgent"
+          name="webType"
+        />
+      </th>
+      <th colSpan={1} className="!py-1 !px-4 !bg-green-700/5">
+        <input
+          type="radio"
+          className="radio radio-sm checked:!bg-warning checked:!border-warning hover:!border-warning"
+          value="important"
+          name="webType"
+        />
+      </th>
+      <th colSpan={1} className="!py-1 !px-4 !bg-green-700/5">
+        <input
+          type="radio"
+          className="radio radio-sm checked:!bg-success checked:!border-success hover:!border-success"
+          value="normal"
+          name="webType"
+          defaultChecked
+        />
+      </th>
+      <th colSpan={1} className="!py-1 !px-4 !bg-green-700/5">
+        <div className="switch switch-lg">
+          <input
+            type="checkbox"
+            className="switch switch-lg switch-info checked:!bg-info checked:!border-info hover:!border-info"
+            name="webStatus"
+            defaultChecked
+          />
+        </div>
+      </th>
+      <th colSpan={1} className="!p-1 !bg-green-700/5 flex items-center justify-center">
+        <button
+          type="submit"
+          className="btn btn-success flex items-center justify-center w-full"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="animate-pulse">
+              <FormattedMessage id="COMMON.SAVING" defaultMessage="Saving..." />
+            </span>
+          ) : (
+            <FormattedMessage id="COMMON.ADD" defaultMessage="Add" />
+          )}
+        </button>
+      </th>
+    </>
+  );
 }
