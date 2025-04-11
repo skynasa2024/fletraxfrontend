@@ -211,9 +211,11 @@ export const PlaybackCard = () => {
             {selectedTrip &&
               formatInTimeZone(
                 new Date(
-                  'trips' in selectedTrip
-                    ? (selectedTrip as TripGroup).trips[0].startDate
-                    : selectedTrip.startDate
+                  Number(
+                    'trips' in selectedTrip
+                      ? (selectedTrip as TripGroup).trips[0].startDate
+                      : selectedTrip.startDate
+                  ) * 1000
                 ),
                 currentUser!.timezone,
                 'yyyy/MM/dd HH:mm:ss'
@@ -243,9 +245,11 @@ export const PlaybackCard = () => {
             {selectedTrip &&
               formatInTimeZone(
                 new Date(
-                  'trips' in selectedTrip
-                    ? (selectedTrip as TripGroup).trips[selectedTrip.trips.length - 1].endDate
-                    : selectedTrip.endDate
+                  Number(
+                    'trips' in selectedTrip
+                      ? (selectedTrip as TripGroup).trips[selectedTrip.trips.length - 1].endDate
+                      : selectedTrip.endDate
+                  ) * 1000
                 ),
                 currentUser!.timezone,
                 'yyyy/MM/dd HH:mm:ss'
