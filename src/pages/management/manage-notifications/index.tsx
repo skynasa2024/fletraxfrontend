@@ -2,7 +2,8 @@ import { Paginated } from '@/api/common';
 import {
   getNotificationSettings,
   NotificationSettingsDTO,
-  NotificationSettingType
+  NotificationSettingType,
+  updateNotificationSettings
 } from '@/api/notifications';
 import { Container, DataGrid, TDataGridRequestParams } from '@/components';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
@@ -16,6 +17,7 @@ export default function ManageNotifications() {
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState<Paginated<NotificationSettingsDTO>>();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const fetchNotifications = useCallback(
     (
@@ -52,6 +54,43 @@ export default function ManageNotifications() {
     });
   }, []);
 
+  const handleUpdateNotificationSetting = useCallback(
+    async (row: NotificationSettingsDTO, field: 'webType' | 'webStatus', value: any) => {
+      if (isUpdating) return;
+
+      try {
+        setIsUpdating(true);
+
+        let webType = row.webType;
+        let webStatus = row.webStatus;
+
+        if (field === 'webType') {
+          webType = value as NotificationSettingType;
+        } else if (field === 'webStatus') {
+          webStatus = value as boolean;
+        }
+
+        await updateNotificationSettings({
+          notificationTypeId: row.notificationTypeId,
+          notificationTypeCode: row.notificationTypeCode,
+          userId: row.userId,
+          webType,
+          webStatus,
+          mobileType: row.mobileType,
+          mobileStatus: row.mobileStatus
+        });
+
+        // Refresh the data
+        await fetchNotifications();
+      } catch (error) {
+        console.error('Failed to update notification settings:', error);
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [fetchNotifications, isUpdating]
+  );
+
   const columns = useMemo<ColumnDef<NotificationSettingsDTO>[]>(
     () => [
       {
@@ -69,7 +108,7 @@ export default function ManageNotifications() {
               className="radio radio-sm checked:!bg-danger checked:!border-danger hover:!border-danger checked:disabled:!border-danger checked:disabled:!bg-danger"
               value={'urgent'}
               checked={webType === 'urgent'}
-              disabled
+              onChange={() => handleUpdateNotificationSetting(row.original, 'webType', 'urgent')}
             />
           );
         }
@@ -85,7 +124,7 @@ export default function ManageNotifications() {
               className="radio radio-sm checked:!bg-warning checked:!border-warning hover:!border-warning checked:disabled:!border-warning checked:disabled:!bg-warning"
               value={'important'}
               checked={webType === 'important'}
-              disabled
+              onChange={() => handleUpdateNotificationSetting(row.original, 'webType', 'important')}
             />
           );
         }
@@ -101,7 +140,7 @@ export default function ManageNotifications() {
               className="radio radio-sm checked:!bg-success checked:!border-success hover:!border-success checked:disabled:!border-success checked:disabled:!bg-success"
               value={'normal'}
               checked={webType === 'normal'}
-              disabled
+              onChange={() => handleUpdateNotificationSetting(row.original, 'webType', 'normal')}
             />
           );
         }
@@ -116,16 +155,17 @@ export default function ManageNotifications() {
               <input
                 type="checkbox"
                 className="switch switch-lg switch-info checked:!bg-info checked:!border-info hover:!border-info checked:disabled:!border-info checked:disabled:!bg-info !opacity-100"
-                value={'webStatus'}
                 checked={webStatus}
-                disabled
+                onChange={() =>
+                  handleUpdateNotificationSetting(row.original, 'webStatus', !webStatus)
+                }
               />
             </div>
           );
         }
       }
     ],
-    [intl]
+    [intl, handleUpdateNotificationSetting, isUpdating]
   );
 
   return (
