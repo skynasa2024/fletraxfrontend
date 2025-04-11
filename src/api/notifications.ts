@@ -1,7 +1,6 @@
 import { OffsetBounds, Paginated } from './common';
 import { axios } from './axios';
 import { PaginatedResponseModel } from './response';
-import { getUser, User } from './user';
 
 export interface NotificationDTO {
   createdAt: number;
@@ -89,7 +88,7 @@ export async function getNotificationTypes({
 
 export type NotificationSettingType = 'urgent' | 'important' | 'normal' | null;
 
-interface NotificationSettingsDTO {
+export interface NotificationSettingsDTO {
   id: string;
   userId: string;
   deviceId: string | null;
@@ -102,13 +101,6 @@ interface NotificationSettingsDTO {
   mobileStatus: boolean;
 }
 
-export interface NotificationSettings {
-  id: string;
-  user: User | null;
-  webType: NotificationSettingType;
-  webStatus: boolean;
-}
-
 export interface LinkNotificationSettingsRequest {
   notificationTypeId: string | null;
   notificationTypeCode: string;
@@ -119,9 +111,9 @@ export interface LinkNotificationSettingsRequest {
   mobileStatus?: boolean;
 }
 
-export async function linkNotificationSettings(
+export async function updateNotificationSettings(
   data: LinkNotificationSettingsRequest
-): Promise<NotificationSettings> {
+): Promise<NotificationSettingsDTO> {
   const response = await axios.post('/api/notifications/settings/link', data);
   return response.data.result;
 }
@@ -134,9 +126,9 @@ export async function getNotificationSettings({
 }: {
   page: number;
   size: number;
-  sort: string;
+  sort?: string;
   search: string;
-}): Promise<Paginated<NotificationSettings>> {
+}): Promise<Paginated<NotificationSettingsDTO>> {
   const settings = await axios.get<PaginatedResponseModel<NotificationSettingsDTO>>(
     `/api/notifications/settings/index`,
     {
@@ -149,20 +141,8 @@ export async function getNotificationSettings({
     }
   );
 
-  const settingsData: NotificationSettings[] = await Promise.all(
-    settings.data.result.content.map(async (setting) => {
-      const user = await getUser(setting.userId);
-      return {
-        id: setting.id,
-        user,
-        webType: setting.webType,
-        webStatus: setting.webStatus
-      };
-    })
-  );
-
   return {
-    data: settingsData,
+    data: settings.data.result.content,
     totalCount: settings.data.result.totalElements
   };
 }
