@@ -46,10 +46,12 @@ export default function ManageNotifications() {
   }, [fetchNotifications, isInitialLoad]);
 
   const handleFetchData = useCallback((params: TDataGridRequestParams) => {
-    console.log('Fetching data with params:', params);
     return getNotificationSettings({
       page: params.pageIndex,
       size: params.pageSize,
+      sort: params.sorting?.[0]
+        ? `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+        : 'id,desc',
       search: params.filters?.find((filter) => filter.id === '__any')?.value as string
     });
   }, []);
