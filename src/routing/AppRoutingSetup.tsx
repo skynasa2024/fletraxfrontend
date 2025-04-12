@@ -37,6 +37,8 @@ import ReportsPage from '@/pages/reports/ReportsPage';
 import ManageDevices from '@/pages/management/manage-devices';
 import { ReplayPage } from '@/pages/replay/ReplayPage';
 import ManageNotifications from '@/pages/management/manage-notifications';
+import ManageUsersAndDevices from '@/pages/management/manage-users-and-devices';
+import ManageUsers from '@/pages/management/manage-users';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -50,7 +52,10 @@ const AppRoutingSetup = (): ReactElement => {
           <Route path="/reports" element={<ReportsPage />} />
 
           <Route element={<RequireRole role="admin" />}>
-            <Route path="/management/devices" element={<ManageDevices />} />
+            <Route path="/management" element={<ManageUsersAndDevices />}>
+              <Route path="/management/devices" element={<ManageDevices />} />
+              <Route path="/management/users" element={<ManageUsers />} />
+            </Route>
             <Route path="/management/notifications" element={<ManageNotifications />} />
           </Route>
 

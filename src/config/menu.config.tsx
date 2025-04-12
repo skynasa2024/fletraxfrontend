@@ -35,8 +35,8 @@ export const MENU_SIDEBAR: TMenuConfig = [
     role: 'admin',
     children: [
       {
-        title: 'SIDEBAR.MENU.MANAGEMENT.DEVICES',
-        path: '/management/devices',
+        title: 'SIDEBAR.MENU.MANAGEMENT.USERS_AND_DEVICES',
+        path: '/management',
         role: 'admin'
       },
       {
