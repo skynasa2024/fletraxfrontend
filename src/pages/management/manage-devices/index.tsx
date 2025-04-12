@@ -1,7 +1,7 @@
 import { Paginated } from '@/api/common';
 import { createDevice, DeviceDTO, getDevices } from '@/api/devices';
 import { ResponseModel } from '@/api/response';
-import { Container, DataGrid } from '@/components';
+import { DataGrid } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
@@ -165,7 +165,7 @@ export default function ManageDevices() {
   );
 
   return (
-    <Container>
+    <>
       <Toolbar>
         <ToolbarHeading
           title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT" />}
@@ -246,7 +246,7 @@ export default function ManageDevices() {
           closeEditModal();
         }}
       />
-    </Container>
+    </>
   );
 }
 
