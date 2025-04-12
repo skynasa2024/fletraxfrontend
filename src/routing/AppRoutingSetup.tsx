@@ -39,6 +39,8 @@ import { ReplayPage } from '@/pages/replay/ReplayPage';
 import ManageNotifications from '@/pages/management/manage-notifications';
 import ManageUsersAndDevices from '@/pages/management/manage-users-and-devices';
 import ManageUsers from '@/pages/management/manage-users';
+import ViewUser from '@/pages/management/manage-users/blocks/view-user';
+import EditUser from '@/pages/management/manage-users/blocks/edit-user';
 
 const AppRoutingSetup = (): ReactElement => {
   return (
@@ -54,7 +56,10 @@ const AppRoutingSetup = (): ReactElement => {
           <Route element={<RequireRole role="admin" />}>
             <Route path="/management" element={<ManageUsersAndDevices />}>
               <Route path="/management/devices" element={<ManageDevices />} />
-              <Route path="/management/users" element={<ManageUsers />} />
+              <Route path="/management/users" element={<ManageUsers />}>
+                <Route path="view/:id" element={<ViewUser />} />
+                <Route path="edit/:id" element={<EditUser />} />
+              </Route>
             </Route>
             <Route path="/management/notifications" element={<ManageNotifications />} />
           </Route>
