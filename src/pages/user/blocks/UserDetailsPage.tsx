@@ -6,8 +6,8 @@ import { useNavigate, useParams } from 'react-router';
 import FileList, { FileInfo } from '@/pages/driver/details-components/FileList';
 import { DeviceList } from '@/pages/device/blocks';
 import Toolbar from './Toolbar';
-import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
+import UserStatusTag from '../components/UserStatusTag';
 
 const UserDetailsPage = () => {
   const intl = useIntl();
@@ -181,18 +181,5 @@ const UserDetailsPage = () => {
     </Container>
   );
 };
-
-function UserStatusTag({ status }: { status: boolean }) {
-  return (
-    <div
-      className={clsx('px-4 py-2 rounded-md font-semibold text-lg', {
-        'bg-green-500/10 border border-success text-success': status,
-        'bg-red-500/10 border border-danger text-danger': !status
-      })}
-    >
-      <FormattedMessage id={status ? 'STATUS.ACTIVE' : 'STATUS.INACTIVE'} />
-    </div>
-  );
-}
 
 export default UserDetailsPage;
