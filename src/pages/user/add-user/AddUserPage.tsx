@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Information, Contact, InformationAccount } from './blocks';
+import { InformationBlock, InformationAccountBlock, ContactBlock } from './blocks';
 import { UserModel } from '@/api/user';
-import { CompanyInformation } from './blocks/CompanyInformation';
+import { CompanyInformationBlock } from './blocks/CompanyInformation';
 import { DeviceBlock } from './blocks/Device';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
@@ -113,16 +113,16 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       </div>
 
       <div ref={informationRef}>
-        <Information user={user} />
+        <InformationBlock user={user} />
       </div>
       <div ref={accountRef}>
-        <InformationAccount user={user} />
+        <InformationAccountBlock user={user} />
       </div>
       <div ref={contactRef}>
-        <Contact user={user} />
+        <ContactBlock user={user} />
       </div>
       <div ref={companyInformationRef}>
-        <CompanyInformation user={user} />
+        <CompanyInformationBlock user={user} />
       </div>
       {user && (
         <div ref={deviceRef}>

@@ -5,7 +5,7 @@ import { AddUserPageProps } from '../AddUserPage';
 const CompanyInformation = ({ user }: AddUserPageProps) => {
   const intl = useIntl();
   return (
-    <div className="card pb-2.5">
+    <>
       <div className="card-header" id="general_settings">
         <h3 className="card-title">
           <FormattedMessage id="USER.ADD.COMPANY_INFO.TITLE" />
@@ -44,8 +44,16 @@ const CompanyInformation = ({ user }: AddUserPageProps) => {
           </div>
         </div>
       </div>
+    </>
+  );
+};
+
+const CompanyInformationBlock = ({ user }: AddUserPageProps) => {
+  return (
+    <div className="card pb-2.5">
+      <CompanyInformation user={user} />
     </div>
   );
 };
 
-export { CompanyInformation };
+export { CompanyInformation, CompanyInformationBlock };

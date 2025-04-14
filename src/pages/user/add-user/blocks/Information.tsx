@@ -17,7 +17,7 @@ const Information = ({ user }: AddUserPageProps) => {
   }, [user]);
 
   return (
-    <div className="card pb-2.5">
+    <>
       <div className="card-header" id="general_settings">
         <h3 className="card-title">
           <FormattedMessage id="USER.ADD.INFORMATION.TITLE" />
@@ -146,8 +146,16 @@ const Information = ({ user }: AddUserPageProps) => {
           <input type="hidden" name="status" value={`${user?.status || false}`} />
         </RoleComponent>
       </div>
+    </>
+  );
+};
+
+const InformationBlock = ({ user }: AddUserPageProps) => {
+  return (
+    <div className="card pb-2.5">
+      <Information user={user} />
     </div>
   );
 };
 
-export { Information };
+export { Information, InformationBlock };

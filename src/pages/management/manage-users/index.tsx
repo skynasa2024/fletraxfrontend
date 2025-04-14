@@ -24,12 +24,16 @@ export default function ManageUsers() {
   }, [id]);
   return (
     <>
-      <Toolbar>
-        <ToolbarHeading
-          title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT" />}
-          description={<FormattedMessage id="MANAGEMENT.USERS.TOOLBAR.DESCRIPTION" />}
-        />
-      </Toolbar>
+      <div className="flex justify-between items-center">
+        <Toolbar>
+          <ToolbarHeading
+            title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT" />}
+            description={<FormattedMessage id="MANAGEMENT.USERS.TOOLBAR.DESCRIPTION" />}
+          />
+        </Toolbar>
+
+        <div id="form-action-button-container" />
+      </div>
       <div className="grid gap-4 grid-cols-5">
         <div className="card col-span-1 h-[650px]"></div>
         <div className="col-span-2">

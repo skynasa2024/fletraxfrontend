@@ -5,7 +5,7 @@ const InformationAccount = ({ user }: AddUserPageProps) => {
   const intl = useIntl();
 
   return (
-    <div className="card pb-2.5">
+    <>
       <div className="card-header" id="company_settings">
         <h3 className="card-title">
           <FormattedMessage id="USER.ADD.ACCOUNT.TITLE" />
@@ -41,8 +41,16 @@ const InformationAccount = ({ user }: AddUserPageProps) => {
         </div>
         <div className="grid gap-2.5 mb-2.5"></div>
       </div>
+    </>
+  );
+};
+
+const InformationAccountBlock = ({ user }: AddUserPageProps) => {
+  return (
+    <div className="card pb-2.5">
+      <InformationAccount user={user} />
     </div>
   );
 };
 
-export { InformationAccount };
+export { InformationAccount, InformationAccountBlock };

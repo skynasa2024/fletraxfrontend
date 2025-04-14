@@ -12,7 +12,7 @@ const Contact = ({ user }: AddUserPageProps) => {
   const { currentLanguage } = useLanguage();
 
   return (
-    <div className="card pb-2.5">
+    <>
       <div className="card-header" id="company_settings">
         <h3 className="card-title">
           <FormattedMessage id="USER.ADD.CONTACT.TITLE" />
@@ -139,8 +139,16 @@ const Contact = ({ user }: AddUserPageProps) => {
           />
         </div>
       </div>
+    </>
+  );
+};
+
+const ContactBlock = ({ user }: AddUserPageProps) => {
+  return (
+    <div className="card pb-2.5">
+      <Contact user={user} />
     </div>
   );
 };
 
-export { Contact };
+export { Contact, ContactBlock };
