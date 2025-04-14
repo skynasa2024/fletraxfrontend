@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Information, Contact, InformationAccount } from './blocks';
 import { UserModel } from '@/api/user';
 import { CompanyInformation } from './blocks/CompanyInformation';
-import { Device } from './blocks/Device';
+import { DeviceBlock } from './blocks/Device';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
@@ -126,7 +126,7 @@ const AddUserPage = ({ user }: AddUserPageProps) => {
       </div>
       {user && (
         <div ref={deviceRef}>
-          <Device user={user} />
+          <DeviceBlock user={user} />
         </div>
       )}
     </div>

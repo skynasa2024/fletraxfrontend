@@ -49,6 +49,209 @@ const Device = ({ user }: AddUserPageProps) => {
   }, [linkedDevicesSearch, unlinkedDevicesSearch, user, lastLinkedDevices, lastUnlinkedDevices]);
 
   return (
+    <>
+      <div className="card pb-2.5">
+        <div className="p-4 gap-4 flex flex-col w-full items-center justify-between">
+          <div className="flex items-center justify-between gap-2 w-full">
+            <h3 className="card-title text-nowrap">
+              <FormattedMessage id="DEVICE.GRID.UNLINKED_DEVICES" />
+            </h3>
+            {unlinkedDevices?.totalCount !== undefined && (
+              <h5 className="text-sm text-gray-400">
+                <FormattedMessage
+                  id="DEVICE.GRID.DEVICES_COUNT"
+                  values={{ count: unlinkedDevices.totalCount }}
+                />
+              </h5>
+            )}
+          </div>
+          {/* Search Input */}
+          {unlinkedDevices && (
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <KeenIcon style="duotone" icon="magnifier" />
+              </div>
+              <DebouncedSearchInput
+                type="search"
+                className="w-full pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+                placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
+                onDebounce={setUnlinkedDevicesSearch}
+              />
+            </div>
+          )}
+        </div>
+        <div className="card-body p-0">
+          {unlinkedDevices ? (
+            <AutoSizer>
+              {({ height, width }) => (
+                <InfiniteLoader
+                  isRowLoaded={({ index }) => !!unlinkedDevices.data[index]}
+                  loadMoreRows={async ({ startIndex, stopIndex }) => {
+                    const data = await getUnlinkedDevices({
+                      start: startIndex,
+                      end: stopIndex,
+                      search: unlinkedDevicesSearch
+                    });
+                    setUnlinkedDevices((prev) => ({
+                      data: [...(prev?.data ?? []), ...data.data],
+                      totalCount: data.totalCount
+                    }));
+                    setLastUnlinkedDevices(stopIndex);
+                  }}
+                  rowCount={unlinkedDevices.totalCount}
+                >
+                  {({ onRowsRendered, registerChild }) => (
+                    <List
+                      ref={registerChild}
+                      className="scrollable-y !overflow-x-hidden"
+                      height={height}
+                      width={width}
+                      rowCount={unlinkedDevices.totalCount}
+                      rowHeight={68}
+                      rowRenderer={({ key, index, style }) => {
+                        const device = unlinkedDevices?.data[index];
+
+                        if (!device) {
+                          return <Skeleton key={key} style={style} />;
+                        }
+
+                        return (
+                          <div key={key} style={style} className="px-4 py-1">
+                            <div className="p-4 border rounded-lg border-gray-200 flex items-center justify-between gap-4 h-full">
+                              <div className="flex gap-2">
+                                <DeviceIcon className="size-5 text-[#5151F9] shrink-0" />
+                                <div className="font-semibold">{device.ident}</div>
+                              </div>
+                              <button
+                                type="button"
+                                className="btn btn-sm !size-7 btn-icon btn-outline btn-success"
+                                onClick={async () => {
+                                  await unlinkLinkDevice(user!.id, device.ident);
+                                  update();
+                                }}
+                              >
+                                <KeenIcon icon="plus" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }}
+                      onRowsRendered={onRowsRendered}
+                    />
+                  )}
+                </InfiniteLoader>
+              )}
+            </AutoSizer>
+          ) : (
+            <div className="flex justify-center items-center h-full">
+              <CircularProgress />
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="card pb-2.5">
+        <div className="p-4 gap-4 flex flex-col items-center justify-between">
+          <div className="flex items-center justify-between gap-2 w-full">
+            <h3 className="card-title text-nowrap">
+              <FormattedMessage id="DEVICE.GRID.LINKED_DEVICES" />
+            </h3>
+            {linkedDevices?.totalCount !== undefined && (
+              <h5 className="text-sm text-gray-400">
+                <FormattedMessage
+                  id="DEVICE.GRID.DEVICES_COUNT"
+                  values={{ count: linkedDevices.totalCount }}
+                />
+              </h5>
+            )}
+          </div>
+          {/* Search Input */}
+          {linkedDevices && (
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <KeenIcon style="duotone" icon="magnifier" />
+              </div>
+              <DebouncedSearchInput
+                type="search"
+                className="w-full pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
+                placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
+                onDebounce={setLinkedDevicesSearch}
+              />
+            </div>
+          )}
+        </div>
+        <div className="card-body p-0">
+          {linkedDevices ? (
+            <AutoSizer>
+              {({ height, width }) => (
+                <InfiniteLoader
+                  isRowLoaded={({ index }) => !!linkedDevices.data[index]}
+                  loadMoreRows={async ({ startIndex, stopIndex }) => {
+                    const data = await getLinkedDevices(user!.id, {
+                      start: startIndex,
+                      end: stopIndex,
+                      search: linkedDevicesSearch
+                    });
+                    setLinkedDevices((prev) => ({
+                      data: [...(prev?.data ?? []), ...data.data],
+                      totalCount: data.totalCount
+                    }));
+                    setLastLinkedDevices(stopIndex);
+                  }}
+                  rowCount={linkedDevices.totalCount}
+                >
+                  {({ onRowsRendered, registerChild }) => (
+                    <List
+                      ref={registerChild}
+                      className="scrollable-y !overflow-x-hidden"
+                      height={height}
+                      width={width}
+                      rowCount={linkedDevices.totalCount}
+                      rowHeight={68}
+                      rowRenderer={({ key, index, style }) => {
+                        const device = linkedDevices?.data[index];
+
+                        if (!device) {
+                          return <Skeleton key={key} style={style} />;
+                        }
+
+                        return (
+                          <div key={key} style={style} className="px-4 py-1">
+                            <div className="p-4 border rounded-lg border-gray-200 flex items-center gap-4 h-full">
+                              <DeviceIcon className="size-5 text-[#5151F9]" />
+                              <div className="font-semibold flex-1">{device.ident}</div>
+                              <button
+                                type="button"
+                                className="btn btn-sm !size-7 btn-icon btn-outline btn-warning"
+                                onClick={async () => {
+                                  await unlinkLinkDevice(user!.parentId || 'null', device.ident);
+                                  update();
+                                }}
+                              >
+                                <KeenIcon icon="minus" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      }}
+                      onRowsRendered={onRowsRendered}
+                    />
+                  )}
+                </InfiniteLoader>
+              )}
+            </AutoSizer>
+          ) : (
+            <div className="flex justify-center items-center h-full">
+              <CircularProgress />
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const DeviceBlock = ({ user }: AddUserPageProps) => {
+  return (
     <div className="card pb-2.5">
       <div className="card-header">
         <h3 className="card-title">
@@ -56,203 +259,10 @@ const Device = ({ user }: AddUserPageProps) => {
         </h3>
       </div>
       <div className="card-body grid lg:grid-cols-2 gap-5 h-[470px]">
-        <div className="card pb-2.5">
-          <div className="card-header gap-6">
-            <div>
-              <h3 className="card-title text-nowrap">
-                <FormattedMessage id="DEVICE.GRID.UNLINKED_DEVICES" />
-              </h3>
-              {unlinkedDevices?.totalCount !== undefined && (
-                <h5 className="text-sm text-gray-400">
-                  <FormattedMessage
-                    id="DEVICE.GRID.DEVICES_COUNT"
-                    values={{ count: unlinkedDevices.totalCount }}
-                  />
-                </h5>
-              )}
-            </div>
-            {/* Search Input */}
-            {unlinkedDevices && (
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <KeenIcon style="duotone" icon="magnifier" />
-                </div>
-                <DebouncedSearchInput
-                  type="search"
-                  className="pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-                  placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
-                  onDebounce={setUnlinkedDevicesSearch}
-                />
-              </div>
-            )}
-          </div>
-          <div className="card-body p-0">
-            {unlinkedDevices ? (
-              <AutoSizer>
-                {({ height, width }) => (
-                  <InfiniteLoader
-                    isRowLoaded={({ index }) => !!unlinkedDevices.data[index]}
-                    loadMoreRows={async ({ startIndex, stopIndex }) => {
-                      const data = await getUnlinkedDevices({
-                        start: startIndex,
-                        end: stopIndex,
-                        search: unlinkedDevicesSearch
-                      });
-                      setUnlinkedDevices((prev) => ({
-                        data: [...(prev?.data ?? []), ...data.data],
-                        totalCount: data.totalCount
-                      }));
-                      setLastUnlinkedDevices(stopIndex);
-                    }}
-                    rowCount={unlinkedDevices.totalCount}
-                  >
-                    {({ onRowsRendered, registerChild }) => (
-                      <List
-                        ref={registerChild}
-                        className="scrollable-y !overflow-x-hidden"
-                        height={height}
-                        width={width}
-                        rowCount={unlinkedDevices.totalCount}
-                        rowHeight={68}
-                        rowRenderer={({ key, index, style }) => {
-                          const device = unlinkedDevices?.data[index];
-
-                          if (!device) {
-                            return <Skeleton key={key} style={style} />;
-                          }
-
-                          return (
-                            <div key={key} style={style} className="px-4 py-1">
-                              <div className="p-4 border rounded-lg border-gray-200 flex items-center gap-4 h-full">
-                                <DeviceIcon className="size-5 text-[#5151F9]" />
-                                <div className="font-semibold flex-1">{device.ident}</div>
-                                <button
-                                  type="button"
-                                  className="btn btn-sm !size-7 btn-icon btn-outline btn-success"
-                                  onClick={async () => {
-                                    await unlinkLinkDevice(user!.id, device.ident);
-                                    update();
-                                  }}
-                                >
-                                  <KeenIcon icon="plus" />
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }}
-                        onRowsRendered={onRowsRendered}
-                      />
-                    )}
-                  </InfiniteLoader>
-                )}
-              </AutoSizer>
-            ) : (
-              <div className="flex justify-center items-center h-full">
-                <CircularProgress />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="card pb-2.5">
-          <div className="card-header gap-6">
-            <div>
-              <h3 className="card-title text-nowrap">
-                <FormattedMessage id="DEVICE.GRID.LINKED_DEVICES" />
-              </h3>
-              {linkedDevices?.totalCount !== undefined && (
-                <h5 className="text-sm text-gray-400">
-                  <FormattedMessage
-                    id="DEVICE.GRID.DEVICES_COUNT"
-                    values={{ count: linkedDevices.totalCount }}
-                  />
-                </h5>
-              )}
-            </div>
-            {/* Search Input */}
-            {linkedDevices && (
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <KeenIcon style="duotone" icon="magnifier" />
-                </div>
-                <DebouncedSearchInput
-                  type="search"
-                  className="pl-10 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-info focus:border-info"
-                  placeholder={intl.formatMessage({ id: 'COMMON.SEARCH' })}
-                  onDebounce={setLinkedDevicesSearch}
-                />
-              </div>
-            )}
-          </div>
-          <div className="card-body p-0">
-            {linkedDevices ? (
-              <AutoSizer>
-                {({ height, width }) => (
-                  <InfiniteLoader
-                    isRowLoaded={({ index }) => !!linkedDevices.data[index]}
-                    loadMoreRows={async ({ startIndex, stopIndex }) => {
-                      const data = await getLinkedDevices(user!.id, {
-                        start: startIndex,
-                        end: stopIndex,
-                        search: linkedDevicesSearch
-                      });
-                      setLinkedDevices((prev) => ({
-                        data: [...(prev?.data ?? []), ...data.data],
-                        totalCount: data.totalCount
-                      }));
-                      setLastLinkedDevices(stopIndex);
-                    }}
-                    rowCount={linkedDevices.totalCount}
-                  >
-                    {({ onRowsRendered, registerChild }) => (
-                      <List
-                        ref={registerChild}
-                        className="scrollable-y !overflow-x-hidden"
-                        height={height}
-                        width={width}
-                        rowCount={linkedDevices.totalCount}
-                        rowHeight={68}
-                        rowRenderer={({ key, index, style }) => {
-                          const device = linkedDevices?.data[index];
-
-                          if (!device) {
-                            return <Skeleton key={key} style={style} />;
-                          }
-
-                          return (
-                            <div key={key} style={style} className="px-4 py-1">
-                              <div className="p-4 border rounded-lg border-gray-200 flex items-center gap-4 h-full">
-                                <DeviceIcon className="size-5 text-[#5151F9]" />
-                                <div className="font-semibold flex-1">{device.ident}</div>
-                                <button
-                                  type="button"
-                                  className="btn btn-sm !size-7 btn-icon btn-outline btn-warning"
-                                  onClick={async () => {
-                                    await unlinkLinkDevice(user!.parentId || 'null', device.ident);
-                                    update();
-                                  }}
-                                >
-                                  <KeenIcon icon="minus" />
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }}
-                        onRowsRendered={onRowsRendered}
-                      />
-                    )}
-                  </InfiniteLoader>
-                )}
-              </AutoSizer>
-            ) : (
-              <div className="flex justify-center items-center h-full">
-                <CircularProgress />
-              </div>
-            )}
-          </div>
-        </div>
+        <Device user={user} />
       </div>
     </div>
   );
 };
 
-export { Device };
+export { Device, DeviceBlock };
