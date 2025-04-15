@@ -63,10 +63,6 @@ export default function EditUser() {
     fetchUserData(id);
   }, [id]);
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <form
       id={formId}
@@ -79,7 +75,11 @@ export default function EditUser() {
           enqueueSnackbar(<FormattedMessage id="USER.FORM.SAVE_SUCCESS" />, {
             variant: 'success'
           });
-          navigate('/management/users/view/' + user.id);
+          if (user) {
+            navigate('/management/users/view/' + user.id);
+          } else {
+            navigate('/management/users/view/' + response.id);
+          }
         } catch (error) {
           if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError<ResponseModel<never>>;
@@ -100,10 +100,10 @@ export default function EditUser() {
       }}
     >
       <div className="card col-span-2">
-        <Information user={user} />
-        <InformationAccount user={user} />
-        <Contact user={user} />
-        <CompanyInformation user={user} />
+        <Information user={user || undefined} />
+        <InformationAccount user={user || undefined} />
+        <Contact user={user || undefined} />
+        <CompanyInformation user={user || undefined} />
 
         <SaveButtonPortal formId={formId} isLoading={isLoading} />
       </div>

@@ -59,6 +59,7 @@ const AppRoutingSetup = (): ReactElement => {
               <Route path="/management/users" element={<ManageUsers />}>
                 <Route path="view/:id" element={<ViewUser />} />
                 <Route path="edit/:id" element={<EditUser />} />
+                <Route path="add" element={<EditUser />} />
               </Route>
             </Route>
             <Route path="/management/notifications" element={<ManageNotifications />} />
