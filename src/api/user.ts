@@ -221,6 +221,29 @@ export const getUsersUnderParent = async (
   };
 };
 
+export const getParentPath = async (userId: string): Promise<string[]> => {
+  try {
+    const user = await getUserModel(userId);
+    const path: string[] = [];
+
+    if (!user.parentId) {
+      return path;
+    }
+
+    let currentParentId = user.parentId;
+    while (currentParentId) {
+      path.unshift(currentParentId);
+      const parent = await getUserModel(currentParentId);
+      currentParentId = parent.parentId || '';
+    }
+
+    return path;
+  } catch (error) {
+    console.error('Error getting parent path:', error);
+    return [];
+  }
+};
+
 export const updateUserLocale = async (locale: string): Promise<ResponseModel<UserModel>> => {
   const res = await axios.patch<ResponseModel<UserModel>>('/api/users/update-locale', { locale });
   return res.data;
