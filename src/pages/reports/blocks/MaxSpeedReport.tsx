@@ -31,12 +31,12 @@ export default function MaxSpeedReport() {
       },
       {
         accessorKey: 'timestamp',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.START_DATE' }),
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.TIMESTAMP' }),
         enableSorting: true
       },
       {
         accessorKey: 'ignitionStatus',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.DURATION' }),
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.IGNITION_STATUS' }),
         cell: ({ row }) => {
           const status = row.original.ignitionStatus ? 'On' : 'Off';
           return <span>{status}</span>;
@@ -44,15 +44,15 @@ export default function MaxSpeedReport() {
       },
       {
         accessorKey: 'positionSpeed',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.MAX_SPEED' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.SPEED' })
       },
       {
         accessorKey: 'positionLatitude',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.MILEAGE' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.LATITUDE' })
       },
       {
         accessorKey: 'positionLongitude',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.TYPE' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.LONGITUDE' })
       },
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
