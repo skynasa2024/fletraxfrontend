@@ -11,13 +11,21 @@ interface VehicleSearchProps {
   initialSearch?: {
     plate: string;
     id: string;
+    ident: string;
   };
   place?: 'top' | 'bottom';
 }
 export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchProps) => {
   const { formatMessage } = useIntl();
   const [privateSearch, setPrivateSearch] = useState(initialSearch?.plate);
-  const [selectedVehicleId, setSelectedVehicleId] = useState(initialSearch?.id);
+  const [selectedVehicle, setSelectedVehicle] = useState<
+    | {
+        id: string;
+        plate: string;
+        ident: string;
+      }
+    | undefined
+  >(initialSearch);
   const [vehicles, setVehicles] = useState<Paginated<VehicleDetails>>();
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -67,7 +75,7 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
         type="button"
         onClick={() => {
           setPrivateSearch('');
-          setSelectedVehicleId(undefined);
+          setSelectedVehicle(undefined);
         }}
       >
         <KeenIcon icon="cross" />
@@ -112,7 +120,11 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
                             className="p-2 hover:bg-gray-100 flex justify-between items-center gap-2 cursor-pointer"
                             onClick={() => {
                               setPrivateSearch(vehicle.vehicle.plate);
-                              setSelectedVehicleId(vehicle.vehicle.id);
+                              setSelectedVehicle({
+                                id: vehicle.vehicle.id,
+                                plate: vehicle.vehicle.plate,
+                                ident: vehicle.vehicle.imei
+                              });
                               setHovered(false);
                             }}
                           >
@@ -130,7 +142,8 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
           </AutoSizer>
         </div>
       )}
-      <input type="hidden" name="vehicleId" value={selectedVehicleId || ''} />
+      <input type="hidden" name="vehicleId" value={selectedVehicle?.id || ''} />
+      <input type="hidden" name="ident" value={selectedVehicle?.ident || ''} />
     </div>
   );
 };

@@ -7,6 +7,7 @@ import EngineHoursReport from './blocks/EngineHoursReport';
 import TripsAndParkingReport from './blocks/TripsAndParkingReport';
 import AlarmReport from './blocks/AlarmReport';
 import clsx from 'clsx';
+import MaxSpeedReport from './blocks/MaxSpeedReport';
 
 type ReportTabType = {
   id: string;
@@ -39,6 +40,12 @@ const ReportTypes: ReportTabType[] = [
     label: 'Alarm Report',
     description: 'Alarm Report',
     report: <AlarmReport />
+  },
+  {
+    id: 'maxSpeed',
+    label: 'Max Speed Report',
+    description: 'Max Speed Report',
+    report: <MaxSpeedReport />
   }
 ];
 

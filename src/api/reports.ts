@@ -268,3 +268,61 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
     totalCount: report.data.result.totalElements
   };
 }
+
+type MaxSpeedParams = {
+  pageIndex: number;
+  pageSize: number;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  sort: string;
+  ident: string;
+  minSpeed: number;
+};
+
+export interface IMaxSpeedReport {
+  ident: string;
+  plate: string;
+  timestamp: string;
+  ignitionStatus: boolean;
+  positionLatitude: number;
+  positionLongitude: number;
+  positionDirection: number;
+  positionSpeed: number;
+}
+
+export async function getMaxSpeedReport(
+  params: MaxSpeedParams
+): Promise<Paginated<IMaxSpeedReport>> {
+  const report = await axios.get<PaginatedResponseModel<IMaxSpeedReport>>(
+    '/api/messages/max_speed_reports',
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        startTime: params.startTime,
+        endTime: params.endTime,
+        sort: params.sort,
+        ident: params.ident,
+        minSpeed: params.minSpeed
+      }
+    }
+  );
+
+  return {
+    data: report.data.result.content.map((item) => ({
+      ident: item.ident,
+      plate: item.plate,
+      timestamp: format(new Date(item.timestamp), 'yyyy/MM/dd HH:mm:ss'),
+      ignitionStatus: item.ignitionStatus,
+      positionLatitude: item.positionLatitude,
+      positionLongitude: item.positionLongitude,
+      positionDirection: item.positionDirection,
+      positionSpeed: item.positionSpeed
+    })),
+    totalCount: report.data.result.totalElements
+  };
+}

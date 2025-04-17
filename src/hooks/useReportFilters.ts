@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 
 export interface ReportFilters {
+  ident?: string;
   vehicleId?: string;
   startDate?: string;
   endDate?: string;
+  startTime?: string;
+  endTime?: string;
   type?: string;
 }
 
@@ -21,10 +24,13 @@ export function useReportFilters() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newFilters = {
+      ident: formData.get('ident')?.toString() || '',
       vehicleId: formData.get('vehicleId')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
-      type: formData.get('type')?.toString() || ''
+      type: formData.get('type')?.toString() || '',
+      startTime: formData.get('startTime')?.toString() || '',
+      endTime: formData.get('endTime')?.toString() || ''
     };
 
     updateFilters(newFilters);
