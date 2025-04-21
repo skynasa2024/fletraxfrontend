@@ -798,5 +798,7 @@
   "USER.SELECT.PLACEHOLDER": "Kullanıcı Seçin",
   "NOTIFICATIONS.SETTINGS_SAVED": "Ayarlar başarıyla kaydedildi",
   "NOTIFICATIONS.USER_REQUIRED": "Kullanıcı gereklidir",
-  "USER.NO_CHILDREN": "Alt kullanıcı yok"
+  "USER.NO_CHILDREN": "Alt kullanıcı yok",
+  "COMMON.EXPORT_SUCCESS": "Export başarıyla tamamlandı",
+  "COMMON.EXPORT_ERROR": "Export işlemi sırasında bir hata oluştu"
 }

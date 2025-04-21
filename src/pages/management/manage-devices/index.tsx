@@ -1,7 +1,7 @@
 import { Paginated } from '@/api/common';
-import { createDevice, DeviceDTO, getDevices } from '@/api/devices';
+import { createDevice, DeviceDTO, exportDevicesIntoExcel, getDevices } from '@/api/devices';
 import { ResponseModel } from '@/api/response';
-import { DataGrid } from '@/components';
+import { DataGrid, TDataGridRequestParams } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
@@ -13,7 +13,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
 import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
-import { useEffect, useMemo, useState, FormEvent, useCallback } from 'react';
+import { useEffect, useMemo, useState, FormEvent, useCallback, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
@@ -26,8 +26,13 @@ export default function ManageDevices() {
   const [selectedDevice, setSelectedDevice] = useState<DeviceDTO | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const currentGridParamsRef = useRef<TDataGridRequestParams>({
+    pageIndex: 0,
+    pageSize: 100,
+    filters: [],
+    sorting: []
+  });
 
-  // Use useCallback to memoize the fetchDevices function to prevent it from recreating on each render
   const fetchDevices = useCallback((params = { pageIndex: 0, pageSize: 1 }) => {
     return getDevices({
       ...params
@@ -37,7 +42,6 @@ export default function ManageDevices() {
     });
   }, []);
 
-  // Only fetch on initial mount
   useEffect(() => {
     if (isInitialLoad) {
       fetchDevices();
@@ -59,7 +63,7 @@ export default function ManageDevices() {
       form.reset();
       setProtocolId('');
       setTypeId('');
-      fetchDevices(); // Explicitly fetch after successful creation
+      fetchDevices();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<ResponseModel<never>>;
@@ -81,30 +85,62 @@ export default function ManageDevices() {
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
-    setSelectedDevice(null); // Clear the selected device when closing modal
+    setSelectedDevice(null);
   };
 
-  // Create a dedicated handler for DataGrid fetch requests
-  const handleFetchData = useCallback((params: any) => {
+  const handleFetchData = useCallback((params: TDataGridRequestParams) => {
+    currentGridParamsRef.current = params;
     return getDevices(params);
   }, []);
+
+  const handleExport = async () => {
+    try {
+      const exportParams = {
+        ...currentGridParamsRef.current,
+      };
+
+      const response = await exportDevicesIntoExcel(exportParams);
+
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
+        variant: 'error'
+      });
+    }
+  };
 
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
     () => [
       {
         accessorKey: 'ident',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER' })
-        // enableSorting: true
       },
       {
         accessorKey: 'name',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.NAME' })
-        // enableSorting: true
       },
       {
         accessorKey: 'phone',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PHONE' })
-        // enableSorting: true
       },
       {
         accessorKey: 'protocol',
@@ -200,7 +236,10 @@ export default function ManageDevices() {
               </button>
             </div>
 
-            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border">
+            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+              onClick={handleExport}
+              type='button'
+            >
               <Download size={16} />
               <span>
                 <FormattedMessage id="COMMON.EXPORT" />
@@ -219,7 +258,7 @@ export default function ManageDevices() {
             <DataGrid
               columns={columns}
               serverSide={true}
-              onFetchData={handleFetchData} // Use the dedicated handler instead of fetchDevices
+              onFetchData={handleFetchData}
               pagination={{ size: 100, sizes: undefined }}
               filters={[
                 ...(searchQuery.trim().length > 2 ? [{ id: '__any', value: searchQuery }] : [])
@@ -242,7 +281,7 @@ export default function ManageDevices() {
         device={selectedDevice}
         onClose={closeEditModal}
         onSuccess={() => {
-          fetchDevices(); // Refresh data after a successful edit
+          fetchDevices();
           closeEditModal();
         }}
       />

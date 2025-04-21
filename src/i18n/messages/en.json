@@ -789,5 +789,7 @@
   "USER.SELECT.PLACEHOLDER": "Select User",
   "NOTIFICATIONS.SETTINGS_SAVED": "Settings saved successfully",
   "NOTIFICATIONS.USER_REQUIRED": "User is required",
-  "USER.NO_CHILDREN": "No children"
+  "USER.NO_CHILDREN": "No children",
+  "COMMON.EXPORT_SUCCESS": "Exported successfully",
+  "COMMON.EXPORT_ERROR": "Export error"
 }

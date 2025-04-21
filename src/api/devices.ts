@@ -273,3 +273,36 @@ export const reverseGeoLocation = async (
   );
   return location.data.display_name;
 };
+
+export const exportDevicesIntoExcel = async (
+  params: TDataGridRequestParams
+): Promise<{ data: Blob; headers: any }> => {
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
+
+  const requestParams = {
+    page: params.pageIndex,
+    size: params.pageSize,
+    search: filters['__any'] && filters['__any'].toString(),
+    ...(params.sorting?.[0] && {
+      sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+    }),
+    reportType: 'devices'
+  };
+
+  const response = await axios.get('/api/devices/export', {
+    responseType: 'blob',
+    params: requestParams
+  });
+
+  return {
+    data: response.data,
+    headers: response.headers
+  };
+};
