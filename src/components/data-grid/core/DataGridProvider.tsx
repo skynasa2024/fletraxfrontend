@@ -53,7 +53,7 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
         id: 'DATA_GRID.PAGINATION.INFO',
         defaultMessage: '{from} - {to} of {count}'
       }),
-      sizes: [5, 10, 25, 50, 100],
+      sizes: [10, 25, 50, 100],
       sizesLabel: intl.formatMessage({
         id: 'DATA_GRID.PAGINATION.SIZES_LABEL',
         defaultMessage: 'Show'
@@ -62,7 +62,7 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
         id: 'DATA_GRID.PAGINATION.SIZES_DESCRIPTION',
         defaultMessage: 'per page'
       }),
-      size: 5,
+      size: 10,
       page: 0,
       moreLimit: 5,
       more: false
@@ -85,7 +85,7 @@ export const DataGridProvider = <TData extends object>(props: TDataGridProps<TDa
   // Pagination and Sorting from props
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: props.pagination?.page ?? 0,
-    pageSize: props.pagination?.size ?? 5
+    pageSize: props.pagination?.size ?? 10
   });
   const [sorting, setSorting] = useState<any[]>(mergedProps.sorting ?? []);
   const [filters, setFilters] = useState<ColumnFiltersState>(mergedProps.filters ?? []);
