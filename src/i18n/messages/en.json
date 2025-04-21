@@ -788,5 +788,6 @@
   "REPLAY.PARKING.PARKED": "Parked",
   "USER.SELECT.PLACEHOLDER": "Select User",
   "NOTIFICATIONS.SETTINGS_SAVED": "Settings saved successfully",
-  "NOTIFICATIONS.USER_REQUIRED": "User is required"
+  "NOTIFICATIONS.USER_REQUIRED": "User is required",
+  "USER.NO_CHILDREN": "No children"
 }

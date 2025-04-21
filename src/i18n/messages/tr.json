@@ -797,5 +797,6 @@
   "REPLAY.PARKING.PARKED": "Park Edildi",
   "USER.SELECT.PLACEHOLDER": "Kullanıcı Seçin",
   "NOTIFICATIONS.SETTINGS_SAVED": "Ayarlar başarıyla kaydedildi",
-  "NOTIFICATIONS.USER_REQUIRED": "Kullanıcı gereklidir"
+  "NOTIFICATIONS.USER_REQUIRED": "Kullanıcı gereklidir",
+  "USER.NO_CHILDREN": "Alt kullanıcı yok"
 }

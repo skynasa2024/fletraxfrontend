@@ -25,8 +25,8 @@ export const TreeViewItem: React.FC<TreeViewItemProps> = ({ item, onToggle, onSe
   return (
     <div
       className={clsx(
-        'flex items-center h-12 cursor-pointer select-none p-1',
-        item.depth === 0 ? 'border rounded-md m-2' : 'border-0',
+        'flex items-center h-12 cursor-pointer select-none',
+        item.depth === 0 ? 'border rounded-md' : 'border-0',
         {
           'bg-info-light text-info': item.isSelected,
           'hover:bg-gray-100': !item.isSelected
@@ -57,7 +57,7 @@ export const TreeViewItem: React.FC<TreeViewItemProps> = ({ item, onToggle, onSe
             )}
           </div>
         )}
-        {!item.hasChildren && <div className="w-5 mr-1"></div>}
+        {!item.hasChildren && <div className="w-2 mr-1"></div>}
         <div className="flex-grow truncate">{item.label}</div>
       </div>
     </div>

@@ -11,64 +11,42 @@ const TreeView: React.FC<TreeViewProps> = ({
   preExpandedIds = [],
   selectedId = null
 }) => {
+  const [treeData, setTreeData] = useState<TreeItem[]>(data);
   const [flattenedItems, setFlattenedItems] = useState<FlattenedTreeItem[]>([]);
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(preExpandedIds));
   const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
   const listRef = useRef<List>(null);
+  const initialLoad = useRef(true);
+  const lastAction = useRef<'expand' | 'select' | 'initial'>('initial');
+  const prevSelectedId = useRef<string | null>(null);
 
-  // Track the last action type to control scrolling behavior
-  const lastActionRef = useRef<'select' | 'expand' | 'initial'>('initial');
-
-  // Track previous selected ID to detect changes
-  const prevSelectedIdRef = useRef<string | null>(null);
-
-  // Helper to convert flattened array back to hierarchical structure
-  const unflattenTree = useCallback((flatItems: FlattenedTreeItem[]): TreeItem[] => {
-    const root: TreeItem[] = [];
-    const itemMap = new Map<string, TreeItem>();
-
-    flatItems.forEach((item) => {
-      if (!item.isPlaceholder) {
-        const treeItem: TreeItem = {
-          id: item.id,
-          label: item.label,
-          hasChildren: item.hasChildren,
-          children: item.children || [],
-          parentId: item.parentId
-        };
-        itemMap.set(item.id, treeItem);
+  // Helper to find a node in the tree by ID
+  const findNodeById = (items: TreeItem[], id: string): TreeItem | null => {
+    for (const item of items) {
+      if (item.id === id) return item;
+      if (item.children && item.children.length > 0) {
+        const found = findNodeById(item.children, id);
+        if (found) return found;
       }
-    });
-
-    flatItems.forEach((item) => {
-      if (item.isPlaceholder) return;
-
-      const parentId = item.parentId;
-
-      if (!parentId) {
-        if (!root.some((rootItem) => rootItem.id === item.id)) {
-          root.push(itemMap.get(item.id)!);
-        }
-      } else if (itemMap.has(parentId)) {
-        const parent = itemMap.get(parentId)!;
-        if (!parent.children) parent.children = [];
-        if (!parent.children.some((child) => child.id === item.id)) {
-          parent.children.push(itemMap.get(item.id)!);
-        }
-      }
-    });
-
-    return root.length > 0
-      ? root
-      : (flatItems.filter((item) => !item.isPlaceholder && !item.parentId) as TreeItem[]);
-  }, []);
-
-  // Initialize expandedIds with preExpandedIds when they change
-  useEffect(() => {
-    if (preExpandedIds && preExpandedIds.length > 0) {
-      setExpandedIds(new Set(preExpandedIds));
     }
-  }, [preExpandedIds]);
+    return null;
+  };
+
+  // Helper to update a node in the tree
+  const updateNodeInTree = (items: TreeItem[], id: string, updater: (node: TreeItem) => TreeItem): TreeItem[] => {
+    return items.map(item => {
+      if (item.id === id) {
+        return updater(item);
+      }
+      if (item.children && item.children.length > 0) {
+        return {
+          ...item,
+          children: updateNodeInTree(item.children, id, updater)
+        };
+      }
+      return item;
+    });
+  };
 
   // Convert hierarchical tree data into a flattened array for virtualization
   const flattenTree = useCallback(
@@ -76,6 +54,7 @@ const TreeView: React.FC<TreeViewProps> = ({
       let result: FlattenedTreeItem[] = [];
 
       for (const item of items) {
+        // Add the current item to the flattened list
         result.push({
           ...item,
           depth,
@@ -84,19 +63,29 @@ const TreeView: React.FC<TreeViewProps> = ({
           isSelected: selectedId === item.id
         });
 
-        if (expandedIds.has(item.id) && item.children && item.children.length > 0) {
-          result = result.concat(flattenTree(item.children, depth + 1));
-        } else if (expandedIds.has(item.id) && (!item.children || item.children.length === 0)) {
-          result.push({
-            id: `${item.id}-empty`,
-            label: noChildrenMessage as string,
-            hasChildren: false,
-            depth: depth + 1,
-            isExpanded: false,
-            isLoading: false,
-            isSelected: false,
-            isPlaceholder: true
-          });
+        // If this item is expanded, add its children to the flattened list
+        if (expandedIds.has(item.id)) {
+          if (item.children && item.children.length > 0) {
+            // Add all children recursively
+            result = result.concat(flattenTree(item.children, depth + 1));
+          } else if (!loadingIds.has(item.id)) {
+            // If we're not currently loading children and no children exist, show the "no children" message
+            const showEmptyMessage = item.hasChildren === false ||
+              (item.hasChildren && item.children && item.children.length === 0);
+
+            if (showEmptyMessage) {
+              result.push({
+                id: `${item.id}-empty`,
+                label: noChildrenMessage as string,
+                hasChildren: false,
+                depth: depth + 1,
+                isExpanded: false,
+                isLoading: false,
+                isSelected: false,
+                isPlaceholder: true
+              });
+            }
+          }
         }
       }
 
@@ -105,67 +94,62 @@ const TreeView: React.FC<TreeViewProps> = ({
     [expandedIds, loadingIds, selectedId, noChildrenMessage]
   );
 
-  // Initialize flattened items when data changes
+  // Update flattened items whenever treeData changes
+  useEffect(() => {
+    setFlattenedItems(flattenTree(treeData));
+  }, [treeData, flattenTree]);
+
+  // Initialize with provided data
   useEffect(() => {
     if (data) {
-      setFlattenedItems(flattenTree(data));
+      setTreeData(data);
     }
-  }, [data, flattenTree]);
+  }, [data]);
 
-  // Handle pre-expanded IDs by fetching their children
+  // Handle pre-expanded nodes on initial load
   useEffect(() => {
     const loadPreExpandedNodes = async () => {
-      if (!preExpandedIds.length || !data.length) return;
+      if (!preExpandedIds.length || initialLoad.current === false) return;
+      initialLoad.current = false;
+      lastAction.current = 'initial';
 
-      for (const expandId of preExpandedIds) {
-        const nodeToExpand = flattenedItems.find((item) => item.id === expandId);
+      const nodesToExpand = preExpandedIds.filter(id => {
+        const node = findNodeById(treeData, id);
+        return node && node.hasChildren && (!node.children || node.children.length === 0);
+      });
 
-        if (!nodeToExpand || (nodeToExpand.children && nodeToExpand.children.length > 0)) continue;
+      for (const id of nodesToExpand) {
+        try {
+          setLoadingIds(prev => new Set(prev).add(id));
+          const children = await fetchChildren(id);
 
-        if (nodeToExpand.hasChildren && fetchChildren) {
-          try {
-            setLoadingIds((prev) => {
-              const newLoadingIds = new Set(prev);
-              newLoadingIds.add(expandId);
-              return newLoadingIds;
-            });
-
-            const children = await fetchChildren(expandId);
-
-            setFlattenedItems((prevItems) => {
-              const itemIndex = prevItems.findIndex((i) => i.id === expandId);
-              if (itemIndex === -1) return prevItems;
-
-              const newItems = [...prevItems];
-              newItems[itemIndex] = {
-                ...newItems[itemIndex],
-                children
-              };
-
-              return flattenTree(unflattenTree(newItems));
-            });
-          } catch (error) {
-            console.error(`Error fetching children for pre-expanded node ${expandId}:`, error);
-          } finally {
-            setLoadingIds((prev) => {
-              const newLoadingIds = new Set(prev);
-              newLoadingIds.delete(expandId);
-              return newLoadingIds;
-            });
-          }
+          setTreeData(prevData => updateNodeInTree(prevData, id, node => ({
+            ...node,
+            children
+          })));
+        } catch (error) {
+          console.error(`Error fetching children for pre-expanded node ${id}:`, error);
+        } finally {
+          setLoadingIds(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(id);
+            return newSet;
+          });
         }
       }
     };
 
     loadPreExpandedNodes();
-  }, [preExpandedIds, data, flattenedItems, fetchChildren, flattenTree, unflattenTree]);
+  }, [preExpandedIds, treeData, fetchChildren]);
 
+  // Handle node expansion/collapse
   const handleToggleExpand = async (item: FlattenedTreeItem) => {
     if (item.isPlaceholder) return;
 
-    // Set the action type to 'expand' to prevent scrolling
-    lastActionRef.current = 'expand';
+    // Set the action to expand to prevent scrolling
+    lastAction.current = 'expand';
 
+    // If already expanded, collapse the node
     if (expandedIds.has(item.id)) {
       const newExpandedIds = new Set(expandedIds);
       newExpandedIds.delete(item.id);
@@ -173,73 +157,54 @@ const TreeView: React.FC<TreeViewProps> = ({
       return;
     }
 
-    if (item.children && item.children.length > 0) {
-      const newExpandedIds = new Set(expandedIds);
-      newExpandedIds.add(item.id);
-      setExpandedIds(newExpandedIds);
-      return;
-    }
+    // Mark as expanded immediately for better UX
+    setExpandedIds(prev => new Set(prev).add(item.id));
 
-    if (item.hasChildren && fetchChildren) {
-      setLoadingIds((prev) => {
-        const newLoadingIds = new Set(prev);
-        newLoadingIds.add(item.id);
-        return newLoadingIds;
-      });
+    // Only fetch children if they haven't been loaded yet
+    if (item.hasChildren && (!item.children || item.children.length === 0) && fetchChildren) {
+      setLoadingIds(prev => new Set(prev).add(item.id));
 
       try {
         const children = await fetchChildren(item.id);
 
-        setFlattenedItems((prevItems) => {
-          const itemIndex = prevItems.findIndex((i) => i.id === item.id);
-          if (itemIndex === -1) return prevItems;
-
-          const newItems = [...prevItems];
-          newItems[itemIndex] = {
-            ...newItems[itemIndex],
-            children
-          };
-
-          return flattenTree(unflattenTree(newItems));
-        });
-
-        setExpandedIds((prev) => {
-          const newExpandedIds = new Set(prev);
-          newExpandedIds.add(item.id);
-          return newExpandedIds;
-        });
+        // Update the tree data with the fetched children
+        setTreeData(prevData => updateNodeInTree(prevData, item.id, node => ({
+          ...node,
+          children
+        })));
       } catch (error) {
         console.error('Error fetching children:', error);
       } finally {
-        setLoadingIds((prev) => {
-          const newLoadingIds = new Set(prev);
-          newLoadingIds.delete(item.id);
-          return newLoadingIds;
+        setLoadingIds(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(item.id);
+          return newSet;
         });
       }
     }
   };
 
+  // Handle node selection
   const handleSelect = (item: FlattenedTreeItem) => {
     if (item.isPlaceholder) return;
 
-    // Set the action type to 'select' to allow scrolling
-    lastActionRef.current = 'select';
+    // Set the action to select to allow scrolling
+    lastAction.current = 'select';
 
     if (onSelect) {
       onSelect(item);
     }
   };
 
-  // Controlled scrolling logic - only scroll when appropriate
+  // Scroll to selected node when selectedId changes, but only if it's from a selection action
   useEffect(() => {
-    // On initial load or when selected ID changes from external source
-    if (selectedId !== prevSelectedIdRef.current) {
-      prevSelectedIdRef.current = selectedId;
+    // Only scroll if the selectedId actually changed
+    if (selectedId !== prevSelectedId.current) {
+      prevSelectedId.current = selectedId;
 
       // Only scroll if this was from a selection action or initial load
-      if (lastActionRef.current === 'select' || lastActionRef.current === 'initial') {
-        const selectedIndex = flattenedItems.findIndex((item) => item.id === selectedId);
+      if ((lastAction.current === 'select' || lastAction.current === 'initial') && selectedId) {
+        const selectedIndex = flattenedItems.findIndex(item => item.id === selectedId);
         if (selectedIndex >= 0 && listRef.current) {
           listRef.current.scrollToRow(selectedIndex);
         }
@@ -247,18 +212,7 @@ const TreeView: React.FC<TreeViewProps> = ({
     }
   }, [selectedId, flattenedItems]);
 
-  // Handle initial scroll to selected node when component mounts
-  useEffect(() => {
-    if (selectedId && lastActionRef.current === 'initial') {
-      const selectedIndex = flattenedItems.findIndex((item) => item.id === selectedId);
-      if (selectedIndex >= 0 && listRef.current) {
-        listRef.current.scrollToRow(selectedIndex);
-        // After initial scroll, update the action ref
-        lastActionRef.current = 'select';
-      }
-    }
-  }, [selectedId, flattenedItems]);
-
+  // Row renderer for the virtualized list
   const rowRenderer = ({ index, key, style }: ListRowProps) => {
     const item = flattenedItems[index];
     return (
@@ -273,7 +227,7 @@ const TreeView: React.FC<TreeViewProps> = ({
   };
 
   return (
-    <div className="w-full h-full min-h-[200px] overflow-hidden border border-gray-200 rounded-md">
+    <div className="w-full h-full min-h-[200px] overflow-hidden border border-gray-200 rounded-md p-2">
       <AutoSizer>
         {({ height, width }) => (
           <List
@@ -281,7 +235,7 @@ const TreeView: React.FC<TreeViewProps> = ({
             height={height}
             width={width}
             rowCount={flattenedItems.length}
-            rowHeight={56}
+            rowHeight={54}
             rowRenderer={rowRenderer}
             overscanRowCount={5}
           />
