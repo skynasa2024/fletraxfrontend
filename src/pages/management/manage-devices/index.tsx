@@ -1,5 +1,5 @@
 import { Paginated } from '@/api/common';
-import { createDevice, DeviceDTO, exportDevicesIntoExcel, getDevices } from '@/api/devices';
+import { createDevice, DeviceDTO, exportDevicesIntoExcel, getDevices, importDevicesFromExcel } from '@/api/devices';
 import { ResponseModel } from '@/api/response';
 import { DataGrid, TDataGridRequestParams } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
@@ -128,6 +128,31 @@ export default function ManageDevices() {
     }
   };
 
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const formData = new FormData();
+    formData.append('file', files[0]);
+
+    try {
+      await importDevicesFromExcel(formData);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.IMPORT_SUCCESS' }, { defaultMessage: 'Import successful' }), {
+        variant: 'success'
+      });
+      fetchDevices();
+    } catch (error) {
+      console.error('Import error:', error);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.IMPORT_ERROR' }, { defaultMessage: 'Failed to import devices' }), {
+        variant: 'error'
+      });
+    } finally {
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   const columns = useMemo<ColumnDef<DeviceDTO>[]>(
     () => [
       {
@@ -223,6 +248,8 @@ export default function ManageDevices() {
                 type="file"
                 className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
                 id="importFile"
+                accept=".xlsx,.xls"
+                onChange={handleImport}
               />
               <button
                 type="button"

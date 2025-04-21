@@ -306,3 +306,11 @@ export const exportDevicesIntoExcel = async (
     headers: response.headers
   };
 };
+
+export const importDevicesFromExcel = async (data: FormData): Promise<void> => {
+  await axios.post('/api/devices/import', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+};

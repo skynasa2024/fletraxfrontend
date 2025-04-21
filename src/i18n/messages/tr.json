@@ -800,5 +800,7 @@
   "NOTIFICATIONS.USER_REQUIRED": "Kullanıcı gereklidir",
   "USER.NO_CHILDREN": "Alt kullanıcı yok",
   "COMMON.EXPORT_SUCCESS": "Export başarıyla tamamlandı",
-  "COMMON.EXPORT_ERROR": "Export işlemi sırasında bir hata oluştu"
+  "COMMON.EXPORT_ERROR": "Export işlemi sırasında bir hata oluştu",
+  "COMMON.IMPORT_SUCCESS": "İçeri aktarma işlemi başarıyla tamamlandı",
+  "COMMON.IMPORT_ERROR": "İçeri aktarma işlemi sırasında bir hata oluştu"
 }

@@ -791,5 +791,7 @@
   "NOTIFICATIONS.USER_REQUIRED": "User is required",
   "USER.NO_CHILDREN": "No children",
   "COMMON.EXPORT_SUCCESS": "Exported successfully",
-  "COMMON.EXPORT_ERROR": "Export error"
+  "COMMON.EXPORT_ERROR": "Export error",
+  "COMMON.IMPORT_SUCCESS": "Imported successfully",
+  "COMMON.IMPORT_ERROR": "Import error"
 }

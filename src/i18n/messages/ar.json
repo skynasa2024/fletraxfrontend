@@ -789,5 +789,7 @@
   "NOTIFICATIONS.USER_REQUIRED": "المستخدم مطلوب",
   "USER.NO_CHILDREN": "لا يوجد مستخدمين فرعيين",
   "COMMON.EXPORT_SUCCESS": "تم تصدير البيانات بنجاح",
-  "COMMON.EXPORT_ERROR": "حدث خطأ أثناء تصدير البيانات"
+  "COMMON.EXPORT_ERROR": "حدث خطأ أثناء تصدير البيانات",
+  "COMMON.IMPORT_SUCCESS": "تم استيراد البيانات بنجاح",
+  "COMMON.IMPORT_ERROR": "حدث خطأ أثناء استيراد البيانات"
 }
