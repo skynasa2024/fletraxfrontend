@@ -30,21 +30,16 @@ export const MENU_SIDEBAR: TMenuConfig = [
     path: '/reports'
   },
   {
-    title: 'SIDEBAR.MENU.MANAGEMENT',
-    externalIcon: 'reports',
+    title: 'SIDEBAR.MENU.MANAGEMENT.NOTIFICATIONS',
+    path: '/management/notifications',
     role: 'admin',
-    children: [
-      {
-        title: 'SIDEBAR.MENU.MANAGEMENT.USERS_AND_DEVICES',
-        path: '/management',
-        role: 'admin'
-      },
-      {
-        title: 'SIDEBAR.MENU.MANAGEMENT.NOTIFICATIONS',
-        path: '/management/notifications',
-        role: 'admin'
-      }
-    ]
+    externalIcon: 'reports',
+  },
+  {
+    title: 'SIDEBAR.MENU.MANAGEMENT',
+    path: '/management',
+    role: 'admin',
+    externalIcon: 'reports',
   },
   {
     title: 'SIDEBAR.MENU.GEOFENCE',

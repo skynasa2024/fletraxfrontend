@@ -124,7 +124,6 @@
   "DASHBOARD.NOTIFICATIONS.ERROR": "Bildirimler yüklenirken hata oluştu",
   "DASHBOARD.NOTIFICATIONS.MARK_ALL_READ": "Tümünü okundu olarak işaretle",
   "MANAGEMENT.DEVICES.TOOLBAR.DESCRIPTION": "Yönetim / Cihazlar",
-  "MANAGEMENT.NOTIFICATIONS.TOOLBAR.DESCRIPTION": "Yönetim / Bildirimler",
   "MANAGEMENT.USERS.TOOLBAR.DESCRIPTION": "Yönetim / Kullanıcılar",
   "NOTIFICATIONS.VEHICLE_PLATE": "{plate}",
   "NOTIFICATIONS.DEVICE_IMEI": "{imei}",

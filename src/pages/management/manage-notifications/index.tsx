@@ -174,8 +174,7 @@ export default function ManageNotifications() {
     <Container>
       <Toolbar>
         <ToolbarHeading
-          title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT" />}
-          description={<FormattedMessage id="MANAGEMENT.NOTIFICATIONS.TOOLBAR.DESCRIPTION" />}
+          title={<FormattedMessage id="SIDEBAR.MENU.MANAGEMENT.NOTIFICATIONS" />}
         />
       </Toolbar>
 
