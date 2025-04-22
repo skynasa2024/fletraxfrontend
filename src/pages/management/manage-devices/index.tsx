@@ -8,7 +8,7 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { EditDeviceModal } from '@/pages/management/blocks/EditDeviceModal';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
-import { toAbsoluteUrl } from '@/utils';
+import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
 import { Download, Upload } from 'lucide-react';
@@ -101,21 +101,7 @@ export default function ManageDevices() {
 
       const response = await exportDevicesIntoExcel(exportParams);
 
-      const blob = new Blob([response.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      document.body.appendChild(a);
-      a.click();
-
-      setTimeout(() => {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 100);
+      downloadFile(response);
 
       enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
         variant: 'success'

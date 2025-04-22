@@ -46,3 +46,19 @@ export const arrayToFormData = (data: Record<string, any>[], mainKey: string) =>
   });
   return formData;
 };
+export const downloadFile = async (response: Blob) => {
+  const blob = new Blob([response], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  document.body.appendChild(a);
+  a.click();
+
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 100);
+};

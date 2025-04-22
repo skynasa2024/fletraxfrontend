@@ -274,9 +274,7 @@ export const reverseGeoLocation = async (
   return location.data.display_name;
 };
 
-export const exportDevicesIntoExcel = async (
-  params: TDataGridRequestParams
-): Promise<{ data: Blob; headers: any }> => {
+export const exportDevicesIntoExcel = async (params: TDataGridRequestParams): Promise<Blob> => {
   const filters =
     params.filters?.reduce(
       (acc, filter) => {
@@ -296,15 +294,12 @@ export const exportDevicesIntoExcel = async (
     reportType: 'devices'
   };
 
-  const response = await axios.get('/api/devices/export', {
+  const response = await axios.get<Blob>('/api/devices/export', {
     responseType: 'blob',
     params: requestParams
   });
 
-  return {
-    data: response.data,
-    headers: response.headers
-  };
+  return response.data;
 };
 
 export const importDevicesFromExcel = async (data: FormData): Promise<void> => {
