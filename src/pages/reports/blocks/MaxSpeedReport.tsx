@@ -1,13 +1,15 @@
-import { getMaxSpeedReport, IMaxSpeedReport } from '@/api/reports';
+import { exportMaxSpeedReport, getMaxSpeedReport, IMaxSpeedReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useIntl } from 'react-intl';
-import { toAbsoluteUrl } from '@/utils';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
+import { Download } from 'lucide-react';
+import { enqueueSnackbar } from 'notistack';
 
 export default function MaxSpeedReport() {
   const intl = useIntl();
@@ -86,6 +88,40 @@ export default function MaxSpeedReport() {
     });
   };
 
+  const handleExport = async () => {
+    const formData = new FormData();
+    formData.append('ident', filters.ident || '');
+    formData.append('startDate', filters.startDate || '');
+    formData.append('endDate', filters.endDate || '');
+    formData.append('intervalType', filters.type || '');
+    formData.append('startTime', filters.startTime || '');
+    formData.append('endTime', filters.endTime || '');
+    try {
+
+      const response = await exportMaxSpeedReport({
+        pageIndex: 0,
+        pageSize: 0,
+        startDate: filters.startDate || '',
+        endDate: filters.endDate || '',
+        startTime: filters.startTime || '',
+        endTime: filters.endTime || '',
+        sort: 'ident,desc',
+        ident: filters.ident || '',
+      });
+      downloadFile(response);
+
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
+        variant: 'error'
+      });
+    }
+
+  };
+
   return (
     <>
       <form onSubmit={handleSearch}>
@@ -125,11 +161,21 @@ export default function MaxSpeedReport() {
               defaultValue={filters.endTime}
             />
           </div>
+          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+            onClick={handleExport}
+            type='button'
+          >
+            <Download size={16} />
+            <span>
+              <FormattedMessage id="COMMON.EXPORT" />
+            </span>
+          </button>
           <button type="submit" className="btn btn-info w-28 items-center justify-center">
             <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
           </button>
         </div>
       </form>
+
       <div className="report-table-container">
         <DataGrid
           rowSelect

@@ -278,7 +278,7 @@ type MaxSpeedParams = {
   endTime: string;
   sort: string;
   ident: string;
-  minSpeed: number;
+  minSpeed?: number;
 };
 
 export interface IMaxSpeedReport {
@@ -326,3 +326,22 @@ export async function getMaxSpeedReport(
     totalCount: report.data.result.totalElements
   };
 }
+
+export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob> => {
+  const response = await axios.get<Blob>('/api/messages/export', {
+    responseType: 'blob',
+    params: {
+      startDate: params.startDate,
+      endDate: params.endDate,
+      startTime: params.startTime,
+      endTime: params.endTime,
+      ident: params.ident,
+      minSpeed: params.minSpeed,
+      sort: params.sort,
+      page: params.pageIndex,
+      size: params.pageSize,
+      reportType: 'max_speed'
+    }
+  });
+  return response.data;
+};
