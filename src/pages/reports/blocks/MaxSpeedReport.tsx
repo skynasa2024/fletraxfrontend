@@ -89,15 +89,7 @@ export default function MaxSpeedReport() {
   };
 
   const handleExport = async () => {
-    const formData = new FormData();
-    formData.append('ident', filters.ident || '');
-    formData.append('startDate', filters.startDate || '');
-    formData.append('endDate', filters.endDate || '');
-    formData.append('intervalType', filters.type || '');
-    formData.append('startTime', filters.startTime || '');
-    formData.append('endTime', filters.endTime || '');
     try {
-
       const response = await exportMaxSpeedReport({
         pageIndex: 0,
         pageSize: 0,

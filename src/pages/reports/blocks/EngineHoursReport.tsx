@@ -1,15 +1,17 @@
-import { EngineHoursStatisticsReport, getStatisticsReport } from '@/api/reports';
+import { EngineHoursStatisticsReport, exportStatisticsReport, getStatisticsReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { toAbsoluteUrl } from '@/utils';
+import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { Link } from 'react-router';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 import clsx from 'clsx';
+import { enqueueSnackbar } from 'notistack';
+import { Download } from 'lucide-react';
 
 type GroupByOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 
@@ -17,23 +19,23 @@ const groupByOptions: {
   label: React.ReactNode;
   value: GroupByOption;
 }[] = [
-  {
-    label: <FormattedMessage id="REPORTS.COLUMN.Daily" />,
-    value: 'Daily'
-  },
-  {
-    label: <FormattedMessage id="REPORTS.COLUMN.WEEKLY" />,
-    value: 'Weekly'
-  },
-  {
-    label: <FormattedMessage id="REPORTS.COLUMN.MONTHLY" />,
-    value: 'Monthly'
-  },
-  {
-    label: <FormattedMessage id="REPORTS.COLUMN.YEARLY" />,
-    value: 'Yearly'
-  }
-];
+    {
+      label: <FormattedMessage id="REPORTS.COLUMN.Daily" />,
+      value: 'Daily'
+    },
+    {
+      label: <FormattedMessage id="REPORTS.COLUMN.WEEKLY" />,
+      value: 'Weekly'
+    },
+    {
+      label: <FormattedMessage id="REPORTS.COLUMN.MONTHLY" />,
+      value: 'Monthly'
+    },
+    {
+      label: <FormattedMessage id="REPORTS.COLUMN.YEARLY" />,
+      value: 'Yearly'
+    }
+  ];
 
 export default function EngineHoursReport() {
   const intl = useIntl();
@@ -84,6 +86,31 @@ export default function EngineHoursReport() {
     return res;
   };
 
+  const handleExport = async () => {
+    try {
+      const response = await exportStatisticsReport({
+        vehicleId: filters.vehicleId,
+        ident: filters.ident,
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+        type: 'engineHours' as "EngineHours",
+        pageIndex: 0,
+        pageSize: 100,
+        sort: 'date,desc'
+      });
+      downloadFile(response);
+
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
+        variant: 'error'
+      });
+    }
+  }
+
   const columns = useMemo<ColumnDef<EngineHoursStatisticsReport>[]>(
     () => [
       {
@@ -104,35 +131,35 @@ export default function EngineHoursReport() {
       },
       ...(selectedGroup === 'Daily'
         ? [
-            {
-              accessorKey: 'dailyEngineHours',
-              header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
-            }
-          ]
+          {
+            accessorKey: 'dailyEngineHours',
+            header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
+          }
+        ]
         : []),
       ...(selectedGroup === 'Weekly'
         ? [
-            {
-              accessorKey: 'weeklyEngineHours',
-              header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
-            }
-          ]
+          {
+            accessorKey: 'weeklyEngineHours',
+            header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
+          }
+        ]
         : []),
       ...(selectedGroup === 'Monthly'
         ? [
-            {
-              accessorKey: 'monthlyEngineHours',
-              header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
-            }
-          ]
+          {
+            accessorKey: 'monthlyEngineHours',
+            header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
+          }
+        ]
         : []),
       ...(selectedGroup === 'Yearly'
         ? [
-            {
-              accessorKey: 'yearlyEngineHours',
-              header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
-            }
-          ]
+          {
+            accessorKey: 'yearlyEngineHours',
+            header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
+          }
+        ]
         : []),
       {
         accessorKey: 'totalEngineHours',
@@ -162,8 +189,9 @@ export default function EngineHoursReport() {
     const formData = new FormData(e.currentTarget);
     updateFilters({
       vehicleId: formData.get('vehicleId')?.toString() || '',
+      ident: formData.get('ident')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
-      endDate: formData.get('endDate')?.toString() || ''
+      endDate: formData.get('endDate')?.toString() || '',
     });
   };
 
@@ -191,6 +219,15 @@ export default function EngineHoursReport() {
                 defaultValue={filters.endDate}
               />
             </div>
+            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+              onClick={handleExport}
+              type='button'
+            >
+              <Download size={16} />
+              <span>
+                <FormattedMessage id="COMMON.EXPORT" />
+              </span>
+            </button>
             <button type="submit" className="btn btn-info w-28 items-center justify-center">
               <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
             </button>
@@ -207,7 +244,7 @@ export default function EngineHoursReport() {
               title={
                 !filters.vehicleId
                   ? intl.formatMessage({ id: 'REPORTS.SELECT_VEHICLE_FIRST' }) ||
-                    'Please select a vehicle first to filter by group'
+                  'Please select a vehicle first to filter by group'
                   : ''
               }
             >

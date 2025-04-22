@@ -62,6 +62,7 @@ type StatisticsReport = MileageStatisticsReport | EngineHoursStatisticsReport;
 
 export type StatisticsReportParams = {
   vehicleId?: string;
+  ident?: string;
   startDate?: string;
   endDate?: string;
   type: 'Mileage' | 'EngineHours';
@@ -341,6 +342,22 @@ export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob
       page: params.pageIndex,
       size: params.pageSize,
       reportType: 'max_speed'
+    }
+  });
+  return response.data;
+};
+
+export const exportStatisticsReport = async (params: StatisticsReportParams): Promise<Blob> => {
+  const response = await axios.get<Blob>(`/api/statistics/export`, {
+    responseType: 'blob',
+    params: {
+      vehicleId: params.vehicleId,
+      ident: params.ident,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      type: params.type,
+      page: params.pageIndex,
+      size: params.pageSize
     }
   });
   return response.data;
