@@ -362,3 +362,21 @@ export const exportStatisticsReport = async (params: StatisticsReportParams): Pr
   });
   return response.data;
 };
+
+export const exportTripsAndParkingReport = async (
+  params: TripsAndParkingReportParams
+): Promise<Blob> => {
+  const response = await axios.get<Blob>(`/api/intervals/export`, {
+    responseType: 'blob',
+    params: {
+      vehicleId: params.vehicleId,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      intervalType: params.intervalType,
+      page: params.pageIndex,
+      size: params.pageSize,
+      reportType: 'intervals'
+    }
+  });
+  return response.data;
+};

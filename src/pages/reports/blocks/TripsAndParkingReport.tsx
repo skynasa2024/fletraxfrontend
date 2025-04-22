@@ -1,16 +1,18 @@
-import { getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
+import { exportTripsAndParkingReport, getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
-import { useIntl } from 'react-intl';
-import { toAbsoluteUrl } from '@/utils';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { formatInTimeZone } from 'date-fns-tz';
 import { IntervalType } from '@/api/trips';
 import { useAuthContext } from '@/auth';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
+import { Download } from 'lucide-react';
+import { enqueueSnackbar } from 'notistack';
 
 const IntervalTypeOptions = [
   { label: 'Trip', value: IntervalType.Trip },
@@ -24,6 +26,30 @@ export default function TripsAndParkingReport() {
   const { handleFetchWithSort } = useReportSorting({
     defaultSort: 'startTime,desc'
   });
+
+  const handleExport = async () => {
+    try {
+      const response = await exportTripsAndParkingReport({
+        pageIndex: 0,
+        pageSize: 100,
+        intervalType: filters.type as IntervalType,
+        vehicleId: filters.vehicleId,
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+        sort: 'startTime,desc'
+      });
+      downloadFile(response);
+
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
+        variant: 'success'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
+        variant: 'error'
+      });
+    }
+  }
 
   const columns = useMemo<ColumnDef<ITripsAndParkingReport>[]>(
     () => [
@@ -137,6 +163,15 @@ export default function TripsAndParkingReport() {
               defaultValue={filters.endDate}
             />
           </div>
+          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+            onClick={handleExport}
+            type='button'
+          >
+            <Download size={16} />
+            <span>
+              <FormattedMessage id="COMMON.EXPORT" />
+            </span>
+          </button>
           <button type="submit" className="btn btn-info w-28 items-center justify-center">
             <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
           </button>
