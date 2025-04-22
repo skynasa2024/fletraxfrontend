@@ -380,3 +380,18 @@ export const exportTripsAndParkingReport = async (
   });
   return response.data;
 };
+
+export const exportAlarmReport = async (params: AlarmReportParams): Promise<Blob> => {
+  const response = await axios.get<Blob>(`/api/notifications/export`, {
+    responseType: 'blob',
+    params: {
+      vehicleId: params.vehicleId,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      page: params.pageIndex,
+      size: params.pageSize,
+      reportType: 'notifications'
+    }
+  });
+  return response.data;
+};
