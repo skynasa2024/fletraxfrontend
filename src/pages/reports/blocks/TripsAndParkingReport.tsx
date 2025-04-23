@@ -123,6 +123,7 @@ export default function TripsAndParkingReport() {
         cell: ({ row }) => (
           <MapModal
             pointsList={row.original.intervalType === 'Trip' ? row.original.pointsList : undefined}
+            reportType={row.original.intervalType === 'Trip' ? 'trip' : 'parking'}
             position={
               row.original.intervalType === 'Parking'
                 ? {

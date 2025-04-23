@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 import { useIntl } from 'react-intl';
 import L, { LatLngExpression } from 'leaflet';
-import { Marker, Polyline, useMap } from 'react-leaflet';
+import { Marker, Polyline, Popup, Tooltip, useMap } from 'react-leaflet';
 import ParkingMarker from '@/pages/replay/components/ParkingMarker';
 import { TripPoint } from '@/api/trips';
 
@@ -15,9 +15,11 @@ type MapModalProps = {
     latitude: number;
     longitude: number;
   };
+  speed?: number;
+  reportType: 'trip' | 'parking' | 'max_speed';
 };
 
-export default function MapModal({ pointsList, position }: MapModalProps) {
+export default function MapModal({ pointsList, position, speed, reportType }: MapModalProps) {
   const intl = useIntl();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -34,8 +36,15 @@ export default function MapModal({ pointsList, position }: MapModalProps) {
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="w-[500px] h-[500px] card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-dark rounded-lg shadow-lg p-4 flex justify-center items-center">
           <AppMap mapControlSize="small">
-            {!!position && <ParkingIntervalMarker position={position} />}
-            {!!pointsList && <TripIntervalLayer pointsList={pointsList} />}
+            {!!position && reportType === 'parking' && (
+              <ParkingIntervalMarker position={position} />
+            )}
+
+            {!!pointsList && reportType === 'trip' && <TripIntervalLayer pointsList={pointsList} />}
+
+            {!!position && reportType === 'max_speed' && (
+              <MaxSpeedMarker position={position} speed={speed || 0} />
+            )}
           </AppMap>
         </div>
       </Modal>
@@ -143,5 +152,56 @@ function TripIntervalLayer({ pointsList }: TripIntervalMarkerProps) {
 
       {endPoint && <Marker position={endPoint} icon={iconEndTrip} />}
     </>
+  );
+}
+
+type MaxSpeedMarkerProps = {
+  position: {
+    latitude: number;
+    longitude: number;
+  };
+  speed: number;
+};
+
+function MaxSpeedMarker({ position, speed }: MaxSpeedMarkerProps) {
+  const map = useMap();
+
+  const createParkingIcon = useCallback(() => {
+    const svgString = renderToString(<ParkingMarker color={'#FF0000'} letter="!" />);
+
+    return L.divIcon({
+      html: svgString,
+      className: '',
+      iconSize: [30, 31],
+      iconAnchor: [15, 31]
+    });
+  }, []);
+
+  useEffect(() => {
+    if (position && position.latitude && position.longitude) {
+      map.setView([position.latitude, position.longitude], 15);
+    }
+  }, [position, map]);
+
+  if (
+    !position ||
+    typeof position.latitude !== 'number' ||
+    typeof position.longitude !== 'number'
+  ) {
+    return null;
+  }
+
+  return (
+    <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()}>
+      <Tooltip
+        direction="top"
+        offset={[0, -30]}
+        permanent
+        interactive
+        className="bg-white rounded-lg shadow-lg p-2 opacity-100 flex text-center font-semibold text-gray-800 text-md"
+      >
+        <div className="min-w-36 flex flex-col gap-2">{speed} km/h</div>
+      </Tooltip>
+    </Marker>
   );
 }

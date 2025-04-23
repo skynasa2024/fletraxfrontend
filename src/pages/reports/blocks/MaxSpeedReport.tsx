@@ -10,6 +10,7 @@ import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 import { Download } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
+import MapModal from '../components/MapModal';
 
 export default function MaxSpeedReport() {
   const intl = useIntl();
@@ -58,16 +59,15 @@ export default function MaxSpeedReport() {
       },
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
-        cell: () => (
-          <button
-            className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-            title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
-          >
-            <img
-              src={toAbsoluteUrl('/media/icons/view-light.svg')}
-              alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-            />
-          </button>
+        cell: ({ row }) => (
+          <MapModal
+            position={{
+              latitude: row.original.positionLatitude,
+              longitude: row.original.positionLongitude
+            }}
+            speed={row.original.positionSpeed}
+            reportType="max_speed"
+          />
         )
       }
     ],
@@ -98,20 +98,31 @@ export default function MaxSpeedReport() {
         startTime: filters.startTime || '',
         endTime: filters.endTime || '',
         sort: 'ident,desc',
-        ident: filters.ident || '',
+        ident: filters.ident || ''
       });
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
-
   };
 
   return (
@@ -153,9 +164,10 @@ export default function MaxSpeedReport() {
               defaultValue={filters.endTime}
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
             onClick={handleExport}
-            type='button'
+            type="button"
           >
             <Download size={16} />
             <span>
@@ -173,15 +185,18 @@ export default function MaxSpeedReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={(params) =>
-            handleFetchWithSort(
-              params,
-              {
-                ...filters,
-                intervalType: filters.type
-              },
-              getMaxSpeedReport
-            )
+          onFetchData={
+            filters.ident
+              ? (params) =>
+                  handleFetchWithSort(
+                    params,
+                    {
+                      ...filters,
+                      intervalType: filters.type
+                    },
+                    getMaxSpeedReport
+                  )
+              : undefined
           }
           filters={getDataGridFilters()}
           pagination={{
