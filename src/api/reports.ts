@@ -1,7 +1,7 @@
 import { axios } from './axios';
 import { Paginated } from './common';
 import { PaginatedResponseModel } from './response';
-import { IntervalType } from './trips';
+import { IntervalType, TripPoint } from './trips';
 import { format } from 'date-fns';
 
 interface StatisticsReportDTO {
@@ -135,7 +135,7 @@ interface TripsAndParkingReportDTO {
   startLongitude: number;
   endLatitude: number;
   endLongitude: number;
-  pointsList: any[];
+  pointsList: TripPoint[];
   totalDistance: number;
   foramtedTotalDistance: string;
   totalDuration: number;
@@ -159,6 +159,9 @@ export interface ITripsAndParkingReport {
   foramtedTotalDistance: string;
   formatedTotalDuration: string;
   formatedMaxSpeed: string;
+  pointsList: TripPoint[];
+  startLatitude: number;
+  startLongitude: number;
 }
 
 export type TripsAndParkingReportParams = {
@@ -199,7 +202,10 @@ export async function getTripsAndParkingReport(
       endTime: item.endTime,
       foramtedTotalDistance: item.foramtedTotalDistance,
       formatedTotalDuration: item.formatedTotalDuration,
-      formatedMaxSpeed: item.formatedMaxSpeed
+      formatedMaxSpeed: item.formatedMaxSpeed,
+      pointsList: item.pointsList,
+      startLatitude: item.startLatitude,
+      startLongitude: item.startLongitude
     })),
     totalCount: report.data.result.totalElements
   };

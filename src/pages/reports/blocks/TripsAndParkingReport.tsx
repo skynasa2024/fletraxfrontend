@@ -1,4 +1,8 @@
-import { exportTripsAndParkingReport, getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
+import {
+  exportTripsAndParkingReport,
+  getTripsAndParkingReport,
+  ITripsAndParkingReport
+} from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
@@ -13,6 +17,7 @@ import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 import { Download } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
+import MapModal from '../components/MapModal';
 
 const IntervalTypeOptions = [
   { label: 'Trip', value: IntervalType.Trip },
@@ -40,16 +45,28 @@ export default function TripsAndParkingReport() {
       });
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
-  }
+  };
 
   const columns = useMemo<ColumnDef<ITripsAndParkingReport>[]>(
     () => [
@@ -103,16 +120,18 @@ export default function TripsAndParkingReport() {
       },
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
-        cell: () => (
-          <button
-            className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-            title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
-          >
-            <img
-              src={toAbsoluteUrl('/media/icons/view-light.svg')}
-              alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-            />
-          </button>
+        cell: ({ row }) => (
+          <MapModal
+            pointsList={row.original.intervalType === 'Trip' ? row.original.pointsList : undefined}
+            position={
+              row.original.intervalType === 'Parking'
+                ? {
+                    latitude: row.original.startLatitude,
+                    longitude: row.original.startLongitude
+                  }
+                : undefined
+            }
+          />
         )
       }
     ],
@@ -163,9 +182,10 @@ export default function TripsAndParkingReport() {
               defaultValue={filters.endDate}
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
             onClick={handleExport}
-            type='button'
+            type="button"
           >
             <Download size={16} />
             <span>

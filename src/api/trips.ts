@@ -27,7 +27,7 @@ interface TripDTO {
   totalIdling: number | null;
 }
 
-interface TripPoint {
+export interface TripPoint {
   latitude: number;
   longitude: number;
   timestamp: number;
