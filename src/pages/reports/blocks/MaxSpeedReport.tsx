@@ -203,6 +203,9 @@ export default function MaxSpeedReport() {
             size: 100,
             sizes: undefined
           }}
+          messages={{
+            empty: !filters.ident ? intl.formatMessage({ id: 'COMMON.SELECT_VEHICLE' }) : undefined
+          }}
         />
       </div>
     </>

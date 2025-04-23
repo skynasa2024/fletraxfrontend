@@ -793,5 +793,6 @@
   "COMMON.EXPORT_SUCCESS": "Exported successfully",
   "COMMON.EXPORT_ERROR": "Export error",
   "COMMON.IMPORT_SUCCESS": "Imported successfully",
-  "COMMON.IMPORT_ERROR": "Import error"
+  "COMMON.IMPORT_ERROR": "Import error",
+  "COMMON.SELECT_VEHICLE": "Select a vehicle"
 }
