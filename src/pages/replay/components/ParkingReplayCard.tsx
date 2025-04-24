@@ -43,7 +43,7 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
               <FormattedMessage id="REPLAY.PARKING.PARKED" />
             </div>
             <div className="text-xs text-gray-600 dark:text-white/80">
-              {parking.formatedTotalDuration}
+              {parking.formatedTotalDuration.replace(/\s\d+\s\w+$/, '')}
             </div>
           </div>
           <div className="flex flex-col justify-center items-center gap-1">
