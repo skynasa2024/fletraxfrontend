@@ -1,18 +1,27 @@
-import { exportTripsAndParkingReport, getTripsAndParkingReport, ITripsAndParkingReport } from '@/api/reports';
+import {
+  exportTripsAndParkingReport,
+  getTripsAndParkingReport,
+  ITripsAndParkingReport
+} from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { formatInTimeZone } from 'date-fns-tz';
-import { IntervalType } from '@/api/trips';
+import { IntervalType, TripPoint } from '@/api/trips';
 import { useAuthContext } from '@/auth';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 import { Download } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
+import MapModal from '../components/MapModal';
+import { Marker, Polyline, useMap } from 'react-leaflet';
+import { renderToString } from 'react-dom/server';
+import ParkingMarker from '@/pages/replay/components/ParkingMarker';
+import L, { LatLngExpression } from 'leaflet';
 
 const IntervalTypeOptions = [
   { label: 'Trip', value: IntervalType.Trip },
@@ -40,16 +49,28 @@ export default function TripsAndParkingReport() {
       });
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
-  }
+  };
 
   const columns = useMemo<ColumnDef<ITripsAndParkingReport>[]>(
     () => [
@@ -103,16 +124,20 @@ export default function TripsAndParkingReport() {
       },
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
-        cell: () => (
-          <button
-            className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-            title={intl.formatMessage({ id: 'VEHICLE.GRID.ACTION.VIEW' })}
-          >
-            <img
-              src={toAbsoluteUrl('/media/icons/view-light.svg')}
-              alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-            />
-          </button>
+        cell: ({ row }) => (
+          <MapModal>
+            {row.original.intervalType === 'Parking' && (
+              <ParkingIntervalMarker
+                position={{
+                  latitude: row.original.startLatitude,
+                  longitude: row.original.startLongitude
+                }}
+              />
+            )}
+            {row.original.intervalType === 'Trip' && (
+              <TripIntervalLayer pointsList={row.original.pointsList} />
+            )}
+          </MapModal>
         )
       }
     ],
@@ -163,9 +188,10 @@ export default function TripsAndParkingReport() {
               defaultValue={filters.endDate}
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
             onClick={handleExport}
-            type='button'
+            type="button"
           >
             <Download size={16} />
             <span>
@@ -199,6 +225,98 @@ export default function TripsAndParkingReport() {
           }}
         />
       </div>
+    </>
+  );
+}
+
+type ParkingIntervalMarkerProps = {
+  position: {
+    latitude: number;
+    longitude: number;
+  };
+};
+
+function ParkingIntervalMarker({ position }: ParkingIntervalMarkerProps) {
+  const map = useMap();
+
+  const createParkingIcon = useCallback(() => {
+    const svgString = renderToString(<ParkingMarker color={'#FF0000'} />);
+
+    return L.divIcon({
+      html: svgString,
+      className: '',
+      iconSize: [30, 31],
+      iconAnchor: [15, 31]
+    });
+  }, []);
+
+  useEffect(() => {
+    if (position && position.latitude && position.longitude) {
+      map.setView([position.latitude, position.longitude], 15);
+    }
+  }, [position, map]);
+
+  if (
+    !position ||
+    typeof position.latitude !== 'number' ||
+    typeof position.longitude !== 'number'
+  ) {
+    return null;
+  }
+
+  return <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()} />;
+}
+
+type TripIntervalMarkerProps = {
+  pointsList: TripPoint[];
+};
+
+function TripIntervalLayer({ pointsList }: TripIntervalMarkerProps) {
+  const map = useMap();
+  const route: LatLngExpression[] = pointsList
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .map((point) => [point.latitude, point.longitude]);
+  const bounds = L.latLngBounds(route);
+  const startPoint = route[0];
+  const endPoint = route[route.length - 1];
+
+  const iconStartTrip = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/trip-start.svg'),
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+      }),
+    []
+  );
+
+  const iconEndTrip = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/trip-end.svg'),
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      }),
+    []
+  );
+
+  useEffect(() => {
+    if (bounds) {
+      map.fitBounds(bounds, { padding: [20, 20] });
+    }
+  }, [bounds, map]);
+
+  if (!pointsList || pointsList.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <Polyline color="#5271FF" weight={5} positions={route} />
+
+      {startPoint && <Marker position={startPoint} icon={iconStartTrip} />}
+
+      {endPoint && <Marker position={endPoint} icon={iconEndTrip} />}
     </>
   );
 }
