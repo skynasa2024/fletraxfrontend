@@ -32,7 +32,7 @@ export const ReplayPlaybackCard = () => {
     messagePoints
   } = useReplayAnimationContext();
   const { currentUser } = useAuthContext();
-  const { replayData, selectedTrip } = useReplayContext();
+  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
 
   const handleIncreasePlayBackSpeed = () => {
     const currentIdx = MultiplierOptions.indexOf(multiplier);

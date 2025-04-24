@@ -10,7 +10,7 @@ type TripReplayCardProps = {
 };
 
 export default function TripReplayCard({ trip }: TripReplayCardProps) {
-  const { selectedTrip, setSelectedTrip } = useReplayContext();
+  const { selectedIntervals: selectedTrip, setSelectedIntervals: setSelectedTrip } = useReplayContext();
   const { currentUser } = useAuthContext();
 
   // Safely get timezone with fallback

@@ -10,7 +10,7 @@ type ParkingReplayCardProps = {
 };
 
 export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
-  const { selectedTrip, setSelectedTrip } = useReplayContext();
+  const { selectedIntervals: selectedTrip, setSelectedIntervals: setSelectedTrip } = useReplayContext();
   const { currentUser } = useAuthContext();
 
   const timezone = currentUser?.timezone || 'UTC';

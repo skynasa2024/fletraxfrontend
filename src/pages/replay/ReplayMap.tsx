@@ -10,7 +10,7 @@ import { ReplayPlaybackCard } from './blocks/ReplayPlaybackCard';
 import { IntervalType } from '@/api/trips';
 
 const ReplayMap = () => {
-  const { replayData, selectedTrip } = useReplayContext();
+  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
   const intl = useIntl();
 
   return (

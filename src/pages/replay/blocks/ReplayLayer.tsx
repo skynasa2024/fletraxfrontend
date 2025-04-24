@@ -15,7 +15,7 @@ import { renderToString } from 'react-dom/server';
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
-  const { replayData, selectedTrip } = useReplayContext();
+  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
   const { currentPointIndex, messagePoints } = useReplayAnimationContext();
   const [openPopupId, setOpenPopupId] = useState<string | null>(null);
   const markerRefs = useRef<{ [key: string]: L.Marker | null }>({});

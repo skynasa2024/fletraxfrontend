@@ -1,4 +1,5 @@
 import { IReplay, ReplayDTO, searchReplays, SearchTripsParams } from '@/api/replay';
+import useQueryParam from '@/hooks/useQueryParam';
 import {
   createContext,
   PropsWithChildren,
@@ -7,23 +8,23 @@ import {
   useEffect,
   useState
 } from 'react';
-import { useSearchParams } from 'react-router-dom';
+
 interface ReplayContextProps {
   searchDeviceQuery: string;
   setSearchDeviceQuery: (query: string) => void;
   startDate?: string;
-  setStartDate: (date: string | undefined) => void;
+  setStartDate: (date: string) => void;
   endDate?: string;
-  setEndDate: (date: string | undefined) => void;
+  setEndDate: (date: string) => void;
   startTime?: string;
-  setStartTime: (time: string | undefined) => void;
+  setStartTime: (time: string) => void;
   endTime?: string;
-  setEndTime: (time: string | undefined) => void;
+  setEndTime: (time: string) => void;
   search: () => void;
   replayData?: IReplay;
   loading: boolean;
-  selectedTrip?: ReplayDTO;
-  setSelectedTrip: (trip?: ReplayDTO) => void;
+  selectedIntervals?: ReplayDTO;
+  setSelectedIntervals: (trip?: ReplayDTO) => void;
 }
 
 const ReplayContext = createContext<ReplayContextProps>({
@@ -39,91 +40,23 @@ const ReplayContext = createContext<ReplayContextProps>({
   setEndTime: () => {},
   search: () => {},
   loading: false,
-  setSelectedTrip: () => {}
+  selectedIntervals: undefined,
+  setSelectedIntervals: () => {}
 });
 
 export const ReplayProvider = ({ children }: PropsWithChildren) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    value: searchDeviceQuery,
+    setValue: _setSearchDeviceQuery,
+    setSearchParam: setSearchDeviceQuery
+  } = useQueryParam('device');
+  const { value: startDate, setSearchParam: setStartDate } = useQueryParam('startDate');
+  const { value: endDate, setSearchParam: setEndDate } = useQueryParam('endDate');
+  const { value: startTime, setSearchParam: setStartTime } = useQueryParam('startTime');
+  const { value: endTime, setSearchParam: setEndTime } = useQueryParam('endTime');
   const [replayData, setReplayData] = useState<IReplay>();
   const [loading, setLoading] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState<ReplayDTO>();
-
-  // Device query
-  const [searchDeviceQuery, _setSearchDeviceQuery] = useState(searchParams.get('device') ?? '');
-  const setSearchDeviceQuery = useCallback(
-    (query: string) => {
-      setSearchParams((params) => {
-        if (!query) {
-          params.delete('device');
-          return params;
-        }
-        params.set('device', query);
-        return params;
-      });
-    },
-    [setSearchParams]
-  );
-
-  // Date and time parameters
-  const startDate = searchParams.get('startDate') || undefined;
-  const setStartDate = useCallback(
-    (date: string | undefined) => {
-      setSearchParams((params) => {
-        if (!date) {
-          params.delete('startDate');
-          return params;
-        }
-        params.set('startDate', date);
-        return params;
-      });
-    },
-    [setSearchParams]
-  );
-
-  const endDate = searchParams.get('endDate') || undefined;
-  const setEndDate = useCallback(
-    (date: string | undefined) => {
-      setSearchParams((params) => {
-        if (!date) {
-          params.delete('endDate');
-          return params;
-        }
-        params.set('endDate', date);
-        return params;
-      });
-    },
-    [setSearchParams]
-  );
-
-  const startTime = searchParams.get('startTime') || undefined;
-  const setStartTime = useCallback(
-    (time: string | undefined) => {
-      setSearchParams((params) => {
-        if (!time) {
-          params.delete('startTime');
-          return params;
-        }
-        params.set('startTime', time);
-        return params;
-      });
-    },
-    [setSearchParams]
-  );
-
-  const endTime = searchParams.get('endTime') || undefined;
-  const setEndTime = useCallback(
-    (time: string | undefined) => {
-      setSearchParams((params) => {
-        if (!time) {
-          params.delete('endTime');
-          return params;
-        }
-        params.set('endTime', time);
-        return params;
-      });
-    },
-    [setSearchParams]
-  );
+  const [selectedIntervals, setSelectedIntervals] = useState<ReplayDTO>();
 
   const search = useCallback(async () => {
     setLoading(true);
@@ -147,7 +80,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
       const replayDto = await searchReplays(params);
 
       setReplayData(replayDto);
-      setSelectedTrip(undefined);
+      setSelectedIntervals(undefined);
     } catch (error) {
       console.error('Failed to search for replay data:', error);
       setReplayData(undefined);
@@ -178,8 +111,8 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
         search,
         replayData,
         loading,
-        selectedTrip,
-        setSelectedTrip
+        selectedIntervals,
+        setSelectedIntervals
       }}
     >
       {children}

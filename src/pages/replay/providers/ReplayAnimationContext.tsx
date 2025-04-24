@@ -40,7 +40,7 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
 const BASE_INTERVAL = 10000; // 10 seconds
 
 export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
-  const { replayData, selectedTrip } = useReplayContext();
+  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [max, setMax] = useState(10000);
