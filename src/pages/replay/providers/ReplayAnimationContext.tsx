@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState, useMemo } from 'react';
 import { useReplayContext } from './ReplayContext';
-import { ReplayPoint } from '@/api/replay';
+import { ReplayPoint, ReplayDTO } from '@/api/replay';
+import { IntervalType } from '@/api/trips';
 
 interface AnimationContextProps {
   playing: boolean;
@@ -18,6 +19,8 @@ interface AnimationContextProps {
   setMultiplier: (multiplier: number) => void;
   currentPointIndex: number;
   messagePoints: ReplayPoint[];
+  currentTripIndex: number;
+  sortedTrips: ReplayDTO[];
 }
 
 const ReplayAnimationContext = createContext<AnimationContextProps>({
@@ -34,26 +37,39 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
   multiplier: 1,
   setMultiplier: () => {},
   currentPointIndex: 0,
-  messagePoints: []
+  messagePoints: [],
+  currentTripIndex: 0,
+  sortedTrips: []
 });
 
 const BASE_INTERVAL = 10000; // 10 seconds
 
 export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
-  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
+  const { selectedIntervalsData } = useReplayContext();
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [max, setMax] = useState(10000);
   const [multiplier, setMultiplier] = useState(1);
   const [metaData, setMetaData] = useState<any>();
   const [currentPointIndex, setCurrentPointIndex] = useState(0);
+  const [currentTripIndex, setCurrentTripIndex] = useState(0);
+
+  const sortedTrips = useMemo(() => {
+    if (!selectedIntervalsData) return [];
+
+    return Object.values(selectedIntervalsData)
+      .filter((interval) => interval.intervalType === IntervalType.Trip)
+      .sort((a, b) => a.startTime - b.startTime);
+  }, [selectedIntervalsData]);
 
   const messagePoints = useMemo(() => {
-    if (selectedTrip && selectedTrip.pointsList) {
-      return [...selectedTrip.pointsList].sort((a, b) => a.timestamp - b.timestamp);
-    }
-    return [];
-  }, [selectedTrip]);
+    if (sortedTrips.length === 0) return [];
+
+    const currentTrip = sortedTrips[currentTripIndex];
+    if (!currentTrip?.pointsList) return [];
+
+    return [...currentTrip.pointsList].sort((a, b) => a.timestamp - b.timestamp);
+  }, [sortedTrips, currentTripIndex]);
 
   const snapPositions = useMemo(() => {
     return messagePoints.map(
@@ -62,14 +78,28 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
   }, [messagePoints, max]);
 
   const play = () => {
-    if (current >= max && messagePoints.length > 0) {
-      setCurrent(0);
-      setCurrentPointIndex(0);
-      setTimeout(() => {
-        setPlaying(true);
-      }, 200);
+    if (sortedTrips.length === 0) return;
+
+    if (current >= max && currentPointIndex >= messagePoints.length - 1) {
+      if (currentTripIndex < sortedTrips.length - 1) {
+        setCurrentTripIndex(currentTripIndex + 1);
+        setCurrent(0);
+        setCurrentPointIndex(0);
+        setTimeout(() => {
+          setPlaying(true);
+        }, 200);
+      } else {
+        // If this is the last trip, restart from the first trip
+        setCurrentTripIndex(0);
+        setCurrent(0);
+        setCurrentPointIndex(0);
+        setTimeout(() => {
+          setPlaying(true);
+        }, 200);
+      }
       return;
     }
+
     setPlaying(true);
   };
 
@@ -81,6 +111,7 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
     setPlaying(false);
     setCurrent(0);
     setCurrentPointIndex(0);
+    setCurrentTripIndex(0);
   };
 
   const next = () => {
@@ -89,6 +120,10 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
       setCurrentPointIndex(nextIndex);
       const newPosition = snapPositions[nextIndex];
       setCurrent(newPosition);
+    } else if (currentTripIndex < sortedTrips.length - 1) {
+      setCurrentTripIndex(currentTripIndex + 1);
+      setCurrent(0);
+      setCurrentPointIndex(0);
     }
   };
 
@@ -98,6 +133,16 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
       setCurrentPointIndex(prevIndex);
       const newPosition = snapPositions[prevIndex];
       setCurrent(newPosition);
+    } else if (currentTripIndex > 0) {
+      const prevTripIndex = currentTripIndex - 1;
+      setCurrentTripIndex(prevTripIndex);
+
+      const previousTripPoints = sortedTrips[prevTripIndex]?.pointsList || [];
+      const sortedPoints = [...previousTripPoints].sort((a, b) => a.timestamp - b.timestamp);
+      const lastPointIndex = Math.max(0, sortedPoints.length - 1);
+
+      setCurrent(max);
+      setCurrentPointIndex(lastPointIndex);
     }
   };
 
@@ -107,13 +152,18 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         const nextIndex = currentPointIndex + 1;
 
         if (nextIndex >= messagePoints.length) {
-          pause();
-          setCurrent(max);
+          if (currentTripIndex < sortedTrips.length - 1) {
+            setCurrentTripIndex(currentTripIndex + 1);
+            setCurrent(0);
+            setCurrentPointIndex(0);
+          } else {
+            pause();
+            setCurrent(max);
+          }
           return;
         }
 
         setCurrentPointIndex(nextIndex);
-
         const newPosition = snapPositions[nextIndex];
         setCurrent(newPosition);
       }, BASE_INTERVAL / multiplier);
@@ -122,32 +172,53 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         clearTimeout(interval);
       };
     }
-  }, [playing, currentPointIndex, messagePoints, multiplier, max, snapPositions]);
+  }, [
+    playing,
+    currentPointIndex,
+    messagePoints,
+    multiplier,
+    max,
+    snapPositions,
+    sortedTrips,
+    currentTripIndex
+  ]);
 
   useEffect(() => {
     if (messagePoints.length > 0 && currentPointIndex < messagePoints.length) {
       const point = messagePoints[currentPointIndex];
       setMetaData({
         speed: point.speed ?? 0,
-        timestamp: point.timestamp * 1000
+        timestamp: point.timestamp * 1000,
+        direction: point.direction
       });
     }
   }, [currentPointIndex, messagePoints]);
 
   useEffect(() => {
-    if (selectedTrip) {
+    setCurrentTripIndex(0);
+    setCurrent(0);
+    setCurrentPointIndex(0);
+    setPlaying(false);
+
+    if (sortedTrips.length > 0) {
+      const firstTrip = sortedTrips[0];
+      setMax(firstTrip.endTime * 1000 - firstTrip.startTime * 1000);
+    }
+  }, [sortedTrips]);
+
+  useEffect(() => {
+    if (sortedTrips.length > 0 && currentTripIndex < sortedTrips.length) {
+      const currentTrip = sortedTrips[currentTripIndex];
+      setMax(currentTrip.endTime * 1000 - currentTrip.startTime * 1000);
       setCurrent(0);
       setCurrentPointIndex(0);
-      setPlaying(false);
-      setMax(selectedTrip.endTime * 1000 - selectedTrip.startTime * 1000);
     }
-  }, [replayData, selectedTrip]);
+  }, [currentTripIndex, sortedTrips]);
 
   const changeCurrent = (newValue: number) => {
     pause();
     setCurrent(newValue);
 
-    // Find the closest snap position
     if (snapPositions.length > 0) {
       const closestIndex = snapPositions.reduce((prev, curr, index) => {
         return Math.abs(curr - newValue) < Math.abs(snapPositions[prev] - newValue) ? index : prev;
@@ -175,7 +246,9 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         metaData,
         setMetaData,
         currentPointIndex,
-        messagePoints
+        messagePoints,
+        currentTripIndex,
+        sortedTrips
       }}
     >
       {children}

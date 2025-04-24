@@ -34,6 +34,7 @@ interface ReplayContextProps {
   replayData?: ReplayDTO[];
   loading: boolean;
   selectedIntervals: string[];
+  selectedIntervalsData?: Record<string, ReplayDTO>;
   handleIntervalSelection: (interval: ReplayDTO) => void;
   handleSelectAll: (type: SelectionStateType) => void;
   handleDeselectAll: (type: SelectionStateType) => void;
@@ -54,6 +55,7 @@ const ReplayContext = createContext<ReplayContextProps>({
   search: () => {},
   loading: false,
   selectedIntervals: [],
+  selectedIntervalsData: {},
   handleIntervalSelection: () => {},
   handleSelectAll: () => {},
   handleDeselectAll: () => {},
@@ -257,6 +259,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
         replayData,
         loading,
         selectedIntervals,
+        selectedIntervalsData: selectedIntervalsMap,
         handleIntervalSelection,
         handleSelectAll,
         handleDeselectAll,

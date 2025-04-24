@@ -8,10 +8,18 @@ import { ReplayLayer } from './blocks/ReplayLayer';
 import { ReplayAnimationProvider } from './providers/ReplayAnimationContext';
 import { ReplayPlaybackCard } from './blocks/ReplayPlaybackCard';
 import { IntervalType } from '@/api/trips';
+import { useMemo } from 'react';
 
 const ReplayMap = () => {
-  const { replayData, selectedIntervals: selectedTrip } = useReplayContext();
+  const { selectedIntervalsData } = useReplayContext();
   const intl = useIntl();
+
+  const hasSelectedTrips = useMemo(() => {
+    if (!selectedIntervalsData) return false;
+    return Object.values(selectedIntervalsData).some(
+      (interval) => interval.intervalType === IntervalType.Trip
+    );
+  }, [selectedIntervalsData]);
 
   return (
     <AppMap>
@@ -20,13 +28,11 @@ const ReplayMap = () => {
         <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.REPLAY' })}>
           <ReplayMainCard />
         </MainControl>
-        {/* {selectedTrip?.intervalType === IntervalType.Trip &&
-          replayData?.trips &&
-          replayData?.trips?.length > 0 && (
-            <SubControl>
-              <ReplayPlaybackCard />
-            </SubControl>
-          )} */}
+        {hasSelectedTrips && (
+          <SubControl>
+            <ReplayPlaybackCard />
+          </SubControl>
+        )}
       </ReplayAnimationProvider>
     </AppMap>
   );
