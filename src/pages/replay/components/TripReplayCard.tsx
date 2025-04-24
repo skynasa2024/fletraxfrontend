@@ -43,7 +43,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
               {trip.totalDistance.toFixed(2)} KM
             </div>
             <div className="text-xs text-gray-600 text dark:text-white/80">
-              {trip.formatedTotalDuration}
+              {trip.formatedTotalDuration.replace(/\s\d+\s\w+$/, '')}
             </div>
           </div>
           <div className="flex flex-col justify-center items-center gap-1">
