@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
-export default function useQueryParam(param: string) {
+export default function useSetSearchParam(param: string) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState(searchParams.get(param) || '');
 

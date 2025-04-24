@@ -4,37 +4,37 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { useAuthContext } from '@/auth';
 import clsx from 'clsx';
 import { HalfCircleProgressBar } from '@/components';
+import { useMemo } from 'react';
 
 type TripReplayCardProps = {
   trip: ReplayDTO;
 };
 
 export default function TripReplayCard({ trip }: TripReplayCardProps) {
-  const { selectedIntervals: selectedTrip, setSelectedIntervals: setSelectedTrip } = useReplayContext();
+  const { selectedIntervals, handleIntervalSelection } = useReplayContext();
+  const isSelected = useMemo(
+    () => selectedIntervals?.some((interval) => interval === trip.id),
+    [selectedIntervals, trip.id]
+  );
   const { currentUser } = useAuthContext();
 
-  // Safely get timezone with fallback
   const timezone = currentUser?.timezone || 'UTC';
-
-  const handleSelectTrip = () => {
-    setSelectedTrip(selectedTrip?.id === trip.id ? undefined : trip);
-  };
 
   return (
     <div
       key={trip.id}
-      data-selected={selectedTrip?.id === trip.id}
+      data-selected={isSelected}
       className={clsx(
         'rounded-lg border p-2 h-full flex justify-center items-center cursor-pointer',
-        selectedTrip?.id === trip.id
+        isSelected
           ? 'border-green-500 bg-green-100 dark:border-green-500 dark:bg-green-500/20'
           : 'border-green-100 bg-green-50 dark:border-green-500/10 dark:bg-green-500/10'
       )}
-      onClick={handleSelectTrip}
-      onKeyDown={(e) => e.key === 'Enter' && handleSelectTrip()}
+      onClick={() => handleIntervalSelection(trip)}
+      onKeyDown={(e) => e.key === 'Enter' && handleIntervalSelection(trip)}
       tabIndex={0}
       role="button"
-      aria-pressed={selectedTrip?.id === trip.id}
+      aria-pressed={isSelected}
     >
       <div className="flex items-center gap-2">
         <div className="flex gap-2 items-center">

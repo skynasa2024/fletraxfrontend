@@ -1,11 +1,12 @@
 import { IReplay, ReplayDTO, searchReplays, SearchTripsParams } from '@/api/replay';
-import useQueryParam from '@/hooks/useQueryParam';
+import useSetSearchParam from '@/hooks/useQueryParam';
 import {
   createContext,
   PropsWithChildren,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState
 } from 'react';
 
@@ -23,8 +24,8 @@ interface ReplayContextProps {
   search: () => void;
   replayData?: IReplay;
   loading: boolean;
-  selectedIntervals?: ReplayDTO;
-  setSelectedIntervals: (trip?: ReplayDTO) => void;
+  selectedIntervals?: string[];
+  handleIntervalSelection: (interval: ReplayDTO) => void;
 }
 
 const ReplayContext = createContext<ReplayContextProps>({
@@ -41,7 +42,7 @@ const ReplayContext = createContext<ReplayContextProps>({
   search: () => {},
   loading: false,
   selectedIntervals: undefined,
-  setSelectedIntervals: () => {}
+  handleIntervalSelection: () => {}
 });
 
 export const ReplayProvider = ({ children }: PropsWithChildren) => {
@@ -49,14 +50,18 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
     value: searchDeviceQuery,
     setValue: _setSearchDeviceQuery,
     setSearchParam: setSearchDeviceQuery
-  } = useQueryParam('device');
-  const { value: startDate, setSearchParam: setStartDate } = useQueryParam('startDate');
-  const { value: endDate, setSearchParam: setEndDate } = useQueryParam('endDate');
-  const { value: startTime, setSearchParam: setStartTime } = useQueryParam('startTime');
-  const { value: endTime, setSearchParam: setEndTime } = useQueryParam('endTime');
+  } = useSetSearchParam('device');
+  const { value: startDate, setSearchParam: setStartDate } = useSetSearchParam('startDate');
+  const { value: endDate, setSearchParam: setEndDate } = useSetSearchParam('endDate');
+  const { value: startTime, setSearchParam: setStartTime } = useSetSearchParam('startTime');
+  const { value: endTime, setSearchParam: setEndTime } = useSetSearchParam('endTime');
   const [replayData, setReplayData] = useState<IReplay>();
   const [loading, setLoading] = useState(false);
-  const [selectedIntervals, setSelectedIntervals] = useState<ReplayDTO>();
+  const [selectedIntervalsMap, setSelectedIntervalsMap] = useState<Record<string, ReplayDTO>>({});
+
+  const selectedIntervals = useMemo(() => {
+    return Object.keys(selectedIntervalsMap || {});
+  }, [selectedIntervalsMap]);
 
   const search = useCallback(async () => {
     setLoading(true);
@@ -80,7 +85,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
       const replayDto = await searchReplays(params);
 
       setReplayData(replayDto);
-      setSelectedIntervals(undefined);
+      setSelectedIntervalsMap({});
     } catch (error) {
       console.error('Failed to search for replay data:', error);
       setReplayData(undefined);
@@ -88,6 +93,16 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
       setLoading(false);
     }
   }, [endDate, endTime, searchDeviceQuery, startDate, startTime]);
+
+  const handleIntervalSelection = (interval: ReplayDTO) => {
+    if (selectedIntervalsMap[interval.id]) {
+      const newSelectedIntervalsMap = { ...selectedIntervalsMap };
+      delete newSelectedIntervalsMap[interval.id];
+      setSelectedIntervalsMap(newSelectedIntervalsMap);
+    } else {
+      setSelectedIntervalsMap((prev) => ({ ...prev, [interval.id]: interval }));
+    }
+  };
 
   useEffect(() => {
     if (searchDeviceQuery && startDate && endDate) {
@@ -112,7 +127,7 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
         replayData,
         loading,
         selectedIntervals,
-        setSelectedIntervals
+        handleIntervalSelection
       }}
     >
       {children}

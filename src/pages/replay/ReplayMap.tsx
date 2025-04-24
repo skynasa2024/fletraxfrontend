@@ -20,13 +20,13 @@ const ReplayMap = () => {
         <MainControl title={intl.formatMessage({ id: 'SIDEBAR.MENU.REPLAY' })}>
           <ReplayMainCard />
         </MainControl>
-        {selectedTrip?.intervalType === IntervalType.Trip &&
+        {/* {selectedTrip?.intervalType === IntervalType.Trip &&
           replayData?.trips &&
           replayData?.trips?.length > 0 && (
             <SubControl>
               <ReplayPlaybackCard />
             </SubControl>
-          )}
+          )} */}
       </ReplayAnimationProvider>
     </AppMap>
   );
