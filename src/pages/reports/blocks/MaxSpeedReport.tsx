@@ -3,7 +3,7 @@ import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { useReportFilters } from '@/hooks/useReportFilters';
@@ -11,6 +11,10 @@ import { useReportSorting } from '@/hooks/useReportSorting';
 import { Download } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import MapModal from '../components/MapModal';
+import { Marker, Tooltip, useMap } from 'react-leaflet';
+import { renderToString } from 'react-dom/server';
+import ParkingMarker from '@/pages/replay/components/ParkingMarker';
+import L from 'leaflet';
 
 export default function MaxSpeedReport() {
   const intl = useIntl();
@@ -60,14 +64,15 @@ export default function MaxSpeedReport() {
       {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
         cell: ({ row }) => (
-          <MapModal
-            position={{
-              latitude: row.original.positionLatitude,
-              longitude: row.original.positionLongitude
-            }}
-            speed={row.original.positionSpeed}
-            reportType="max_speed"
-          />
+          <MapModal>
+            <MaxSpeedMarker
+              position={{
+                latitude: row.original.positionLatitude,
+                longitude: row.original.positionLongitude
+              }}
+              speed={row.original.positionSpeed}
+            />
+          </MapModal>
         )
       }
     ],
@@ -209,5 +214,56 @@ export default function MaxSpeedReport() {
         />
       </div>
     </>
+  );
+}
+
+type MaxSpeedMarkerProps = {
+  position: {
+    latitude: number;
+    longitude: number;
+  };
+  speed: number;
+};
+
+function MaxSpeedMarker({ position, speed }: MaxSpeedMarkerProps) {
+  const map = useMap();
+
+  const createParkingIcon = useCallback(() => {
+    const svgString = renderToString(<ParkingMarker color={'#FF0000'} letter="!" />);
+
+    return L.divIcon({
+      html: svgString,
+      className: '',
+      iconSize: [30, 31],
+      iconAnchor: [15, 31]
+    });
+  }, []);
+
+  useEffect(() => {
+    if (position && position.latitude && position.longitude) {
+      map.setView([position.latitude, position.longitude], 15);
+    }
+  }, [position, map]);
+
+  if (
+    !position ||
+    typeof position.latitude !== 'number' ||
+    typeof position.longitude !== 'number'
+  ) {
+    return null;
+  }
+
+  return (
+    <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()}>
+      <Tooltip
+        direction="top"
+        offset={[0, -30]}
+        permanent
+        interactive
+        className="bg-white rounded-lg shadow-lg p-2 opacity-100 flex text-center font-semibold text-gray-800 text-md"
+      >
+        <div className="min-w-36 flex flex-col gap-2">{speed} km/h</div>
+      </Tooltip>
+    </Marker>
   );
 }

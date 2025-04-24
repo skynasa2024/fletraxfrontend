@@ -10,16 +10,10 @@ import ParkingMarker from '@/pages/replay/components/ParkingMarker';
 import { TripPoint } from '@/api/trips';
 
 type MapModalProps = {
-  pointsList?: TripPoint[];
-  position?: {
-    latitude: number;
-    longitude: number;
-  };
-  speed?: number;
-  reportType: 'trip' | 'parking' | 'max_speed';
+  children?: React.ReactNode;
 };
 
-export default function MapModal({ pointsList, position, speed, reportType }: MapModalProps) {
+export default function MapModal({ children }: MapModalProps) {
   const intl = useIntl();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,17 +29,7 @@ export default function MapModal({ pointsList, position, speed, reportType }: Ma
     <>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <div className="w-[500px] h-[500px] card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-dark rounded-lg shadow-lg p-4 flex justify-center items-center">
-          <AppMap mapControlSize="small">
-            {!!position && reportType === 'parking' && (
-              <ParkingIntervalMarker position={position} />
-            )}
-
-            {!!pointsList && reportType === 'trip' && <TripIntervalLayer pointsList={pointsList} />}
-
-            {!!position && reportType === 'max_speed' && (
-              <MaxSpeedMarker position={position} speed={speed || 0} />
-            )}
-          </AppMap>
+          <AppMap mapControlSize="small">{children}</AppMap>
         </div>
       </Modal>
 
@@ -60,148 +44,5 @@ export default function MapModal({ pointsList, position, speed, reportType }: Ma
         />
       </button>
     </>
-  );
-}
-
-type ParkingIntervalMarkerProps = {
-  position: {
-    latitude: number;
-    longitude: number;
-  };
-};
-
-function ParkingIntervalMarker({ position }: ParkingIntervalMarkerProps) {
-  const map = useMap();
-
-  const createParkingIcon = useCallback(() => {
-    const svgString = renderToString(<ParkingMarker color={'#FF0000'} />);
-
-    return L.divIcon({
-      html: svgString,
-      className: '',
-      iconSize: [30, 31],
-      iconAnchor: [15, 31]
-    });
-  }, []);
-
-  useEffect(() => {
-    if (position && position.latitude && position.longitude) {
-      map.setView([position.latitude, position.longitude], 15);
-    }
-  }, [position, map]);
-
-  if (
-    !position ||
-    typeof position.latitude !== 'number' ||
-    typeof position.longitude !== 'number'
-  ) {
-    return null;
-  }
-
-  return <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()} />;
-}
-
-type TripIntervalMarkerProps = {
-  pointsList: TripPoint[];
-};
-
-function TripIntervalLayer({ pointsList }: TripIntervalMarkerProps) {
-  const map = useMap();
-  const route: LatLngExpression[] = pointsList
-    .sort((a, b) => a.timestamp - b.timestamp)
-    .map((point) => [point.latitude, point.longitude]);
-  const bounds = L.latLngBounds(route);
-  const startPoint = route[0];
-  const endPoint = route[route.length - 1];
-
-  const iconStartTrip = useMemo(
-    () =>
-      L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/trip-start.svg'),
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
-      }),
-    []
-  );
-
-  const iconEndTrip = useMemo(
-    () =>
-      L.icon({
-        iconUrl: toAbsoluteUrl('/media/icons/trip-end.svg'),
-        iconSize: [30, 30],
-        iconAnchor: [15, 30]
-      }),
-    []
-  );
-
-  useEffect(() => {
-    if (bounds) {
-      map.fitBounds(bounds, { padding: [20, 20] });
-    }
-  }, [bounds, map]);
-
-  if (!pointsList || pointsList.length === 0) {
-    return null;
-  }
-
-  return (
-    <>
-      <Polyline color="#5271FF" weight={5} positions={route} />
-
-      {startPoint && <Marker position={startPoint} icon={iconStartTrip} />}
-
-      {endPoint && <Marker position={endPoint} icon={iconEndTrip} />}
-    </>
-  );
-}
-
-type MaxSpeedMarkerProps = {
-  position: {
-    latitude: number;
-    longitude: number;
-  };
-  speed: number;
-};
-
-function MaxSpeedMarker({ position, speed }: MaxSpeedMarkerProps) {
-  const map = useMap();
-
-  const createParkingIcon = useCallback(() => {
-    const svgString = renderToString(<ParkingMarker color={'#FF0000'} letter="!" />);
-
-    return L.divIcon({
-      html: svgString,
-      className: '',
-      iconSize: [30, 31],
-      iconAnchor: [15, 31]
-    });
-  }, []);
-
-  useEffect(() => {
-    if (position && position.latitude && position.longitude) {
-      map.setView([position.latitude, position.longitude], 15);
-    }
-  }, [position, map]);
-
-  if (
-    !position ||
-    typeof position.latitude !== 'number' ||
-    typeof position.longitude !== 'number'
-  ) {
-    return null;
-  }
-
-  return (
-    <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()}>
-      <Tooltip
-        direction="top"
-        offset={[0, -30]}
-        permanent
-        interactive
-        className="bg-white rounded-lg shadow-lg p-2 opacity-100 flex text-center font-semibold text-gray-800 text-md"
-      >
-        <div className="min-w-36 flex flex-col gap-2">{speed} km/h</div>
-      </Tooltip>
-    </Marker>
   );
 }
