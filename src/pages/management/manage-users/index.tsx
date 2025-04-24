@@ -55,10 +55,6 @@ export default function ManageUsers() {
       }));
       setRootUsers(treeItems);
       setTotalUsers(usersResult.totalCount);
-
-      if (!id && treeItems.length > 0) {
-        navigate(`/management/users/view/${treeItems[0].id}`);
-      }
     } catch (error) {
       console.error('Error fetching root users:', error);
     } finally {
@@ -97,7 +93,10 @@ export default function ManageUsers() {
 
   useEffect(() => {
     fetchRootUsers();
-  }, []);
+    if (!id && !isAddRoute && rootUsers.length > 0) {
+      navigate(`/management/users/view/${rootUsers[0].id}`);
+    }
+  }, [rootUsers.length]);
 
   return (
     <>
