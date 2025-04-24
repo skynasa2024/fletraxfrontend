@@ -31,7 +31,7 @@ export const ParkingPopup = ({ parking }: ParkingPopupProps) => {
             </div>
             <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {formatInTimeZone(
-                new Date(parking.startTime),
+                new Date(parking.startTime * 1000),
                 currentUser!.timezone,
                 'yyyy/MM/dd HH:mm:ss'
               )}
@@ -51,7 +51,7 @@ export const ParkingPopup = ({ parking }: ParkingPopupProps) => {
             </div>
             <div className="text-[#2D3748] dark:text-gray-50 text-xs">
               {formatInTimeZone(
-                new Date(parking.endTime),
+                new Date(parking.endTime * 1000),
                 currentUser!.timezone,
                 'yyyy/MM/dd HH:mm:ss'
               )}
