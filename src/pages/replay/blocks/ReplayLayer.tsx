@@ -2,7 +2,7 @@ import { Marker, Polyline, useMap } from 'react-leaflet';
 import 'leaflet-rotatedmarker';
 import { toAbsoluteUrl } from '@/utils';
 import L from 'leaflet';
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useCallback } from 'react';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
@@ -15,40 +15,117 @@ import { renderToString } from 'react-dom/server';
 export const ReplayLayer = () => {
   const { isRTL } = useLanguage();
   const map = useMap();
-  const { replayData, selectedTrip } = useReplayContext();
-  const { currentPointIndex, messagePoints } = useReplayAnimationContext();
-  const [openPopupId, setOpenPopupId] = useState<string | null>(null);
+  const { selectedIntervalsData } = useReplayContext();
+  const { currentPointIndex, messagePoints, sortedTrips, currentTripIndex, playing } =
+    useReplayAnimationContext();
   const markerRefs = useRef<{ [key: string]: L.Marker | null }>({});
+  const prevTripIndexRef = useRef<number>(currentTripIndex);
+  const prevSelectedIntervalsRef = useRef<Record<string, any>>({});
 
-  const { parkings, trips } = replayData || {};
+  const selectedTrips = useMemo(() => {
+    if (!selectedIntervalsData) {
+      return null;
+    }
+    return Object.values(selectedIntervalsData).filter(
+      (interval) => interval.intervalType === IntervalType.Trip
+    );
+  }, [selectedIntervalsData]);
+
+  const selectedParkings = useMemo(() => {
+    if (!selectedIntervalsData) {
+      return null;
+    }
+    return Object.values(selectedIntervalsData).filter(
+      (interval) => interval.intervalType === IntervalType.Parking
+    );
+  }, [selectedIntervalsData]);
+
+  const currentTrip = useMemo(() => {
+    if (!sortedTrips || sortedTrips.length === 0 || currentTripIndex >= sortedTrips.length) {
+      return null;
+    }
+    return sortedTrips[currentTripIndex];
+  }, [sortedTrips, currentTripIndex]);
 
   const allPoints = useMemo(() => {
-    if (!trips || trips.length === 0) {
-      return [];
+    if (!selectedTrips || selectedTrips.length === 0) {
+      return null;
+    }
+    const allPoints = selectedTrips.reduce((acc, trip) => {
+      if (trip.pointsList) {
+        acc.push(...trip.pointsList);
+      }
+      return acc;
+    }, [] as any[]);
+
+    return allPoints.sort((a, b) => a.timestamp - b.timestamp);
+  }, [selectedTrips]);
+
+  const allBounds = useMemo(() => {
+    let bounds: L.LatLngBounds | undefined = undefined;
+
+    if (allPoints && allPoints.length > 0) {
+      const latLng = L.latLng([allPoints[0].latitude, allPoints[0].longitude]);
+      bounds = allPoints.reduce(
+        (acc, point) => acc.extend([point.latitude, point.longitude]),
+        L.latLngBounds(latLng, latLng)
+      );
     }
 
-    return trips
-      .filter((trip) => trip && trip.pointsList) // Add this filter to ensure trip and pointsList exist
-      .flatMap((trip) =>
-        trip.pointsList.map((point) => ({
-          ...point,
-          timestamp: new Date(point.timestamp * 1000).getTime(),
-          tripId: trip.id
-        }))
-      )
-      .sort((a, b) => a.timestamp - b.timestamp);
-  }, [trips]);
+    if (selectedParkings && selectedParkings.length > 0) {
+      if (!bounds && selectedParkings.length > 0) {
+        const firstParking = selectedParkings[0];
+        const latLng = L.latLng([firstParking.startLatitude, firstParking.startLongitude]);
+        bounds = L.latLngBounds(latLng, latLng);
 
-  const bounds = useMemo(() => {
-    if (!allPoints || allPoints.length === 0) {
+        if (selectedParkings.length === 1 && !selectedTrips?.length) {
+          const padding = 0.01; // 1km at equator
+          bounds.extend([
+            firstParking.startLatitude + padding,
+            firstParking.startLongitude + padding
+          ]);
+          bounds.extend([
+            firstParking.startLatitude - padding,
+            firstParking.startLongitude - padding
+          ]);
+        }
+      }
+
+      if (bounds) {
+        selectedParkings.forEach((parking) => {
+          bounds!.extend([parking.startLatitude, parking.startLongitude]);
+        });
+      }
+    }
+
+    return bounds;
+  }, [allPoints, selectedParkings, selectedTrips]);
+
+  const currentTripBounds = useMemo(() => {
+    if (!currentTrip || !currentTrip.pointsList || currentTrip.pointsList.length === 0) {
       return undefined;
     }
-    const latLng = L.latLng([allPoints[0].latitude, allPoints[0].longitude]);
-    return allPoints.reduce(
+    const points = [...currentTrip.pointsList].sort((a, b) => a.timestamp - b.timestamp);
+    const latLng = L.latLng([points[0].latitude, points[0].longitude]);
+    return points.reduce(
       (acc, point) => acc.extend([point.latitude, point.longitude]),
       L.latLngBounds(latLng, latLng)
     );
-  }, [allPoints]);
+  }, [currentTrip]);
+
+  const hasSelectionChanged = useCallback(() => {
+    const prevKeys = Object.keys(prevSelectedIntervalsRef.current);
+    const currentKeys = Object.keys(selectedIntervalsData || {});
+
+    if (prevKeys.length !== currentKeys.length) {
+      return true;
+    }
+
+    return (
+      prevKeys.some((key) => !currentKeys.includes(key)) ||
+      currentKeys.some((key) => !prevKeys.includes(key))
+    );
+  }, [selectedIntervalsData]);
 
   const icon = useMemo(
     () =>
@@ -80,8 +157,8 @@ export const ReplayLayer = () => {
     []
   );
 
-  const createParkingIcon = useCallback((isSelected: boolean) => {
-    const svgString = renderToString(<ParkingMarker color={isSelected ? '#FF0000' : '#FF6F1E'} />);
+  const createParkingIcon = useCallback(() => {
+    const svgString = renderToString(<ParkingMarker color={'#FF0000'} />);
 
     return L.divIcon({
       html: svgString,
@@ -104,105 +181,89 @@ export const ReplayLayer = () => {
     };
   }, [messagePoints, currentPointIndex]);
 
+  // Initial fit bounds for all selected items (trips and parkings)
   useEffect(() => {
-    if (!bounds) {
+    if (hasSelectionChanged()) {
+      prevSelectedIntervalsRef.current = { ...(selectedIntervalsData || {}) };
+    }
+
+    if (!allBounds) {
       return;
     }
-    map.flyToBounds(
-      bounds,
-      isRTL()
-        ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
-        : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
-    );
-  }, [bounds, isRTL, map]);
 
-  // Add a useEffect to pan to the selected trip when it changes
+    const hasSelectedItems =
+      (selectedTrips && selectedTrips.length > 0) ||
+      (selectedParkings && selectedParkings.length > 0);
+
+    if (hasSelectedItems) {
+      map.flyToBounds(allBounds, {
+        padding: [100, 100],
+        paddingTopLeft: isRTL() ? [100, 20] : [300, 20],
+        paddingBottomRight: isRTL() ? [300, 20] : [100, 20]
+      });
+    }
+  }, [allBounds, isRTL, map, selectedTrips, selectedParkings, hasSelectionChanged]);
+
   useEffect(() => {
-    if (selectedTrip && trips) {
-      if (selectedTrip.intervalType === IntervalType.Trip && trips) {
-        const selectedTripData = trips.find((trip) => trip.id === selectedTrip.id);
-        if (selectedTripData && selectedTripData.pointsList.length > 0) {
-          // Create bounds for the selected trip points
-          const points = selectedTripData.pointsList;
-          const firstPoint = L.latLng([points[0].latitude, points[0].longitude]);
-          const tripBounds = points.reduce(
-            (acc, point) => acc.extend([point.latitude, point.longitude]),
-            L.latLngBounds(firstPoint, firstPoint)
-          );
+    if (prevTripIndexRef.current === currentTripIndex) {
+      prevTripIndexRef.current = currentTripIndex;
+      return;
+    }
 
-          // Fly to the bounds of the selected trip
-          map.flyToBounds(
-            tripBounds,
-            isRTL()
-              ? { paddingTopLeft: [100, 20], paddingBottomRight: [300, 20] }
-              : { paddingTopLeft: [300, 20], paddingBottomRight: [100, 20] }
-          );
-        }
-      } else if (selectedTrip.intervalType === IntervalType.Parking) {
-        // Fly to the parking location
-        map.flyTo(
-          [selectedTrip.startLatitude, selectedTrip.startLongitude],
-          16 // zoom level
-        );
+    prevTripIndexRef.current = currentTripIndex;
 
-        // Set the popup to open
-        setOpenPopupId(selectedTrip.id);
-
-        // Use a small delay to ensure the marker reference is available
-        setTimeout(() => {
-          const marker = markerRefs.current[selectedTrip.id];
-          if (marker) {
-            marker.openPopup();
-          }
-        }, 100);
+    if (currentTripBounds && playing) {
+      if (selectedParkings?.length === 1 && !selectedTrips?.length) {
+        return;
       }
-    }
-  }, [selectedTrip, trips, map, isRTL]);
 
-  // Close popup when selection changes
-  useEffect(() => {
-    // Close previous popup if exists
-    const previousMarker = markerRefs.current[openPopupId as string];
-    if (previousMarker && openPopupId !== selectedTrip?.id) {
-      previousMarker.closePopup();
+      map.flyToBounds(currentTripBounds, {
+        duration: 0.5,
+        paddingTopLeft: isRTL() ? [100, 20] : [300, 20],
+        paddingBottomRight: isRTL() ? [300, 20] : [100, 20]
+      });
     }
-  }, [openPopupId, selectedTrip]);
+  }, [currentTripIndex, currentTripBounds, isRTL, map, playing, selectedParkings, selectedTrips]);
 
   const tripColors = {
     primary: ['#0c0fd1', '#915404'],
     secondary: ['#6a77c9', '#a88967']
   };
 
-  if (!trips || !replayData) {
+  if (!selectedIntervalsData || Object.keys(selectedIntervalsData).length === 0) {
     return null;
   }
 
-  const startPoint = selectedTrip
-    ? { latitude: selectedTrip.startLatitude, longitude: selectedTrip.startLongitude }
+  const startPoint = currentTrip
+    ? { latitude: currentTrip.startLatitude, longitude: currentTrip.startLongitude }
     : null;
 
-  const endPoint = selectedTrip
-    ? { latitude: selectedTrip.endLatitude, longitude: selectedTrip.endLongitude }
+  const endPoint = currentTrip
+    ? { latitude: currentTrip.endLatitude, longitude: currentTrip.endLongitude }
     : null;
 
   return (
     <>
-      {trips &&
-        trips.length > 0 &&
-        trips
-          .filter((trip) => !selectedTrip || trip.id !== selectedTrip.id)
+      {selectedTrips &&
+        selectedTrips.length > 0 &&
+        selectedTrips
           .filter((trip) => trip && trip.pointsList)
-          .map((trip) => {
-            const tripIndex = trips.findIndex((t) => t.id === trip.id);
-            const colorIndex = tripIndex % 2;
-            const colorPalette = selectedTrip ? tripColors.secondary : tripColors.primary;
+          .map((trip, index) => {
+            const colorIndex = index % tripColors.primary.length;
+            const isCurrentTrip = currentTrip && trip.id === currentTrip.id;
+
+            // use primary color for current trip, secondary for others
+            const lineWeight = isCurrentTrip ? 5 : 3;
+            const lineColor = isCurrentTrip
+              ? tripColors.primary[colorIndex]
+              : tripColors.secondary[colorIndex];
 
             return (
               <Polyline
                 key={trip.id}
                 pathOptions={{
-                  color: colorPalette[colorIndex],
-                  weight: 3
+                  color: lineColor,
+                  weight: lineWeight
                 }}
                 positions={trip.pointsList
                   .sort((a, b) => a.timestamp - b.timestamp)
@@ -211,34 +272,9 @@ export const ReplayLayer = () => {
             );
           })}
 
-      {selectedTrip &&
-        trips &&
-        trips.length > 0 &&
-        trips
-          .filter((trip) => trip && trip.pointsList && trip.id === selectedTrip.id)
-          .map((trip) => {
-            const tripIndex = trips.findIndex((t) => t.id === trip.id);
-            const colorIndex = tripIndex % 2;
-
-            return (
-              <Polyline
-                key={trip.id}
-                pathOptions={{
-                  color: tripColors.primary[colorIndex],
-                  weight: 4
-                }}
-                positions={trip.pointsList
-                  .sort((a, b) => a.timestamp - b.timestamp)
-                  .map((point) => [point.latitude, point.longitude])}
-              />
-            );
-          })}
-
-      {parkings &&
-        parkings.length > 0 &&
-        parkings.map((parking) => {
-          const isSelected = selectedTrip?.id === parking.id;
-
+      {selectedParkings &&
+        selectedParkings.length > 0 &&
+        selectedParkings.map((parking) => {
           return (
             <Marker
               key={parking.id}
@@ -248,22 +284,22 @@ export const ReplayLayer = () => {
                 }
               }}
               position={[parking.startLatitude, parking.startLongitude]}
-              icon={createParkingIcon(isSelected)}
+              icon={createParkingIcon()}
             >
               <ParkingPopup parking={parking} />
             </Marker>
           );
         })}
 
-      {selectedTrip?.intervalType === IntervalType.Trip && startPoint && (
+      {currentTrip && startPoint && (
         <Marker position={[startPoint.latitude, startPoint.longitude]} icon={iconStartTrip} />
       )}
 
-      {selectedTrip?.intervalType === IntervalType.Trip && endPoint && (
+      {currentTrip && endPoint && (
         <Marker position={[endPoint.latitude, endPoint.longitude]} icon={iconEndTrip} />
       )}
 
-      {currentPosition && selectedTrip?.intervalType === IntervalType.Trip && (
+      {currentPosition && currentTrip && (
         <RotatableMarker
           position={currentPosition.latLng}
           icon={icon}

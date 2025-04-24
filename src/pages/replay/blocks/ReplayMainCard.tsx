@@ -1,7 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 import { useReplayContext } from '../providers/ReplayContext';
 import { toAbsoluteUrl } from '@/utils';
-import { CircularProgress } from '@mui/material';
+import { Checkbox, CircularProgress, FormControlLabel, FormGroup } from '@mui/material';
 import { TripsSearch } from '@/pages/trips/blocks/TripsSearch';
 import { TimePicker } from '@/components';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -17,6 +17,7 @@ import {
   startOfDay
 } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { IntervalType } from '@/api/trips';
 
 export default function ReplayMainCard() {
   const {
@@ -32,10 +33,12 @@ export default function ReplayMainCard() {
     setEndTime,
     search,
     loading,
-    replayData
+    replayData,
+    selectedIntervals,
+    handleSelectAll,
+    handleDeselectAll,
+    selectionState
   } = useReplayContext();
-
-  console.log(replayData?.allData);
 
   const { currentUser } = useAuthContext();
 
@@ -260,9 +263,93 @@ export default function ReplayMainCard() {
           </button>
         </form>
       </div>
-
-      {replayData?.allData && replayData.allData.length > 0 && (
-        <ReplayTripCard trips={replayData.allData} />
+      <div className="flex flex-col p-2 items-center justify-center">
+        <div className="text-xs font-medium text-[#3F4254] dark:text-gray-50">
+          {selectedIntervals?.length || 0} {selectedIntervals?.length === 1 ? 'Item' : 'Items'}{' '}
+          Selected
+        </div>
+        <FormGroup row>
+          <FormControlLabel
+            className="[&_span.MuiFormControlLabel-label]:!text-sm"
+            control={
+              <Checkbox
+                size="small"
+                indeterminate={
+                  !!replayData?.length &&
+                  selectedIntervals?.length > 0 &&
+                  selectedIntervals?.length < replayData.length
+                }
+                checked={selectionState.all}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleSelectAll('all');
+                  } else {
+                    handleDeselectAll('all');
+                  }
+                }}
+              />
+            }
+            label="All"
+          />
+          <FormControlLabel
+            className="[&_span.MuiFormControlLabel-label]:!text-sm"
+            control={
+              <Checkbox
+                size="small"
+                checked={selectionState.trips}
+                indeterminate={
+                  replayData?.some((interval) => interval.intervalType === IntervalType.Trip) &&
+                  selectedIntervals?.some(
+                    (id) =>
+                      replayData.find((item) => item.id === id)?.intervalType === IntervalType.Trip
+                  ) &&
+                  !selectionState.trips
+                }
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleSelectAll(IntervalType.Trip);
+                  } else {
+                    handleDeselectAll(IntervalType.Trip);
+                  }
+                }}
+              />
+            }
+            label="Trips"
+          />
+          <FormControlLabel
+            className="[&_span.MuiFormControlLabel-label]:!text-sm"
+            control={
+              <Checkbox
+                size="small"
+                checked={selectionState.parkings}
+                indeterminate={
+                  replayData?.some((interval) => interval.intervalType === IntervalType.Parking) &&
+                  selectedIntervals?.some(
+                    (id) =>
+                      replayData.find((item) => item.id === id)?.intervalType ===
+                      IntervalType.Parking
+                  ) &&
+                  !selectionState.parkings
+                }
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    handleSelectAll(IntervalType.Parking);
+                  } else {
+                    handleDeselectAll(IntervalType.Parking);
+                  }
+                }}
+              />
+            }
+            label="Parkings"
+          />
+        </FormGroup>
+      </div>
+      {replayData && replayData.length > 0 ? (
+        <ReplayTripCard trips={replayData} />
+      ) : (
+        <div className="flex items-center justify-center p-5 text-gray-500">
+          {loading ? 'Loading data...' : 'No data available'}
+        </div>
       )}
     </div>
   );

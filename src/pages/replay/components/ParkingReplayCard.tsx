@@ -4,36 +4,37 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { useAuthContext } from '@/auth';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
+import { useMemo } from 'react';
 
 type ParkingReplayCardProps = {
   parking: ReplayDTO;
 };
 
 export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
-  const { selectedTrip, setSelectedTrip } = useReplayContext();
+  const { selectedIntervals, handleIntervalSelection } = useReplayContext();
+  const isSelected = useMemo(
+    () => selectedIntervals?.some((interval) => interval === parking.id),
+    [selectedIntervals, parking.id]
+  );
   const { currentUser } = useAuthContext();
 
   const timezone = currentUser?.timezone || 'UTC';
 
-  const handleSelectParking = () => {
-    setSelectedTrip(selectedTrip?.id === parking.id ? undefined : parking);
-  };
-
   return (
     <div
       key={parking.id}
-      data-selected={selectedTrip?.id === parking.id}
+      data-selected={isSelected}
       className={clsx(
         'rounded-lg border p-2 h-full flex justify-start items-center cursor-pointer',
-        selectedTrip?.id === parking.id
+        isSelected
           ? 'border-orange-500 bg-orange-100 dark:border-orange-500 dark:bg-orange-500/20'
           : 'border-orange-100 bg-orange-50 dark:border-orange-500/10 dark:bg-orange-500/10'
       )}
-      onClick={handleSelectParking}
-      onKeyDown={(e) => e.key === 'Enter' && handleSelectParking()}
+      onClick={() => handleIntervalSelection(parking)}
+      onKeyDown={(e) => e.key === 'Enter' && handleIntervalSelection(parking)}
       tabIndex={0}
-      role="button"
-      aria-pressed={selectedTrip?.id === parking.id}
+      role="checkbox"
+      aria-pressed={isSelected}
     >
       <div className="flex items-center gap-2">
         <div className="flex gap-2 items-center">
@@ -41,7 +42,7 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
             <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               <FormattedMessage id="REPLAY.PARKING.PARKED" />
             </div>
-            <div className="text-xs text-gray-600 text-nowrap dark:text-white/80">
+            <div className="text-xs text-gray-600 dark:text-white/80">
               {parking.formatedTotalDuration}
             </div>
           </div>

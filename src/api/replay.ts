@@ -28,25 +28,6 @@ export interface ReplayDTO {
   route: string | null;
 }
 
-export interface ParkingRecord {
-  id: string;
-  startTime: number;
-  endTime: number;
-  startLatitude: number;
-  startLongitude: number;
-  totalDuration: string;
-}
-
-export interface TripRecord extends Omit<ReplayDTO, 'intervalType'> {
-  intervalType: IntervalType.Trip;
-}
-
-export interface IReplay {
-  allData: ReplayDTO[];
-  trips: TripRecord[];
-  parkings: ParkingRecord[];
-}
-
 export interface ReplayPoint {
   id: string;
   latitude: number;
@@ -64,34 +45,12 @@ export interface SearchTripsParams {
   endTime?: string;
 }
 
-export async function searchReplays(params: SearchTripsParams): Promise<IReplay> {
+export async function searchReplays(params: SearchTripsParams): Promise<ReplayDTO[]> {
   const replay = await axios.get<ResponseModel<ReplayDTO[]>>('/api/intervals/replay', {
     params: {
       ...params
     }
   });
 
-  const parkings: ParkingRecord[] = replay.data.result
-    ?.filter((item) => item.intervalType === IntervalType.Parking)
-    ?.map((item) => ({
-      id: item.id,
-      startTime: new Date(item.startTime * 1000).getTime(),
-      endTime: new Date(item.endTime * 1000).getTime(),
-      startLatitude: item.startLatitude,
-      startLongitude: item.startLongitude,
-      totalDuration: item.formatedTotalDuration
-    }));
-
-  const trips: TripRecord[] = replay.data.result
-    ?.filter((item) => item.intervalType === IntervalType.Trip)
-    ?.map((item) => ({
-      ...item,
-      intervalType: IntervalType.Trip
-    }));
-
-  return {
-    allData: replay.data.result,
-    parkings,
-    trips
-  };
+  return replay.data.result;
 }

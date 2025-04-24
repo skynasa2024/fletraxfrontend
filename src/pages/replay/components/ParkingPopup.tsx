@@ -4,11 +4,11 @@ import { FormattedMessage } from 'react-intl';
 import { useLanguage } from '@/i18n';
 import { useAuthContext } from '@/auth';
 import clsx from 'clsx';
-import { ParkingRecord } from '@/api/replay';
 import { Popup } from 'react-leaflet';
+import { ReplayDTO } from '@/api/replay';
 
 interface ParkingPopupProps {
-  parking: ParkingRecord;
+  parking: ReplayDTO;
 }
 
 export const ParkingPopup = ({ parking }: ParkingPopupProps) => {
