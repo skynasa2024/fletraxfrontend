@@ -33,7 +33,7 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
       onClick={() => handleIntervalSelection(parking)}
       onKeyDown={(e) => e.key === 'Enter' && handleIntervalSelection(parking)}
       tabIndex={0}
-      role="button"
+      role="checkbox"
       aria-pressed={isSelected}
     >
       <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ export default function ParkingReplayCard({ parking }: ParkingReplayCardProps) {
             <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               <FormattedMessage id="REPLAY.PARKING.PARKED" />
             </div>
-            <div className="text-xs text-gray-600 text-nowrap dark:text-white/80">
+            <div className="text-xs text-gray-600 dark:text-white/80">
               {parking.formatedTotalDuration}
             </div>
           </div>

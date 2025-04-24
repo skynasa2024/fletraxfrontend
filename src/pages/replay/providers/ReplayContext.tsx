@@ -1,4 +1,5 @@
-import { IReplay, ReplayDTO, searchReplays, SearchTripsParams } from '@/api/replay';
+import { ReplayDTO, searchReplays, SearchTripsParams } from '@/api/replay';
+import { IntervalType } from '@/api/trips';
 import useSetSearchParam from '@/hooks/useQueryParam';
 import {
   createContext,
@@ -9,6 +10,14 @@ import {
   useMemo,
   useState
 } from 'react';
+
+type SelectionStateType = IntervalType | 'all' | 'none';
+
+interface SelectionState {
+  all: boolean;
+  trips: boolean;
+  parkings: boolean;
+}
 
 interface ReplayContextProps {
   searchDeviceQuery: string;
@@ -22,10 +31,13 @@ interface ReplayContextProps {
   endTime?: string;
   setEndTime: (time: string) => void;
   search: () => void;
-  replayData?: IReplay;
+  replayData?: ReplayDTO[];
   loading: boolean;
-  selectedIntervals?: string[];
+  selectedIntervals: string[];
   handleIntervalSelection: (interval: ReplayDTO) => void;
+  handleSelectAll: (type: SelectionStateType) => void;
+  handleDeselectAll: (type: SelectionStateType) => void;
+  selectionState: SelectionState;
 }
 
 const ReplayContext = createContext<ReplayContextProps>({
@@ -41,8 +53,15 @@ const ReplayContext = createContext<ReplayContextProps>({
   setEndTime: () => {},
   search: () => {},
   loading: false,
-  selectedIntervals: undefined,
-  handleIntervalSelection: () => {}
+  selectedIntervals: [],
+  handleIntervalSelection: () => {},
+  handleSelectAll: () => {},
+  handleDeselectAll: () => {},
+  selectionState: {
+    all: false,
+    trips: false,
+    parkings: false
+  }
 });
 
 export const ReplayProvider = ({ children }: PropsWithChildren) => {
@@ -55,13 +74,65 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
   const { value: endDate, setSearchParam: setEndDate } = useSetSearchParam('endDate');
   const { value: startTime, setSearchParam: setStartTime } = useSetSearchParam('startTime');
   const { value: endTime, setSearchParam: setEndTime } = useSetSearchParam('endTime');
-  const [replayData, setReplayData] = useState<IReplay>();
+  const [replayData, setReplayData] = useState<ReplayDTO[]>();
   const [loading, setLoading] = useState(false);
   const [selectedIntervalsMap, setSelectedIntervalsMap] = useState<Record<string, ReplayDTO>>({});
+  const [selectionState, setSelectionState] = useState<SelectionState>({
+    all: false,
+    trips: false,
+    parkings: false
+  });
 
   const selectedIntervals = useMemo(() => {
     return Object.keys(selectedIntervalsMap || {});
   }, [selectedIntervalsMap]);
+
+  // Calculate counts for different interval types
+  const intervalCounts = useMemo(() => {
+    if (!replayData) return { trips: 0, parkings: 0, total: 0 };
+
+    const trips = replayData.filter(
+      (interval) => interval.intervalType === IntervalType.Trip
+    ).length;
+    const parkings = replayData.filter(
+      (interval) => interval.intervalType === IntervalType.Parking
+    ).length;
+
+    return {
+      trips,
+      parkings,
+      total: replayData.length
+    };
+  }, [replayData]);
+
+  // Calculate selected counts
+  const selectedCounts = useMemo(() => {
+    const selectedValues = Object.values(selectedIntervalsMap);
+    const trips = selectedValues.filter(
+      (interval) => interval.intervalType === IntervalType.Trip
+    ).length;
+    const parkings = selectedValues.filter(
+      (interval) => interval.intervalType === IntervalType.Parking
+    ).length;
+
+    return {
+      trips,
+      parkings,
+      total: selectedValues.length
+    };
+  }, [selectedIntervalsMap]);
+
+  useEffect(() => {
+    if (!replayData) return;
+
+    const newSelectionState = {
+      trips: selectedCounts.trips > 0 && selectedCounts.trips === intervalCounts.trips,
+      parkings: selectedCounts.parkings > 0 && selectedCounts.parkings === intervalCounts.parkings,
+      all: selectedCounts.total > 0 && selectedCounts.total === intervalCounts.total
+    };
+
+    setSelectionState(newSelectionState);
+  }, [selectedCounts, intervalCounts, replayData]);
 
   const search = useCallback(async () => {
     setLoading(true);
@@ -94,15 +165,74 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
     }
   }, [endDate, endTime, searchDeviceQuery, startDate, startTime]);
 
-  const handleIntervalSelection = (interval: ReplayDTO) => {
-    if (selectedIntervalsMap[interval.id]) {
-      const newSelectedIntervalsMap = { ...selectedIntervalsMap };
-      delete newSelectedIntervalsMap[interval.id];
-      setSelectedIntervalsMap(newSelectedIntervalsMap);
-    } else {
-      setSelectedIntervalsMap((prev) => ({ ...prev, [interval.id]: interval }));
+  const handleIntervalSelection = useCallback((interval: ReplayDTO) => {
+    setSelectedIntervalsMap((prev) => {
+      if (prev[interval.id]) {
+        const { [interval.id]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [interval.id]: interval };
+    });
+  }, []);
+
+  const getIntervalsByType = useCallback(
+    (type: SelectionStateType): ReplayDTO[] => {
+      if (!replayData) return [];
+
+      switch (type) {
+        case IntervalType.Trip:
+          return replayData.filter((interval) => interval.intervalType === IntervalType.Trip);
+        case IntervalType.Parking:
+          return replayData.filter((interval) => interval.intervalType === IntervalType.Parking);
+        case 'all':
+          return replayData;
+        default:
+          return [];
+      }
+    },
+    [replayData]
+  );
+
+  const handleSelectAll = useCallback(
+    (type: SelectionStateType) => {
+      const intervalsToSelect = getIntervalsByType(type);
+
+      if (intervalsToSelect.length === 0) return;
+
+      setSelectedIntervalsMap((prev) => {
+        const newMap = { ...prev };
+
+        intervalsToSelect.forEach((interval) => {
+          newMap[interval.id] = interval;
+        });
+
+        return newMap;
+      });
+    },
+    [getIntervalsByType]
+  );
+
+  const handleDeselectAll = useCallback((type: SelectionStateType) => {
+    if (type === 'all') {
+      setSelectedIntervalsMap({});
+      return;
     }
-  };
+
+    setSelectedIntervalsMap((prev) => {
+      const filteredMap: Record<string, ReplayDTO> = {};
+
+      Object.values(prev).forEach((interval) => {
+        if (
+          (type === IntervalType.Trip && interval.intervalType !== IntervalType.Trip) ||
+          (type === IntervalType.Parking && interval.intervalType !== IntervalType.Parking)
+        ) {
+          filteredMap[interval.id] = interval;
+        }
+      });
+
+      return filteredMap;
+    });
+  }, []);
 
   useEffect(() => {
     if (searchDeviceQuery && startDate && endDate) {
@@ -127,7 +257,10 @@ export const ReplayProvider = ({ children }: PropsWithChildren) => {
         replayData,
         loading,
         selectedIntervals,
-        handleIntervalSelection
+        handleIntervalSelection,
+        handleSelectAll,
+        handleDeselectAll,
+        selectionState
       }}
     >
       {children}

@@ -33,7 +33,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
       onClick={() => handleIntervalSelection(trip)}
       onKeyDown={(e) => e.key === 'Enter' && handleIntervalSelection(trip)}
       tabIndex={0}
-      role="button"
+      role="checkbox"
       aria-pressed={isSelected}
     >
       <div className="flex items-center gap-2">
@@ -42,7 +42,7 @@ export default function TripReplayCard({ trip }: TripReplayCardProps) {
             <div className="flex gap-1 items-center text-sm text-nowrap dark:text-white">
               {trip.totalDistance.toFixed(2)} KM
             </div>
-            <div className="text-xs text-gray-600 text-nowrap dark:text-white/80">
+            <div className="text-xs text-gray-600 text dark:text-white/80">
               {trip.formatedTotalDuration}
             </div>
           </div>
