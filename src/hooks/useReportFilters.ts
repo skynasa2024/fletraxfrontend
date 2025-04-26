@@ -8,6 +8,7 @@ export interface ReportFilters {
   startTime?: string;
   endTime?: string;
   type?: string;
+  period?: string;
 }
 
 export function useReportFilters() {
@@ -30,7 +31,8 @@ export function useReportFilters() {
       endDate: formData.get('endDate')?.toString() || '',
       type: formData.get('type')?.toString() || '',
       startTime: formData.get('startTime')?.toString() || '',
-      endTime: formData.get('endTime')?.toString() || ''
+      endTime: formData.get('endTime')?.toString() || '',
+      period: formData.get('period')?.toString() || ''
     };
 
     updateFilters(newFilters);

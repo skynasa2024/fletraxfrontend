@@ -1,3 +1,4 @@
+import { TDataGridRequestParams } from '@/components';
 import { axios } from './axios';
 import { Paginated } from './common';
 import { PaginatedResponseModel } from './response';
@@ -276,7 +277,7 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
   };
 }
 
-type MaxSpeedParams = {
+type MessageReportsParams = {
   pageIndex: number;
   pageSize: number;
   startDate: string;
@@ -288,7 +289,7 @@ type MaxSpeedParams = {
   minSpeed?: number;
 };
 
-export interface IMaxSpeedReport {
+export interface IMessagesReports {
   ident: string;
   plate: string;
   timestamp: string;
@@ -300,9 +301,9 @@ export interface IMaxSpeedReport {
 }
 
 export async function getMaxSpeedReport(
-  params: MaxSpeedParams
-): Promise<Paginated<IMaxSpeedReport>> {
-  const report = await axios.get<PaginatedResponseModel<IMaxSpeedReport>>(
+  params: MessageReportsParams
+): Promise<Paginated<IMessagesReports>> {
+  const report = await axios.get<PaginatedResponseModel<IMessagesReports>>(
     '/api/messages/max_speed_reports',
     {
       params: {
@@ -334,7 +335,115 @@ export async function getMaxSpeedReport(
   };
 }
 
-export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob> => {
+export async function getMessagesReport(
+  params: MessageReportsParams
+): Promise<Paginated<IMessagesReports>> {
+  const report = await axios.get<PaginatedResponseModel<IMessagesReports>>(
+    '/api/messages/reports',
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        startTime: params.startTime,
+        endTime: params.endTime,
+        sort: params.sort,
+        ident: params.ident,
+        minSpeed: params.minSpeed
+      }
+    }
+  );
+
+  return {
+    data: report.data.result.content.map((item) => ({
+      ident: item.ident,
+      plate: item.plate,
+      timestamp: format(new Date(item.timestamp), 'yyyy/MM/dd HH:mm:ss'),
+      ignitionStatus: item.ignitionStatus,
+      positionLatitude: item.positionLatitude,
+      positionLongitude: item.positionLongitude,
+      positionDirection: item.positionDirection,
+      positionSpeed: item.positionSpeed
+    })),
+    totalCount: report.data.result.totalElements
+  };
+}
+
+type SubscriptionExpiryPeriodType = 'today' | 'this_week' | 'this_month' | 'this_year';
+
+type SubscriptionExpiryParams = {
+  ident: string;
+  pageIndex: number;
+  pageSize: number;
+  sort: string;
+  period: SubscriptionExpiryPeriodType;
+};
+
+interface SubscriptionExpiryReportDTO {
+  ident: string;
+  name: string;
+  phone: string;
+  plate: string;
+  protocol: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  users: string;
+}
+
+export interface ISubscriptionExpiryReport {
+  ident: string;
+  name: string;
+  phone: string;
+  plate: string;
+  protocol: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  user: {
+    name: string;
+    phone: string;
+  };
+}
+
+export const getSubscriptionExpiryReport = async (
+  params: SubscriptionExpiryParams
+): Promise<Paginated<ISubscriptionExpiryReport>> => {
+  const report = await axios.get<PaginatedResponseModel<SubscriptionExpiryReportDTO>>(
+    `/api/devices/expiring-subscriptions-reports`,
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        sort: params.sort || 'createdAt,desc',
+        search: params.ident,
+        period: params.period
+      }
+    }
+  );
+  return {
+    data: report.data.result.content.map((item) => ({
+      ident: item.ident,
+      name: item.name,
+      phone: item.phone,
+      plate: item.plate,
+      protocol: item.protocol,
+      type: item.type,
+      startDate: format(new Date(item.startDate), 'yyyy/MM/dd HH:mm:ss'),
+      endDate: format(new Date(item.endDate), 'yyyy/MM/dd HH:mm:ss'),
+      user: {
+        name: item.users.split(',')[0]?.split(':')[1],
+        phone: item.users.split(',')[1]?.split(':')[1]
+      }
+    })),
+    totalCount: report.data.result.totalElements
+  };
+};
+
+export const exportMessagesReport = async (
+  params: MessageReportsParams & { reportType: 'max_speed' | 'messages' }
+): Promise<Blob> => {
   const response = await axios.get<Blob>('/api/messages/export', {
     responseType: 'blob',
     params: {
@@ -347,7 +456,7 @@ export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob
       sort: params.sort,
       page: params.pageIndex,
       size: params.pageSize,
-      reportType: 'max_speed'
+      reportType: params.reportType
     }
   });
   return response.data;
@@ -399,5 +508,35 @@ export const exportAlarmReport = async (params: AlarmReportParams): Promise<Blob
       reportType: 'notifications'
     }
   });
+  return response.data;
+};
+
+export const exportSubscriptionExpiryReport = async (
+  params: TDataGridRequestParams
+): Promise<Blob> => {
+  const filters =
+    params.filters?.reduce(
+      (acc, filter) => {
+        acc[filter.id] = filter.value;
+        return acc;
+      },
+      {} as Record<string, unknown>
+    ) ?? {};
+
+  const requestParams = {
+    page: params.pageIndex,
+    size: params.pageSize,
+    search: filters['__any'] && filters['__any'].toString(),
+    ...(params.sorting?.[0] && {
+      sort: `${params.sorting[0].id},${params.sorting[0].desc ? 'desc' : 'asc'}`
+    }),
+    reportType: 'expiring-subscriptions'
+  };
+
+  const response = await axios.get<Blob>('/api/devices/export', {
+    responseType: 'blob',
+    params: requestParams
+  });
+
   return response.data;
 };

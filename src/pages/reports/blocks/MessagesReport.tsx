@@ -1,9 +1,9 @@
-import { exportMessagesReport, getMaxSpeedReport, IMessagesReports } from '@/api/reports';
+import { exportMessagesReport, getMessagesReport, IMessagesReports } from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { useReportFilters } from '@/hooks/useReportFilters';
@@ -11,12 +11,11 @@ import { useReportSorting } from '@/hooks/useReportSorting';
 import { Download } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import MapModal from '../components/MapModal';
-import { Marker, Tooltip, useMap } from 'react-leaflet';
-import { renderToString } from 'react-dom/server';
-import ParkingMarker from '@/pages/replay/components/ParkingMarker';
+import { Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
 
-export default function MaxSpeedReport() {
+export default function MessagesReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
   const { handleFetchWithSort } = useReportSorting({
@@ -65,12 +64,13 @@ export default function MaxSpeedReport() {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.ACTION' }),
         cell: ({ row }) => (
           <MapModal>
-            <MaxSpeedMarker
+            <MessageMarker
               position={{
                 latitude: row.original.positionLatitude,
                 longitude: row.original.positionLongitude
               }}
               speed={row.original.positionSpeed}
+              direction={row.original.positionDirection}
             />
           </MapModal>
         )
@@ -104,7 +104,7 @@ export default function MaxSpeedReport() {
         endTime: filters.endTime || '',
         sort: 'ident,desc',
         ident: filters.ident || '',
-        reportType: 'max_speed'
+        reportType: 'messages'
       });
       downloadFile(response);
 
@@ -200,7 +200,7 @@ export default function MaxSpeedReport() {
                       ...filters,
                       intervalType: filters.type
                     },
-                    getMaxSpeedReport
+                    getMessagesReport
                   )
               : undefined
           }
@@ -218,27 +218,27 @@ export default function MaxSpeedReport() {
   );
 }
 
-type MaxSpeedMarkerProps = {
+type MessageMarkerProps = {
   position: {
     latitude: number;
     longitude: number;
   };
   speed: number;
+  direction: number;
 };
 
-function MaxSpeedMarker({ position, speed }: MaxSpeedMarkerProps) {
+function MessageMarker({ position, speed, direction }: MessageMarkerProps) {
   const map = useMap();
 
-  const createParkingIcon = useCallback(() => {
-    const svgString = renderToString(<ParkingMarker color={'#FF0000'} letter="!" />);
-
-    return L.divIcon({
-      html: svgString,
-      className: '',
-      iconSize: [30, 31],
-      iconAnchor: [15, 31]
-    });
-  }, []);
+  const icon = useMemo(
+    () =>
+      L.icon({
+        iconUrl: toAbsoluteUrl('/media/icons/car-marker-green.png'),
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      }),
+    []
+  );
 
   useEffect(() => {
     if (position && position.latitude && position.longitude) {
@@ -255,16 +255,25 @@ function MaxSpeedMarker({ position, speed }: MaxSpeedMarkerProps) {
   }
 
   return (
-    <Marker position={[position.latitude, position.longitude]} icon={createParkingIcon()}>
-      <Tooltip
-        direction="top"
-        offset={[0, -30]}
-        permanent
-        interactive
-        className="bg-white rounded-lg shadow-lg p-2 opacity-100 flex text-center font-semibold text-gray-800 text-md"
+    <>
+      <RotatableMarker
+        position={{
+          lat: position.latitude,
+          lng: position.longitude
+        }}
+        icon={icon}
+        rotationAngle={direction}
       >
-        <div className="min-w-36 flex flex-col gap-2">{speed} km/h</div>
-      </Tooltip>
-    </Marker>
+        <Tooltip
+          direction="top"
+          offset={[0, -10]}
+          permanent
+          interactive
+          className="bg-white rounded-lg shadow-lg p-2 opacity-100 flex text-center font-semibold text-gray-800 text-md"
+        >
+          <div className="min-w-36 flex flex-col gap-2">{speed} km/h</div>
+        </Tooltip>
+      </RotatableMarker>
+    </>
   );
 }
