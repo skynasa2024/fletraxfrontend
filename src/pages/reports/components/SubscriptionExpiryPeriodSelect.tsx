@@ -1,16 +1,35 @@
 import { useIntl } from 'react-intl';
-import { useState } from 'react';
 
 export function SubscriptionExpiryPeriodSelect() {
   const intl = useIntl();
 
   return (
     <select name="period" className="select">
-      <option value="">Select period</option>
-      <option value="today">Today</option>
-      <option value="this_week">This Week</option>
-      <option value="this_month">This Month</option>
-      <option value="this_year">This Year</option>
+      <option value="">
+        {intl.formatMessage({
+          id: 'REPORTS.SELECT_PERIOD.PLACEHOLDER'
+        })}
+      </option>
+      <option value="today">
+        {intl.formatMessage({
+          id: 'REPORTS.SELECT_PERIOD.TODAY'
+        })}
+      </option>
+      <option value="this_week">
+        {intl.formatMessage({
+          id: 'REPORTS.SELECT_PERIOD.THIS_WEEK'
+        })}
+      </option>
+      <option value="this_month">
+        {intl.formatMessage({
+          id: 'REPORTS.SELECT_PERIOD.THIS_MONTH'
+        })}
+      </option>
+      <option value="this_year">
+        {intl.formatMessage({
+          id: 'REPORTS.SELECT_PERIOD.THIS_YEAR'
+        })}
+      </option>
     </select>
   );
 }
