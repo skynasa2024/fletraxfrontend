@@ -8,6 +8,7 @@ import TripsAndParkingReport from './blocks/TripsAndParkingReport';
 import AlarmReport from './blocks/AlarmReport';
 import clsx from 'clsx';
 import MaxSpeedReport from './blocks/MaxSpeedReport';
+import SubscriptionExpirtyReport from './blocks/SubscriptionExpiryReport';
 
 type ReportTabType = {
   id: string;
@@ -46,6 +47,12 @@ const ReportTypes: ReportTabType[] = [
     label: 'Max Speed Report',
     description: 'Max Speed Report',
     report: <MaxSpeedReport />
+  },
+  {
+    id: 'subscriptionExpiry',
+    label: 'Subscription Expiry Report',
+    description: 'Subscription Expiry Report',
+    report: <SubscriptionExpirtyReport />
   }
 ];
 
