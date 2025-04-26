@@ -277,7 +277,7 @@ export async function getAlarmReport(params: AlarmReportParams): Promise<Paginat
   };
 }
 
-type MaxSpeedParams = {
+type MessageReportsParams = {
   pageIndex: number;
   pageSize: number;
   startDate: string;
@@ -289,7 +289,7 @@ type MaxSpeedParams = {
   minSpeed?: number;
 };
 
-export interface IMaxSpeedReport {
+export interface IMessagesReports {
   ident: string;
   plate: string;
   timestamp: string;
@@ -301,10 +301,45 @@ export interface IMaxSpeedReport {
 }
 
 export async function getMaxSpeedReport(
-  params: MaxSpeedParams
-): Promise<Paginated<IMaxSpeedReport>> {
-  const report = await axios.get<PaginatedResponseModel<IMaxSpeedReport>>(
+  params: MessageReportsParams
+): Promise<Paginated<IMessagesReports>> {
+  const report = await axios.get<PaginatedResponseModel<IMessagesReports>>(
     '/api/messages/max_speed_reports',
+    {
+      params: {
+        page: params.pageIndex,
+        size: params.pageSize,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        startTime: params.startTime,
+        endTime: params.endTime,
+        sort: params.sort,
+        ident: params.ident,
+        minSpeed: params.minSpeed
+      }
+    }
+  );
+
+  return {
+    data: report.data.result.content.map((item) => ({
+      ident: item.ident,
+      plate: item.plate,
+      timestamp: format(new Date(item.timestamp), 'yyyy/MM/dd HH:mm:ss'),
+      ignitionStatus: item.ignitionStatus,
+      positionLatitude: item.positionLatitude,
+      positionLongitude: item.positionLongitude,
+      positionDirection: item.positionDirection,
+      positionSpeed: item.positionSpeed
+    })),
+    totalCount: report.data.result.totalElements
+  };
+}
+
+export async function getMessagesReport(
+  params: MessageReportsParams
+): Promise<Paginated<IMessagesReports>> {
+  const report = await axios.get<PaginatedResponseModel<IMessagesReports>>(
+    '/api/messages/reports',
     {
       params: {
         page: params.pageIndex,
@@ -406,7 +441,9 @@ export const getSubscriptionExpiryReport = async (
   };
 };
 
-export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob> => {
+export const exportMessagesReport = async (
+  params: MessageReportsParams & { reportType: 'max_speed' | 'messages' }
+): Promise<Blob> => {
   const response = await axios.get<Blob>('/api/messages/export', {
     responseType: 'blob',
     params: {
@@ -419,7 +456,7 @@ export const exportMaxSpeedReport = async (params: MaxSpeedParams): Promise<Blob
       sort: params.sort,
       page: params.pageIndex,
       size: params.pageSize,
-      reportType: 'max_speed'
+      reportType: params.reportType
     }
   });
   return response.data;

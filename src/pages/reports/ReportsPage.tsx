@@ -9,6 +9,7 @@ import AlarmReport from './blocks/AlarmReport';
 import clsx from 'clsx';
 import MaxSpeedReport from './blocks/MaxSpeedReport';
 import SubscriptionExpirtyReport from './blocks/SubscriptionExpiryReport';
+import MessagesReport from './blocks/MessagesReport';
 
 type ReportTabType = {
   id: string;
@@ -20,39 +21,45 @@ type ReportTabType = {
 const ReportTypes: ReportTabType[] = [
   {
     id: 'mileage',
-    label: 'Mileage Report',
+    label: 'Mileage',
     description: 'Mileage Report',
     report: <MileageReport />
   },
   {
     id: 'engineHours',
-    label: 'Engine Hours Report',
+    label: 'Engine Hours',
     description: 'Engine Hours Report',
     report: <EngineHoursReport />
   },
   {
     id: 'tripsAndParking',
-    label: 'Trips/Parking Report',
+    label: 'Trips/Parking',
     description: 'Trips/Parking Report',
     report: <TripsAndParkingReport />
   },
   {
     id: 'alarm',
-    label: 'Alarm Report',
-    description: 'Alarm Report',
+    label: 'Alarms',
+    description: 'Alarms Report',
     report: <AlarmReport />
   },
   {
     id: 'maxSpeed',
-    label: 'Max Speed Report',
+    label: 'Max Speed',
     description: 'Max Speed Report',
     report: <MaxSpeedReport />
   },
   {
     id: 'subscriptionExpiry',
-    label: 'Subscription Expiry Report',
+    label: 'Subscription Expiry',
     description: 'Subscription Expiry Report',
     report: <SubscriptionExpirtyReport />
+  },
+  {
+    id: 'messages',
+    label: 'Messages',
+    description: 'Subscription Report',
+    report: <MessagesReport />
   }
 ];
 
