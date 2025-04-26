@@ -28,9 +28,20 @@ export const MqttProvider = ({ children }: PropsWithChildren) => {
       setMqttClient(undefined);
       return;
     }
+
+    /**
+     * Retrieves or creates a unique tab ID for MQTT client identification.
+     * We add this unique tab ID to the end of the client ID so that each browser tab maintains its own
+     * unique MQTT connection. Without this, multiple tabs would conflict with the same client ID,
+     * causing an endless loop of disconnect and reconnect as they compete for the same connection.
+     */
+    const tabId = sessionStorage.tabID
+      ? sessionStorage.tabID
+      : (sessionStorage.tabID = Math.random());
+
     const token = authHelper.getAuth()?.access_token;
     const mqttClient = mqtt.connect(import.meta.env.VITE_APP_MQTT_API, {
-      clientId: `${auth.currentUser.username}-${suffix}`,
+      clientId: `${auth.currentUser.username}-${suffix}-${tabId}`,
       username: auth.currentUser.username,
       password: token,
       clean: true,
