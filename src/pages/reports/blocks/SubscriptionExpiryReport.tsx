@@ -68,7 +68,7 @@ export default function SubscriptionExpirtyReport() {
       },
       {
         accessorKey: 'phone',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.PHONE' })
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.PHONE_NUMBER' })
       },
       {
         accessorKey: 'startDate',
