@@ -24,7 +24,7 @@ export const SubControl = ({ children }: { children: ReactElement[] | ReactEleme
         map.scrollWheelZoom.enable();
       }}
     >
-      <div className="leaflet-control flex flex-col gap-[10px] !ms-[512px] !mb-6 font-sans">
+      <div className="leaflet-control flex flex-col gap-[10px] !ms-[475px] !mb-6 font-sans">
         {children}
       </div>
     </div>

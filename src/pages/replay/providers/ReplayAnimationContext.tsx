@@ -20,6 +20,7 @@ interface AnimationContextProps {
   currentPointIndex: number;
   messagePoints: ReplayPoint[];
   currentTripIndex: number;
+  setCurrentTripIndex: (index: number) => void;
   sortedTrips: ReplayDTO[];
 }
 
@@ -39,6 +40,7 @@ const ReplayAnimationContext = createContext<AnimationContextProps>({
   currentPointIndex: 0,
   messagePoints: [],
   currentTripIndex: 0,
+  setCurrentTripIndex: () => {},
   sortedTrips: []
 });
 
@@ -248,6 +250,7 @@ export const ReplayAnimationProvider = ({ children }: PropsWithChildren) => {
         currentPointIndex,
         messagePoints,
         currentTripIndex,
+        setCurrentTripIndex,
         sortedTrips
       }}
     >
