@@ -9,12 +9,13 @@ import { FormattedMessage } from 'react-intl';
 import { useLanguage } from '@/i18n';
 import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import SpeedChart from '../components/SpeedChart';
 
 const MultiplierOptions = [0.5, 1, 2, 3, 5];
+const ITEMS_PER_SLIDE = 5;
 
 export const ReplayPlaybackCard = () => {
   const { isRTL } = useLanguage();
@@ -33,10 +34,30 @@ export const ReplayPlaybackCard = () => {
     currentPointIndex,
     messagePoints,
     currentTripIndex,
-    sortedTrips
+    sortedTrips,
+    setCurrentTripIndex
   } = useReplayAnimationContext();
   const { currentUser } = useAuthContext();
   const { selectedIntervalsData } = useReplayContext();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const totalSlides = useMemo(() => {
+    if (!sortedTrips || sortedTrips.length === 0) return 0;
+    return Math.ceil(sortedTrips.length / ITEMS_PER_SLIDE);
+  }, [sortedTrips]);
+
+  useMemo(() => {
+    const slideIndex = Math.floor(currentTripIndex / ITEMS_PER_SLIDE);
+    if (slideIndex !== currentSlide) {
+      setCurrentSlide(slideIndex);
+    }
+  }, [currentTripIndex]);
+
+  const currentSlideItems = useMemo(() => {
+    if (!sortedTrips || sortedTrips.length === 0) return [];
+    const startIdx = currentSlide * ITEMS_PER_SLIDE;
+    return sortedTrips.slice(startIdx, startIdx + ITEMS_PER_SLIDE);
+  }, [sortedTrips, currentSlide]);
 
   const handleIncreasePlayBackSpeed = () => {
     const currentIdx = MultiplierOptions.indexOf(multiplier);
@@ -76,12 +97,24 @@ export const ReplayPlaybackCard = () => {
     return sortedTrips[currentTripIndex];
   }, [sortedTrips, currentTripIndex]);
 
-  const tripProgressInfo = useMemo(() => {
-    if (!sortedTrips || sortedTrips.length === 0) return '';
-    if (sortedTrips.length === 1) return '';
+  const handleTripChange = (index: number) => {
+    if (index >= 0 && index < sortedTrips.length) {
+      pause();
+      setCurrentTripIndex(index);
+    }
+  };
 
-    return `Trip ${currentTripIndex + 1} of ${sortedTrips.length}`;
-  }, [currentTripIndex, sortedTrips]);
+  const handleNextSlide = () => {
+    if (currentSlide < totalSlides - 1) {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
 
   if (!selectedIntervalsData || Object.keys(selectedIntervalsData).length === 0) {
     return null;
@@ -181,9 +214,58 @@ export const ReplayPlaybackCard = () => {
                 </div>
               </div>
 
-              {tripProgressInfo && (
-                <div className="text-xs font-semibold text-gray-600 bg-gray-100 py-1 px-3 rounded-full">
-                  {tripProgressInfo}
+              {sortedTrips.length > 1 && (
+                <div className="flex flex-col items-center gap-2 py-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      className="btn btn-sm btn-icon btn-light-primary rounded-md font-semibold"
+                      disabled={currentSlide === 0 && currentTripIndex === 0}
+                      onClick={handlePrevSlide}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+
+                    <div className="flex gap-1">
+                      {currentSlideItems.map((_, idx) => {
+                        const actualIndex = currentSlide * ITEMS_PER_SLIDE + idx;
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleTripChange(actualIndex)}
+                            className={`size-8 rounded-md flex items-center justify-center text-xs font-semibold ${
+                              actualIndex === currentTripIndex
+                                ? 'bg-info text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            {actualIndex + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      className="btn btn-sm btn-icon btn-light-info rounded-md font-semibold"
+                      disabled={
+                        currentSlide === totalSlides - 1 &&
+                        currentTripIndex === sortedTrips.length - 1
+                      }
+                      onClick={handleNextSlide}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+
+                  <div className="flex justify-center gap-1 mt-1">
+                    {Array.from({ length: totalSlides }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-1 rounded-full transition-all ${
+                          idx === currentSlide ? 'w-4 bg-info' : 'w-2 bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
