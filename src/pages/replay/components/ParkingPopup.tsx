@@ -69,7 +69,9 @@ export const ParkingPopup = ({ parking }: ParkingPopupProps) => {
             <div className="text-[#A1A5B7] text-[10px]">
               <FormattedMessage id="REPLAY.PARKING.DURATION" />
             </div>
-            <div className="text-[#2D3748] dark:text-gray-50 text-xs">{parking.totalDuration}</div>
+            <div className="text-[#2D3748] dark:text-gray-50 text-xs">
+              {parking.formatedTotalDuration.replace(/\s\d+\s\w+$/, '')}
+            </div>
           </div>
         </div>
       </div>
