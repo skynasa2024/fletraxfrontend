@@ -430,8 +430,8 @@ export const getSubscriptionExpiryReport = async (
       plate: item.plate,
       protocol: item.protocol,
       type: item.type,
-      startDate: format(new Date(item.startDate), 'yyyy/MM/dd HH:mm:ss'),
-      endDate: format(new Date(item.endDate), 'yyyy/MM/dd HH:mm:ss'),
+      startDate: item.startDate,
+      endDate: item.endDate,
       user: {
         name: item.users.split(',')[0]?.split(':')[1],
         phone: item.users.split(',')[1]?.split(':')[1]

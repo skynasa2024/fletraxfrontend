@@ -23,6 +23,15 @@ export default function SubscriptionExpirtyReport() {
     defaultSort: 'createdAt,desc'
   });
 
+  const calculateDaysLeft = (endDateStr: string): number => {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(endDateStr);
+    const differenceMs = endDate.getTime() - currentDate.getTime();
+    return Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+  };
+
   const handleExport = async () => {
     try {
       const response = await exportSubscriptionExpiryReport({
@@ -77,6 +86,24 @@ export default function SubscriptionExpirtyReport() {
       {
         accessorKey: 'endDate',
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.END_DATE' })
+      },
+      {
+        id: 'daysLeft',
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.DAYS_LEFT' }),
+        cell: ({ row }) => {
+          const daysLeft = calculateDaysLeft(row.original.endDate);
+          const isExpired = daysLeft < 0;
+
+          return (
+            <span className={`font-medium ${isExpired ? 'text-danger' : 'text-success'}`}>
+              {intl.formatMessage(
+                { id: 'REPORTS.DAYS_LEFT_INFO' },
+                { days: daysLeft }
+              )}
+            </span>
+          );
+        },
+        enableSorting: true
       },
       {
         accessorKey: 'protocol',

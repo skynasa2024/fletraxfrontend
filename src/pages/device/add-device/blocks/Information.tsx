@@ -3,12 +3,16 @@ import { AddDevicePageProps } from '../AddDevicePage';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useAuthContext } from '@/auth';
+import { addYears } from 'date-fns';
+import { getFormattedDate } from '@/utils';
 
 const Information = ({ device }: AddDevicePageProps) => {
   const { protocols, types, getTypesOfProtocol } = useDeviceProvider();
   const [protocolId, setProtocolId] = useState<string>();
   const [typeId, setTypeId] = useState<string>();
   const { formatMessage } = useIntl();
+  const { currentUser } = useAuthContext();
 
   useEffect(() => {
     if (device?.protocolId && protocols && types) {
@@ -148,7 +152,9 @@ const Information = ({ device }: AddDevicePageProps) => {
               className="input w-full dark:[color-scheme:dark]"
               name="subscriptionStartDate"
               placeholder="DD/MM/YYYY"
-              defaultValue={device?.subscriptionStartDate}
+              defaultValue={
+                device?.subscriptionStartDate || getFormattedDate(undefined, currentUser?.timezone)
+              }
             />
           </div>
 
@@ -162,7 +168,10 @@ const Information = ({ device }: AddDevicePageProps) => {
               className="input w-full dark:[color-scheme:dark]"
               name="subscriptionEndDate"
               placeholder="DD/MM/YYYY"
-              defaultValue={device?.subscriptionEndDate}
+              defaultValue={
+                device?.subscriptionEndDate ||
+                getFormattedDate((d) => addYears(d, 1), currentUser?.timezone)
+              }
             />
           </div>
         </div>

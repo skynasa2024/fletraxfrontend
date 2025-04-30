@@ -26,17 +26,10 @@ export const TripsSearch = ({ search, setSearch, onSearch, onSelectDevice }: Tri
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    getMonitoringDevices()
-      .then((devices) => {
-        setDevices(devices);
-        return devices;
-      })
-      .then((devices) => {
-        if (!search) {
-          setSearch(devices[0].ident);
-        }
-        onSearch?.();
-      });
+    getMonitoringDevices().then((devices) => {
+      setDevices(devices);
+      return devices;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

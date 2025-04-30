@@ -208,20 +208,26 @@ export default function TripsAndParkingReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={(params) =>
-            handleFetchWithSort(
-              params,
-              {
-                ...filters,
-                intervalType: filters.type
-              },
-              getTripsAndParkingReport
-            )
+          onFetchData={
+            filters.vehicleId
+              ? (params) =>
+                  handleFetchWithSort(
+                    params,
+                    {
+                      ...filters,
+                      intervalType: filters.type
+                    },
+                    getTripsAndParkingReport
+                  )
+              : undefined
           }
           filters={getDataGridFilters()}
           pagination={{
             size: 100,
             sizes: undefined
+          }}
+          messages={{
+            empty: !filters.ident ? intl.formatMessage({ id: 'COMMON.SELECT_VEHICLE' }) : undefined
           }}
         />
       </div>

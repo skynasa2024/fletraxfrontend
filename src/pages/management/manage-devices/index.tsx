@@ -1,6 +1,13 @@
 import { Paginated } from '@/api/common';
-import { createDevice, DeviceDTO, exportDevicesIntoExcel, getDevices, importDevicesFromExcel } from '@/api/devices';
+import {
+  createDevice,
+  DeviceDTO,
+  exportDevicesIntoExcel,
+  getDevices,
+  importDevicesFromExcel
+} from '@/api/devices';
 import { ResponseModel } from '@/api/response';
+import { useAuthContext } from '@/auth';
 import { DataGrid, TDataGridRequestParams } from '@/components';
 import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
@@ -8,9 +15,10 @@ import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { EditDeviceModal } from '@/pages/management/blocks/EditDeviceModal';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
-import { downloadFile, toAbsoluteUrl } from '@/utils';
+import { downloadFile, getFormattedDate, toAbsoluteUrl } from '@/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import axios, { AxiosError } from 'axios';
+import { addYears } from 'date-fns';
 import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useMemo, useState, FormEvent, useCallback, useRef } from 'react';
@@ -18,6 +26,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
   const intl = useIntl();
+  const { currentUser } = useAuthContext();
   const [searchQuery, setSearchQuery] = useState('');
   const [devices, setDevices] = useState<Paginated<DeviceDTO>>();
   const { getProtocolName, getTypeName } = useDeviceProvider();
@@ -63,6 +72,21 @@ export default function ManageDevices() {
       form.reset();
       setProtocolId('');
       setTypeId('');
+
+      // Reset subscription date fields to default values
+      const startDateInput = form.querySelector(
+        'input[name="subscriptionStartDate"]'
+      ) as HTMLInputElement;
+      const endDateInput = form.querySelector(
+        'input[name="subscriptionEndDate"]'
+      ) as HTMLInputElement;
+      if (startDateInput) {
+        startDateInput.value = getFormattedDate(undefined, currentUser?.timezone);
+      }
+      if (endDateInput) {
+        endDateInput.value = getFormattedDate((d) => addYears(d, 1), currentUser?.timezone);
+      }
+
       fetchDevices();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -96,21 +120,33 @@ export default function ManageDevices() {
   const handleExport = async () => {
     try {
       const exportParams = {
-        ...currentGridParamsRef.current,
+        ...currentGridParamsRef.current
       };
 
       const response = await exportDevicesIntoExcel(exportParams);
 
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
   };
 
@@ -123,15 +159,27 @@ export default function ManageDevices() {
 
     try {
       await importDevicesFromExcel(formData);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.IMPORT_SUCCESS' }, { defaultMessage: 'Import successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.IMPORT_SUCCESS' },
+          { defaultMessage: 'Import successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
       fetchDevices();
     } catch (error) {
       console.error('Import error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.IMPORT_ERROR' }, { defaultMessage: 'Failed to import devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.IMPORT_ERROR' },
+          { defaultMessage: 'Failed to import devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     } finally {
       if (event.target) {
         event.target.value = '';
@@ -249,9 +297,10 @@ export default function ManageDevices() {
               </button>
             </div>
 
-            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+            <button
+              className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
               onClick={handleExport}
-              type='button'
+              type="button"
             >
               <Download size={16} />
               <span>
@@ -316,6 +365,7 @@ function QuickAddDeviceFrom({
   typeId
 }: QuickAddDeviceFromProps) {
   const intl = useIntl();
+  const { currentUser } = useAuthContext();
   const { protocols, getTypesOfProtocol } = useDeviceProvider();
   return (
     <>
@@ -391,10 +441,22 @@ function QuickAddDeviceFrom({
         />
       </th>
       <th colSpan={1} className="!p-1 !bg-green-700/5">
-        <input type="date" name="subscriptionStartDate" className="input w-full" required />
+        <input
+          type="date"
+          name="subscriptionStartDate"
+          className="input w-full"
+          required
+          defaultValue={getFormattedDate(undefined, currentUser?.timezone)}
+        />
       </th>
       <th colSpan={1} className="!p-1 !bg-green-700/5">
-        <input type="date" name="subscriptionEndDate" className="input w-full" required />
+        <input
+          type="date"
+          name="subscriptionEndDate"
+          className="input w-full"
+          required
+          defaultValue={getFormattedDate((d) => addYears(d, 1), currentUser?.timezone)}
+        />
       </th>
       <th colSpan={1} className="!p-1 !bg-green-700/5">
         <button type="submit" className="btn btn-success w-full flex items-center justify-center">
