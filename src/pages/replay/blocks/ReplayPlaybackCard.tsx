@@ -15,7 +15,7 @@ import { ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import SpeedChart from '../components/SpeedChart';
 
 const MultiplierOptions = [0.5, 1, 2, 3, 5];
-const ITEMS_PER_SLIDE = 5;
+const ITEMS_PER_SLIDE = 10;
 
 export const ReplayPlaybackCard = () => {
   const { isRTL } = useLanguage();
@@ -151,7 +151,7 @@ export const ReplayPlaybackCard = () => {
   return (
     <div className="card w-[59vw] flex flex-col">
       <div className="p-5 flex flex-col gap-2">
-        <div className="flex items-center justify-center gap-12">
+        <div className="flex items-center justify-between gap-12 w-full px-10">
           <div className="flex flex-col justify-between items-center">
             <div className="flex flex-col gap-2 items-center">
               <div className="flex gap-12 items-center justify-center p-4">
@@ -263,6 +263,7 @@ export const ReplayPlaybackCard = () => {
                         className={`h-1 rounded-full transition-all ${
                           idx === currentSlide ? 'w-4 bg-info' : 'w-2 bg-gray-300'
                         }`}
+                        onClick={() => setCurrentSlide(idx)}
                       />
                     ))}
                   </div>
@@ -279,7 +280,7 @@ export const ReplayPlaybackCard = () => {
               <div className="flex flex-col items-center gap-1">
                 {metaData?.timestamp && (
                   <div className="flex justify-between bg-gray-200 text-gray-600 font-semibold text-sm text-center py-1 px-2 rounded-md">
-                    <div>
+                    <div className="text-nowrap">
                       {new Date(metaData.timestamp).toLocaleString('en-UK', {
                         timeZone: currentUser?.timezone
                       })}
@@ -287,6 +288,31 @@ export const ReplayPlaybackCard = () => {
                   </div>
                 )}
                 <div className="text-sm font-semibold text-gray-700">{getMessageInfo()}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start justify-center gap-7">
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-1 items-center">
+                <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
+                <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
+                  <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
+                </span>
+              </div>
+              <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
+                {mileage.toFixed(2)} KM
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex gap-1 items-center">
+                <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
+                <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
+                  <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
+                </span>
+              </div>
+              <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
+                {maxSpeed.toFixed(0)} Km/h
               </div>
             </div>
           </div>
@@ -320,53 +346,9 @@ export const ReplayPlaybackCard = () => {
             {formatInTimeZone(endTimestamp, currentUser!.timezone, 'yyyy/MM/dd HH:mm:ss')}
           </div>
         </div>
-        <div className="flex items-center justify-center gap-7 w-full">
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-1 items-center">
-              <img src={toAbsoluteUrl('/media/icons/flag.svg')} />
-              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                <FormattedMessage id="TRIPS.FIELD.START_DATE" />
-              </span>
-            </div>
-            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {formatInTimeZone(startTimestamp, currentUser!.timezone, 'yyyy/MM/dd')}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-1 items-center">
-              <img src={toAbsoluteUrl('/media/icons/meter.svg')} />
-              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                <FormattedMessage id="TRIPS.FIELD.MILEAGE" />
-              </span>
-            </div>
-            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {mileage.toFixed(2)} KM
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-1 items-center">
-              <img src={toAbsoluteUrl('/media/icons/speed-blue.svg')} />
-              <span className="text-xs font-medium text-[#5E6278] dark:text-gray-700">
-                <FormattedMessage id="TRIPS.FIELD.MAX_SPEED" />
-              </span>
-            </div>
-            <div className="font-semibold text-sm text-[#2D3748] dark:text-gray-900">
-              {maxSpeed.toFixed(0)} Km/h
-            </div>
-          </div>
-        </div>
       </div>
-      <Accordion className="!mt-0">
-        <AccordionSummary
-          expandIcon={<ArrowDown size={22} />}
-          className="font-semibold text-md !h-12 !min-h-12"
-        >
-          Speed Graph
-        </AccordionSummary>
-        <AccordionDetails className="!p-0">
-          <SpeedChart points={messagePoints} currentPointIndex={currentPointIndex} />
-        </AccordionDetails>
-      </Accordion>
+
+      <SpeedChart points={messagePoints} currentPointIndex={currentPointIndex} />
     </div>
   );
 };
