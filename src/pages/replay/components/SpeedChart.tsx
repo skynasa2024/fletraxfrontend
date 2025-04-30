@@ -125,6 +125,7 @@ const SpeedChart: React.FC<SpeedChartProps> = ({ points, currentPointIndex }) =>
     };
   }, [points, currentUser]);
 
+  // Effect to update chart markers for the current point
   useEffect(() => {
     if (currentPointIndex >= 0 && chartRef.current?.chart) {
       chartRef.current.chart.updateOptions(
@@ -148,6 +149,24 @@ const SpeedChart: React.FC<SpeedChartProps> = ({ points, currentPointIndex }) =>
     }
   }, [currentPointIndex]);
 
+  // Effect to force chart refresh when points data changes
+  useEffect(() => {
+    if (chartRef.current?.chart) {
+      chartRef.current.chart.updateSeries(chartData, false);
+
+      chartRef.current.chart.updateOptions({
+        xaxis: {
+          ...chartOptions.xaxis,
+          tickAmount: Math.min(10, points.length - 1),
+          labels: {
+            ...chartOptions.xaxis?.labels,
+            show: points.length > 0
+          }
+        }
+      });
+    }
+  }, [points, chartData, chartOptions.xaxis]);
+
   if (!points || points.length === 0) {
     return (
       <div
@@ -167,6 +186,7 @@ const SpeedChart: React.FC<SpeedChartProps> = ({ points, currentPointIndex }) =>
         series={chartData}
         type="line"
         height={130}
+        key={`speed-chart-${points[0].latitude}-${points[0].longitude}`}
       />
     </div>
   );
