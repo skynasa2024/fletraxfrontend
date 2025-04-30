@@ -226,8 +226,8 @@ export const ReplayLayer = () => {
   }, [currentTripIndex, currentTripBounds, isRTL, map, playing, selectedParkings, selectedTrips]);
 
   const tripColors = {
-    primary: ['#0c0fd1', '#915404'],
-    secondary: ['#6a77c9', '#a88967']
+    primary: '#0c0fd1',
+    secondary: '#6c757d'
   };
 
   if (!selectedIntervalsData || Object.keys(selectedIntervalsData).length === 0) {
@@ -248,22 +248,13 @@ export const ReplayLayer = () => {
         selectedTrips.length > 0 &&
         selectedTrips
           .filter((trip) => trip && trip.pointsList)
-          .map((trip, index) => {
-            const colorIndex = index % tripColors.primary.length;
-            const isCurrentTrip = currentTrip && trip.id === currentTrip.id;
-
-            // use primary color for current trip, secondary for others
-            const lineWeight = isCurrentTrip ? 5 : 3;
-            const lineColor = isCurrentTrip
-              ? tripColors.primary[colorIndex]
-              : tripColors.secondary[colorIndex];
-
+          .map((trip) => {
             return (
               <Polyline
                 key={trip.id}
                 pathOptions={{
-                  color: lineColor,
-                  weight: lineWeight
+                  color: tripColors.secondary,
+                  weight: 3
                 }}
                 positions={trip.pointsList
                   .sort((a, b) => a.timestamp - b.timestamp)
@@ -271,6 +262,19 @@ export const ReplayLayer = () => {
               />
             );
           })}
+
+      {currentTrip && (
+        <Polyline
+          key={currentTrip?.id}
+          pathOptions={{
+            color: tripColors.primary,
+            weight: 5
+          }}
+          positions={currentTrip?.pointsList
+            .sort((a, b) => a.timestamp - b.timestamp)
+            .map((point) => [point.latitude, point.longitude])}
+        />
+      )}
 
       {selectedParkings &&
         selectedParkings.length > 0 &&
