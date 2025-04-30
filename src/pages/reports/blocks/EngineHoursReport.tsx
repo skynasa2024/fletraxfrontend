@@ -1,4 +1,8 @@
-import { EngineHoursStatisticsReport, exportStatisticsReport, getStatisticsReport } from '@/api/reports';
+import {
+  EngineHoursStatisticsReport,
+  exportStatisticsReport,
+  getStatisticsReport
+} from '@/api/reports';
 import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
@@ -19,23 +23,23 @@ const groupByOptions: {
   label: React.ReactNode;
   value: GroupByOption;
 }[] = [
-    {
-      label: <FormattedMessage id="REPORTS.COLUMN.Daily" />,
-      value: 'Daily'
-    },
-    {
-      label: <FormattedMessage id="REPORTS.COLUMN.WEEKLY" />,
-      value: 'Weekly'
-    },
-    {
-      label: <FormattedMessage id="REPORTS.COLUMN.MONTHLY" />,
-      value: 'Monthly'
-    },
-    {
-      label: <FormattedMessage id="REPORTS.COLUMN.YEARLY" />,
-      value: 'Yearly'
-    }
-  ];
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.Daily" />,
+    value: 'Daily'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.WEEKLY" />,
+    value: 'Weekly'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.MONTHLY" />,
+    value: 'Monthly'
+  },
+  {
+    label: <FormattedMessage id="REPORTS.COLUMN.YEARLY" />,
+    value: 'Yearly'
+  }
+];
 
 export default function EngineHoursReport() {
   const intl = useIntl();
@@ -93,23 +97,35 @@ export default function EngineHoursReport() {
         ident: filters.ident,
         startDate: filters.startDate,
         endDate: filters.endDate,
-        type: 'engineHours' as "EngineHours",
+        type: 'engineHours' as 'EngineHours',
         pageIndex: 0,
         pageSize: 100,
         sort: 'date,desc'
       });
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
-  }
+  };
 
   const columns = useMemo<ColumnDef<EngineHoursStatisticsReport>[]>(
     () => [
@@ -131,35 +147,35 @@ export default function EngineHoursReport() {
       },
       ...(selectedGroup === 'Daily'
         ? [
-          {
-            accessorKey: 'dailyEngineHours',
-            header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
-          }
-        ]
+            {
+              accessorKey: 'dailyEngineHours',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.Daily' })
+            }
+          ]
         : []),
       ...(selectedGroup === 'Weekly'
         ? [
-          {
-            accessorKey: 'weeklyEngineHours',
-            header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
-          }
-        ]
+            {
+              accessorKey: 'weeklyEngineHours',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.WEEKLY' })
+            }
+          ]
         : []),
       ...(selectedGroup === 'Monthly'
         ? [
-          {
-            accessorKey: 'monthlyEngineHours',
-            header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
-          }
-        ]
+            {
+              accessorKey: 'monthlyEngineHours',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.MONTHLY' })
+            }
+          ]
         : []),
       ...(selectedGroup === 'Yearly'
         ? [
-          {
-            accessorKey: 'yearlyEngineHours',
-            header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
-          }
-        ]
+            {
+              accessorKey: 'yearlyEngineHours',
+              header: intl.formatMessage({ id: 'REPORTS.COLUMN.YEARLY' })
+            }
+          ]
         : []),
       {
         accessorKey: 'totalEngineHours',
@@ -191,13 +207,13 @@ export default function EngineHoursReport() {
       vehicleId: formData.get('vehicleId')?.toString() || '',
       ident: formData.get('ident')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
-      endDate: formData.get('endDate')?.toString() || '',
+      endDate: formData.get('endDate')?.toString() || ''
     });
   };
 
   return (
     <>
-      <div className="grid grid-cols-10 items-center justify-start gap-8 p-4 bg-white rounded-lg w-full">
+      <div className="grid grid-cols-10 items-center justify-start gap-8 p-4 rounded-lg w-full">
         <form onSubmit={handleSearch} className="col-span-7">
           <div className="flex gap-4 items-center justify-between">
             <div className="grid grid-cols-3 gap-4 grow">
@@ -219,9 +235,10 @@ export default function EngineHoursReport() {
                 defaultValue={filters.endDate}
               />
             </div>
-            <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+            <button
+              className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
               onClick={handleExport}
-              type='button'
+              type="button"
             >
               <Download size={16} />
               <span>
@@ -244,7 +261,7 @@ export default function EngineHoursReport() {
               title={
                 !filters.vehicleId
                   ? intl.formatMessage({ id: 'REPORTS.SELECT_VEHICLE_FIRST' }) ||
-                  'Please select a vehicle first to filter by group'
+                    'Please select a vehicle first to filter by group'
                   : ''
               }
             >
