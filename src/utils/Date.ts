@@ -1,4 +1,6 @@
 import { IntlShape } from 'react-intl';
+import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 export const formatIsoDate = (isoDate: string, intl: IntlShape) => {
   const date = new Date(isoDate);
@@ -63,4 +65,10 @@ export const formatTimeAgo = (timestamp: number, intl: IntlShape): string => {
 
     return `${day}/${month}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
   }
+};
+
+export const getFormattedDate = (dateModifier = (d: Date) => d, timezone: string | undefined) => {
+  const now = new Date();
+  const tzDate = timezone ? toZonedTime(now, timezone) : now;
+  return format(dateModifier(tzDate), 'yyyy-MM-dd');
 };

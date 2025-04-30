@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuthContext } from '@/auth';
 import RoleComponent from '@/components/RoleComponent';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { getFormattedDate } from '@/utils';
 
 const Information = ({ user }: AddUserPageProps) => {
   const { currentUser } = useAuthContext();
@@ -63,7 +64,9 @@ const Information = ({ user }: AddUserPageProps) => {
               className="input w-full dark:[color-scheme:dark]"
               name="subscriptionStartDate"
               placeholder={intl.formatMessage({ id: 'COMMON.DATE.FORMAT' })}
-              defaultValue={user?.subscriptionStartDate}
+              defaultValue={
+                user?.subscriptionStartDate || getFormattedDate(undefined, currentUser?.timezone)
+              }
             />
           </div>
           <div className="flex flex-col gap-2.5">

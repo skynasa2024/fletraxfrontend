@@ -4,8 +4,8 @@ import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useAuthContext } from '@/auth';
-import { format, addYears } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import { addYears } from 'date-fns';
+import { getFormattedDate } from '@/utils';
 
 const Information = ({ device }: AddDevicePageProps) => {
   const { protocols, types, getTypesOfProtocol } = useDeviceProvider();
@@ -13,12 +13,6 @@ const Information = ({ device }: AddDevicePageProps) => {
   const [typeId, setTypeId] = useState<string>();
   const { formatMessage } = useIntl();
   const { currentUser } = useAuthContext();
-
-  const getFormattedDate = (dateModifier = (d: Date) => d) => {
-    const now = new Date();
-    const tzDate = currentUser?.timezone ? toZonedTime(now, currentUser.timezone) : now;
-    return format(dateModifier(tzDate), 'yyyy-MM-dd');
-  };
 
   useEffect(() => {
     if (device?.protocolId && protocols && types) {
@@ -158,7 +152,9 @@ const Information = ({ device }: AddDevicePageProps) => {
               className="input w-full dark:[color-scheme:dark]"
               name="subscriptionStartDate"
               placeholder="DD/MM/YYYY"
-              defaultValue={device?.subscriptionStartDate || getFormattedDate()}
+              defaultValue={
+                device?.subscriptionStartDate || getFormattedDate(undefined, currentUser?.timezone)
+              }
             />
           </div>
 
@@ -172,7 +168,10 @@ const Information = ({ device }: AddDevicePageProps) => {
               className="input w-full dark:[color-scheme:dark]"
               name="subscriptionEndDate"
               placeholder="DD/MM/YYYY"
-              defaultValue={device?.subscriptionEndDate || getFormattedDate((d) => addYears(d, 1))}
+              defaultValue={
+                device?.subscriptionEndDate ||
+                getFormattedDate((d) => addYears(d, 1), currentUser?.timezone)
+              }
             />
           </div>
         </div>

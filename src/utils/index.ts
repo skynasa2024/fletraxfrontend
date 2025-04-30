@@ -1,5 +1,6 @@
 export * from './Assets';
 export * from './Data';
+export * from './Date';
 export * from './Devices';
 export * from './Dom';
 export * from './LocalStorage';
