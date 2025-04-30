@@ -150,7 +150,7 @@ export const ReplayPlaybackCard = () => {
 
   return (
     <div className="card w-[59vw] flex flex-col">
-      <div className="p-5 flex flex-col gap-2">
+      <div className="p-1 flex flex-col gap-2">
         <div className="flex items-center justify-between gap-12 w-full px-10">
           <div className="flex flex-col justify-between items-center">
             <div className="flex flex-col gap-2 items-center">
