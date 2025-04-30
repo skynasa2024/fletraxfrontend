@@ -142,9 +142,11 @@ export const PlaybackCard = () => {
               {selectedTrip &&
                 formatInTimeZone(
                   new Date(
-                    'trips' in selectedTrip
-                      ? (selectedTrip as TripGroup).trips[0].startDate
-                      : selectedTrip.startDate
+                    Number(
+                      'trips' in selectedTrip
+                        ? (selectedTrip as TripGroup).trips[0].startDate
+                        : selectedTrip.startDate
+                    ) * 1000
                   ),
                   currentUser!.timezone,
                   'yyyy/MM/dd'
