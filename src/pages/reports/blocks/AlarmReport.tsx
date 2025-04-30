@@ -32,16 +32,28 @@ export default function AlarmReport() {
       });
       downloadFile(response);
 
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_SUCCESS' }, { defaultMessage: 'Export successful' }), {
-        variant: 'success'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_SUCCESS' },
+          { defaultMessage: 'Export successful' }
+        ),
+        {
+          variant: 'success'
+        }
+      );
     } catch (error) {
       console.error('Export error:', error);
-      enqueueSnackbar(intl.formatMessage({ id: 'COMMON.EXPORT_ERROR' }, { defaultMessage: 'Failed to export devices' }), {
-        variant: 'error'
-      });
+      enqueueSnackbar(
+        intl.formatMessage(
+          { id: 'COMMON.EXPORT_ERROR' },
+          { defaultMessage: 'Failed to export devices' }
+        ),
+        {
+          variant: 'error'
+        }
+      );
     }
-  }
+  };
 
   const columns = useMemo<ColumnDef<IAlarmReport>[]>(
     () => [
@@ -118,9 +130,10 @@ export default function AlarmReport() {
               defaultValue={filters.endDate}
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          <button
+            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
             onClick={handleExport}
-            type='button'
+            type="button"
           >
             <Download size={16} />
             <span>
@@ -137,20 +150,26 @@ export default function AlarmReport() {
           rowSelect
           columns={columns}
           serverSide
-          onFetchData={(params) =>
-            handleFetchWithSort(
-              params,
-              {
-                ...filters,
-                alarmCode: filters.type
-              },
-              getAlarmReport
-            )
+          onFetchData={
+            filters.vehicleId
+              ? (params) =>
+                  handleFetchWithSort(
+                    params,
+                    {
+                      ...filters,
+                      alarmCode: filters.type
+                    },
+                    getAlarmReport
+                  )
+              : undefined
           }
           filters={getDataGridFilters()}
           pagination={{
             size: 100,
             sizes: undefined
+          }}
+          messages={{
+            empty: !filters.ident ? intl.formatMessage({ id: 'COMMON.SELECT_VEHICLE' }) : undefined
           }}
         />
       </div>
