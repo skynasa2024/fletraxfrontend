@@ -13,52 +13,52 @@ import MessagesReport from './blocks/MessagesReport';
 
 type ReportTabType = {
   id: string;
-  label: string;
-  description?: string;
+  label: React.ReactNode;
+  description?: React.ReactNode;
   report: React.ReactNode;
 };
 
 const ReportTypes: ReportTabType[] = [
   {
     id: 'mileage',
-    label: 'Mileage',
-    description: 'Mileage Report',
+    label: <FormattedMessage id="REPORTS.TITLE.MILEAGE" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.MILEAGE" />,
     report: <MileageReport />
   },
   {
     id: 'engineHours',
-    label: 'Engine Hours',
-    description: 'Engine Hours Report',
+    label: <FormattedMessage id="REPORTS.TITLE.ENGINE_HOURS" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.ENGINE_HOURS" />,
     report: <EngineHoursReport />
   },
   {
     id: 'tripsAndParking',
-    label: 'Trips/Parking',
-    description: 'Trips/Parking Report',
+    label: <FormattedMessage id="REPORTS.TITLE.TRIPS_AND_PARKING" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.TRIPS_AND_PARKING" />,
     report: <TripsAndParkingReport />
   },
   {
     id: 'alarm',
-    label: 'Alarms',
-    description: 'Alarms Report',
+    label: <FormattedMessage id="REPORTS.TITLE.ALARMS" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.ALARMS" />,
     report: <AlarmReport />
   },
   {
     id: 'maxSpeed',
-    label: 'Max Speed',
-    description: 'Max Speed Report',
+    label: <FormattedMessage id="REPORTS.TITLE.MAX_SPEED" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.MAX_SPEED" />,
     report: <MaxSpeedReport />
   },
   {
     id: 'subscriptionExpiry',
-    label: 'Subscription Expiry',
-    description: 'Subscription Expiry Report',
+    label: <FormattedMessage id="REPORTS.TITLE.SUBSCRIPTION_EXPIRATION" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.SUBSCRIPTION_EXPIRATION" />,
     report: <SubscriptionExpirtyReport />
   },
   {
     id: 'messages',
-    label: 'Messages',
-    description: 'Subscription Report',
+    label: <FormattedMessage id="REPORTS.TITLE.MESSAGES" />,
+    description: <FormattedMessage id="REPORTS.DESCRIPTION.MESSAGES" />,
     report: <MessagesReport />
   }
 ];
