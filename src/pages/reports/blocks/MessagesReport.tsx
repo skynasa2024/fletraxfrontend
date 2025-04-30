@@ -3,7 +3,7 @@ import { DataGrid } from '@/components';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { VehicleSearch } from '@/pages/driver/add-driver/blocks/VehicleSearch';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { useReportFilters } from '@/hooks/useReportFilters';
@@ -14,6 +14,134 @@ import MapModal from '../components/MapModal';
 import { Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
+
+interface MessagesReportFormProps {
+  filters: any;
+  handleSearch: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleExport: () => void;
+}
+
+function MessagesReportForm({ filters, handleSearch, handleExport }: MessagesReportFormProps) {
+  const intl = useIntl();
+  const [startDate, setStartDate] = useState<string>(filters.startDate || '');
+  const [endDate, setEndDate] = useState<string>(filters.endDate || '');
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newStartDate = e.target.value;
+    setStartDate(newStartDate);
+
+    if (endDate) {
+      const start = new Date(newStartDate);
+      const end = new Date(endDate);
+      const diffDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 2) {
+        const maxEnd = new Date(start);
+        maxEnd.setDate(start.getDate() + 2);
+        setEndDate(maxEnd.toISOString().split('T')[0]);
+      }
+    }
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEndDate = e.target.value;
+    setEndDate(newEndDate);
+
+    if (startDate) {
+      const start = new Date(startDate);
+      const end = new Date(newEndDate);
+      const diffDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 2) {
+        const minStart = new Date(end);
+        minStart.setDate(end.getDate() - 2);
+        setStartDate(minStart.toISOString().split('T')[0]);
+      }
+    }
+  };
+
+  const getMaxEndDate = () => {
+    if (!startDate) return new Date().toISOString().split('T')[0];
+
+    const start = new Date(startDate);
+    const maxDate = new Date(start);
+    maxDate.setDate(start.getDate() + 2);
+
+    const today = new Date();
+    return maxDate > today
+      ? today.toISOString().split('T')[0]
+      : maxDate.toISOString().split('T')[0];
+  };
+
+  const getMinStartDate = () => {
+    if (!endDate) return '';
+
+    const end = new Date(endDate);
+    const minDate = new Date(end);
+    minDate.setDate(end.getDate() - 2);
+
+    return minDate.toISOString().split('T')[0];
+  };
+
+  return (
+    <form onSubmit={handleSearch}>
+      <div className="flex gap-4 items-center justify-between p-4 w-full">
+        <div className="grid grid-cols-5 gap-4 grow">
+          <div className="relative">
+            <VehicleSearch place="bottom" />
+          </div>
+          <input
+            type="date"
+            name="startDate"
+            className="input"
+            placeholder="Start Date"
+            max={endDate || new Date().toISOString().split('T')[0]}
+            min={getMinStartDate()}
+            value={startDate}
+            onChange={handleStartDateChange}
+          />
+          <input
+            type="date"
+            name="endDate"
+            className="input"
+            placeholder="End Date"
+            min={startDate || ''}
+            max={getMaxEndDate()}
+            value={endDate}
+            onChange={handleEndDateChange}
+          />
+          <input
+            type="time"
+            name="startTime"
+            className="input"
+            placeholder="Start Time"
+            defaultValue={filters.startTime}
+          />
+          <input
+            type="time"
+            name="endTime"
+            className="input"
+            placeholder="End Time"
+            defaultValue={filters.endTime}
+          />
+        </div>
+        <button
+          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          onClick={handleExport}
+          type="button"
+        >
+          <Download size={16} />
+          <span>
+            <FormattedMessage id="COMMON.EXPORT" />
+          </span>
+        </button>
+        <button type="submit" className="btn btn-info w-28 items-center justify-center">
+          <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
+        </button>
+      </div>
+    </form>
+  );
+}
 
 export default function MessagesReport() {
   const intl = useIntl();
@@ -133,58 +261,11 @@ export default function MessagesReport() {
 
   return (
     <>
-      <form onSubmit={handleSearch}>
-        <div className="flex gap-4 items-center justify-between p-4 w-full">
-          <div className="grid grid-cols-5 gap-4 grow">
-            <div className="relative">
-              <VehicleSearch place="bottom" />
-            </div>
-            <input
-              type="date"
-              name="startDate"
-              className="input"
-              placeholder="Start Date"
-              max={new Date().toISOString().split('T')[0]}
-              defaultValue={filters.startDate}
-            />
-            <input
-              type="date"
-              name="endDate"
-              className="input"
-              placeholder="End Date"
-              max={new Date().toISOString().split('T')[0]}
-              defaultValue={filters.endDate}
-            />
-            <input
-              type="time"
-              name="startTime"
-              className="input"
-              placeholder="Start Time"
-              defaultValue={filters.startTime}
-            />
-            <input
-              type="time"
-              name="endTime"
-              className="input"
-              placeholder="End Time"
-              defaultValue={filters.endTime}
-            />
-          </div>
-          <button
-            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
-            onClick={handleExport}
-            type="button"
-          >
-            <Download size={16} />
-            <span>
-              <FormattedMessage id="COMMON.EXPORT" />
-            </span>
-          </button>
-          <button type="submit" className="btn btn-info w-28 items-center justify-center">
-            <span>{intl.formatMessage({ id: 'COMMON.SEARCH' })}</span>
-          </button>
-        </div>
-      </form>
+      <MessagesReportForm
+        filters={filters}
+        handleSearch={handleSearch}
+        handleExport={handleExport}
+      />
 
       <div className="report-table-container">
         <DataGrid
