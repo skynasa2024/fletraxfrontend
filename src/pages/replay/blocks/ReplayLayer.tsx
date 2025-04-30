@@ -227,7 +227,7 @@ export const ReplayLayer = () => {
 
   const tripColors = {
     primary: '#0c0fd1',
-    secondary: '#6c757d'
+    secondary: '#11910f'
   };
 
   if (!selectedIntervalsData || Object.keys(selectedIntervalsData).length === 0) {
