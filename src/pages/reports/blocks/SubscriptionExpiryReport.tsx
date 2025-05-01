@@ -15,12 +15,13 @@ import { useReportSorting } from '@/hooks/useReportSorting';
 import { enqueueSnackbar } from 'notistack';
 import { Download } from 'lucide-react';
 import { SubscriptionExpiryPeriodSelect } from '../components/SubscriptionExpiryPeriodSelect';
+import clsx from 'clsx';
 
 export default function SubscriptionExpirtyReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
   const { handleFetchWithSort } = useReportSorting({
-    defaultSort: 'createdAt,desc'
+    defaultSort: 'subscriptionEndDate,asc'
   });
 
   const calculateDaysLeft = (endDateStr: string): number => {
@@ -80,12 +81,20 @@ export default function SubscriptionExpirtyReport() {
         header: intl.formatMessage({ id: 'REPORTS.COLUMN.PHONE_NUMBER' })
       },
       {
-        accessorKey: 'startDate',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.START_DATE' })
+        accessorKey: 'subscriptionStartDate',
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.START_DATE' }),
+        enableSorting: true,
+        cell: ({ row }) => {
+          return row.original.startDate;
+        }
       },
       {
-        accessorKey: 'endDate',
-        header: intl.formatMessage({ id: 'REPORTS.COLUMN.END_DATE' })
+        accessorKey: 'subscriptionEndDate',
+        header: intl.formatMessage({ id: 'REPORTS.COLUMN.END_DATE' }),
+        enableSorting: true,
+        cell: ({ row }) => {
+          return row.original.endDate;
+        }
       },
       {
         id: 'daysLeft',
@@ -95,15 +104,16 @@ export default function SubscriptionExpirtyReport() {
           const isExpired = daysLeft < 0;
 
           return (
-            <span className={`font-medium ${isExpired ? 'text-danger' : 'text-success'}`}>
-              {intl.formatMessage(
-                { id: 'REPORTS.DAYS_LEFT_INFO' },
-                { days: daysLeft }
-              )}
+            <span
+              className={clsx('font-medium', {
+                'text-danger': isExpired,
+                'text-success': !isExpired
+              })}
+            >
+              {intl.formatMessage({ id: 'REPORTS.DAYS_LEFT_INFO' }, { days: daysLeft })}
             </span>
           );
-        },
-        enableSorting: true
+        }
       },
       {
         accessorKey: 'protocol',
