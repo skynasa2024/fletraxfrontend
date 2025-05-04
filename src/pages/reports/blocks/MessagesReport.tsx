@@ -8,12 +8,16 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { downloadFile, toAbsoluteUrl } from '@/utils';
 import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import MapModal from '../components/MapModal';
 import { Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { RotatableMarker } from '@/pages/monitoring/blocks/RotatableMarker';
+import clsx from 'clsx';
+import { useExportLoading } from '../context/ExportLoadingContext';
+
+const REPORT_ID = 'messages';
 
 interface MessagesReportFormProps {
   filters: any;
@@ -21,7 +25,13 @@ interface MessagesReportFormProps {
   handleExport: () => void;
 }
 
-function MessagesReportForm({ filters, handleSearch, handleExport }: MessagesReportFormProps) {
+function MessagesReportForm({
+  filters,
+  handleSearch,
+  handleExport,
+  isLoading,
+  isDisabled
+}: MessagesReportFormProps & { isLoading: boolean; isDisabled: boolean }) {
   const intl = useIntl();
   const [startDate, setStartDate] = useState<string>(filters.startDate || '');
   const [endDate, setEndDate] = useState<string>(filters.endDate || '');
@@ -126,11 +136,18 @@ function MessagesReportForm({ filters, handleSearch, handleExport }: MessagesRep
           />
         </div>
         <button
-          className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+          className={clsx(
+            'flex items-center gap-2 px-3 py-2 text-gray-600 rounded-lg border',
+            isDisabled || isLoading
+              ? 'opacity-60 cursor-not-allowed bg-gray-100'
+              : 'hover:bg-gray-50'
+          )}
           onClick={handleExport}
           type="button"
+          disabled={isDisabled || isLoading}
+          title={isDisabled ? 'Another report is being exported' : ''}
         >
-          <Download size={16} />
+          {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
           <span>
             <FormattedMessage id="COMMON.EXPORT" />
           </span>
@@ -149,6 +166,10 @@ export default function MessagesReport() {
   const { handleFetchWithSort } = useReportSorting({
     defaultSort: 'ident,desc'
   });
+  const { isExporting, startExporting, stopExporting, exportingReportId } = useExportLoading();
+
+  const isThisReportExporting = isExporting && exportingReportId === REPORT_ID;
+  const isOtherReportExporting = isExporting && exportingReportId !== REPORT_ID;
 
   const columns = useMemo<ColumnDef<IMessagesReports>[]>(
     () => [
@@ -223,6 +244,7 @@ export default function MessagesReport() {
 
   const handleExport = async () => {
     try {
+      startExporting(REPORT_ID);
       const response = await exportMessagesReport({
         pageIndex: 0,
         pageSize: 0,
@@ -232,7 +254,7 @@ export default function MessagesReport() {
         endTime: filters.endTime || '',
         sort: 'ident,desc',
         ident: filters.ident || '',
-        reportType: 'messages'
+        reportType: REPORT_ID
       });
       downloadFile(response);
 
@@ -256,6 +278,8 @@ export default function MessagesReport() {
           variant: 'error'
         }
       );
+    } finally {
+      stopExporting();
     }
   };
 
@@ -265,6 +289,8 @@ export default function MessagesReport() {
         filters={filters}
         handleSearch={handleSearch}
         handleExport={handleExport}
+        isLoading={isThisReportExporting}
+        isDisabled={isOtherReportExporting}
       />
 
       <div className="report-table-container">

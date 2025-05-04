@@ -15,9 +15,11 @@ import { useReportFilters } from '@/hooks/useReportFilters';
 import { useReportSorting } from '@/hooks/useReportSorting';
 import clsx from 'clsx';
 import { enqueueSnackbar } from 'notistack';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
+import { useExportLoading } from '../context/ExportLoadingContext';
 
 const PAGE_LIMIT = 100;
+const REPORT_ID = 'mileage';
 
 type GroupByOption = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 
@@ -47,6 +49,10 @@ export default function MileageReport() {
   const intl = useIntl();
   const { filters, updateFilters, getDataGridFilters } = useReportFilters();
   const [selectedGroup, setSelectedGroup] = React.useState<GroupByOption>('Daily');
+  const { isExporting, startExporting, stopExporting, exportingReportId } = useExportLoading();
+
+  const isThisReportExporting = isExporting && exportingReportId === REPORT_ID;
+  const isOtherReportExporting = isExporting && exportingReportId !== REPORT_ID;
 
   const { handleFetchWithSort } = useReportSorting({
     defaultSort: 'date,desc',
@@ -93,7 +99,10 @@ export default function MileageReport() {
   };
 
   const handleExport = async () => {
+    if (isExporting) return;
+
     try {
+      startExporting(REPORT_ID);
       const response = await exportStatisticsReport({
         vehicleId: filters.vehicleId,
         ident: filters.ident,
@@ -126,6 +135,8 @@ export default function MileageReport() {
           variant: 'error'
         }
       );
+    } finally {
+      stopExporting();
     }
   };
 
@@ -238,11 +249,22 @@ export default function MileageReport() {
               />
             </div>
             <button
-              className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg border"
+              className={clsx(
+                'flex items-center gap-2 px-3 py-2 text-gray-600 rounded-lg border',
+                isThisReportExporting || isOtherReportExporting
+                  ? 'opacity-60 cursor-not-allowed bg-gray-100'
+                  : 'hover:bg-gray-50'
+              )}
               onClick={handleExport}
               type="button"
+              disabled={isThisReportExporting || isOtherReportExporting}
+              title={isOtherReportExporting ? 'Another report is being exported' : ''}
             >
-              <Download size={16} />
+              {isThisReportExporting ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Download size={16} />
+              )}
               <span>
                 <FormattedMessage id="COMMON.EXPORT" />
               </span>

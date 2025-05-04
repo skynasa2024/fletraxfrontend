@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import MaxSpeedReport from './blocks/MaxSpeedReport';
 import SubscriptionExpirtyReport from './blocks/SubscriptionExpiryReport';
 import MessagesReport from './blocks/MessagesReport';
+import { ExportLoadingProvider } from './context/ExportLoadingContext';
 
 type ReportTabType = {
   id: string;
@@ -67,30 +68,32 @@ export default function ReportsPage() {
   const [activeReportTab, setActiveReportTab] = useState<ReportTabType>(ReportTypes[0]);
 
   return (
-    <Container>
-      <Toolbar>
-        <ToolbarHeading
-          title={<FormattedMessage id="SIDEBAR.MENU.REPORTS" />}
-          description={activeReportTab.label}
-        />
-      </Toolbar>
+    <ExportLoadingProvider>
+      <Container>
+        <Toolbar>
+          <ToolbarHeading
+            title={<FormattedMessage id="SIDEBAR.MENU.REPORTS" />}
+            description={activeReportTab.label}
+          />
+        </Toolbar>
 
-      <div className="grid gap-4 grid-cols-4 lg:grid-cols-8 mb-4">
-        {ReportTypes.map((report) => (
-          <button
-            key={report.id}
-            onClick={() => setActiveReportTab(report)}
-            className={clsx(
-              'items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2',
-              report.id !== activeReportTab.id && 'btn-light text-info hover:text-info'
-            )}
-          >
-            {report.label}
-          </button>
-        ))}
-      </div>
+        <div className="grid gap-4 grid-cols-4 lg:grid-cols-8 mb-4">
+          {ReportTypes.map((report) => (
+            <button
+              key={report.id}
+              onClick={() => setActiveReportTab(report)}
+              className={clsx(
+                'items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2',
+                report.id !== activeReportTab.id && 'btn-light text-info hover:text-info'
+              )}
+            >
+              {report.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="card">{activeReportTab.report}</div>
-    </Container>
+        <div className="card">{activeReportTab.report}</div>
+      </Container>
+    </ExportLoadingProvider>
   );
 }
