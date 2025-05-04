@@ -144,6 +144,7 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
       )}
       <input type="hidden" name="vehicleId" value={selectedVehicle?.id || ''} />
       <input type="hidden" name="ident" value={selectedVehicle?.ident || ''} />
+      <input type="hidden" name="plate" value={selectedVehicle?.plate || ''} />
     </div>
   );
 };

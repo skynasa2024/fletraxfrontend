@@ -169,7 +169,9 @@ export default function SubscriptionExpirtyReport() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     updateFilters({
+      vehicleId: formData.get('vehicleId')?.toString() || '',
       ident: formData.get('ident')?.toString() || '',
+      plate: formData.get('plate')?.toString() || '',
       period: formData.get('period')?.toString() || ''
     });
   };
@@ -179,7 +181,18 @@ export default function SubscriptionExpirtyReport() {
       <form onSubmit={handleSearch}>
         <div className="flex gap-4 items-center justify-between p-4 w-3/5">
           <div className="grid grid-cols-2 gap-4 grow">
-            <VehicleSearch place="bottom" />
+            <VehicleSearch
+              place="bottom"
+              initialSearch={
+                filters.vehicleId && filters.plate && filters.ident
+                  ? {
+                      id: filters.vehicleId,
+                      plate: filters.plate,
+                      ident: filters.ident
+                    }
+                  : undefined
+              }
+            />
             <SubscriptionExpiryPeriodSelect />
           </div>
           <button
@@ -221,6 +234,7 @@ export default function SubscriptionExpirtyReport() {
               getSubscriptionExpiryReport
             )
           }
+          key={JSON.stringify(filters)}
           filters={getDataGridFilters()}
           pagination={{
             size: 100,

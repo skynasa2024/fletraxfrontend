@@ -98,7 +98,18 @@ function MessagesReportForm({
       <div className="flex gap-4 items-center justify-between p-4 w-full">
         <div className="grid grid-cols-5 gap-4 grow">
           <div className="relative">
-            <VehicleSearch place="bottom" />
+            <VehicleSearch
+              place="bottom"
+              initialSearch={
+                filters.vehicleId && filters.plate && filters.ident
+                  ? {
+                      id: filters.vehicleId,
+                      plate: filters.plate,
+                      ident: filters.ident
+                    }
+                  : undefined
+              }
+            />
           </div>
           <input
             type="date"
@@ -233,7 +244,9 @@ export default function MessagesReport() {
     const formData = new FormData(e.currentTarget);
 
     updateFilters({
+      vehicleId: formData.get('vehicleId')?.toString() || '',
       ident: formData.get('ident')?.toString() || '',
+      plate: formData.get('plate')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
       type: formData.get('intervalType')?.toString() || '',

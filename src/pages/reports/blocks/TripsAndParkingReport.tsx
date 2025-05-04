@@ -160,6 +160,8 @@ export default function TripsAndParkingReport() {
     const formData = new FormData(e.currentTarget);
     updateFilters({
       vehicleId: formData.get('vehicleId')?.toString() || '',
+      ident: formData.get('ident')?.toString() || '',
+      plate: formData.get('plate')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
       endDate: formData.get('endDate')?.toString() || '',
       type: formData.get('intervalType')?.toString() || ''
@@ -171,7 +173,18 @@ export default function TripsAndParkingReport() {
       <form onSubmit={handleSearch}>
         <div className="flex gap-4 items-center justify-between p-4 w-[90.5%]">
           <div className="grid grid-cols-4 gap-4 grow">
-            <VehicleSearch place="bottom" />
+            <VehicleSearch
+              place="bottom"
+              initialSearch={
+                filters.vehicleId && filters.plate && filters.ident
+                  ? {
+                      id: filters.vehicleId,
+                      plate: filters.plate,
+                      ident: filters.ident
+                    }
+                  : undefined
+              }
+            />
             <select name="intervalType" className="select" defaultValue={filters.type}>
               <option key="ALL" value="">
                 All

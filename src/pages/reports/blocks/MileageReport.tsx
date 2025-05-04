@@ -220,7 +220,8 @@ export default function MileageReport() {
       vehicleId: formData.get('vehicleId')?.toString() || '',
       ident: formData.get('ident')?.toString() || '',
       startDate: formData.get('startDate')?.toString() || '',
-      endDate: formData.get('endDate')?.toString() || ''
+      endDate: formData.get('endDate')?.toString() || '',
+      plate: formData.get('plate')?.toString() || ''
     });
   };
 
@@ -230,7 +231,18 @@ export default function MileageReport() {
         <form onSubmit={handleSearch} className="col-span-7">
           <div className="flex gap-4 items-center justify-between">
             <div className="grid grid-cols-3 gap-4 grow">
-              <VehicleSearch place="bottom" />
+              <VehicleSearch
+                place="bottom"
+                initialSearch={
+                  filters.vehicleId && filters.plate && filters.ident
+                    ? {
+                        id: filters.vehicleId,
+                        plate: filters.plate,
+                        ident: filters.ident
+                      }
+                    : undefined
+                }
+              />
               <input
                 type="date"
                 name="startDate"
@@ -309,6 +321,7 @@ export default function MileageReport() {
           columns={columns}
           serverSide
           onFetchData={(params) => handleFilterDataByGroup(params)}
+          key={JSON.stringify(filters)}
           filters={[
             ...getDataGridFilters(),
             {
