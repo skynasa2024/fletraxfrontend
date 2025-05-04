@@ -11,6 +11,7 @@ import MaxSpeedReport from './blocks/MaxSpeedReport';
 import SubscriptionExpirtyReport from './blocks/SubscriptionExpiryReport';
 import MessagesReport from './blocks/MessagesReport';
 import { ExportLoadingProvider } from './context/ExportLoadingContext';
+import { useSearchParams } from 'react-router';
 
 type ReportTabType = {
   id: string;
@@ -65,7 +66,16 @@ const ReportTypes: ReportTabType[] = [
 ];
 
 export default function ReportsPage() {
-  const [activeReportTab, setActiveReportTab] = useState<ReportTabType>(ReportTypes[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTabId = searchParams.get('tab') || ReportTypes[0].id;
+  const activeReportTab = ReportTypes.find((report) => report.id === activeTabId) || ReportTypes[0];
+
+  const handleTabClick = (report: ReportTabType) => {
+    // Preserve existing search params when setting the new tab
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('tab', report.id);
+    setSearchParams(newSearchParams);
+  };
 
   return (
     <ExportLoadingProvider>
@@ -81,7 +91,7 @@ export default function ReportsPage() {
           {ReportTypes.map((report) => (
             <button
               key={report.id}
-              onClick={() => setActiveReportTab(report)}
+              onClick={() => handleTabClick(report)}
               className={clsx(
                 'items-center btn btn-info h-full justify-center p-2 text-sm rounded-lg border-2',
                 report.id !== activeReportTab.id && 'btn-light text-info hover:text-info'
