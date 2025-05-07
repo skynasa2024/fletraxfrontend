@@ -816,5 +816,6 @@
   "COMMON.EXPORT_ERROR": "حدث خطأ أثناء تصدير البيانات",
   "COMMON.IMPORT_SUCCESS": "تم استيراد البيانات بنجاح",
   "COMMON.IMPORT_ERROR": "حدث خطأ أثناء استيراد البيانات",
-  "COMMON.SELECT_VEHICLE": "اختر مركبة"
+  "COMMON.SELECT_VEHICLE": "اختر مركبة",
+  "COMMON.COPIED_TO_CLIPBOARD": "تم النسخ إلى الحافظة!"
 }

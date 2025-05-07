@@ -827,5 +827,6 @@
   "COMMON.EXPORT_ERROR": "Export işlemi sırasında bir hata oluştu",
   "COMMON.IMPORT_SUCCESS": "İçeri aktarma işlemi başarıyla tamamlandı",
   "COMMON.IMPORT_ERROR": "İçeri aktarma işlemi sırasında bir hata oluştu",
-  "COMMON.SELECT_VEHICLE": "Araç Seçin"
+  "COMMON.SELECT_VEHICLE": "Araç Seçin",
+  "COMMON.COPIED_TO_CLIPBOARD": "Panoya kopyalandı!"
 }

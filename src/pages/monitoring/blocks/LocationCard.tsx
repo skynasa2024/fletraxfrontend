@@ -9,6 +9,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
 import { getVehicleTotalMileage } from '@/api/cars';
 import { Link } from 'react-router';
+import ShareLinkModal from '@/components/ShareLinkModal';
 
 export const LocationCard = () => {
   const intl = useIntl();
@@ -281,12 +282,14 @@ export const LocationCard = () => {
             <FormattedMessage id="LOCATION.ACTION.STREETVIEW" />
           </span>
         </a>
-        <a href="#" className="px-5 py-2 flex gap-2 !text-inherit">
-          <img src={toAbsoluteUrl('/media/icons/delete-gray.svg')} />
-          <span>
-            <FormattedMessage id="LOCATION.ACTION.SHARE" />
-          </span>
-        </a>
+        <ShareLinkModal link={window.location.href}>
+          <div className="px-5 py-2 flex gap-2 !text-inherit">
+            <img src={toAbsoluteUrl('/media/icons/delete-gray.svg')} />
+            <span>
+              <FormattedMessage id="LOCATION.ACTION.SHARE" />
+            </span>
+          </div>
+        </ShareLinkModal>
       </div>
     </div>
   );
