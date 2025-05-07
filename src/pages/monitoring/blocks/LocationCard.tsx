@@ -7,19 +7,23 @@ import { useEffect, useState } from 'react';
 import { reverseGeoLocation } from '@/api/devices';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useLanguage } from '@/i18n';
-import { getVehicleTotalMileage, VehicleTotalMileage } from '@/api/cars';
+import { getVehicleTotalMileage } from '@/api/cars';
+import { Link } from 'react-router';
 
 export const LocationCard = () => {
   const intl = useIntl();
   const { currentLanguage } = useLanguage();
   const { selectedLocation: location } = useMonitoringProvider();
   const [address, setAddress] = useState<string | null>(null);
-  const [vehicleTotal, setVehicleTotal] = useState<VehicleTotalMileage | null>(null);
+  const [vehicle, setVehicle] = useState<{
+    formattedTotalMileage: string;
+    vehicleId: string;
+  } | null>(null);
 
   const getTotalMileage = async (id: string) => {
     try {
       const response = await getVehicleTotalMileage(id);
-      setVehicleTotal(response);
+      setVehicle(response);
     } catch (error) {
       console.error('Error fetching vehicle total mileage:', error);
     }
@@ -223,7 +227,7 @@ export const LocationCard = () => {
               <FormattedMessage id="LOCATION.FIELD.ODOMETER" />
             </div>
             <div className="text-[#2D3748] dark:text-gray-50 text-xs">
-              {vehicleTotal?.formatedTtotalMileage || '0 km'}
+              {vehicle?.formattedTotalMileage || '0 km'}
             </div>
           </div>
         </div>
@@ -233,12 +237,15 @@ export const LocationCard = () => {
         <div>{address || <FormattedMessage id="COMMON.LOADING" />}</div>
       </div>
       <div className="card-footer justify-center p-0 text-[#1F242E] dark:text-gray-800">
-        <a href="#" className="px-5 py-2 flex gap-2 !text-inherit">
+        <Link
+          to={`/reports?vehicleId=${vehicle?.vehicleId}&ident=${location.vehicle.imei}&plate=${location.vehicle.plate}`}
+          className="px-5 py-2 flex gap-2 !text-inherit"
+        >
           <img src={toAbsoluteUrl('/media/icons/edit-light.svg')} />
           <span>
             <FormattedMessage id="LOCATION.ACTION.REPORT" />
           </span>
-        </a>
+        </Link>
         <a
           href={`/trips?device=${location.vehicle.imei}`}
           className="px-5 py-2 flex gap-2 !text-inherit"

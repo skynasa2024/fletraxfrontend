@@ -10,8 +10,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 interface VehicleSearchProps {
   initialSearch?: {
     plate: string;
-    id: string;
-    ident?: string;
+    id?: string;
+    ident: string;
   };
   place?: 'top' | 'bottom';
 }
@@ -20,9 +20,9 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
   const [privateSearch, setPrivateSearch] = useState(initialSearch?.plate);
   const [selectedVehicle, setSelectedVehicle] = useState<
     | {
-        id: string;
+        id?: string;
         plate: string;
-        ident?: string;
+        ident: string;
       }
     | undefined
   >(initialSearch);
