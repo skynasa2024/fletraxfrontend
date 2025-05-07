@@ -263,7 +263,12 @@ export const LocationCard = () => {
             <FormattedMessage id="LOCATION.ACTION.COMMAND" />
           </span>
         </a>
-        <a href="#" className="px-5 py-2 flex gap-2 !text-inherit">
+        <a
+          href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${location.lat},${location.long}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-5 py-2 flex gap-2 !text-inherit"
+        >
           <img src={toAbsoluteUrl('/media/icons/delete-gray.svg')} />
           <span>
             <FormattedMessage id="LOCATION.ACTION.STREETVIEW" />
