@@ -13,6 +13,7 @@ import PhoneInput from '@/components/PhoneInput';
 import { Toolbar, ToolbarHeading } from '@/layouts/demo1/toolbar';
 import { CarPlate } from '@/pages/dashboards/blocks/CarPlate';
 import { EditDeviceModal } from '@/pages/management/blocks/EditDeviceModal';
+import { DeviceUserModal } from '@/pages/management/blocks/DeviceUserModal';
 import DebouncedSearchInput from '@/pages/vehicle/components/DebouncedInputField';
 import { useDeviceProvider } from '@/providers/DeviceProvider';
 import { downloadFile, getFormattedDate, toAbsoluteUrl } from '@/utils';
@@ -21,7 +22,7 @@ import axios, { AxiosError } from 'axios';
 import { addYears } from 'date-fns';
 import { Download, Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
-import { useEffect, useMemo, useState, FormEvent, useCallback, useRef } from 'react';
+import React, { useEffect, useMemo, useState, FormEvent, useCallback, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 export default function ManageDevices() {
@@ -230,16 +231,7 @@ export default function ManageDevices() {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="p-2 w-8 h-8 flex items-center justify-center rounded-full bg-[#5271FF]/10"
-              title={intl.formatMessage({ id: 'COMMON.VIEW' })}
-            >
-              <img
-                src={toAbsoluteUrl('/media/icons/view-light.svg')}
-                alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-              />
-            </button>
+            <DeviceUserModal device={row.original} />
 
             <button
               type="button"

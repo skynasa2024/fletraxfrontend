@@ -248,3 +248,9 @@ export const updateUserLocale = async (locale: string): Promise<ResponseModel<Us
   const res = await axios.patch<ResponseModel<UserModel>>('/api/users/update-locale', { locale });
   return res.data;
 };
+
+export const getUserHirarchy = async (id: string): Promise<UserModel[]> => {
+  const res = await axios.get<ResponseModel<UserModel[]>>(`/api/users/get-user-hierarchy/${id}`);
+
+  return res.data.result;
+};
