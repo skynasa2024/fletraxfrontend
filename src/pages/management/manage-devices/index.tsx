@@ -231,7 +231,7 @@ export default function ManageDevices() {
         header: intl.formatMessage({ id: 'COMMON.ACTIONS' }),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <DeviceUserModal device={row.original} />
+            <DeviceUserModal deviceIdent={row.original.ident} userId={row.original.userId} />
 
             <button
               type="button"

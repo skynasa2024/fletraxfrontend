@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { TreeView, TreeItem } from '@/components';
 import { getUserHirarchy, UserModel } from '@/api/user';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { DeviceDTO } from '@/api/devices';
 import { Users } from 'lucide-react';
 
 interface DeviceUserModalProps {
-  device: DeviceDTO | null;
+  deviceIdent: string | null;
+  userId: string | null;
 }
 
 const modalStyle = {
@@ -24,7 +24,7 @@ const modalStyle = {
   overflow: 'auto'
 };
 
-export function DeviceUserModal({ device }: DeviceUserModalProps) {
+export function DeviceUserModal({ deviceIdent, userId }: DeviceUserModalProps) {
   const intl = useIntl();
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [treeData, setTreeData] = useState<TreeItem[]>([]);
@@ -87,7 +87,7 @@ export function DeviceUserModal({ device }: DeviceUserModalProps) {
   };
 
   const fetchUserHierarchy = async () => {
-    if (!device?.userId) {
+    if (!userId) {
       setIsLoading(false);
       return;
     }
@@ -95,7 +95,7 @@ export function DeviceUserModal({ device }: DeviceUserModalProps) {
     setIsLoading(true);
 
     try {
-      const hierarchy = await getUserHirarchy(device.userId);
+      const hierarchy = await getUserHirarchy(userId);
 
       if (hierarchy.length) {
         const tree = buildTreeStructure(hierarchy);
@@ -118,13 +118,13 @@ export function DeviceUserModal({ device }: DeviceUserModalProps) {
   const closeUserModal = () => setIsUserModalOpen(false);
 
   useEffect(() => {
-    if (device && isUserModalOpen) {
+    if (deviceIdent && userId && isUserModalOpen) {
       fetchUserHierarchy();
     }
-  }, [isUserModalOpen, device]);
+  }, [isUserModalOpen, deviceIdent, userId]);
 
   const renderContent = () => {
-    if (!device?.userId) {
+    if (!userId) {
       return (
         <div className="flex justify-center items-center h-full text-gray-500">
           <FormattedMessage
@@ -152,7 +152,7 @@ export function DeviceUserModal({ device }: DeviceUserModalProps) {
           defaultMessage: 'No users under this item'
         })}
         preExpandedIds={expandedIds}
-        selectedId={device.userId}
+        selectedId={userId}
       />
     );
   };
@@ -176,7 +176,7 @@ export function DeviceUserModal({ device }: DeviceUserModalProps) {
             <FormattedMessage
               id="DEVICE.LINKED_USERS.DESCRIPTION"
               defaultMessage="This shows the user hierarchy for device {ident}. The highlighted user is linked to this device."
-              values={{ ident: device?.ident || '' }}
+              values={{ ident: deviceIdent || '' }}
             />
           </p>
           <div className="border rounded-md h-[400px]">{renderContent()}</div>
