@@ -11,7 +11,7 @@ interface VehicleSearchProps {
   initialSearch?: {
     plate: string;
     id?: string;
-    ident: string;
+    ident?: string;
   };
   place?: 'top' | 'bottom';
 }
@@ -22,7 +22,7 @@ export const VehicleSearch = ({ initialSearch, place = 'top' }: VehicleSearchPro
     | {
         id?: string;
         plate: string;
-        ident: string;
+        ident?: string;
       }
     | undefined
   >(initialSearch);
