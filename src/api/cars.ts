@@ -478,13 +478,21 @@ export const deleteVehicle = async (id: string): Promise<void> => {
 
 export const getVehicleTotalMileage = async (
   ident: string
-): Promise<VehicleTotalMileage | null> => {
+): Promise<{
+  formattedTotalMileage: string;
+  vehicleId: string;
+  userId: string | null;
+} | null> => {
   const device = await getDeviceModelByImei(ident);
   if (device) {
     const data = await axios.get<ResponseModel<VehicleTotalMileage>>(
       `/api/vehicles/cars/get-total-mileage/${device.vehicleId}`
     );
-    return data.data.result;
+    return {
+      formattedTotalMileage: data.data.result.formatedTtotalMileage,
+      vehicleId: device.vehicleId ?? '',
+      userId: device.userId
+    };
   }
 
   return null;

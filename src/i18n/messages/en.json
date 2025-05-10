@@ -188,7 +188,7 @@
   "LOCATION.ACTION.PLAY_BACK": "Play back",
   "LOCATION.ACTION.TRACKING": "Tracking",
   "LOCATION.ACTION.COMMAND": "Command",
-  "LOCATION.ACTION.STREETVIEW": "Streetview",
+  "LOCATION.ACTION.STREETVIEW": "Street View",
   "LOCATION.ACTION.SHARE": "Share",
   "COMMON.LOADING": "Loading...",
   "TRIPS.FIELD.START_DATE": "Start Date",
@@ -814,9 +814,13 @@
   "NOTIFICATIONS.SETTINGS_SAVED": "Settings saved successfully",
   "NOTIFICATIONS.USER_REQUIRED": "User is required",
   "USER.NO_CHILDREN": "No children",
+  "DEVICE.LINKED_USERS.TITLE": "Linked Users",
+  "DEVICE.LINKED_USERS.DESCRIPTION": "This shows the user hierarchy for device {ident}. The highlighted user is linked to this device.",
+  "DEVICE.NO_LINKED_USERS": "No linked users for this device",
   "COMMON.EXPORT_SUCCESS": "Exported successfully",
   "COMMON.EXPORT_ERROR": "Export error",
   "COMMON.IMPORT_SUCCESS": "Imported successfully",
   "COMMON.IMPORT_ERROR": "Import error",
-  "COMMON.SELECT_VEHICLE": "Select a vehicle"
+  "COMMON.SELECT_VEHICLE": "Select a vehicle",
+  "COMMON.COPIED_TO_CLIPBOARD": "Copied to clipboard!"
 }

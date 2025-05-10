@@ -25,6 +25,7 @@ import { Buffer } from 'buffer';
 import Telemetry from './blocks/Telemetry';
 import { format } from 'date-fns';
 import { Notifications } from '../dashboards/blocks/Notifications';
+import { DeviceUserModal } from '../management/blocks/DeviceUserModal';
 
 const DeviceDetailsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -132,12 +133,7 @@ const DeviceDetailsPage = () => {
                 </span>
               </div>
               <div className="flex gap-3">
-                <a href={`/devices/device/${device.id}`}>
-                  <img
-                    src={toAbsoluteUrl('/media/icons/view.svg')}
-                    alt={intl.formatMessage({ id: 'COMMON.VIEW' })}
-                  />
-                </a>
+                <DeviceUserModal deviceIdent={device.ident} userId={device.userId} />
                 <RoleComponent role="admin">
                   <a href={`/devices/edit/${device.id}`}>
                     <img

@@ -812,9 +812,13 @@
   "NOTIFICATIONS.SETTINGS_SAVED": "تم حفظ الإعدادات بنجاح",
   "NOTIFICATIONS.USER_REQUIRED": "المستخدم مطلوب",
   "USER.NO_CHILDREN": "لا يوجد مستخدمين فرعيين",
+  "DEVICE.LINKED_USERS.TITLE": "المستخدمون المرتبطون",
+  "DEVICE.LINKED_USERS.DESCRIPTION": "يوضح هذا التسلسل الهرمي للمستخدم لجهاز {ident}. المستخدم المميز مرتبط بهذا الجهاز.",
+  "DEVICE.NO_LINKED_USERS": "لا يوجد مستخدمون مرتبطون لهذا الجهاز",
   "COMMON.EXPORT_SUCCESS": "تم تصدير البيانات بنجاح",
   "COMMON.EXPORT_ERROR": "حدث خطأ أثناء تصدير البيانات",
   "COMMON.IMPORT_SUCCESS": "تم استيراد البيانات بنجاح",
   "COMMON.IMPORT_ERROR": "حدث خطأ أثناء استيراد البيانات",
-  "COMMON.SELECT_VEHICLE": "اختر مركبة"
+  "COMMON.SELECT_VEHICLE": "اختر مركبة",
+  "COMMON.COPIED_TO_CLIPBOARD": "تم النسخ إلى الحافظة!"
 }
