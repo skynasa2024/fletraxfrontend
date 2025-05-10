@@ -481,6 +481,7 @@ export const getVehicleTotalMileage = async (
 ): Promise<{
   formattedTotalMileage: string;
   vehicleId: string;
+  userId: string | null;
 } | null> => {
   const device = await getDeviceModelByImei(ident);
   if (device) {
@@ -489,7 +490,8 @@ export const getVehicleTotalMileage = async (
     );
     return {
       formattedTotalMileage: data.data.result.formatedTtotalMileage,
-      vehicleId: device.vehicleId ?? ''
+      vehicleId: device.vehicleId ?? '',
+      userId: device.userId
     };
   }
 

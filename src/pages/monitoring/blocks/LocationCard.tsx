@@ -10,6 +10,7 @@ import { useLanguage } from '@/i18n';
 import { getVehicleTotalMileage } from '@/api/cars';
 import { Link } from 'react-router';
 import ShareLinkModal from '@/components/ShareLinkModal';
+import { DeviceUserModal } from '@/pages/management/blocks/DeviceUserModal';
 
 export const LocationCard = () => {
   const intl = useIntl();
@@ -19,6 +20,7 @@ export const LocationCard = () => {
   const [vehicle, setVehicle] = useState<{
     formattedTotalMileage: string;
     vehicleId: string;
+    userId: string | null;
   } | null>(null);
 
   const getTotalMileage = async (id: string) => {
@@ -54,13 +56,16 @@ export const LocationCard = () => {
     <div className="card">
       <div className="card-header border-dashed border-b-2 px-10 py-[14px]">
         <CarPlate plate={location.vehicle.plate} />
-        <div
-          data-online={location.online}
-          className="rounded-md font-medium text-xs bg-[#F1416C]/10 text-[#F1416C] data-[online=true]:bg-[#50CD89]/10 data-[online=true]:text-[#50CD89] px-[10px] py-[6px] self-center"
-        >
-          {location.online
-            ? intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.ONLINE' })
-            : intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.OFFLINE' })}
+        <div className="flex items-center justify-center gap-2">
+          <DeviceUserModal deviceIdent={location.vehicle.imei} userId={vehicle?.userId ?? null} />
+          <div
+            data-online={location.online}
+            className="rounded-md font-medium text-xs bg-[#F1416C]/10 text-[#F1416C] data-[online=true]:bg-[#50CD89]/10 data-[online=true]:text-[#50CD89] px-[10px] py-[6px] self-center"
+          >
+            {location.online
+              ? intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.ONLINE' })
+              : intl.formatMessage({ id: 'DASHBOARD.MOVING_DEVICE.OFFLINE' })}
+          </div>
         </div>
       </div>
 
