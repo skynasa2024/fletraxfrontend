@@ -14,7 +14,7 @@ import { useLanguage } from '@/i18n';
 import clsx from 'clsx';
 import { useMemo } from 'react';
 
-const MultiplierOptions = [0.5, 1, 2, 3, 5];
+const MultiplierOptions = [0.5, 1, 2, 3, 5, 10, 20];
 
 export const PlaybackCard = () => {
   const { isRTL } = useLanguage();

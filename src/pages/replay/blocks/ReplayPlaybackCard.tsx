@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Slider } from '@mui/material';
+import { Slider } from '@mui/material';
 import { FaPause, FaPlay } from 'react-icons/fa';
 import { PiFastForward } from 'react-icons/pi';
 import { useAuthContext } from '@/auth';
@@ -11,10 +11,10 @@ import { useReplayContext } from '../providers/ReplayContext';
 import { useReplayAnimationContext } from '../providers/ReplayAnimationContext';
 import { useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { ArrowDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import SpeedChart from '../components/SpeedChart';
 
-const MultiplierOptions = [0.5, 1, 2, 3, 5];
+const MultiplierOptions = [0.5, 1, 2, 3, 5, 10, 20];
 const ITEMS_PER_SLIDE = 10;
 
 export const ReplayPlaybackCard = () => {
