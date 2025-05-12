@@ -130,29 +130,39 @@ export default function ManageDevices() {
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.IDENTIFY_NUMBER' })
       },
       {
-        accessorKey: 'name',
-        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.NAME' })
-      },
-      {
         accessorKey: 'phone',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PHONE' })
       },
       {
         accessorKey: 'protocol',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PROTOCOL' }),
-        cell: ({ row }) => (
-          <div className="w-[175px]">{getProtocolName(row.original.protocolId)}</div>
-        )
+        cell: ({ row }) => getProtocolName(row.original.protocolId)
       },
       {
         accessorKey: 'type',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.TYPE' }),
-        cell: ({ row }) => <div className="w-[175px]">{getTypeName(row.original.typeId)}</div>
+        cell: ({ row }) => getTypeName(row.original.typeId)
       },
       {
         accessorKey: 'vehiclePlate',
         header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.PLATE' }),
         cell: ({ row }) => <CarPlate plate={row.original.vehiclePlate} />
+      },
+      {
+        accessorKey: 'installationStatus',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.INSTALLATION_STATUS' })
+      },
+      {
+        accessorKey: 'installationDate',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.INSTALLATION_DATE' })
+      },
+      {
+        accessorKey: 'distributor',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.DISTRIBUTOR' })
+      },
+      {
+        accessorKey: 'odometer',
+        header: intl.formatMessage({ id: 'MANAGEMENT.DEVICES.COLUMN.ODOMETER' })
       },
       {
         accessorKey: 'subscriptionStartDate',
