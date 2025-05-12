@@ -22,6 +22,10 @@ export interface DeviceDTO {
   skynasaDeviceId: string;
   protocolId: string;
   typeId: string;
+  installationStatus: string;
+  installationDate: string;
+  distributor: string;
+  odometer: number;
 }
 
 export interface Device {

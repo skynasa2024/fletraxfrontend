@@ -175,6 +175,64 @@ const Information = ({ device }: AddDevicePageProps) => {
             />
           </div>
         </div>
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.INSTALATION_STATUS" />
+            </label>
+            <select
+              className="select"
+              name="installationStatus"
+              defaultValue={device?.installationStatus}
+              required
+            >
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div className="grid gap-2.5">
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.INSTALATION_DATE" />
+            </label>
+            <input
+              required
+              type="date"
+              className="input w-full dark:[color-scheme:dark]"
+              name="installationDate"
+              placeholder="DD/MM/YYYY"
+              defaultValue={
+                device?.installationDate || getFormattedDate(undefined, currentUser?.timezone)
+              }
+            />
+          </div>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-5">
+          <div className="grid gap-2.5">
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.DISTRIBUTOR" />
+            </label>
+            <input
+              required
+              type="text"
+              className="input w-full dark:[color-scheme:dark]"
+              name="distributor"
+              defaultValue={device?.distributor}
+              placeholder={formatMessage({ id: 'DEVICE.FORM.DISTRIBUTOR.PLACEHOLDER' })}
+            />
+          </div>
+          <div className="grid gap-2.5">
+            <label className="form-label">
+              <FormattedMessage id="DEVICE.FORM.ODOMETER" />
+            </label>
+            <input
+              required
+              type="number"
+              className="input w-full dark:[color-scheme:dark]"
+              name="odometer"
+              defaultValue={device?.odometer}
+              placeholder={formatMessage({ id: 'DEVICE.FORM.ODOMETER.PLACEHOLDER' })}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
