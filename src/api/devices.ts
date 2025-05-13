@@ -313,3 +313,15 @@ export const importDevicesFromExcel = async (data: FormData): Promise<void> => {
     }
   });
 };
+
+export type InstallationStatusOption = {
+  name: string;
+  value: string;
+};
+
+export const getInstallationStatusOptions = async (): Promise<InstallationStatusOption[]> => {
+  const response = await axios.get<ResponseModel<InstallationStatusOption[]>>(
+    '/api/devices/lists/installation_status'
+  );
+  return response.data.result;
+};

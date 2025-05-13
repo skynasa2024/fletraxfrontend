@@ -6,6 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useAuthContext } from '@/auth';
 import { addYears } from 'date-fns';
 import { getFormattedDate } from '@/utils';
+import { getInstallationStatusOptions, InstallationStatusOption } from '@/api/devices';
 
 const Information = ({ device }: AddDevicePageProps) => {
   const { protocols, types, getTypesOfProtocol } = useDeviceProvider();
@@ -13,6 +14,18 @@ const Information = ({ device }: AddDevicePageProps) => {
   const [typeId, setTypeId] = useState<string>();
   const { formatMessage } = useIntl();
   const { currentUser } = useAuthContext();
+  const [installationStatusOptions, setInstallationStatusOptions] = useState<
+    InstallationStatusOption[]
+  >([]);
+
+  const fetchInstallationStatusOptions = async () => {
+    try {
+      const res = await getInstallationStatusOptions();
+      setInstallationStatusOptions(res);
+    } catch (error) {
+      console.error('Error fetching installation status options:', error);
+    }
+  };
 
   useEffect(() => {
     if (device?.protocolId && protocols && types) {
@@ -20,6 +33,10 @@ const Information = ({ device }: AddDevicePageProps) => {
       setTypeId(device.typeId);
     }
   }, [device, protocols, types]);
+
+  useEffect(() => {
+    fetchInstallationStatusOptions();
+  }, []);
 
   return (
     <div className="card pb-2.5">
@@ -186,7 +203,11 @@ const Information = ({ device }: AddDevicePageProps) => {
               defaultValue={device?.installationStatus}
               required
             >
-              <option value="completed">Completed</option>
+              {installationStatusOptions.map((status) => (
+                <option key={status.value} value={status.value}>
+                  {status.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="grid gap-2.5">
